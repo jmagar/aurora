@@ -75,6 +75,413 @@
           "type": "registry:component"
         }
       ]
+    },
+
+    {
+      "name": "aurora-tokens",
+      "type": "registry:style",
+      "title": "Aurora Design System Tokens",
+      "description": "Aurora CSS custom property token definitions for the full Aurora color, typography, shadow, and radius system.",
+      "files": [
+        {
+          "path": "registry/aurora/aurora.css",
+          "type": "registry:style"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-button",
+      "type": "registry:ui",
+      "title": "Aurora Button",
+      "description": "Multi-variant button with aurora glow, rose, neutral, ghost, and destructive styles. Inline-style gradients and box-shadow glows.",
+      "dependencies": ["class-variance-authority", "@radix-ui/react-slot"],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-badge",
+      "type": "registry:ui",
+      "title": "Aurora Badge",
+      "description": "Small status and label badge component with Aurora tint variants.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-input",
+      "type": "registry:ui",
+      "title": "Aurora Input",
+      "description": "Text input with Aurora focus glow, leading/trailing adornment slots, and control-surface background.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-select",
+      "type": "registry:ui",
+      "title": "Aurora Select",
+      "description": "Native-style select with Aurora panel dropdown and chevron indicator.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-textarea",
+      "type": "registry:ui",
+      "title": "Aurora Textarea",
+      "description": "Auto-resizing textarea with Aurora focus glow and control-surface background.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-avatar",
+      "type": "registry:ui",
+      "title": "Aurora Avatar",
+      "description": "Circular avatar with gradient fallback initials and Aurora border styling.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/avatar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-progress",
+      "type": "registry:ui",
+      "title": "Aurora Progress",
+      "description": "Animated progress bar with Aurora accent-primary fill and panel track.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/progress.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-switch",
+      "type": "registry:ui",
+      "title": "Aurora Switch",
+      "description": "Toggle switch with Aurora glow active state and smooth transition.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-tabs",
+      "type": "registry:ui",
+      "title": "Aurora Tabs",
+      "description": "Underline-style tabs with Aurora accent-primary active indicator.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-breadcrumb",
+      "type": "registry:ui",
+      "title": "Aurora Breadcrumb",
+      "description": "Breadcrumb navigation with separator chevrons and Aurora muted text styling.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/breadcrumb.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-pagination",
+      "type": "registry:ui",
+      "title": "Aurora Pagination",
+      "description": "Page navigation controls with Aurora neutral button style and active accent page indicator.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/pagination.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-dialog",
+      "type": "registry:ui",
+      "title": "Aurora Dialog",
+      "description": "Modal dialog with Aurora panel-strong background, strong shadow, and backdrop blur.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-dropdown-menu",
+      "type": "registry:ui",
+      "title": "Aurora Dropdown Menu",
+      "description": "Floating dropdown menu with Aurora panel-strong surface, hover-bg items, and keyboard navigation.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-tooltip",
+      "type": "registry:ui",
+      "title": "Aurora Tooltip",
+      "description": "Lightweight tooltip with Aurora panel-strong background and text-primary label.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-context-menu",
+      "type": "registry:ui",
+      "title": "Aurora Context Menu",
+      "description": "Right-click context menu with Aurora panel surface, icons, and keyboard shortcuts.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/context-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-banner",
+      "type": "registry:ui",
+      "title": "Aurora Banner",
+      "description": "Full-width status banners with info, success, warn, and error Aurora tint variants.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/banner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-toast",
+      "type": "registry:ui",
+      "title": "Aurora Toast",
+      "description": "Floating toast notifications with Aurora panel surface, status icons, and auto-dismiss.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/toast.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-empty-state",
+      "type": "registry:ui",
+      "title": "Aurora Empty State",
+      "description": "Centered empty state with icon slot, heading, description, and optional CTA button.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens", "aurora-button"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/empty-state.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-skeleton",
+      "type": "registry:ui",
+      "title": "Aurora Skeleton",
+      "description": "Shimmer skeleton loader with Aurora panel-medium base and hover-bg highlight.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-stat-card",
+      "type": "registry:ui",
+      "title": "Aurora Stat Card",
+      "description": "Metric stat card with label, large value, trend indicator, and Aurora panel styling.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/stat-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-data-table",
+      "type": "registry:ui",
+      "title": "Aurora Data Table",
+      "description": "Sortable, paginated data table with Aurora panel headers, row hover states, and border-default separators.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/data-table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-filter-bar",
+      "type": "registry:ui",
+      "title": "Aurora Filter Bar",
+      "description": "Horizontal filter toolbar with search input, select dropdowns, and Aurora button actions.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens", "aurora-input", "aurora-select", "aurora-button"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/filter-bar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-prompt-input",
+      "type": "registry:block",
+      "title": "Aurora Prompt Input",
+      "description": "Full-featured AI prompt input with attach, slash commands, @mentions, model selector, send/stop buttons, attachment chips, and streaming state.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/prompt-input/prompt-input.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "aurora-tool-calls",
+      "type": "registry:block",
+      "title": "Aurora Tool Calls",
+      "description": "Condensed, grouped tool call display for AI sessions. Supports running shimmer, completed, and error states with collapsible arg/result panels.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/tool-calls/tool-calls.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "aurora-thinking",
+      "type": "registry:block",
+      "title": "Aurora Thinking",
+      "description": "Reasoning and chain-of-thought disclosure block. Three variants: thinking (streaming text), cot (numbered steps with connector), plan (step list with status icons).",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/thinking/thinking.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "aurora-code-block",
+      "type": "registry:block",
+      "title": "Aurora Code Block",
+      "description": "Syntax-highlighted code display with Aurora titlebar, copy button, optional line numbers, diff variant, and inline CodeChip export. Supports TypeScript, Rust, Bash, JSON, TOML, diff.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/code-block/code-block.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "aurora-terminal",
+      "type": "registry:block",
+      "title": "Aurora Terminal",
+      "description": "Aurora-native terminal with 38px navy titlebar (Labby mark, session name, status dot, kill/clear/run buttons), full color system using Aurora tokens, compact in-chat variant, and blinking cursor.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/terminal/terminal.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "aurora-sidebar",
+      "type": "registry:block",
+      "title": "Aurora Sidebar",
+      "description": "Zed-like project sidebar with collapsible project groups, session items with relative time, live beacon pulse, active accent border, search input, avatar bottom bar, and icon-only collapsed variant.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/sidebar/sidebar.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }
