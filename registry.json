@@ -557,6 +557,96 @@
           "type": "registry:component"
         }
       ]
+    },
+
+    {
+      "name": "aurora-file-tree",
+      "type": "registry:block",
+      "title": "Aurora File Tree",
+      "description": "Recursive collapsible file tree with folder/file icons, hover and selected states, right-click context menu (New file, Rename, Delete, Copy path), and an inline FileChip export for referencing files in prose.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/file-tree/file-tree.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-code-editor",
+      "type": "registry:block",
+      "title": "Aurora Code Editor",
+      "description": "Display-only code editor panel with title bar (filename, language badge, close button), line numbers, syntax highlighting, minimap column, diff mode (add/remove line backgrounds), error diagnostics (squiggly underlines, gutter icons, error panel), status bar, and a compact variant.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/code-editor/code-editor.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-web-preview",
+      "type": "registry:block",
+      "title": "Aurora Web Preview",
+      "description": "Browser chrome component with Aurora panel titlebar, three neutral square window dots, address bar with lock icon, reload and share icon buttons. Four variants: browser (full chrome), unfurl-card (link preview with favicon, title, description, domain chip), skeleton (shimmer loading), and error (failed to load).",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/web-preview/web-preview.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-login",
+      "type": "registry:block",
+      "title": "Aurora Login",
+      "description": "Full-page login card centered on Aurora radial page wash. Features Labby stacked-plane mark + wordmark, email/password fields with show/hide toggle, Style D glow-border sign-in button, forgot password link, magic-link sent state with envelope icon, and 6-box OTP input that auto-advances on keystroke for 2FA.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/login/login.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-oauth",
+      "type": "registry:block",
+      "title": "Aurora OAuth",
+      "description": "OAuth consent screen with app icon, scope checklist (sensitive scopes highlighted in warn color), and Allow/Deny buttons. Success/callback state with animated SVG check and close-window message. Token management table with token name, scopes chips, created date, last used, and Revoke button.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/oauth/oauth.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-error-page",
+      "type": "registry:block",
+      "title": "Aurora Error Page",
+      "description": "Operator-first error pages for 404 (Not found + mono path + Go home button), 403 (Access denied + contact link), and 500 (Something went wrong + mono incident ID + animated countdown ring with auto-retry). No consumer-app illustrations — uses ghost numeric backdrop instead.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/error-page/error-page.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }
