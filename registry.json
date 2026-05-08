@@ -482,6 +482,81 @@
           "type": "registry:component"
         }
       ]
+    },
+
+    {
+      "name": "aurora-checkbox",
+      "type": "registry:ui",
+      "title": "Aurora Checkbox & Radio",
+      "description": "Aurora-styled checkbox and radio group built on button[role=checkbox/radio] patterns. 16px control with accent-primary fill, animated check/dot, focus ring glow, and full keyboard support. Includes RadioGroup + RadioGroupItem exports.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-artifact",
+      "type": "registry:block",
+      "title": "Aurora Artifact",
+      "description": "Artifact panel with preview/code tab switcher, copy/download/expand toolbar, language badge, and streaming cursor. Three variants: panel (full-featured), card (compact collapsible in-chat), inline (bare code strip).",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/artifact/artifact.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-permission-prompt",
+      "type": "registry:block",
+      "title": "Aurora Permission Prompt",
+      "description": "Three-variant permission prompt (modal, banner, inline) showing tool name, action description, target chip, Allow/Deny/Allow-always buttons. Danger mode adds red border, warning strip, and destructive copy.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/permission-prompt/permission-prompt.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-ask-user-question",
+      "type": "registry:block",
+      "title": "Aurora Ask User Question",
+      "description": "Assistant question block with radio, multi-select, or free-text input. Option cards feature hover accent-border glow and active-glow on selection. Supports optional code preview panel per option.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ask-user-question/ask-user-question.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-permissions-dropdown",
+      "type": "registry:block",
+      "title": "Aurora Permissions Dropdown",
+      "description": "LLM runtime permission config panel with master toggle, per-tool Allow/Ask/Block segmented controls, state badges, and scrollable tool list. Also exports PermissionChip for compact summary display.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/permissions-dropdown/permissions-dropdown.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,446 @@
+"use client"
+
+import * as React from "react"
+
+// ---------------------------------------------------------------------------
+// CSS injected once
+// ---------------------------------------------------------------------------
+
+const AUQ_CSS = `
+@keyframes aurora-auq-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+`
+
+let auqCSSInjected = false
+function ensureAUQCSS() {
+  if (auqCSSInjected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.textContent = AUQ_CSS
+  document.head.appendChild(el)
+  auqCSSInjected = true
+}
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+export interface QuestionOption {
+  id: string
+  label: string
+  description?: string
+  /** Optional code snippet shown inside the card */
+  preview?: string
+}
+
+export type QuestionType = "radio" | "multi" | "text"
+
+export interface AskUserQuestionProps {
+  question: string
+  options?: QuestionOption[]
+  type?: QuestionType
+  onSubmit: (value: string | string[]) => void
+  /** Placeholder for text input */
+  placeholder?: string
+  className?: string
+  style?: React.CSSProperties
+}
+
+// ---------------------------------------------------------------------------
+// Code preview panel inside an option card
+// ---------------------------------------------------------------------------
+
+function OptionCodePreview({ code }: { code: string }) {
+  return (
+    <pre
+      style={{
+        margin: "8px 0 0",
+        padding: "8px 10px",
+        borderRadius: 8,
+        background: "var(--aurora-bg)",
+        border: "1px solid var(--aurora-border-default)",
+        fontSize: 11,
+        lineHeight: 1.6,
+        fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+        color: "var(--aurora-text-primary)",
+        overflowX: "auto",
+        whiteSpace: "pre",
+      }}
+    >
+      <code>{code}</code>
+    </pre>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Single option card
+// ---------------------------------------------------------------------------
+
+interface OptionCardProps {
+  option: QuestionOption
+  selected: boolean
+  type: "radio" | "multi"
+  onToggle: (id: string) => void
+}
+
+function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
+  const [hovered, setHovered] = React.useState(false)
+
+  const borderColor = selected
+    ? "var(--aurora-accent-primary)"
+    : hovered
+    ? "color-mix(in srgb, var(--aurora-accent-primary) 45%, var(--aurora-border-default))"
+    : "var(--aurora-border-default)"
+
+  const boxShadow = selected
+    ? [
+        "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
+        "var(--aurora-active-glow, 0 0 16px color-mix(in srgb, #29b6f6 18%, transparent))",
+      ].join(", ")
+    : hovered
+    ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 15%, transparent)"
+    : "none"
+
+  const background = selected
+    ? "color-mix(in srgb, var(--aurora-accent-primary) 7%, var(--aurora-panel-medium))"
+    : hovered
+    ? "var(--aurora-hover-bg)"
+    : "var(--aurora-panel-medium)"
+
+  return (
+    <button
+      type="button"
+      role={type === "radio" ? "radio" : "checkbox"}
+      aria-checked={selected}
+      onClick={() => onToggle(option.id)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 12,
+        width: "100%",
+        padding: "12px 14px",
+        borderRadius: "var(--radius-1, 14px)",
+        border: `1.5px solid ${borderColor}`,
+        background,
+        cursor: "pointer",
+        textAlign: "left",
+        outline: "none",
+        transition: "border-color 150ms, background 150ms, box-shadow 150ms",
+        boxShadow,
+        animation: "aurora-auq-fadein 180ms ease both",
+      }}
+    >
+      {/* Indicator */}
+      <div
+        style={{
+          flexShrink: 0,
+          marginTop: 2,
+          width: 16,
+          height: 16,
+          borderRadius: type === "radio" ? "50%" : 4,
+          border: selected
+            ? "1.5px solid var(--aurora-accent-primary)"
+            : "1.5px solid var(--aurora-border-strong)",
+          background: selected ? "var(--aurora-accent-primary)" : "var(--aurora-control-surface)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "background 150ms, border-color 150ms",
+        }}
+      >
+        {selected && type === "radio" && (
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: "white",
+            }}
+          />
+        )}
+        {selected && type === "multi" && (
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+            <path
+              d="M1.5 4L3.8 6.5L8.5 1.5"
+              stroke="white"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: 14,
+            fontWeight: 600,
+            color: "var(--aurora-text-primary)",
+            fontFamily: "var(--font-sans, Inter, sans-serif)",
+            lineHeight: 1.4,
+          }}
+        >
+          {option.label}
+        </p>
+        {option.description && (
+          <p
+            style={{
+              margin: "3px 0 0",
+              fontSize: 12,
+              color: "var(--aurora-text-muted)",
+              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              lineHeight: 1.55,
+            }}
+          >
+            {option.description}
+          </p>
+        )}
+        {option.preview && <OptionCodePreview code={option.preview} />}
+      </div>
+    </button>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Text input variant
+// ---------------------------------------------------------------------------
+
+function TextInput({
+  placeholder,
+  onSubmit,
+}: {
+  placeholder?: string
+  onSubmit: (value: string) => void
+}) {
+  const [value, setValue] = React.useState("")
+  const [focused, setFocused] = React.useState(false)
+
+  function submit() {
+    const trimmed = value.trim()
+    if (trimmed) onSubmit(trimmed)
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      submit()
+    }
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <textarea
+        rows={3}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder={placeholder ?? "Type your answer…"}
+        style={{
+          width: "100%",
+          resize: "vertical",
+          minHeight: 80,
+          padding: "10px 12px",
+          borderRadius: "var(--radius-1, 14px)",
+          border: focused
+            ? "1.5px solid var(--aurora-accent-primary)"
+            : "1.5px solid var(--aurora-border-strong)",
+          background: "var(--aurora-control-surface)",
+          color: "var(--aurora-text-primary)",
+          fontSize: 14,
+          fontFamily: "var(--font-sans, Inter, sans-serif)",
+          lineHeight: 1.6,
+          outline: "none",
+          transition: "border-color 150ms, box-shadow 150ms",
+          boxShadow: focused
+            ? [
+                "0 0 0 3px color-mix(in srgb, #29b6f6 18%, transparent)",
+                "0 0 0 1px color-mix(in srgb, #29b6f6 40%, transparent)",
+              ].join(", ")
+            : "none",
+          boxSizing: "border-box",
+        }}
+      />
+      <SubmitButton disabled={!value.trim()} onClick={submit} label="Submit" />
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Submit button
+// ---------------------------------------------------------------------------
+
+function SubmitButton({
+  onClick,
+  disabled,
+  label,
+}: {
+  onClick: () => void
+  disabled?: boolean
+  label: string
+}) {
+  const [hovered, setHovered] = React.useState(false)
+
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        height: 34,
+        padding: "0 18px",
+        borderRadius: 10,
+        border: "1px solid transparent",
+        background: disabled
+          ? "var(--aurora-control-surface)"
+          : hovered
+          ? "linear-gradient(180deg, #5dd0fb 0%, #1da8e6 100%)"
+          : "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)",
+        color: disabled ? "var(--aurora-text-muted)" : "white",
+        fontSize: 13,
+        fontWeight: 600,
+        fontFamily: "var(--font-sans, Inter, sans-serif)",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.5 : 1,
+        outline: "none",
+        transition: "background 120ms, opacity 120ms",
+        boxShadow: disabled
+          ? "none"
+          : [
+              "inset 0 1px 0 rgba(255,255,255,0.22)",
+              "0 0 0 1px color-mix(in srgb, #29b6f6 38%, transparent)",
+              "0 2px 12px color-mix(in srgb, #29b6f6 28%, transparent)",
+            ].join(", "),
+        alignSelf: "flex-end",
+      }}
+    >
+      {label}
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M2 6H10M7 3L10 6L7 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
+
+export function AskUserQuestion({
+  question,
+  options = [],
+  type = "radio",
+  onSubmit,
+  placeholder,
+  className,
+  style,
+}: AskUserQuestionProps) {
+  React.useEffect(() => {
+    ensureAUQCSS()
+  }, [])
+
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([])
+
+  function toggleOption(id: string) {
+    if (type === "radio") {
+      setSelectedIds([id])
+    } else {
+      setSelectedIds((prev) =>
+        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      )
+    }
+  }
+
+  function handleSubmit() {
+    if (type === "multi") {
+      onSubmit(selectedIds)
+    } else {
+      onSubmit(selectedIds[0] ?? "")
+    }
+  }
+
+  const canSubmit =
+    type === "text" ? true : selectedIds.length > 0
+
+  return (
+    <div
+      className={className}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 14,
+        ...style,
+      }}
+      role={type === "radio" ? "radiogroup" : undefined}
+    >
+      {/* Question */}
+      <p
+        style={{
+          margin: 0,
+          fontSize: 15,
+          fontWeight: 600,
+          color: "var(--aurora-text-primary)",
+          fontFamily: "var(--font-sans, Inter, sans-serif)",
+          lineHeight: 1.5,
+        }}
+      >
+        {question}
+      </p>
+
+      {/* Text input */}
+      {type === "text" ? (
+        <TextInput placeholder={placeholder} onSubmit={(v) => onSubmit(v)} />
+      ) : (
+        <>
+          {/* Option cards */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            {options.map((opt, i) => (
+              <div
+                key={opt.id}
+                style={{
+                  animationDelay: `${i * 40}ms`,
+                }}
+              >
+                <OptionCard
+                  option={opt}
+                  selected={selectedIds.includes(opt.id)}
+                  type={type}
+                  onToggle={toggleOption}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Submit */}
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <SubmitButton
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+              label={type === "multi" ? `Confirm (${selectedIds.length})` : "Continue"}
+            />
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+export default AskUserQuestion
