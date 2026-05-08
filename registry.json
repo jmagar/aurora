@@ -647,6 +647,66 @@
           "type": "registry:component"
         }
       ]
+    },
+
+    {
+      "name": "aurora-attachment",
+      "type": "registry:block",
+      "title": "Aurora Attachment",
+      "description": "Six attachment UI variants: inline rose-tinted chip (with image thumbnail), media grid with hover overlay, tall doc/PDF card with file-type badge and page count, animated audio chip with 5 waveform bars, upload progress tracker with fixed-80px accent-fill track, and drag-and-drop zone.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/attachment/attachment.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-command-palette",
+      "type": "registry:block",
+      "title": "Aurora Command Palette",
+      "description": "Full-screen command palette with 72% alpha backdrop, centered 560px panel, magnifier search input with ⌘K shortcut hint, sectioned results (Recent, Actions, Skills, Navigate), keyboard shortcut kbd badges, arrow-key navigation, Enter to select, Escape to close, and a useCommandPalette hook that binds ⌘K globally.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/command-palette/command-palette.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-share-dialog",
+      "type": "registry:block",
+      "title": "Aurora Share Dialog",
+      "description": "Two-tab share/export dialog: Share tab with copy-link URL input, collaborator rows (avatar + name + role dropdown), and email invite form; Export tab with format radio group (HTML, PDF, PNG, Markdown), inline share chip, and a gradient download button.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/share-dialog/share-dialog.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+
+    {
+      "name": "aurora-file-picker",
+      "type": "registry:block",
+      "title": "Aurora File Picker",
+      "description": "Modal file picker with sidebar navigation (Recent, Documents, Downloads, Project, Uploads), grid and list view modes, search bar, filter chips (All, Images, Documents, Code), drag-drop upload overlay, staged selection chips below the grid, and a multi-select confirm action using --font-sans for all file names.",
+      "dependencies": [],
+      "registryDependencies": ["aurora-tokens"],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/file-picker/file-picker.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

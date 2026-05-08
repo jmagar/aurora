@@ -1,0 +1,820 @@
+"use client"
+
+import * as React from "react"
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+export type CollaboratorRole = "viewer" | "editor" | "admin"
+
+export interface Collaborator {
+  id: string
+  name: string
+  email: string
+  /** Initials or avatar URL */
+  avatar?: string
+  role: CollaboratorRole
+}
+
+export type ExportFormat = "html" | "pdf" | "png" | "markdown"
+
+export interface ShareDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  url: string
+  collaborators?: Collaborator[]
+  onExport?: (format: ExportFormat) => void
+  onRoleChange?: (id: string, role: CollaboratorRole) => void
+  onInvite?: (email: string) => void
+}
+
+// ---------------------------------------------------------------------------
+// Default collaborators (demo)
+// ---------------------------------------------------------------------------
+
+const DEFAULT_COLLABORATORS: Collaborator[] = [
+  { id: "u1", name: "Alex Morgan", email: "alex@example.com", role: "admin" },
+  { id: "u2", name: "Sam Rivera", email: "sam@example.com", role: "editor" },
+  { id: "u3", name: "Jordan Lee", email: "jordan@example.com", role: "viewer" },
+]
+
+// ---------------------------------------------------------------------------
+// Icons
+// ---------------------------------------------------------------------------
+
+function CloseIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M2 2L12 12M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function CopyIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M4.5 9.5H2C1.45 9.5 1 9.05 1 8.5V2C1 1.45 1.45 1 2 1H8.5C9.05 1 9.5 1.45 9.5 2V4.5" stroke="currentColor" strokeWidth="1.2" />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function DownloadIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+      <path d="M7.5 2V10M7.5 10L4.5 7M7.5 10L10.5 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 12H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function LinkIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M5.5 8.5C6.1 9.4 7.4 9.6 8.3 8.8L10.8 6.3C11.7 5.4 11.7 4 10.8 3.1C9.9 2.2 8.5 2.2 7.6 3.1L6.7 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M8.5 5.5C7.9 4.6 6.6 4.4 5.7 5.2L3.2 7.7C2.3 8.6 2.3 10 3.2 10.9C4.1 11.8 5.5 11.8 6.4 10.9L7.3 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function PersonAddIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <circle cx="6" cy="4.5" r="2.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M1 12C1 9.8 3.2 8 6 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M10.5 9V13M8.5 11H12.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Avatar
+// ---------------------------------------------------------------------------
+
+const AVATAR_COLORS = [
+  ["#1c7fac", "#07131c"],
+  ["#c46b88", "#1c0a10"],
+  ["#7dd3c7", "#07131c"],
+  ["#c6a36b", "#1c1307"],
+]
+
+function AvatarCircle({ name, avatar, size = 32 }: { name: string; avatar?: string; size?: number }) {
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase()
+  const colorIdx = name.charCodeAt(0) % AVATAR_COLORS.length
+  const [bg, fg] = AVATAR_COLORS[colorIdx]
+
+  if (avatar) {
+    return (
+      <img
+        src={avatar}
+        alt={name}
+        style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover" }}
+      />
+    )
+  }
+
+  return (
+    <div
+      aria-label={name}
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: bg,
+        color: fg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: size * 0.38,
+        fontWeight: 700,
+        fontFamily: "var(--aurora-font-display)",
+        flexShrink: 0,
+        userSelect: "none",
+      }}
+    >
+      {initials}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Role select
+// ---------------------------------------------------------------------------
+
+const ROLE_LABELS: Record<CollaboratorRole, string> = {
+  admin: "Admin",
+  editor: "Editor",
+  viewer: "Viewer",
+}
+
+function RoleSelect({
+  value,
+  onChange,
+}: {
+  value: CollaboratorRole
+  onChange: (role: CollaboratorRole) => void
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value as CollaboratorRole)}
+      aria-label="Role"
+      style={{
+        background: "var(--aurora-control-surface)",
+        border: "1px solid var(--aurora-border-default)",
+        borderRadius: "8px",
+        color: "var(--aurora-text-muted)",
+        fontSize: "11px",
+        fontWeight: 500,
+        padding: "3px 6px",
+        cursor: "pointer",
+        outline: "none",
+        fontFamily: "var(--aurora-font-sans)",
+        appearance: "none",
+        WebkitAppearance: "none",
+        paddingRight: "20px",
+        backgroundImage:
+          "url(\"data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23a7bcc9' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "right 6px center",
+        backgroundSize: "10px 6px",
+      }}
+    >
+      {(["viewer", "editor", "admin"] as CollaboratorRole[]).map((r) => (
+        <option key={r} value={r}>
+          {ROLE_LABELS[r]}
+        </option>
+      ))}
+    </select>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Export format radio
+// ---------------------------------------------------------------------------
+
+const EXPORT_FORMATS: { id: ExportFormat; label: string; description: string }[] = [
+  { id: "html", label: "HTML", description: "Interactive web page" },
+  { id: "pdf", label: "PDF", description: "Printable document" },
+  { id: "png", label: "PNG", description: "Flat image snapshot" },
+  { id: "markdown", label: "Markdown", description: "Plain text with formatting" },
+]
+
+// ---------------------------------------------------------------------------
+// Inline share chip
+// ---------------------------------------------------------------------------
+
+function ShareChip({ url }: { url: string }) {
+  const [copied, setCopied] = React.useState(false)
+
+  function copy() {
+    navigator.clipboard.writeText(url).catch(() => {})
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "4px 8px 4px 6px",
+        background: "color-mix(in srgb, var(--aurora-accent-primary) 9%, var(--aurora-panel-medium))",
+        border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 25%, var(--aurora-border-default))",
+        borderRadius: "10px",
+        maxWidth: "320px",
+      }}
+    >
+      <span style={{ color: "var(--aurora-accent-primary)", display: "flex", alignItems: "center" }}>
+        <LinkIcon />
+      </span>
+      <span
+        style={{
+          fontSize: "12px",
+          color: "var(--aurora-text-muted)",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          flex: 1,
+          minWidth: 0,
+          fontFamily: "var(--aurora-font-mono)",
+        }}
+      >
+        {url}
+      </span>
+      <button
+        onClick={copy}
+        aria-label="Copy link"
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          color: copied ? "var(--aurora-success)" : "var(--aurora-text-muted)",
+          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          flexShrink: 0,
+          transition: "color 0.15s",
+        }}
+      >
+        {copied ? <CheckIcon /> : <CopyIcon />}
+      </button>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Tab button
+// ---------------------------------------------------------------------------
+
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        background: "none",
+        border: "none",
+        borderBottom: active
+          ? "2px solid var(--aurora-accent-primary)"
+          : "2px solid transparent",
+        color: active ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)",
+        fontSize: "13px",
+        fontWeight: active ? 600 : 500,
+        padding: "10px 16px",
+        cursor: "pointer",
+        fontFamily: "var(--aurora-font-sans)",
+        transition: "color 0.12s, border-color 0.12s",
+      }}
+    >
+      {children}
+    </button>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Main dialog
+// ---------------------------------------------------------------------------
+
+const KEYFRAMES_SHARE = `
+@keyframes aurora-share-in {
+  from { opacity: 0; transform: translate(-50%, calc(-50% - 10px)); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+`
+
+export function ShareDialog({
+  open,
+  onOpenChange,
+  url,
+  collaborators = DEFAULT_COLLABORATORS,
+  onExport,
+  onRoleChange,
+  onInvite,
+}: ShareDialogProps) {
+  const [activeTab, setActiveTab] = React.useState<"share" | "export">("share")
+  const [copied, setCopied] = React.useState(false)
+  const [roles, setRoles] = React.useState<Record<string, CollaboratorRole>>(
+    () => Object.fromEntries(collaborators.map((c) => [c.id, c.role]))
+  )
+  const [inviteEmail, setInviteEmail] = React.useState("")
+  const [exportFormat, setExportFormat] = React.useState<ExportFormat>("pdf")
+
+  function copyLink() {
+    navigator.clipboard.writeText(url).catch(() => {})
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2500)
+  }
+
+  function handleRoleChange(id: string, role: CollaboratorRole) {
+    setRoles((prev) => ({ ...prev, [id]: role }))
+    onRoleChange?.(id, role)
+  }
+
+  function handleInvite(e: React.FormEvent) {
+    e.preventDefault()
+    if (!inviteEmail.trim()) return
+    onInvite?.(inviteEmail.trim())
+    setInviteEmail("")
+  }
+
+  // Close on Escape
+  React.useEffect(() => {
+    if (!open) return
+    function handler(e: KeyboardEvent) {
+      if (e.key === "Escape") onOpenChange(false)
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [open, onOpenChange])
+
+  if (!open) return null
+
+  return (
+    <>
+      <style>{KEYFRAMES_SHARE}</style>
+
+      {/* Backdrop */}
+      <div
+        role="presentation"
+        onClick={() => onOpenChange(false)}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 200,
+          background: "rgba(4, 10, 14, 0.72)",
+        }}
+      />
+
+      {/* Dialog */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Share dialog"
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          zIndex: 201,
+          width: "520px",
+          maxWidth: "calc(100vw - 32px)",
+          background: "var(--aurora-panel-strong)",
+          border: "1px solid var(--aurora-border-strong)",
+          borderRadius: "var(--aurora-radius-2)",
+          boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.055)",
+          overflow: "hidden",
+          animation: "aurora-share-in 0.16s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "16px 20px 0",
+            borderBottom: "1px solid var(--aurora-border-default)",
+          }}
+        >
+          <div>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: "16px",
+                fontWeight: 700,
+                color: "var(--aurora-text-primary)",
+                fontFamily: "var(--aurora-font-display)",
+              }}
+            >
+              Share
+            </h2>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0" }}>
+            <TabButton active={activeTab === "share"} onClick={() => setActiveTab("share")}>
+              Share
+            </TabButton>
+            <TabButton active={activeTab === "export"} onClick={() => setActiveTab("export")}>
+              Export
+            </TabButton>
+          </div>
+
+          <button
+            onClick={() => onOpenChange(false)}
+            aria-label="Close"
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "var(--aurora-text-muted)",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center",
+              borderRadius: "6px",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--aurora-text-primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--aurora-text-muted)")}
+          >
+            <CloseIcon />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: "20px" }}>
+          {/* ── Share tab ── */}
+          {activeTab === "share" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              {/* URL row */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: "var(--aurora-text-muted)",
+                  }}
+                >
+                  Shareable link
+                </label>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "7px",
+                      padding: "8px 11px",
+                      background: "var(--aurora-control-surface)",
+                      border: "1px solid var(--aurora-border-default)",
+                      borderRadius: "10px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
+                      <LinkIcon />
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        fontFamily: "var(--aurora-font-mono)",
+                        color: "var(--aurora-text-muted)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        flex: 1,
+                      }}
+                    >
+                      {url}
+                    </span>
+                  </div>
+                  <button
+                    onClick={copyLink}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "8px 14px",
+                      background: copied
+                        ? "color-mix(in srgb, var(--aurora-success) 14%, transparent)"
+                        : "var(--aurora-accent-primary)",
+                      border: copied
+                        ? "1px solid color-mix(in srgb, var(--aurora-success) 35%, transparent)"
+                        : "none",
+                      borderRadius: "10px",
+                      color: copied ? "var(--aurora-success)" : "#fff",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      flexShrink: 0,
+                      transition: "background 0.2s, color 0.2s",
+                      fontFamily: "var(--aurora-font-sans)",
+                    }}
+                  >
+                    {copied ? <CheckIcon /> : <CopyIcon />}
+                    {copied ? "Copied" : "Copy"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Collaborators */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: "var(--aurora-text-muted)",
+                  }}
+                >
+                  People with access
+                </p>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "2px",
+                    maxHeight: "180px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {collaborators.map((c) => (
+                    <div
+                      key={c.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        padding: "7px 10px",
+                        borderRadius: "10px",
+                        transition: "background 0.1s",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background = "var(--aurora-hover-bg)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background = "transparent")
+                      }
+                    >
+                      <AvatarCircle name={c.name} avatar={c.avatar} size={30} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: "13px",
+                            fontWeight: 500,
+                            color: "var(--aurora-text-primary)",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            fontFamily: "var(--aurora-font-sans)",
+                          }}
+                        >
+                          {c.name}
+                        </p>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: "11px",
+                            color: "var(--aurora-text-muted)",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {c.email}
+                        </p>
+                      </div>
+                      <RoleSelect
+                        value={roles[c.id] ?? c.role}
+                        onChange={(role) => handleRoleChange(c.id, role)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Invite */}
+              <form
+                onSubmit={handleInvite}
+                style={{ display: "flex", gap: "8px" }}
+                aria-label="Invite people"
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "7px",
+                    padding: "8px 11px",
+                    background: "var(--aurora-control-surface)",
+                    border: "1px solid var(--aurora-border-default)",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
+                    <PersonAddIcon />
+                  </span>
+                  <input
+                    type="email"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    placeholder="Add people by email…"
+                    style={{
+                      flex: 1,
+                      background: "transparent",
+                      border: "none",
+                      outline: "none",
+                      fontSize: "13px",
+                      color: "var(--aurora-text-primary)",
+                      fontFamily: "var(--aurora-font-sans)",
+                      caretColor: "var(--aurora-accent-primary)",
+                    }}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={!inviteEmail.trim()}
+                  style={{
+                    padding: "8px 14px",
+                    background: inviteEmail.trim()
+                      ? "var(--aurora-accent-primary)"
+                      : "var(--aurora-control-surface)",
+                    border: "1px solid var(--aurora-border-default)",
+                    borderRadius: "10px",
+                    color: inviteEmail.trim() ? "#fff" : "var(--aurora-text-muted)",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    cursor: inviteEmail.trim() ? "pointer" : "default",
+                    flexShrink: 0,
+                    transition: "background 0.15s, color 0.15s",
+                    fontFamily: "var(--aurora-font-sans)",
+                  }}
+                >
+                  Invite
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* ── Export tab ── */}
+          {activeTab === "export" && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: "var(--aurora-text-muted)",
+                  }}
+                >
+                  Format
+                </p>
+                <div
+                  role="radiogroup"
+                  aria-label="Export format"
+                  style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+                >
+                  {EXPORT_FORMATS.map((fmt) => {
+                    const selected = exportFormat === fmt.id
+                    return (
+                      <label
+                        key={fmt.id}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                          padding: "10px 14px",
+                          background: selected
+                            ? "color-mix(in srgb, var(--aurora-accent-primary) 9%, var(--aurora-panel-medium))"
+                            : "var(--aurora-panel-medium)",
+                          border: selected
+                            ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 35%, transparent)"
+                            : "1px solid var(--aurora-border-default)",
+                          borderRadius: "10px",
+                          cursor: "pointer",
+                          transition: "background 0.12s, border-color 0.12s",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="export-format"
+                          value={fmt.id}
+                          checked={selected}
+                          onChange={() => setExportFormat(fmt.id)}
+                          style={{ accentColor: "var(--aurora-accent-primary)" }}
+                        />
+                        <div>
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: "13px",
+                              fontWeight: 600,
+                              color: selected
+                                ? "var(--aurora-accent-primary)"
+                                : "var(--aurora-text-primary)",
+                              fontFamily: "var(--aurora-font-sans)",
+                              transition: "color 0.12s",
+                            }}
+                          >
+                            {fmt.label}
+                          </p>
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: "11px",
+                              color: "var(--aurora-text-muted)",
+                              fontFamily: "var(--aurora-font-sans)",
+                            }}
+                          >
+                            {fmt.description}
+                          </p>
+                        </div>
+                      </label>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Share chip preview */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: "var(--aurora-text-muted)",
+                  }}
+                >
+                  Share link
+                </p>
+                <ShareChip url={url} />
+              </div>
+
+              {/* Download button */}
+              <button
+                onClick={() => onExport?.(exportFormat)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  width: "100%",
+                  padding: "11px",
+                  background: "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)",
+                  boxShadow:
+                    "inset 0 1px 0 rgba(255,255,255,0.22), 0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent), 0 2px 10px color-mix(in srgb, #29b6f6 30%, transparent)",
+                  border: "none",
+                  borderRadius: "var(--aurora-radius-1)",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  fontFamily: "var(--aurora-font-sans)",
+                  transition: "opacity 0.15s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+              >
+                <DownloadIcon />
+                Export as {exportFormat.toUpperCase()}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default ShareDialog
