@@ -713,6 +713,11 @@ export function PromptInput({
           <ToolbarButton
             onClick={() => {
               onChange(value + "/")
+              setSlashQuery("")
+              setSlashIndex(0)
+              setSlashOpen(true)
+              setMentionOpen(false)
+              setShowModelMenu(false)
               textareaRef.current?.focus()
             }}
             aria-label="Slash commands"
@@ -726,6 +731,11 @@ export function PromptInput({
           <ToolbarButton
             onClick={() => {
               onChange(value + "@")
+              setMentionQuery("")
+              setMentionIndex(0)
+              setMentionOpen(true)
+              setSlashOpen(false)
+              setShowModelMenu(false)
               textareaRef.current?.focus()
             }}
             aria-label="Mention"

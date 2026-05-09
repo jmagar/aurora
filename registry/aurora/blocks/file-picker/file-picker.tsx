@@ -562,6 +562,69 @@ const KEYFRAMES_FP = `
   from { opacity: 0; transform: translate(-50%, calc(-50% - 12px)); }
   to   { opacity: 1; transform: translate(-50%, -50%); }
 }
+
+@media (max-width: 640px) {
+  .aurora-file-picker-dialog {
+    width: calc(100vw - 24px) !important;
+    height: calc(100vh - 48px) !important;
+    max-height: calc(100vh - 48px) !important;
+  }
+
+  .aurora-file-picker-body {
+    flex-direction: column !important;
+  }
+
+  .aurora-file-picker-sidebar {
+    width: 100% !important;
+    max-height: 104px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--aurora-border-default) !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    overflow-x: auto !important;
+  }
+
+  .aurora-file-picker-sidebar-title,
+  .aurora-file-picker-upload-spacer {
+    display: none !important;
+  }
+
+  .aurora-file-picker-sidebar button {
+    width: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  .aurora-file-picker-main {
+    min-height: 0 !important;
+  }
+
+  .aurora-file-picker-toolbar {
+    flex-wrap: wrap !important;
+    align-items: stretch !important;
+  }
+
+  .aurora-file-picker-search {
+    flex-basis: 100% !important;
+  }
+
+  .aurora-file-picker-filters {
+    overflow-x: auto !important;
+    max-width: 100% !important;
+  }
+
+  .aurora-file-picker-footer {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  .aurora-file-picker-actions {
+    width: 100% !important;
+  }
+
+  .aurora-file-picker-actions button {
+    flex: 1 !important;
+  }
+}
 `
 
 // ---------------------------------------------------------------------------
@@ -671,6 +734,7 @@ export function FilePicker({
 
       {/* Dialog */}
       <div
+        className="aurora-file-picker-dialog"
         role="dialog"
         aria-modal="true"
         aria-label="File picker"
@@ -729,9 +793,10 @@ export function FilePicker({
           </div>
         )}
 
-        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        <div className="aurora-file-picker-body" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
           {/* Sidebar */}
           <div
+            className="aurora-file-picker-sidebar"
             style={{
               width: "160px",
               flexShrink: 0,
@@ -744,6 +809,7 @@ export function FilePicker({
             }}
           >
             <p
+              className="aurora-file-picker-sidebar-title"
               style={{
                 margin: "0 0 6px 8px",
                 fontSize: "10px",
@@ -786,7 +852,7 @@ export function FilePicker({
             })}
 
             {/* Upload button */}
-            <div style={{ flex: 1 }} />
+            <div className="aurora-file-picker-upload-spacer" style={{ flex: 1 }} />
             <input
               ref={uploadInputRef}
               type="file"
@@ -826,6 +892,7 @@ export function FilePicker({
 
           {/* Main area */}
           <div
+            className="aurora-file-picker-main"
             style={{
               flex: 1,
               display: "flex",
@@ -835,6 +902,7 @@ export function FilePicker({
           >
             {/* Toolbar */}
             <div
+              className="aurora-file-picker-toolbar"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -846,6 +914,7 @@ export function FilePicker({
             >
               {/* Search */}
               <div
+                className="aurora-file-picker-search"
                 style={{
                   flex: 1,
                   display: "flex",
@@ -879,7 +948,7 @@ export function FilePicker({
               </div>
 
               {/* Filter chips */}
-              <div style={{ display: "flex", gap: "4px" }}>
+              <div className="aurora-file-picker-filters" style={{ display: "flex", gap: "4px" }}>
                 {FILTER_CHIPS.map((chip) => {
                   const active = filter === chip.id
                   return (
@@ -1060,6 +1129,7 @@ export function FilePicker({
 
             {/* Selection tray + confirm */}
             <div
+              className="aurora-file-picker-footer"
               style={{
                 borderTop: "1px solid var(--aurora-border-default)",
                 padding: "10px 14px",
@@ -1103,7 +1173,7 @@ export function FilePicker({
               </div>
 
               {/* Actions */}
-              <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+              <div className="aurora-file-picker-actions" style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
                 <button
                   onClick={() => onOpenChange(false)}
                   style={{

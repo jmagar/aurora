@@ -85,13 +85,58 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
   }, [light])
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", minHeight: "100vh" }}>
-      <nav style={{
-        position: "sticky", top: 0, height: "100vh", overflowY: "auto",
-        background: "var(--aurora-nav-bg)", borderRight: "1px solid var(--aurora-border-default)",
-        padding: "18px 12px 24px", display: "flex", flexDirection: "column", gap: 2,
-        scrollbarWidth: "thin", scrollbarColor: "var(--aurora-border-strong) transparent",
-      }}>
+    <div className="aurora-gallery-shell">
+      <style>{`
+        .aurora-gallery-shell {
+          display: grid;
+          grid-template-columns: 220px minmax(0, 1fr);
+          min-height: 100vh;
+        }
+
+        .aurora-gallery-nav {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          overflow-y: auto;
+          background: var(--aurora-nav-bg);
+          border-right: 1px solid var(--aurora-border-default);
+          padding: 18px 12px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .aurora-gallery-main {
+          width: 100%;
+          min-width: 0;
+          max-width: 1200px;
+          padding: 40px 48px;
+        }
+
+        @media (max-width: 760px) {
+          .aurora-gallery-shell {
+            display: flex;
+            flex-direction: column;
+          }
+
+          .aurora-gallery-nav {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            height: auto;
+            max-height: 46vh;
+            border-right: 0;
+            border-bottom: 1px solid var(--aurora-border-default);
+            padding: 12px;
+          }
+
+          .aurora-gallery-main {
+            max-width: none;
+            padding: 24px 16px 40px;
+          }
+        }
+      `}</style>
+      <nav className="aurora-gallery-nav">
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 4px 18px", borderBottom: "1px solid var(--aurora-border-default)", marginBottom: 10 }}>
           <svg viewBox="0 0 48 48" width={28} height={28}>
             <g transform="translate(0,1)">
@@ -146,7 +191,7 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
         </div>
       </nav>
 
-      <main style={{ padding: "40px 48px", maxWidth: 1200 }}>{children}</main>
+      <main className="aurora-gallery-main">{children}</main>
     </div>
   )
 }
