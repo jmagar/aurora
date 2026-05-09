@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 // Types
 // ---------------------------------------------------------------------------
 
-export type SortDirection = "asc" | "desc" | "none";
+export type SortState = { column: string; direction: "asc" | "desc" } | null;
 
 export interface Column<TRow extends Record<string, unknown> = Record<string, unknown>> {
   key: string;
@@ -27,18 +27,20 @@ export interface DataTableProps<TRow extends Record<string, unknown> = Record<st
 // Sort icon
 // ---------------------------------------------------------------------------
 
-function SortIcon({ direction }: { direction: SortDirection }) {
-  const color =
-    direction === "none"
-      ? "var(--aurora-border-strong)"
-      : "var(--aurora-accent-primary)";
+function SortIcon({ active, direction }: { active: boolean; direction: "asc" | "desc" | null }) {
+  const color = active
+    ? "var(--aurora-accent-primary)"
+    : "var(--aurora-text-muted)";
+
+  const glyph =
+    !active || direction === null ? "↕" : direction === "asc" ? "↑" : "↓";
 
   return (
     <span
       aria-hidden
       style={{ color, fontSize: 11, lineHeight: 1, userSelect: "none" }}
     >
-      {direction === "asc" ? "↑" : direction === "desc" ? "↓" : "↕"}
+      {glyph}
     </span>
   );
 }
@@ -53,37 +55,39 @@ export function DataTable<TRow extends Record<string, unknown>>({
   className,
   ...rest
 }: DataTableProps<TRow>) {
-  // Sort state: { key, direction }
-  const [sortKey, setSortKey] = React.useState<string | null>(null);
-  const [sortDir, setSortDir] = React.useState<SortDirection>("none");
+  const [sortState, setSortState] = React.useState<SortState>(null);
 
   function handleSort(col: Column<TRow>) {
     if (!col.sortable) return;
-    if (sortKey !== col.key) {
-      setSortKey(col.key);
-      setSortDir("asc");
-    } else {
-      setSortDir((prev) =>
-        prev === "none" ? "asc" : prev === "asc" ? "desc" : "none",
-      );
-      if (sortDir === "desc") setSortKey(null);
-    }
+    setSortState((prev) => {
+      if (prev === null || prev.column !== col.key) {
+        // New column — start ascending
+        return { column: col.key, direction: "asc" };
+      }
+      if (prev.direction === "asc") {
+        // asc → desc
+        return { column: col.key, direction: "desc" };
+      }
+      // desc → null (clear sort)
+      return null;
+    });
   }
 
   const sorted = React.useMemo(() => {
-    if (!sortKey || sortDir === "none") return data;
+    if (sortState === null) return data;
+    const { column, direction } = sortState;
     return [...data].sort((a, b) => {
-      const av = a[sortKey];
-      const bv = b[sortKey];
+      const av = a[column];
+      const bv = b[column];
       const cmp =
         typeof av === "number" && typeof bv === "number"
           ? av - bv
           : String(av ?? "").localeCompare(String(bv ?? ""), undefined, {
               numeric: true,
             });
-      return sortDir === "asc" ? cmp : -cmp;
+      return direction === "asc" ? cmp : -cmp;
     });
-  }, [data, sortKey, sortDir]);
+  }, [data, sortState]);
 
   return (
     <div
@@ -99,35 +103,37 @@ export function DataTable<TRow extends Record<string, unknown>>({
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              {columns.map((col) => (
-                <th
-                  key={col.key}
-                  scope="col"
-                  onClick={() => handleSort(col)}
-                  className={cn(
-                    "px-4 py-2.5 text-left text-[10px] font-semibold uppercase",
-                    col.sortable && "cursor-pointer select-none",
-                    col.numeric && "text-right tabular-nums",
-                  )}
-                  style={{
-                    letterSpacing: "0.14em",
-                    color: "var(--aurora-text-muted)",
-                    borderBottom: `1px solid var(--aurora-border-default)`,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  <span className="inline-flex items-center gap-1.5">
-                    {col.label}
-                    {col.sortable && (
-                      <SortIcon
-                        direction={
-                          sortKey === col.key ? sortDir : "none"
-                        }
-                      />
+              {columns.map((col) => {
+                const isActive = sortState !== null && sortState.column === col.key;
+                return (
+                  <th
+                    key={col.key}
+                    scope="col"
+                    onClick={() => handleSort(col)}
+                    className={cn(
+                      "px-4 py-2.5 text-left text-[10px] font-semibold uppercase",
+                      col.sortable && "cursor-pointer select-none",
+                      col.numeric && "text-right tabular-nums",
                     )}
-                  </span>
-                </th>
-              ))}
+                    style={{
+                      letterSpacing: "0.14em",
+                      color: "var(--aurora-text-muted)",
+                      borderBottom: `1px solid var(--aurora-border-default)`,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <span className="inline-flex items-center gap-1.5">
+                      {col.label}
+                      {col.sortable && (
+                        <SortIcon
+                          active={isActive}
+                          direction={isActive ? sortState!.direction : null}
+                        />
+                      )}
+                    </span>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
 
@@ -136,11 +142,6 @@ export function DataTable<TRow extends Record<string, unknown>>({
               <tr
                 key={rowIdx}
                 className="group transition-colors"
-                style={
-                  {
-                    "--hover-bg": "color-mix(in srgb, var(--aurora-hover-bg) 60%, transparent)",
-                  } as React.CSSProperties
-                }
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLElement).style.background =
                     "color-mix(in srgb, var(--aurora-hover-bg) 60%, transparent)";
@@ -149,7 +150,7 @@ export function DataTable<TRow extends Record<string, unknown>>({
                   (e.currentTarget as HTMLElement).style.background = "";
                 }}
               >
-                {columns.map((col, colIdx) => (
+                {columns.map((col) => (
                   <td
                     key={col.key}
                     className={cn(
