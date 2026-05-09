@@ -121,6 +121,7 @@ const Switch = React.forwardRef<
 
       {/* Thumb */}
       <SwitchPrimitive.Thumb
+        data-radix-switch-thumb
         className="relative z-10 block will-change-transform"
         style={{
           width: thumbSize,

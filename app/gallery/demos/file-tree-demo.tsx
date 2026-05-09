@@ -57,14 +57,24 @@ export function FileTreeDemo() {
 
   return (
     <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "260px 1fr",
-        gap: "20px",
-        padding: "24px",
-        alignItems: "start",
-      }}
+      className="aurora-file-tree-demo"
     >
+      <style>{`
+        .aurora-file-tree-demo {
+          display: grid;
+          grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+          gap: 20px;
+          padding: 24px;
+          align-items: start;
+        }
+
+        @media (max-width: 640px) {
+          .aurora-file-tree-demo {
+            grid-template-columns: minmax(0, 1fr);
+            padding: 0;
+          }
+        }
+      `}</style>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         <div
           style={{

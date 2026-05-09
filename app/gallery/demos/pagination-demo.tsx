@@ -98,10 +98,12 @@ function InteractivePaginatedTable() {
         style={{
           border: "1px solid var(--aurora-border-default)",
           borderRadius: "var(--aurora-radius-2)",
-          overflow: "hidden",
+          overflowX: "auto",
+          overflowY: "hidden",
+          maxWidth: "100%",
         }}
       >
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <table style={{ width: "100%", minWidth: 520, borderCollapse: "collapse" }}>
           <thead>
             <tr
               style={{

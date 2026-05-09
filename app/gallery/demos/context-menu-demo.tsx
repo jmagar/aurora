@@ -44,7 +44,6 @@ export default function ContextMenuDemo() {
               cursor: "context-menu",
               userSelect: "none",
             }}
-            onContextMenu={(e) => e.preventDefault()}
           >
             {/* Gateway name + host */}
             <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>

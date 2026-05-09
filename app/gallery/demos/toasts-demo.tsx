@@ -43,8 +43,11 @@ interface StaticToastProps {
 }
 
 function StaticToast({ status, title, description }: StaticToastProps) {
+  const [visible, setVisible] = React.useState(true);
   const color = STATUS_COLOR[status];
   const hex = STATUS_HEX[status];
+
+  if (!visible) return null;
 
   return (
     <div
@@ -97,6 +100,7 @@ function StaticToast({ status, title, description }: StaticToastProps) {
       <button
         type="button"
         aria-label="Dismiss"
+        onClick={() => setVisible(false)}
         style={{
           flexShrink: 0,
           background: "none",
