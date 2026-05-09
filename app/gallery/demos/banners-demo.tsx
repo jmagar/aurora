@@ -55,8 +55,8 @@ export default function BannersDemo() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {!dismissed["a1-info"] && (
             <Banner
-              variant="elevated"
-              status="info"
+              kind="elevated"
+              variant="info"
               title="Plugin sync in progress"
               description="Fetching plugin manifests from registry.lab.local — this may take up to 30 seconds."
               onDismiss={() => dismiss("a1-info")}
@@ -65,8 +65,8 @@ export default function BannersDemo() {
           )}
           {!dismissed["a1-warn"] && (
             <Banner
-              variant="elevated"
-              status="warn"
+              kind="elevated"
+              variant="warn"
               title="TLS certificate expiring soon"
               description="The certificate for production-edge.lab.local expires in 7 days. Renew before it causes a service outage."
               onDismiss={() => dismiss("a1-warn")}
@@ -75,8 +75,8 @@ export default function BannersDemo() {
           )}
           {!dismissed["a1-error"] && (
             <Banner
-              variant="elevated"
-              status="error"
+              kind="elevated"
+              variant="error"
               title="Gateway unreachable — us-east-1-gw-02"
               description="No health-check response for 3 minutes. Automatic failover to us-east-1-gw-03 is active."
               onDismiss={() => dismiss("a1-error")}
@@ -113,21 +113,21 @@ export default function BannersDemo() {
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <Banner
-            variant="tag"
-            status="info"
+            kind="tag"
+            variant="info"
             title="Scheduled maintenance window active"
             description="Ends at 03:00 UTC"
           />
           <Banner
-            variant="tag"
-            status="warn"
+            kind="tag"
+            variant="warn"
             title="High CPU on us-west-2-gw-01"
             description="92% for 8 min"
             action={<ActionLink>Scale up</ActionLink>}
           />
           <Banner
-            variant="tag"
-            status="error"
+            kind="tag"
+            variant="error"
             title="Auth service degraded — token issuance failing"
             action={<ActionLink>Incident #4412</ActionLink>}
           />

@@ -46,76 +46,46 @@ function injectSlideKeyframes() {
   const style = document.createElement("style");
   style.id = SLIDE_ID;
   style.textContent = `
-    @keyframes aurora-toast-in {
-      from { transform: translateX(110%); opacity: 0; }
-      to   { transform: translateX(0);   opacity: 1; }
+    @keyframes toast-slide-in {
+      from { transform: translateX(28px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
     }
     @keyframes aurora-toast-out {
-      from { transform: translateX(0);   opacity: 1; max-height: 120px; margin-bottom: 10px; }
-      to   { transform: translateX(110%); opacity: 0; max-height: 0;   margin-bottom: 0;  }
+      from { transform: translateX(0);    opacity: 1; max-height: 120px; margin-bottom: 10px; }
+      to   { transform: translateX(28px); opacity: 0; max-height: 0;    margin-bottom: 0; }
     }
-    .aurora-toast-enter { animation: aurora-toast-in  0.28s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .aurora-toast-enter { animation: toast-slide-in  0.28s cubic-bezier(0.16,1,0.3,1) forwards; }
     .aurora-toast-exit  { animation: aurora-toast-out 0.22s ease-in             forwards; }
   `;
   document.head.appendChild(style);
 }
 
 // ---------------------------------------------------------------------------
-// Status colour + icon
+// Status dismiss-button colour map
+// success=#7dd3c7, error=#c78490, info=#29b6f6, warn=#c6a36b
 // ---------------------------------------------------------------------------
 
-const STATUS_COLOR: Record<ToastStatus, string> = {
-  info:    "var(--aurora-accent-primary)",
-  success: "var(--aurora-success)",
-  error:   "var(--aurora-error)",
-  warn:    "var(--aurora-warn)",
+const DISMISS_COLOR: Record<ToastStatus, string> = {
+  success: "#7dd3c7",
+  error:   "#c78490",
+  info:    "#29b6f6",
+  warn:    "#c6a36b",
 };
 
-function StatusIcon({ status }: { status: ToastStatus }) {
-  const color = STATUS_COLOR[status];
+// ---------------------------------------------------------------------------
+// Labby stacked-plane SVG mark - used for ALL toast variants
+// ---------------------------------------------------------------------------
 
-  // Inline SVGs — stacked-plane / Labby mark style for success, error, info;
-  // simple warning triangle for warn.
-  const inner =
-    status === "warn" ? (
-      // Warning triangle
-      <svg viewBox="0 0 16 16" fill="none" width="10" height="10">
-        <path
-          d="M8 2.5L14 13.5H2L8 2.5Z"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-        <path d="M8 7v3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="8" cy="12.25" r="0.75" fill="currentColor" />
-      </svg>
-    ) : (
-      // Stacked-plane mark (three diagonal bars, Labby-style)
-      <svg viewBox="0 0 16 16" fill="none" width="10" height="10">
-        <rect x="3" y="3.5" width="10" height="2"  rx="1" fill="currentColor" opacity="0.6" transform="rotate(-12 8 8)" />
-        <rect x="3" y="7"   width="10" height="2"  rx="1" fill="currentColor" opacity="0.85" />
-        <rect x="3" y="10.5" width="10" height="2" rx="1" fill="currentColor" opacity="0.6" transform="rotate(12 8 8)" />
-      </svg>
-    );
-
+function LabbyMark() {
   return (
-    <span
-      aria-hidden
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 22,
-        height: 22,
-        borderRadius: "50%",
-        background: `color-mix(in srgb, ${color} 18%, transparent)`,
-        border: `1px solid color-mix(in srgb, ${color} 35%, transparent)`,
-        color,
-        flexShrink: 0,
-      }}
-    >
-      {inner}
-    </span>
+    <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden>
+      <g transform="translate(0,1)">
+        <path d="M 8 13 L 24 7 L 40 13 L 24 19 Z" fill="#24536c" />
+        <path d="M 8 21 L 24 15 L 40 21 L 24 27 Z" fill="#1c7fac" />
+        <path d="M 8 29 L 24 23 L 40 29 L 24 35 Z" fill="#29b6f6" />
+        <path d="M 8 37 L 24 31 L 40 37 L 24 43 Z" fill="#67cbfa" />
+      </g>
+    </svg>
   );
 }
 
@@ -131,22 +101,38 @@ export interface ToastProps {
 export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
   function Toast({ item, onDismiss }, ref) {
     const status: ToastStatus = item.status ?? "info";
-    const color = STATUS_COLOR[status];
+    const dismissColor = DISMISS_COLOR[status];
 
     return (
       <div
         ref={ref}
         role="status"
         aria-live="polite"
-        className="aurora-toast-enter pointer-events-auto flex w-[340px] max-w-[90vw] items-start gap-3 rounded-[var(--aurora-radius-1)] px-4 py-3.5"
+        className="aurora-toast-enter pointer-events-auto flex items-start gap-3 rounded-[var(--aurora-radius-1)] px-4 py-3.5"
         style={{
+          maxWidth: 400,
+          width: "100%",
           background: "var(--aurora-panel-strong)",
-          border: `1px solid var(--aurora-border-strong)`,
+          border: "1px solid var(--aurora-border-strong)",
           boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-medium)",
         }}
       >
-        <StatusIcon status={status} />
+        {/* Labby stacked-plane mark - same for all variants */}
+        <span
+          aria-hidden
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            width: 22,
+            height: 22,
+          }}
+        >
+          <LabbyMark />
+        </span>
 
+        {/* Content */}
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           {item.title && (
             <ToastTitle>{item.title}</ToastTitle>
@@ -156,12 +142,12 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
           )}
         </div>
 
-        {/* Dismiss × */}
+        {/* Dismiss x - colored by status */}
         <button
           type="button"
           aria-label="Dismiss notification"
           onClick={() => onDismiss(item.id)}
-          style={{ color }}
+          style={{ color: dismissColor }}
           className="shrink-0 rounded p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1"
         >
           <svg
@@ -281,8 +267,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       ? createPortal(
           <div
             aria-label="Notifications"
-            className="pointer-events-none fixed bottom-5 right-5 z-[9999] flex flex-col gap-2.5"
-            style={{ maxWidth: "100vw" }}
+            className="pointer-events-none fixed right-5 top-5 z-[9999] flex flex-col gap-2.5"
+            style={{ maxWidth: 400 }}
           >
             {items.map((item) => (
               <div

@@ -1,39 +1,39 @@
 "use client";
 
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type BannerStatus = "info" | "warn" | "error";
-export type BannerVariant = "elevated" | "tag";
+export type BannerStatus = "warn" | "error" | "info";
+export type BannerStyle = "elevated" | "tag";
 
 export interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: BannerVariant;
-  status?: BannerStatus;
-  title: string;
+  variant?: BannerStatus;
+  kind?: BannerStyle;
+  title?: string;
   description?: string;
   onDismiss?: () => void;
   action?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 // ---------------------------------------------------------------------------
-// Status colour map (resolved from Aurora tokens)
+// Status colour map (literal hex values matching gallery)
 // ---------------------------------------------------------------------------
 
 const STATUS_COLOR: Record<BannerStatus, string> = {
-  info: "var(--aurora-accent-primary)",   // #29b6f6
-  warn: "var(--aurora-warn)",             // #c6a36b
-  error: "var(--aurora-error)",           // #c78490
+  warn:  "#c6a36b",
+  error: "#c78490",
+  info:  "#29b6f6",
 };
 
 const STATUS_LABEL: Record<BannerStatus, string> = {
-  info: "INFO",
-  warn: "WARN",
-  error: "ERROR",
+  warn:  "Warn",
+  error: "Error",
+  info:  "Info",
 };
 
 // ---------------------------------------------------------------------------
@@ -57,174 +57,193 @@ function injectPulseKeyframes() {
 }
 
 // ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
-
-function GlowDot({ color }: { color: string }) {
-  React.useEffect(injectPulseKeyframes, []);
-  return (
-    <span
-      aria-hidden
-      style={{
-        display: "inline-block",
-        width: 7,
-        height: 7,
-        borderRadius: "50%",
-        backgroundColor: color,
-        boxShadow: `0 0 6px 2px ${color}55`,
-        flexShrink: 0,
-        animation: "aurora-dot-pulse 2s ease-in-out infinite",
-      }}
-    />
-  );
-}
-
-function DismissButton({
-  color,
-  onDismiss,
-}: {
-  color: string;
-  onDismiss: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label="Dismiss"
-      onClick={onDismiss}
-      style={{ color }}
-      className={cn(
-        "ml-auto shrink-0 rounded p-0.5 opacity-70 transition-opacity hover:opacity-100",
-        "focus-visible:outline-none focus-visible:ring-1",
-      )}
-    >
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 14 14"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      >
-        <path d="M2 2l10 10M12 2L2 12" />
-      </svg>
-    </button>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Elevated variant  (A1)
+// Elevated variant — Style A1
+// <div class="banner-elev banner-elev-warn">
+//   <div class="dot"></div>
+//   <div><h4>…</h4><p>…</p></div>
+//   <button class="banner-elev-dismiss">×</button>
+// </div>
 // ---------------------------------------------------------------------------
 
 function BannerElevated({
-  status = "info",
+  variant = "info",
   title,
   description,
   onDismiss,
-  action,
+  children,
   className,
   ...rest
-}: Omit<BannerProps, "variant">) {
-  const color = STATUS_COLOR[status];
+}: Omit<BannerProps, "kind">) {
+  const color = STATUS_COLOR[variant];
 
-  const bg = `color-mix(in srgb, ${color} 12%, var(--aurora-panel-strong))`;
-  const border = `color-mix(in srgb, ${color} 32%, var(--aurora-border-default))`;
+  React.useEffect(injectPulseKeyframes, []);
+
+  const [visible, setVisible] = React.useState(true);
+
+  const handleDismiss = () => {
+    setVisible(false);
+    onDismiss?.();
+  };
+
+  if (!visible) return null;
 
   return (
     <div
       role="status"
-      className={cn("flex flex-col gap-1.5 rounded-[var(--aurora-radius-1)] px-4 py-3", className)}
+      className={cn("flex items-center gap-3 rounded-[var(--aurora-radius-2)] px-4 py-3", className)}
       style={{
-        background: bg,
-        border: `1px solid ${border}`,
-        boxShadow: "var(--aurora-shadow-medium)",
+        background: `color-mix(in srgb, ${color} 10%, var(--aurora-panel-strong))`,
+        border: `1px solid color-mix(in srgb, ${color} 35%, transparent)`,
+        borderRadius: "var(--aurora-radius-2, 18px)",
+        boxShadow: `var(--aurora-shadow-medium), 0 0 16px color-mix(in srgb, ${color} 15%, transparent)`,
       }}
       {...rest}
     >
-      <div className="flex items-center gap-2.5">
-        <GlowDot color={color} />
-        <span
-          className="text-[13px] font-semibold leading-snug"
-          style={{ color: "var(--aurora-text-primary)" }}
-        >
-          {title}
-        </span>
-        {onDismiss && <DismissButton color={color} onDismiss={onDismiss} />}
+      {/* 8px glowing dot */}
+      <span
+        aria-hidden
+        className="banner-elev-dot"
+        style={{
+          display: "inline-block",
+          width: 8,
+          height: 8,
+          borderRadius: "50%",
+          background: color,
+          boxShadow: `0 0 8px ${color}`,
+          flexShrink: 0,
+          animation: "aurora-dot-pulse 2s ease-in-out infinite",
+        }}
+      />
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {title && (
+          <h4
+            style={{
+              margin: 0,
+              fontSize: 13,
+              fontWeight: 600,
+              lineHeight: 1.3,
+              color: "var(--aurora-text-primary)",
+            }}
+          >
+            {title}
+          </h4>
+        )}
+        {description && (
+          <p
+            style={{
+              margin: 0,
+              marginTop: title ? 2 : 0,
+              fontSize: 12,
+              lineHeight: 1.5,
+              color: "var(--aurora-text-muted)",
+            }}
+          >
+            {description}
+          </p>
+        )}
+        {children}
       </div>
-      {description && (
-        <p
-          className="text-[12.5px] leading-relaxed pl-[19px]"
-          style={{ color: "var(--aurora-text-muted)" }}
+
+      {/* Dismiss × button */}
+      {onDismiss && (
+        <button
+          type="button"
+          aria-label="Dismiss"
+          onClick={handleDismiss}
+          className="banner-elev-dismiss"
+          style={{
+            marginLeft: "auto",
+            flexShrink: 0,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: 18,
+            lineHeight: 1,
+            padding: "0 2px",
+            color: "var(--aurora-text-muted)",
+            transition: "color 0.15s",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = color;
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--aurora-text-muted)";
+          }}
         >
-          {description}
-        </p>
+          ×
+        </button>
       )}
-      {action && <div className="pl-[19px] pt-0.5">{action}</div>}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Tag variant  (C)
+// Tag variant — Style C
+// <div class="banner-c banner-c-warn">
+//   <span class="banner-c-tag">Warn</span>
+//   <p>Message text here.</p>
+// </div>
 // ---------------------------------------------------------------------------
 
 function BannerTag({
-  status = "info",
+  variant = "info",
   title,
   description,
-  onDismiss,
-  action,
+  children,
   className,
   ...rest
-}: Omit<BannerProps, "variant">) {
-  const color = STATUS_COLOR[status];
-  const label = STATUS_LABEL[status];
+}: Omit<BannerProps, "kind" | "onDismiss">) {
+  const color = STATUS_COLOR[variant];
+  const label = STATUS_LABEL[variant];
 
   return (
     <div
       role="status"
-      className={cn(
-        "flex items-center gap-3 rounded-[var(--aurora-radius-1)] px-3 py-2",
-        className,
-      )}
+      className={cn("flex items-center gap-3", className)}
       style={{
         background: "var(--aurora-control-surface)",
-        border: `1px solid var(--aurora-border-default)`,
+        border: "1px solid var(--aurora-border-default)",
+        borderRadius: 8,
+        padding: "10px 14px",
       }}
       {...rest}
     >
-      {/* Monospace chip */}
+      {/* Tag chip */}
       <span
-        className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest"
+        className="banner-c-tag"
         style={{
-          fontFamily: "var(--aurora-font-mono)",
+          flexShrink: 0,
+          borderRadius: 4,
+          fontFamily: "monospace",
+          fontSize: 10,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+          lineHeight: 1.4,
+          padding: "2px 6px",
           color,
           background: `color-mix(in srgb, ${color} 14%, transparent)`,
           border: `1px solid color-mix(in srgb, ${color} 30%, transparent)`,
-          lineHeight: 1.4,
         }}
       >
         {label}
       </span>
 
-      {/* Inline copy */}
-      <span
-        className="flex-1 truncate text-[13px] leading-snug"
-        style={{ color: "var(--aurora-text-primary)" }}
+      {/* Message */}
+      <p
+        style={{
+          margin: 0,
+          fontSize: 13,
+          color: "var(--aurora-text-muted)",
+          lineHeight: 1.4,
+        }}
       >
         {title}
-        {description && (
-          <span
-            className="ml-2"
-            style={{ color: "var(--aurora-text-muted)" }}
-          >
-            {description}
-          </span>
-        )}
-      </span>
-
-      {action && <div className="shrink-0">{action}</div>}
-      {onDismiss && <DismissButton color={color} onDismiss={onDismiss} />}
+        {description ? (description) : null}
+        {children}
+      </p>
     </div>
   );
 }
@@ -233,17 +252,42 @@ function BannerTag({
 // Public export
 // ---------------------------------------------------------------------------
 
-export const Banner = React.forwardRef<HTMLDivElement, BannerProps>(
-  function Banner({ variant = "elevated", ...props }, ref) {
-    const Comp = variant === "tag" ? BannerTag : BannerElevated;
-    // Forward ref by spreading into a wrapper div is tricky with two
-    // components — we attach a wrapping span-less div:
+export function Banner({
+  variant = "info",
+  kind: bannerStyle = "elevated",
+  title,
+  description,
+  onDismiss,
+  children,
+  className,
+  ...rest
+}: BannerProps) {
+  if (bannerStyle === "tag") {
     return (
-      <div ref={ref} className="contents">
-        <Comp {...props} />
-      </div>
+      <BannerTag
+        variant={variant}
+        title={title}
+        description={description}
+        className={className}
+        {...rest}
+      >
+        {children}
+      </BannerTag>
     );
-  },
-);
+  }
+
+  return (
+    <BannerElevated
+      variant={variant}
+      title={title}
+      description={description}
+      onDismiss={onDismiss}
+      className={className}
+      {...rest}
+    >
+      {children}
+    </BannerElevated>
+  );
+}
 
 Banner.displayName = "Banner";
