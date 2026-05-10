@@ -1,5 +1,7 @@
 "use client";
 
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
+
 const TYPE_ROWS = [
   {
     label: "Display 1",
@@ -139,17 +141,11 @@ const TYPE_ROWS = [
 export default function TypeDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      <div>
-        <p className="aurora-text-eyebrow" style={{ color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-          Foundations
-        </p>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-          Typography scale
-        </h2>
-        <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)", marginTop: 6 }}>
-          Aurora text styles used across every screen in Labby - from dashboard metrics to dense gateway logs.
-        </p>
-      </div>
+      <GalleryPageIntro
+        eyebrow="Foundations"
+        heading="Typography scale"
+        description="Aurora text styles used across every Labby screen, from dashboard metrics to dense gateway logs."
+      />
 
       <div
         style={{

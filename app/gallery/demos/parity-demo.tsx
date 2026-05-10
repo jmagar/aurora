@@ -1,7 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { usePathname } from "next/navigation"
+import { ToolCalls } from "@/registry/aurora/blocks/tool-calls/tool-calls"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/registry/aurora/ui/alert-dialog"
 import { AspectRatio } from "@/registry/aurora/ui/aspect-ratio"
 import { Badge } from "@/registry/aurora/ui/badge"
@@ -36,6 +38,7 @@ import {
   Controls,
   Conversation,
   Edge,
+  EnvironmentVariables,
   Image,
   InlineCitation,
   JsxPreview,
@@ -77,7 +80,7 @@ import { RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/radio-group"
 import { ResizablePanels } from "@/registry/aurora/ui/resizable-panels"
 import { NativeSelect } from "@/registry/aurora/ui/native-select"
 import { SearchResultItem, SearchResults, SearchResultsGroup } from "@/registry/aurora/ui/search-results"
-import { Select } from "@/registry/aurora/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/registry/aurora/ui/select"
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/registry/aurora/ui/sheet"
 import { Slider } from "@/registry/aurora/ui/slider"
 import { StatusIndicator } from "@/registry/aurora/ui/status-indicator"
@@ -178,13 +181,11 @@ function Shell({ slug, children }: { slug: string; children: React.ReactNode }) 
   const title = TITLES[slug] ?? AI_TITLES[slug] ?? slug
   return (
     <div className="grid gap-6">
-      <header className="grid gap-2">
-        <Badge>{slug}</Badge>
-        <h1 className="aurora-text-display-2" style={{ margin: 0 }}>{title}</h1>
-        <p className="aurora-text-body" style={{ margin: 0, maxWidth: 720 }}>
-          Aurora parity surface with dark-first tokens, compact operator typography, restrained borders, and focus states that match the rest of the registry.
-        </p>
-      </header>
+      <GalleryPageIntro
+        eyebrow={`Components / ${slug}`}
+        heading={title}
+        description="Aurora parity surface with dark-first tokens, operator typography, restrained borders, and controls that match the rest of the registry."
+      />
       <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
         {children}
       </section>
@@ -237,9 +238,9 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "table":
       return <Table><TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Status</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>gateway-admin</TableCell><TableCell><Badge variant="success">Live</Badge></TableCell></TableRow></TableBody></Table>
     case "toggle":
-      return <Toggle pressed>Enabled</Toggle>
+      return <Toggle pressed aria-label="Bold text">Bold</Toggle>
     case "toggle-group":
-      return <ToggleGroup><Toggle pressed>Cards</Toggle><Toggle>Table</Toggle></ToggleGroup>
+      return <ToggleGroup aria-label="View mode"><Toggle pressed>Cards</Toggle><Toggle>Table</Toggle><Toggle>Split</Toggle></ToggleGroup>
     case "command":
       return <Callout title="Command">Covered by the Aurora command palette block.</Callout>
     case "data-table":
@@ -263,9 +264,19 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "input":
       return <Input defaultValue="gateway-admin" />
     case "select":
-      return <Select defaultValue="active"><option value="active">Active</option><option value="paused">Paused</option></Select>
+      return (
+        <Select defaultValue="active">
+          <SelectTrigger className="max-w-64">
+            <SelectValue placeholder="Select status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="paused">Paused</SelectItem>
+          </SelectContent>
+        </Select>
+      )
     case "textarea":
-      return <Textarea defaultValue="Operator note" />
+      return <Textarea defaultValue={"Operator note\n\nRegistry build succeeded. Waiting on deployment approval."} autoResize />
     case "number-input":
       return <NumberInput min={0} max={8} defaultValue={3} />
     default:
@@ -296,7 +307,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
 function AiDemo({ slug }: { slug: string }) {
   switch (slug) {
     case "message":
-      return <Message><MessageAvatar label="AI" /><MessageContent>Gateway sync completed. <InlineCitation index={1} href="#" /></MessageContent></Message>
+      return <Message><MessageAvatar label="AI" /><MessageContent tone="assistant">Gateway sync completed. <InlineCitation index={1} href="#" /></MessageContent></Message>
     case "inline-citation":
       return <p className="aurora-text-body">Registry source verified <InlineCitation index={2} href="#" /> with local metadata.</p>
     case "sources":
@@ -309,17 +320,17 @@ function AiDemo({ slug }: { slug: string }) {
     case "stack-trace":
       return <StackTrace frames={[{ file: "registry/aurora/ui/button.tsx", line: 141, label: "Button render" }]} />
     case "environment-variables":
-      return <SchemaDisplay schema={{ NEXT_PUBLIC_API_URL: "set", LAB_TOKEN: "secret" }} />
+      return <EnvironmentVariables variables={[{ key: "NEXT_PUBLIC_API_URL", value: "https://aurora.tootie.tv" }, { key: "LAB_TOKEN", value: "tok_live_4ab93c", secret: true, required: true }]} />
     case "checkpoint":
       return <Checkpoint label="Checkpoint saved" description="User-approved marketplace state captured." />
     case "confirmation":
       return <Confirmation title="Install plugin" description="This will update the local plugin cache." />
     case "context":
-      return <ContextPanel items={sourceItems} />
+      return <ContextPanel used={42100} limit={128000} items={sourceItems} />
     case "conversation":
-      return <Conversation><Message><MessageAvatar label="U" tone="rose" /><MessageContent>Show installed plugins.</MessageContent></Message><Message><MessageAvatar label="AI" /><MessageContent>Found 18 active plugins.</MessageContent></Message></Conversation>
+      return <Conversation><Message role="user"><MessageAvatar label="U" tone="rose" /><MessageContent tone="user">Show installed plugins.</MessageContent></Message><Message><MessageAvatar label="AI" /><MessageContent tone="assistant">Found 18 active plugins.</MessageContent></Message></Conversation>
     case "model-selector":
-      return <ModelSelector models={["gpt-5.5", "gpt-5.4", "gpt-5.3-codex"]} />
+      return <ModelSelector label="Model" models={["gpt-5.5", "gpt-5.4", "gpt-5.3-codex"]} />
     case "queue":
       return <Queue tasks={tasks} />
     case "reasoning":
@@ -328,9 +339,9 @@ function AiDemo({ slug }: { slug: string }) {
     case "shimmer":
       return <div className="grid gap-3"><Shimmer /><Shimmer style={{ width: "70%" }} /></div>
     case "suggestion":
-      return <Suggestion>Install the latest compatible version</Suggestion>
+      return <Suggestion options={[{ id: "latest", title: "Install the latest compatible version", description: "Fastest when the local registry already has the dependency graph." }, { id: "locked", title: "Pin to the deployed version", description: "Safer when you need parity with production." }, { id: "preview", title: "Open the diff first", description: "Best when you want to inspect target files before install." }]} />
     case "tool":
-      return <Callout title="Tool call">Covered by the Aurora tool calls block.</Callout>
+      return <ToolCalls calls={[{ id: "1", tool: "registry.lookup", status: "completed", args: { package: "aurora-button" }, result: "Resolved aurora-button from the local registry." }, { id: "2", tool: "registry.lookup", status: "completed", args: { package: "aurora-dialog" }, result: "Resolved aurora-dialog from the local registry." }]} />
     case "agent":
       return <Agent name="Marketplace agent" role="Registry resolver" status="running" />
     case "commit":
@@ -340,7 +351,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "package-info":
       return <PackageInfo name="@labby/marketplace" version="1.4.0" description="Local registry integration" />
     case "sandbox":
-      return <Sandbox command="pnpm dev"><p className="aurora-text-body" style={{ margin: 0 }}>Container-ready preview process.</p></Sandbox>
+      return <Sandbox command="pnpm dev" status="running" runtime="Node 20" envCount={12} paths={["/workspace/app", "/workspace/registry", "/workspace/.next"]}><p className="aurora-text-body" style={{ margin: 0 }}>Container-ready preview process.</p></Sandbox>
     case "schema-display":
       return <SchemaDisplay schema={{ name: "aurora-button", type: "registry:ui" }} />
     case "snippet":
@@ -358,7 +369,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "speech-input":
       return <SpeechInput defaultValue="Search installed plugins" />
     case "transcription":
-      return <Transcription segments={["Search installed plugins.", "Open the marketplace detail panel."]} />
+      return <Transcription segments={[{ speaker: "Operator", timecode: "00:01", text: "Search installed plugins.", confidence: 97 }, { speaker: "Assistant", timecode: "00:04", text: "Open the marketplace detail panel.", confidence: 94 }]} />
     case "voice-selector":
       return <VoiceSelector voices={["Neutral", "Focused", "Brief"]} />
     case "canvas":

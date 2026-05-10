@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { AttachmentChip } from "@/registry/aurora/blocks/attachment/attachment"
 import { Thinking } from "@/registry/aurora/blocks/thinking/thinking"
 import { ToolCalls } from "@/registry/aurora/blocks/tool-calls/tool-calls"
-import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 import { Callout } from "@/registry/aurora/ui/callout"
 import { Collapsible } from "@/registry/aurora/ui/collapsible"
@@ -116,7 +116,7 @@ function AiExample({ slug }: { slug: string }) {
     case "attachments":
       return <AttachmentChip name="registry.json" size={14336} onDismiss={() => {}} />
     case "message":
-      return <Message><MessageAvatar label="AI" /><MessageContent>Gateway sync completed. <InlineCitation index={1} href="#" /></MessageContent></Message>
+      return <Message><MessageAvatar label="AI" /><MessageContent tone="assistant">Gateway sync completed. <InlineCitation index={1} href="#" /></MessageContent></Message>
     case "inline-citation":
       return <p className="aurora-text-body">Registry source verified <InlineCitation index={2} href="#" /> with local metadata.</p>
     case "sources":
@@ -136,20 +136,44 @@ function AiExample({ slug }: { slug: string }) {
     case "confirmation":
       return <Confirmation title="Install plugin" description="This will update the local plugin cache." />
     case "context":
-      return <ContextPanel items={sourceItems} />
+      return <ContextPanel used={42100} limit={128000} items={sourceItems} />
     case "conversation":
-      return <Conversation><Message><MessageAvatar label="U" tone="rose" /><MessageContent>Show installed plugins.</MessageContent></Message><Message><MessageAvatar label="AI" /><MessageContent>Found 18 active plugins.</MessageContent></Message></Conversation>
+      return (
+        <Conversation>
+          <Message role="user"><MessageAvatar label="U" tone="rose" /><MessageContent tone="user">Show installed plugins and recent registry activity.</MessageContent></Message>
+          <Message><MessageAvatar label="AI" /><MessageContent tone="assistant">I grouped the identical tool calls so the activity stays compact while you keep the conversation in view.</MessageContent></Message>
+          <ToolCalls
+            calls={[
+              { id: "1", tool: "files.read", status: "completed", args: { path: "registry.json" }, result: "Loaded registry metadata." },
+              { id: "2", tool: "files.read", status: "completed", args: { path: "components.json" }, result: "Loaded shadcn config." },
+              { id: "3", tool: "files.read", status: "completed", args: { path: "next.config.ts" }, result: "Loaded hosting config." },
+              { id: "4", tool: "registry.lookup", status: "completed", args: { package: "aurora-button" }, result: "Resolved aurora-button from the local registry." },
+              { id: "5", tool: "registry.lookup", status: "completed", args: { package: "aurora-dialog" }, result: "Resolved aurora-dialog from the local registry." },
+            ]}
+          />
+          <Message><MessageAvatar label="AI" /><MessageContent tone="assistant">Found 18 active plugins and 5 modified registry surfaces.</MessageContent></Message>
+        </Conversation>
+      )
     case "model-selector":
-      return <ModelSelector models={["gpt-5.5", "gpt-5.4", "gpt-5.3-codex"]} />
+      return <ModelSelector label="Model" models={["gpt-5.5", "gpt-5.4", "gpt-5.3-codex"]} />
     case "queue":
       return <Queue tasks={tasks} />
     case "reasoning":
-    case "chain-of-thought":
       return <Collapsible title="Reasoning summary" defaultOpen><p className="aurora-text-body" style={{ margin: 0 }}>Checked registry metadata, verified source paths, then selected the minimal install plan.</p></Collapsible>
+    case "chain-of-thought":
+      return <Thinking type="cot" steps={planSteps} defaultOpen />
     case "shimmer":
       return <div className="grid gap-3"><Shimmer /><Shimmer style={{ width: "70%" }} /></div>
     case "suggestion":
-      return <Suggestion>Install the latest compatible version</Suggestion>
+      return (
+        <Suggestion
+          options={[
+            { id: "latest", title: "Install the latest compatible version", description: "Fastest path when the local registry already has the dependency graph.", badge: "default" },
+            { id: "locked", title: "Pin to the currently deployed version", description: "Safer when you need parity with the production workspace.", badge: "safe" },
+            { id: "preview", title: "Open the diff before installing", description: "Best when you want to inspect target files and registry dependencies first.", badge: "review" },
+          ]}
+        />
+      )
     case "tool":
       return <ToolCalls calls={[{ id: "1", tool: "registry.lookup", status: "completed", args: { package: "aurora-button" }, result: "Resolved aurora-button from the local registry." }]} />
     case "agent":
@@ -161,7 +185,7 @@ function AiExample({ slug }: { slug: string }) {
     case "package-info":
       return <PackageInfo name="@labby/marketplace" version="1.4.0" description="Local registry integration" />
     case "sandbox":
-      return <Sandbox command="pnpm dev"><p className="aurora-text-body" style={{ margin: 0 }}>Container-ready preview process.</p></Sandbox>
+      return <Sandbox command="pnpm dev" status="running" runtime="Node 20" envCount={12} paths={["/workspace/app", "/workspace/registry", "/workspace/.next"]}><p className="aurora-text-body" style={{ margin: 0 }}>Container-ready preview process with a mounted app directory, compiled output, and injected registry credentials.</p></Sandbox>
     case "schema-display":
       return <SchemaDisplay schema={{ name: "aurora-button", type: "registry:ui" }} />
     case "snippet":
@@ -179,7 +203,7 @@ function AiExample({ slug }: { slug: string }) {
     case "speech-input":
       return <SpeechInput defaultValue="Search installed plugins" />
     case "transcription":
-      return <Transcription segments={["Search installed plugins.", "Open the marketplace detail panel."]} />
+      return <Transcription segments={[{ speaker: "Operator", timecode: "00:01", text: "Search installed plugins.", confidence: 97 }, { speaker: "Assistant", timecode: "00:04", text: "Opening the marketplace detail panel.", confidence: 94 }]} />
     case "voice-selector":
       return <VoiceSelector voices={["Neutral", "Focused", "Brief"]} />
     case "canvas":
@@ -204,13 +228,11 @@ export function AiElementPage({ slug }: { slug: string }) {
 
   return (
     <div className="grid gap-6">
-      <header className="grid gap-2">
-        <Badge>{slug}</Badge>
-        <h1 className="aurora-text-display-2" style={{ margin: 0 }}>{title}</h1>
-        <p className="aurora-text-body" style={{ margin: 0, maxWidth: 720 }}>
-          Aurora AI Elements page for the {title.toLowerCase()} component, using the real registry implementation and dark-first operator styling.
-        </p>
-      </header>
+      <GalleryPageIntro
+        eyebrow={`AI elements / ${slug}`}
+        heading={title}
+        description={`Aurora AI Elements page for ${title.toLowerCase()}, using the real registry implementation with compact operator styling.`}
+      />
       <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
         <AiExample slug={slug} />
       </section>

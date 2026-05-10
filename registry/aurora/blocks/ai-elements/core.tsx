@@ -5,6 +5,7 @@ import {
   Bot,
   Boxes,
   Check,
+  Copy,
   CheckCircle2,
   CircleAlert,
   CircleDashed,
@@ -32,8 +33,8 @@ import {
 import { Avatar as AuroraAvatar } from "@/registry/aurora/ui/avatar"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
-import { NativeSelect } from "@/registry/aurora/ui/native-select"
 import { Separator } from "@/registry/aurora/ui/separator"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/registry/aurora/ui/select"
 import { Spinner } from "@/registry/aurora/ui/spinner"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 
@@ -123,20 +124,43 @@ export interface ConfirmationProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 export interface ContextPanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  items: SourceItem[]
+  used?: number
+  limit?: number
+  label?: string
+  items?: SourceItem[]
 }
 
 export type ConversationProps = React.HTMLAttributes<HTMLDivElement>
 
-export interface ModelSelectorProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+export interface ModelSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   models: string[]
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  label?: string
+  name?: string
+  disabled?: boolean
+  required?: boolean
+  triggerId?: string
+  triggerLabel?: string
 }
 
 export interface QueueProps extends React.HTMLAttributes<HTMLDivElement> {
   tasks: AgentTask[]
 }
 
-export type SuggestionProps = React.ButtonHTMLAttributes<HTMLButtonElement>
+export interface SuggestionOption {
+  id: string
+  title: string
+  description?: string
+  badge?: string
+}
+
+export interface SuggestionProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick"> {
+  options?: SuggestionOption[]
+  disabled?: boolean
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+}
 
 export interface AgentProps extends React.HTMLAttributes<HTMLDivElement> {
   name: string
@@ -163,6 +187,10 @@ export interface PackageInfoProps extends React.HTMLAttributes<HTMLDivElement> {
 export interface SandboxProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
   command?: string
+  status?: "ready" | "running" | "idle"
+  runtime?: string
+  paths?: string[]
+  envCount?: number
 }
 
 export interface SchemaDisplayProps extends React.HTMLAttributes<HTMLPreElement> {
@@ -185,8 +213,16 @@ export interface AudioPlayerProps extends React.HTMLAttributes<HTMLDivElement> {
   duration?: string
 }
 
-export interface MicSelectorProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+export interface MicSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   devices: string[]
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  name?: string
+  disabled?: boolean
+  required?: boolean
+  triggerId?: string
+  triggerLabel?: string
 }
 
 export interface PersonaProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -196,12 +232,27 @@ export interface PersonaProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export type SpeechInputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>
 
-export interface TranscriptionProps extends React.HTMLAttributes<HTMLDivElement> {
-  segments: string[]
+export interface TranscriptionSegment {
+  speaker: string
+  timecode: string
+  text: string
+  confidence?: number
 }
 
-export interface VoiceSelectorProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+export interface TranscriptionProps extends React.HTMLAttributes<HTMLDivElement> {
+  segments: TranscriptionSegment[]
+}
+
+export interface VoiceSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   voices: string[]
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  name?: string
+  disabled?: boolean
+  required?: boolean
+  triggerId?: string
+  triggerLabel?: string
 }
 
 export type CanvasProps = React.HTMLAttributes<HTMLDivElement>
@@ -243,6 +294,177 @@ function panelStyle(style?: React.CSSProperties): React.CSSProperties {
     boxShadow: "var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)",
     ...style,
   }
+}
+
+function previewValue(value?: string, secret?: boolean) {
+  if (!value) return "Unset"
+  if (secret) {
+    const visible = value.slice(0, 6)
+    return `${visible}${value.length > 6 ? "••••" : ""}`
+  }
+  return value.length > 18 ? `${value.slice(0, 18)}…` : value
+}
+
+function formatTokenCount(value: number) {
+  if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}k`
+  return `${value}`
+}
+
+function stringifyWithOrder(value: unknown) {
+  return JSON.stringify(value, null, 2)
+}
+
+function renderJsonValue(value: unknown, depth = 0): React.ReactNode {
+  const indent = "  ".repeat(depth)
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) return <span style={{ color: "var(--aurora-text-muted)" }}>[]</span>
+    return (
+      <>
+        <span style={{ color: "var(--aurora-text-muted)" }}>[</span>
+        {"\n"}
+        {value.map((item, index) => (
+          <React.Fragment key={index}>
+            {indent}
+            {"  "}
+            {renderJsonValue(item, depth + 1)}
+            {index < value.length - 1 ? <span style={{ color: "var(--aurora-text-muted)" }}>,</span> : null}
+            {"\n"}
+          </React.Fragment>
+        ))}
+        {indent}
+        <span style={{ color: "var(--aurora-text-muted)" }}>]</span>
+      </>
+    )
+  }
+
+  if (value && typeof value === "object") {
+    const entries = Object.entries(value)
+    if (entries.length === 0) return <span style={{ color: "var(--aurora-text-muted)" }}>{`{}`}</span>
+    return (
+      <>
+        <span style={{ color: "var(--aurora-text-muted)" }}>{`{`}</span>
+        {"\n"}
+        {entries.map(([key, entryValue], index) => (
+          <React.Fragment key={key}>
+            {indent}
+            {"  "}
+            <span style={{ color: "var(--aurora-accent-primary)" }}>{`"${key}"`}</span>
+            <span style={{ color: "var(--aurora-text-muted)" }}>: </span>
+            {renderJsonValue(entryValue, depth + 1)}
+            {index < entries.length - 1 ? <span style={{ color: "var(--aurora-text-muted)" }}>,</span> : null}
+            {"\n"}
+          </React.Fragment>
+        ))}
+        {indent}
+        <span style={{ color: "var(--aurora-text-muted)" }}>{`}`}</span>
+      </>
+    )
+  }
+
+  if (typeof value === "string") return <span style={{ color: "var(--aurora-accent-pink)" }}>{`"${value}"`}</span>
+  if (typeof value === "number") return <span style={{ color: "var(--aurora-warn)" }}>{value}</span>
+  if (typeof value === "boolean") return <span style={{ color: "var(--aurora-success)" }}>{String(value)}</span>
+  if (value === null) return <span style={{ color: "var(--aurora-text-muted)" }}>null</span>
+  return <span style={{ color: "var(--aurora-text-primary)" }}>{String(value)}</span>
+}
+
+function CopyButton({ value, label = "Copy" }: { value: string; label?: string }) {
+  const [copied, setCopied] = React.useState(false)
+
+  const handleCopy = React.useCallback(async () => {
+    await navigator.clipboard.writeText(value)
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1200)
+  }, [value])
+
+  return (
+    <Button type="button" variant="ghost" size="sm" onClick={handleCopy}>
+      {copied ? <Check className="size-3.5" aria-hidden /> : <Copy className="size-3.5" aria-hidden />}
+      {copied ? "Copied" : label}
+    </Button>
+  )
+}
+
+function CodeSurface({
+  icon,
+  title,
+  value,
+  children,
+}: {
+  icon: React.ReactNode
+  title: string
+  value: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="grid gap-3 rounded-[8px] border p-3" style={panelStyle()}>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
+          {icon}
+          {title}
+        </div>
+        <CopyButton value={value} />
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function SelectorCard({
+  icon,
+  title,
+  description,
+  values,
+  value,
+  defaultValue,
+  onValueChange,
+  name,
+  disabled,
+  required,
+  triggerId,
+  triggerLabel,
+  placeholder,
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+  values: string[]
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  name?: string
+  disabled?: boolean
+  required?: boolean
+  triggerId?: string
+  triggerLabel?: string
+  placeholder?: string
+}) {
+  return (
+    <div className="grid gap-3 rounded-[8px] border p-3" style={panelStyle()}>
+      <div className="grid gap-1">
+        <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
+          {icon}
+          {title}
+        </div>
+        <p className="aurora-text-meta" style={{ margin: 0 }}>
+          {description}
+        </p>
+      </div>
+      <Select value={value} defaultValue={defaultValue ?? values[0]} onValueChange={onValueChange} name={name} disabled={disabled} required={required}>
+        <SelectTrigger id={triggerId} aria-label={triggerLabel ?? title} className="h-10 rounded-[10px]">
+          <SelectValue placeholder={placeholder ?? values[0]} />
+        </SelectTrigger>
+        <SelectContent>
+          {values.map((item) => (
+            <SelectItem key={item} value={item}>
+              {item}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  )
 }
 
 const Message = React.forwardRef<HTMLElement, MessageProps>(({ className, role = "assistant", style, ...props }, ref) => (
@@ -287,12 +509,33 @@ const MessageAvatar = React.forwardRef<React.ElementRef<typeof AuroraAvatar>, Me
 )
 MessageAvatar.displayName = "MessageAvatar"
 
-const MessageContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, style, ...props }, ref) => (
+const bubbleTone = {
+  assistant: {
+    background: "color-mix(in srgb, var(--aurora-accent-pink) 10%, var(--aurora-panel-medium))",
+    borderColor: "color-mix(in srgb, var(--aurora-accent-pink) 28%, var(--aurora-border-default))",
+  },
+  user: {
+    background: "color-mix(in srgb, var(--aurora-success) 10%, var(--aurora-panel-medium))",
+    borderColor: "color-mix(in srgb, var(--aurora-success) 30%, var(--aurora-border-default))",
+  },
+  system: {
+    background: "color-mix(in srgb, var(--aurora-text-muted) 8%, var(--aurora-panel-medium))",
+    borderColor: "var(--aurora-border-default)",
+  },
+} as const
+
+const MessageContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { tone?: MessageProps["role"] }>(
+  ({ className, style, tone = "assistant", ...props }, ref) => (
     <div
       ref={ref}
-      className={["min-w-0 rounded-[8px] border px-4 py-3 aurora-text-body", className].filter(Boolean).join(" ")}
-      style={panelStyle(style)}
+      className={["min-w-0 rounded-[12px] border px-4 py-3 aurora-text-body", className].filter(Boolean).join(" ")}
+      style={{
+        ...panelStyle(),
+        background: bubbleTone[tone].background,
+        borderColor: bubbleTone[tone].borderColor,
+        borderRadius: 12,
+        ...style,
+      }}
       {...props}
     />
   )
@@ -389,11 +632,13 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ classN
     <Separator />
     <div className="grid gap-1">
       {results.map((result) => (
-        <div key={result.name} className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 rounded-[6px] px-2 py-1.5">
-          <span className="truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{result.name}</span>
-          {result.duration ? <span className="aurora-text-meta">{result.duration}</span> : null}
-          <Badge variant={resultVariant[result.status]} dot={result.status === "running"}>{result.status}</Badge>
-          {result.message ? <span className="col-span-3 aurora-text-meta">{result.message}</span> : null}
+        <div key={result.name} className="grid grid-cols-[minmax(0,1fr)_72px_96px] items-start gap-3 rounded-[6px] px-2 py-1.5">
+          <span className="truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)", paddingTop: 4 }}>{result.name}</span>
+          <span className="aurora-text-meta" style={{ justifySelf: "end", minHeight: 20, paddingTop: 4 }}>{result.duration ?? ""}</span>
+          <div style={{ display: "flex", justifyContent: "flex-end", minHeight: 24 }}>
+            <Badge variant={resultVariant[result.status]} dot={result.status === "running"}>{result.status}</Badge>
+          </div>
+          {result.message ? <span className="col-span-3 aurora-text-meta" style={{ paddingTop: 2 }}>{result.message}</span> : null}
         </div>
       ))}
     </div>
@@ -434,11 +679,14 @@ const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariabl
       <Separator />
       <div className="grid gap-1">
         {variables.map((item) => (
-          <div key={item.key} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-[6px] px-2 py-1.5">
+          <div key={item.key} className="grid grid-cols-[minmax(0,1fr)_minmax(0,168px)_auto] items-center gap-3 rounded-[6px] px-2 py-1.5">
             <span className="truncate aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>{item.key}</span>
-            <span className="flex items-center gap-2">
+            <span className="truncate aurora-text-code" style={{ color: item.secret ? "var(--aurora-accent-pink)" : "var(--aurora-text-muted)", justifySelf: "end" }}>
+              {previewValue(item.value, item.secret)}
+            </span>
+            <span className="flex items-center gap-2 justify-self-end">
               {item.required ? <Badge variant="warn">Required</Badge> : null}
-              {item.secret ? <Badge variant="rose">Secret</Badge> : <span className="aurora-text-code" style={{ color: "var(--aurora-text-muted)" }}>{item.value ?? "Unset"}</span>}
+              {item.secret ? <Badge variant="rose">Secret</Badge> : null}
             </span>
           </div>
         ))}
@@ -479,13 +727,44 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
 Confirmation.displayName = "Confirmation"
 
 const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
-  ({ items, className, style, ...props }, ref) => (
+  ({ used = 42100, limit = 128000, label = "Context window", items = [], className, style, ...props }, ref) => (
     <div ref={ref} className={["grid gap-2 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
         <Layers3 className="size-3.5" aria-hidden />
-        Context
+        {label}
       </div>
-      {items.map((item) => <Source key={item.title} source={item} />)}
+      <div className="grid gap-3 rounded-[8px] border p-3" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <div className="aurora-text-card-title" style={{ color: "var(--aurora-text-primary)" }}>
+              {formatTokenCount(used)} / {formatTokenCount(limit)} tokens
+            </div>
+            <p className="aurora-text-meta" style={{ margin: "4px 0 0" }}>
+              {Math.round((used / limit) * 100)}% of the active session window is in play.
+            </p>
+          </div>
+          <Badge variant={used / limit > 0.8 ? "warn" : "success"}>{items.length} sources</Badge>
+        </div>
+        <div
+          aria-hidden="true"
+          style={{
+            height: 10,
+            borderRadius: 999,
+            background: "var(--aurora-control-surface)",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              width: `${Math.min((used / limit) * 100, 100)}%`,
+              height: "100%",
+              borderRadius: 999,
+              background: "linear-gradient(90deg, var(--aurora-accent-primary), var(--aurora-accent-pink))",
+            }}
+          />
+        </div>
+        {items.length ? <div className="grid gap-2">{items.map((item) => <Source key={item.title} source={item} />)}</div> : null}
+      </div>
     </div>
   )
 )
@@ -493,21 +772,38 @@ ContextPanel.displayName = "ContextPanel"
 
 const Conversation = React.forwardRef<HTMLDivElement, ConversationProps>(
   ({ className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-4 rounded-[8px] border p-4", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props} />
+    <div
+      ref={ref}
+      className={["grid gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")}
+      style={{
+        ...panelStyle(style),
+        maxHeight: 480,
+        overflowY: "auto",
+      }}
+      {...props}
+    />
   )
 )
 Conversation.displayName = "Conversation"
 
-const ModelSelector = React.forwardRef<HTMLSelectElement, ModelSelectorProps>(
-  ({ models, className, style, ...props }, ref) => (
-    <NativeSelect
-      ref={ref}
-      className={["rounded-[8px] aurora-text-control", className].filter(Boolean).join(" ")}
-      style={style}
-      {...props}
-    >
-      {models.map((model) => <option key={model}>{model}</option>)}
-    </NativeSelect>
+const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
+  ({ models, value, defaultValue, onValueChange, label = "Model", name, disabled, required, triggerId, triggerLabel, className, style, ...props }, ref) => (
+    <div ref={ref} className={className} style={style} {...props}>
+      <SelectorCard
+        icon={<Sparkles className="size-3.5" aria-hidden />}
+        title={label}
+        description="Use the Aurora select surface instead of a native dropdown."
+        values={models}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={onValueChange}
+        name={name}
+        disabled={disabled}
+        required={required}
+        triggerId={triggerId}
+        triggerLabel={triggerLabel ?? label}
+      />
+    </div>
   )
 )
 ModelSelector.displayName = "ModelSelector"
@@ -534,21 +830,32 @@ const Shimmer = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
 )
 Shimmer.displayName = "Shimmer"
 
-const Suggestion = React.forwardRef<HTMLButtonElement, SuggestionProps>(
-  ({ className, style, ...props }, ref) => (
-    <Button
-      ref={ref}
-      type="button"
-      variant="neutral"
-      className={["justify-start text-left", className].filter(Boolean).join(" ")}
-      style={{
-        height: "auto",
-        paddingTop: 8,
-        paddingBottom: 8,
-        ...style,
-      }}
-      {...props}
-    />
+const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
+  ({ className, style, options, children, onClick, disabled, ...props }, ref) => (
+    <div ref={ref} className={["grid gap-2", className].filter(Boolean).join(" ")} style={style} {...props}>
+      {(options ?? [{ id: "default", title: typeof children === "string" ? children : "Suggested next step" }]).map((option) => (
+        <Button
+          key={option.id}
+          type="button"
+          variant="neutral"
+          disabled={disabled}
+          onClick={onClick}
+          className="h-auto justify-start rounded-[10px] border px-3 py-3 text-left"
+          style={{
+            borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 18%, var(--aurora-border-default))",
+            background: "color-mix(in srgb, var(--aurora-accent-primary) 4%, var(--aurora-panel-medium))",
+          }}
+        >
+          <span className="grid gap-1">
+            <span className="flex items-center gap-2">
+              <span className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{option.title}</span>
+              {option.badge ? <Badge>{option.badge}</Badge> : null}
+            </span>
+            {option.description ? <span className="aurora-text-meta">{option.description}</span> : null}
+          </span>
+        </Button>
+      ))}
+    </div>
   )
 )
 Suggestion.displayName = "Suggestion"
@@ -582,12 +889,10 @@ Commit.displayName = "Commit"
 
 const JsxPreview = React.forwardRef<HTMLDivElement, JsxPreviewProps>(
   ({ code, className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
-        <FileCode2 className="size-3.5" aria-hidden />
-        JSX preview
-      </div>
-      <pre className="overflow-auto rounded-[7px] border p-3 aurora-text-code" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>{code}</pre>
+    <div ref={ref} className={className} style={style} {...props}>
+      <CodeSurface icon={<FileCode2 className="size-3.5" aria-hidden />} title="JSX preview" value={code}>
+        <pre className="overflow-auto rounded-[7px] border p-3 aurora-text-code" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>{code}</pre>
+      </CodeSurface>
     </div>
   )
 )
@@ -608,11 +913,30 @@ const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
 PackageInfo.displayName = "PackageInfo"
 
 const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
-  ({ title = "Sandbox", command = "pnpm dev", className, style, children, ...props }, ref) => (
+  ({ title = "Sandbox", command = "pnpm dev", status = "running", runtime = "Node 20", paths = ["/workdir/app", "/workdir/.next"], envCount = 8, className, style, children, ...props }, ref) => (
     <div ref={ref} className={["grid gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Boxes className="size-3.5" aria-hidden />{title}</span>
-        <Badge>{command}</Badge>
+        <Badge variant={status === "running" ? "success" : "default"} dot={status === "running"}>{status}</Badge>
+      </div>
+      <div className="grid gap-3 rounded-[8px] border p-3" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge>{command}</Badge>
+          <Badge variant="default">{runtime}</Badge>
+          <Badge variant="default">{envCount} env vars</Badge>
+        </div>
+        <div className="grid gap-2">
+          {paths.map((path) => (
+            <div key={path} className="flex items-center gap-2 rounded-[7px] border px-3 py-2" style={{ borderColor: "var(--aurora-border-default)" }}>
+              <FileText className="size-3.5" aria-hidden style={{ color: "var(--aurora-text-muted)" }} />
+              <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>{path}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="neutral" size="sm">Open logs</Button>
+          <Button type="button" variant="ghost" size="sm">Attach shell</Button>
+        </div>
       </div>
       {children}
     </div>
@@ -622,18 +946,38 @@ Sandbox.displayName = "Sandbox"
 
 const SchemaDisplay = React.forwardRef<HTMLPreElement, SchemaDisplayProps>(
   ({ schema, className, style, ...props }, ref) => (
-    <pre ref={ref} className={["overflow-auto rounded-[8px] border p-3 aurora-text-code", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      {JSON.stringify(schema, null, 2)}
-    </pre>
+    <div className={className} style={style}>
+      <CodeSurface icon={<FileCode2 className="size-3.5" aria-hidden />} title="Schema display" value={stringifyWithOrder(schema)}>
+        <pre
+          ref={ref}
+          className="overflow-auto rounded-[7px] border p-3 aurora-text-code"
+          style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}
+          {...props}
+        >
+          {renderJsonValue(schema)}
+        </pre>
+      </CodeSurface>
+    </div>
   )
 )
 SchemaDisplay.displayName = "SchemaDisplay"
 
 const Snippet = React.forwardRef<HTMLPreElement, SnippetProps>(
   ({ code, language = "tsx", className, style, ...props }, ref) => (
-    <pre ref={ref} className={["overflow-auto rounded-[8px] border p-3 aurora-text-code", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <span style={{ color: "var(--aurora-text-muted)" }}>{language}</span>{"\n"}{code}
-    </pre>
+    <div className={className} style={style}>
+      <CodeSurface icon={<FileCode2 className="size-3.5" aria-hidden />} title="Snippet" value={code}>
+        <pre
+          ref={ref}
+          className="overflow-auto rounded-[7px] border p-3 aurora-text-code"
+          style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}
+          {...props}
+        >
+          <span style={{ color: "var(--aurora-text-muted)" }}>{language}</span>
+          {"\n"}
+          {code}
+        </pre>
+      </CodeSurface>
+    </div>
   )
 )
 Snippet.displayName = "Snippet"
@@ -672,8 +1016,25 @@ const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
 )
 AudioPlayer.displayName = "AudioPlayer"
 
-const MicSelector = React.forwardRef<HTMLSelectElement, MicSelectorProps>(
-  ({ devices, ...props }, ref) => <ModelSelector ref={ref} models={devices} aria-label="Microphone" {...props} />
+const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
+  ({ devices, value, defaultValue, onValueChange, name, disabled, required, triggerId, triggerLabel, ...props }, ref) => (
+    <div ref={ref} {...props}>
+      <SelectorCard
+        icon={<Mic className="size-3.5" aria-hidden />}
+        title="Microphone"
+        description="Swap inputs without dropping back to a native control."
+        values={devices}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={onValueChange}
+        name={name}
+        disabled={disabled}
+        required={required}
+        triggerId={triggerId}
+        triggerLabel={triggerLabel ?? "Microphone"}
+      />
+    </div>
+  )
 )
 MicSelector.displayName = "MicSelector"
 
@@ -703,14 +1064,50 @@ SpeechInput.displayName = "SpeechInput"
 const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
   ({ segments, className, style, ...props }, ref) => (
     <div ref={ref} className={["grid gap-2 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      {segments.map((segment, index) => <p key={index} className="aurora-text-body" style={{ margin: 0 }}>{segment}</p>)}
+      <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
+        <Mic className="size-3.5" aria-hidden />
+        Transcription
+      </div>
+      <div className="grid gap-2">
+        {segments.map((segment) => (
+          <div
+            key={`${segment.speaker}-${segment.timecode}`}
+            className="grid grid-cols-[72px_minmax(0,1fr)_auto] gap-3 rounded-[7px] border px-3 py-2"
+            style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}
+          >
+            <span className="aurora-text-code" style={{ color: "var(--aurora-accent-primary)" }}>{segment.timecode}</span>
+            <span className="min-w-0">
+              <span className="block aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{segment.speaker}</span>
+              <span className="block aurora-text-body" style={{ marginTop: 4 }}>{segment.text}</span>
+            </span>
+            <Badge variant="default">{segment.confidence ? `${segment.confidence}%` : "live"}</Badge>
+          </div>
+        ))}
+      </div>
     </div>
   )
 )
 Transcription.displayName = "Transcription"
 
-const VoiceSelector = React.forwardRef<HTMLSelectElement, VoiceSelectorProps>(
-  ({ voices, ...props }, ref) => <ModelSelector ref={ref} models={voices} aria-label="Voice" {...props} />
+const VoiceSelector = React.forwardRef<HTMLDivElement, VoiceSelectorProps>(
+  ({ voices, value, defaultValue, onValueChange, name, disabled, required, triggerId, triggerLabel, ...props }, ref) => (
+    <div ref={ref} {...props}>
+      <SelectorCard
+        icon={<Sparkles className="size-3.5" aria-hidden />}
+        title="Voice"
+        description="Preview voice styles with the Aurora dropdown treatment."
+        values={voices}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={onValueChange}
+        name={name}
+        disabled={disabled}
+        required={required}
+        triggerId={triggerId}
+        triggerLabel={triggerLabel ?? "Voice"}
+      />
+    </div>
+  )
 )
 VoiceSelector.displayName = "VoiceSelector"
 

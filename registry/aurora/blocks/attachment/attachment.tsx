@@ -159,19 +159,26 @@ export function AttachmentChip({ name, size, thumbnailUrl, onDismiss }: Attachme
       {onDismiss && (
         <Button
           type="button"
-          variant="ghost"
-          size="icon"
+          variant="plain"
+          size="unstyled"
           onClick={onDismiss}
           aria-label={`Remove ${name}`}
           style={{
-            width: 20,
-            height: 20,
-            fontSize: "14px",
-            lineHeight: 1,
+            width: 22,
+            height: 22,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
             flexShrink: 0,
+            marginLeft: 2,
+            borderRadius: 999,
+            color: "var(--aurora-text-muted)",
+            background: "color-mix(in srgb, var(--aurora-panel-strong) 82%, transparent)",
           }}
         >
-          ×
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          </svg>
         </Button>
       )}
     </div>

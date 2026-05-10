@@ -3,6 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { LabbyLockup } from "@/components/labby-brand"
 
 const SHADCN_PARITY_ITEMS = [
   ["Alert", "alert"],
@@ -261,20 +262,7 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
       `}</style>
       <nav className="aurora-gallery-nav">
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 4px 18px", borderBottom: "1px solid var(--aurora-border-default)", marginBottom: 10 }}>
-          <svg viewBox="0 0 48 48" width={28} height={28}>
-            <g transform="translate(0,1)">
-              <path d="M 8 13 L 24 7 L 40 13 L 24 19 Z" fill="#24536c"/>
-              <path d="M 8 21 L 24 15 L 40 21 L 24 27 Z" fill="#1c7fac"/>
-              <path d="M 8 29 L 24 23 L 40 29 L 24 35 Z" fill="#29b6f6"/>
-              <path d="M 8 37 L 24 31 L 40 37 L 24 43 Z" fill="#67cbfa"/>
-            </g>
-          </svg>
-          <div>
-            <div style={{ fontFamily: "var(--font-manrope, system-ui)", fontWeight: 800, fontSize: 17, letterSpacing: "-0.03em", color: "var(--aurora-text-primary)" }}>
-              Lab<span style={{ color: "var(--aurora-accent-primary)" }}>by</span>
-            </div>
-            <div style={{ fontSize: 10, color: "var(--aurora-text-muted)", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 2 }}>Aurora DS</div>
-          </div>
+          <LabbyLockup markSize={28} wordmarkSize={17} />
         </div>
 
         {NAV.map((group) => (

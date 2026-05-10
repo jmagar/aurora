@@ -104,56 +104,6 @@ function StatusIcon({ status }: { status: ToolCall["status"] }) {
 }
 
 // ---------------------------------------------------------------------------
-// Shimmer row (running state)
-// ---------------------------------------------------------------------------
-
-function ShimmerRow() {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-        padding: "8px 12px",
-      }}
-    >
-      <div
-        style={{
-          width: "14px",
-          height: "14px",
-          borderRadius: "50%",
-          background: "linear-gradient(90deg, var(--aurora-border-default) 25%, var(--aurora-hover-bg) 50%, var(--aurora-border-default) 75%)",
-          backgroundSize: "200% 100%",
-          animation: "aurora-shimmer 1.4s ease infinite",
-          flexShrink: 0,
-        }}
-      />
-      <div
-        style={{
-          height: "10px",
-          borderRadius: "5px",
-          width: "140px",
-          background: "linear-gradient(90deg, var(--aurora-border-default) 25%, var(--aurora-hover-bg) 50%, var(--aurora-border-default) 75%)",
-          backgroundSize: "200% 100%",
-          animation: "aurora-shimmer 1.4s ease infinite",
-        }}
-      />
-      <div
-        style={{
-          height: "10px",
-          borderRadius: "5px",
-          width: "80px",
-          marginLeft: "auto",
-          background: "linear-gradient(90deg, var(--aurora-border-default) 25%, var(--aurora-hover-bg) 50%, var(--aurora-border-default) 75%)",
-          backgroundSize: "200% 100%",
-          animation: "aurora-shimmer 1.4s ease infinite 0.2s",
-        }}
-      />
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
 // Single call row
 // ---------------------------------------------------------------------------
 
@@ -388,7 +338,7 @@ function GroupRow({ group }: { group: { tool: string; items: ToolCall[] } }) {
           alignItems: "center",
           gap: "8px",
           width: "100%",
-          padding: "8px 12px",
+          padding: "6px 10px",
           background: "none",
           border: "none",
           cursor: "pointer",
@@ -507,6 +457,8 @@ export function ToolCalls({ calls }: ToolCallsProps) {
           border: "1px solid var(--aurora-border-default)",
           borderRadius: "var(--aurora-radius-2)",
           overflow: "hidden",
+          maxHeight: 420,
+          overflowY: "auto",
           boxShadow: "var(--aurora-highlight-medium)",
         }}
       >
@@ -558,11 +510,7 @@ export function ToolCalls({ calls }: ToolCallsProps) {
                     : "none",
               }}
             >
-              {group.items[0].status === "running" && group.items.length === 1 ? (
-                <ShimmerRow />
-              ) : (
-                <GroupRow group={group} />
-              )}
+              <GroupRow group={group} />
             </div>
           ))}
 

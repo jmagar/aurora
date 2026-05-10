@@ -38,7 +38,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         ref={setRef}
         className={cn(
           // Layout
-          "flex min-h-[80px] w-full px-3 py-2",
+          "flex min-h-[112px] w-full px-3.5 py-3",
           // Typography
           "font-[var(--aurora-font-sans,_Inter,_sans-serif)]",
           "text-[var(--aurora-text-primary)]",
@@ -46,9 +46,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           // Border
           "border border-[var(--aurora-border-strong)]",
           // Rounded
-          "rounded-[var(--aurora-radius-1)]",
+          "rounded-[12px]",
           // Scrollbar
-          "resize-y",
+          "resize-y shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]",
           // Transition
           "transition-all duration-150 ease-out",
           // Focus
@@ -65,12 +65,14 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           fontWeight: "var(--aurora-weight-body)",
           letterSpacing: "var(--aurora-letter-ui)",
           lineHeight: "1.55",
+          borderColor: "var(--aurora-border-strong)",
           ...style,
         }}
         onFocus={(e) => {
           e.currentTarget.style.boxShadow = [
             "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)",
             "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)",
+            "inset 0 1px 0 rgba(255,255,255,0.06)",
           ].join(", ")
           props.onFocus?.(e)
         }}
