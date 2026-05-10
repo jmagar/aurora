@@ -61,53 +61,66 @@ const TYPE_ROWS = [
   },
   {
     label: "Body",
-    meta: "14px · 1.55",
+    meta: "14px · 480 · 1.58",
     style: {
-      fontSize: 14,
-      lineHeight: 1.55,
+      fontSize: "var(--aurora-type-body)",
+      fontWeight: "var(--aurora-weight-body)",
+      letterSpacing: 0,
+      lineHeight: "var(--aurora-line-body)",
       color: "var(--aurora-text-primary)",
+      fontFamily: "var(--aurora-font-sans)",
     },
     text: "Gateway connection lost. Retrying in 30 seconds. Check the upstream routing table for misconfigurations.",
   },
   {
     label: "Control",
-    meta: "13px · 600",
+    meta: "13px · 560 · 1.28",
     style: {
-      fontSize: 13,
-      fontWeight: 600,
+      fontSize: "var(--aurora-type-control)",
+      fontWeight: "var(--aurora-weight-ui)",
+      letterSpacing: "var(--aurora-letter-ui)",
+      lineHeight: "var(--aurora-line-dense)",
       color: "var(--aurora-text-primary)",
+      fontFamily: "var(--aurora-font-sans)",
     },
     text: "Deploy plugin",
   },
   {
     label: "Dense",
-    meta: "13px · 1.4",
+    meta: "13px · 480 · 1.42",
     style: {
-      fontSize: 13,
-      lineHeight: 1.4,
+      fontSize: "var(--aurora-type-table)",
+      fontWeight: "var(--aurora-weight-body)",
+      letterSpacing: "var(--aurora-letter-ui)",
+      lineHeight: 1.42,
       color: "var(--aurora-text-primary)",
+      fontFamily: "var(--aurora-font-sans)",
     },
     text: "Read-only mode — changes require admin approval",
   },
   {
     label: "Dense meta",
-    meta: "11px · muted",
+    meta: "11px · 560 · +0.018em",
     style: {
-      fontSize: 11,
+      fontSize: "var(--aurora-type-caption)",
+      fontWeight: "var(--aurora-weight-ui)",
+      letterSpacing: "var(--aurora-letter-label)",
       color: "var(--aurora-text-muted)",
-      lineHeight: 1.4,
+      lineHeight: 1.35,
+      fontFamily: "var(--aurora-font-sans)",
     },
     text: "production-edge.lab.local",
   },
   {
     label: "Eyebrow",
-    meta: "11px · 600 · UPPERCASE · 0.18em",
+    meta: "11px · 650 · UPPERCASE · 0.095em",
     style: {
-      fontSize: 11,
-      fontWeight: 600,
+      fontSize: "var(--aurora-type-caption)",
+      fontWeight: "var(--aurora-weight-label)",
       textTransform: "uppercase" as const,
-      letterSpacing: "0.18em",
+      letterSpacing: "var(--aurora-letter-eyebrow)",
       color: "var(--aurora-text-muted)",
+      fontFamily: "var(--aurora-font-sans)",
     },
     text: "Gateway cluster",
   },
@@ -127,14 +140,14 @@ export default function TypeDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
       <div>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
+        <p className="aurora-text-eyebrow" style={{ color: "var(--aurora-text-muted)", marginBottom: 6 }}>
           Foundations
         </p>
         <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
           Typography scale
         </h2>
-        <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Aurora text styles used across every screen in Labby — from dashboard metrics to dense gateway logs.
+        <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)", marginTop: 6 }}>
+          Aurora text styles used across every screen in Labby - from dashboard metrics to dense gateway logs.
         </p>
       </div>
 
@@ -161,10 +174,10 @@ export default function TypeDemo() {
             }}
           >
             <div>
-              <p style={{ fontSize: 12, fontWeight: 600, color: "var(--aurora-text-primary)", margin: 0, lineHeight: 1.4 }}>
+              <p style={{ fontSize: 12, fontWeight: 650, color: "var(--aurora-text-primary)", margin: 0, lineHeight: 1.35, letterSpacing: "var(--aurora-letter-ui)" }}>
                 {row.label}
               </p>
-              <p style={{ fontSize: 10, color: "var(--aurora-text-muted)", margin: 0, fontFamily: "var(--aurora-font-mono)", lineHeight: 1.4, marginTop: 2 }}>
+              <p style={{ fontSize: 10.5, color: "var(--aurora-text-muted)", margin: 0, fontFamily: "var(--aurora-font-mono)", lineHeight: 1.4, marginTop: 2 }}>
                 {row.meta}
               </p>
             </div>

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -62,14 +63,13 @@ function injectSlideKeyframes() {
 
 // ---------------------------------------------------------------------------
 // Status dismiss-button colour map
-// success=#7dd3c7, error=#c78490, info=#29b6f6, warn=#c6a36b
 // ---------------------------------------------------------------------------
 
 const DISMISS_COLOR: Record<ToastStatus, string> = {
-  success: "#7dd3c7",
-  error:   "#c78490",
-  info:    "#29b6f6",
-  warn:    "#c6a36b",
+  success: "var(--aurora-success)",
+  error:   "var(--aurora-error)",
+  info:    "var(--aurora-accent-primary)",
+  warn:    "var(--aurora-warn)",
 };
 
 // ---------------------------------------------------------------------------
@@ -80,10 +80,10 @@ function LabbyMark() {
   return (
     <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden>
       <g transform="translate(0,1)">
-        <path d="M 8 13 L 24 7 L 40 13 L 24 19 Z" fill="#24536c" />
-        <path d="M 8 21 L 24 15 L 40 21 L 24 27 Z" fill="#1c7fac" />
-        <path d="M 8 29 L 24 23 L 40 29 L 24 35 Z" fill="#29b6f6" />
-        <path d="M 8 37 L 24 31 L 40 37 L 24 43 Z" fill="#67cbfa" />
+        <path d="M 8 13 L 24 7 L 40 13 L 24 19 Z" fill="var(--aurora-border-strong)" />
+        <path d="M 8 21 L 24 15 L 40 21 L 24 27 Z" fill="var(--aurora-accent-deep)" />
+        <path d="M 8 29 L 24 23 L 40 29 L 24 35 Z" fill="var(--aurora-accent-primary)" />
+        <path d="M 8 37 L 24 31 L 40 37 L 24 43 Z" fill="var(--aurora-accent-strong)" />
       </g>
     </svg>
   );
@@ -143,7 +143,7 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         </div>
 
         {/* Dismiss x - colored by status */}
-        <button
+        <Button variant="plain" size="unstyled"
           type="button"
           aria-label="Dismiss notification"
           onClick={() => onDismiss(item.id)}
@@ -158,10 +158,11 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
             stroke="currentColor"
             strokeWidth="1.8"
             strokeLinecap="round"
+            aria-hidden="true"
           >
             <path d="M1.5 1.5l10 10M11.5 1.5l-10 10" />
           </svg>
-        </button>
+        </Button>
       </div>
     );
   },

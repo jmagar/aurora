@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -43,16 +44,43 @@ export const FilterSearch = React.forwardRef<HTMLInputElement, FilterSearchProps
           value={value}
           onChange={onChange}
           className={cn(
-            "w-full bg-transparent pl-5 pr-1 text-[13px] placeholder:opacity-50",
+            "w-full bg-transparent pl-5 pr-5 placeholder:opacity-50",
             "border-none outline-none ring-0 focus:ring-0",
             className,
           )}
           style={{
             color: "var(--aurora-text-primary)",
             caretColor: "var(--aurora-accent-primary)",
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "var(--aurora-type-control)",
+            fontWeight: "var(--aurora-weight-body)",
+            letterSpacing: "var(--aurora-letter-ui)",
+            lineHeight: "var(--aurora-line-dense)",
           }}
           {...rest}
         />
+        {onClear && value ? (
+          <Button variant="plain" size="unstyled"
+            type="button"
+            aria-label="Clear search"
+            onClick={onClear}
+            className="absolute right-0 inline-flex size-4 items-center justify-center rounded-full"
+            style={{ color: "var(--aurora-text-muted)" }}
+          >
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M2 2L8 8M8 2L2 8" />
+            </svg>
+          </Button>
+        ) : null}
       </div>
     );
   },
@@ -75,19 +103,24 @@ export const FilterTag = React.forwardRef<HTMLSpanElement, FilterTagProps>(
       <span
         ref={ref}
         className={cn(
-          "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[12px] font-medium leading-snug",
+          "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 leading-snug",
           className,
         )}
         style={{
           background: "color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent)",
           border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
           color: "var(--aurora-accent-strong)",
+          fontFamily: "var(--aurora-font-sans)",
+          fontSize: "var(--aurora-type-label)",
+          fontWeight: "var(--aurora-weight-ui)",
+          letterSpacing: "var(--aurora-letter-ui)",
+          lineHeight: "var(--aurora-line-dense)",
         }}
         {...rest}
       >
         {children}
         {onRemove && (
-          <button
+          <Button variant="plain" size="unstyled"
             type="button"
             aria-label="Remove filter"
             onClick={onRemove}
@@ -105,7 +138,7 @@ export const FilterTag = React.forwardRef<HTMLSpanElement, FilterTagProps>(
             >
               <path d="M1 1l7 7M8 1L1 8" />
             </svg>
-          </button>
+          </Button>
         )}
       </span>
     );
@@ -124,19 +157,24 @@ export const FilterTagRose = React.forwardRef<HTMLSpanElement, FilterTagProps>(
       <span
         ref={ref}
         className={cn(
-          "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[12px] font-medium leading-snug",
+          "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 leading-snug",
           className,
         )}
         style={{
           background: "color-mix(in srgb, var(--aurora-accent-pink) 14%, transparent)",
           border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 30%, transparent)",
           color: "var(--aurora-accent-pink)",
+          fontFamily: "var(--aurora-font-sans)",
+          fontSize: "var(--aurora-type-label)",
+          fontWeight: "var(--aurora-weight-ui)",
+          letterSpacing: "var(--aurora-letter-ui)",
+          lineHeight: "var(--aurora-line-dense)",
         }}
         {...rest}
       >
         {children}
         {onRemove && (
-          <button
+          <Button variant="plain" size="unstyled"
             type="button"
             aria-label="Remove filter"
             onClick={onRemove}
@@ -154,7 +192,7 @@ export const FilterTagRose = React.forwardRef<HTMLSpanElement, FilterTagProps>(
             >
               <path d="M1 1l7 7M8 1L1 8" />
             </svg>
-          </button>
+          </Button>
         )}
       </span>
     );
@@ -205,20 +243,25 @@ export const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
               className="mx-1 h-4 w-px"
               style={{ background: "var(--aurora-border-default)" }}
             />
-            <button
+            <Button variant="plain" size="unstyled"
               type="button"
               onClick={onClearAll}
               onMouseEnter={() => setClearHovered(true)}
               onMouseLeave={() => setClearHovered(false)}
-              className="text-[12px] font-medium transition-colors focus-visible:outline-none"
+              className="transition-colors focus-visible:outline-none"
               style={{
                 color: clearHovered
                   ? "var(--aurora-error)"
                   : "var(--aurora-text-muted)",
+                fontFamily: "var(--aurora-font-sans)",
+                fontSize: "var(--aurora-type-label)",
+                fontWeight: "var(--aurora-weight-ui)",
+                letterSpacing: "var(--aurora-letter-ui)",
+                lineHeight: "var(--aurora-line-dense)",
               }}
             >
               Clear all
-            </button>
+            </Button>
           </>
         )}
       </div>

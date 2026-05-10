@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-spinner",
+  "type": "registry:ui",
+  "title": "Aurora Spinner",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Compact loading spinner with cyan, rose, and muted tones for asynchronous agent and registry work.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/spinner.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface SpinnerProps extends React.HTMLAttributes<HTMLSpanElement> {\n  size?: \"sm\" | \"default\" | \"lg\"\n  tone?: \"cyan\" | \"rose\" | \"muted\"\n}\n\nconst sizeMap = {\n  sm: 14,\n  default: 18,\n  lg: 24,\n}\n\nconst toneMap = {\n  cyan: \"var(--aurora-accent-primary)\",\n  rose: \"var(--aurora-accent-pink)\",\n  muted: \"var(--aurora-text-muted)\",\n}\n\nconst Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(\n  ({ className, size = \"default\", tone = \"cyan\", style, ...props }, ref) => {\n    const px = sizeMap[size]\n    const color = toneMap[tone]\n\n    return (\n      <span\n        ref={ref}\n        aria-label=\"Loading\"\n        className={cn(\"inline-block animate-spin rounded-full\", className)}\n        style={{\n          width: px,\n          height: px,\n          border: `2px solid color-mix(in srgb, ${color} 22%, transparent)`,\n          borderTopColor: color,\n          boxShadow: `0 0 10px color-mix(in srgb, ${color} 20%, transparent)`,\n          ...style,\n        }}\n        {...props}\n      />\n    )\n  }\n)\nSpinner.displayName = \"Spinner\"\n\nexport { Spinner }\nexport default Spinner\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/spinner.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/spinner.tsx",
+    "installTarget": "@ui/aurora/spinner.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/spinner.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "feedback"
+  ]
+}

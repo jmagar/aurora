@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
+import { Input } from "@/registry/aurora/ui/input"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -281,7 +283,7 @@ function SelectionChip({
       >
         {file.name}
       </span>
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={onRemove}
         aria-label={`Remove ${file.name}`}
         style={{
@@ -296,7 +298,7 @@ function SelectionChip({
         }}
       >
         <CloseIcon />
-      </button>
+      </Button>
     </div>
   )
 }
@@ -317,7 +319,7 @@ function FileGridCard({
   const [hovered, setHovered] = React.useState(false)
 
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       onClick={onToggle}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -388,7 +390,7 @@ function FileGridCard({
               height: "18px",
               borderRadius: "50%",
               background: "var(--aurora-accent-primary)",
-              color: "#fff",
+              color: "var(--aurora-accent-foreground)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -426,7 +428,7 @@ function FileGridCard({
           {relativeTime(file.modifiedAt)}
         </p>
       </div>
-    </button>
+    </Button>
   )
 }
 
@@ -446,7 +448,7 @@ function FileListRow({
   const [hovered, setHovered] = React.useState(false)
 
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       onClick={onToggle}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -539,7 +541,7 @@ function FileListRow({
             height: "18px",
             borderRadius: "50%",
             background: "var(--aurora-accent-primary)",
-            color: "#fff",
+            color: "var(--aurora-accent-foreground)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -549,7 +551,7 @@ function FileListRow({
           <CheckIcon />
         </div>
       )}
-    </button>
+    </Button>
   )
 }
 
@@ -657,11 +659,6 @@ export function FilePicker({
     return () => document.removeEventListener("keydown", handler)
   }, [open, onOpenChange])
 
-  // Reset selection on open
-  React.useEffect(() => {
-    if (open) setSelected(new Set())
-  }, [open])
-
   const filteredFiles = files.filter((f) => {
     const q = query.toLowerCase()
     const nameMatch = f.name.toLowerCase().includes(q)
@@ -685,6 +682,7 @@ export function FilePicker({
   function handleConfirm() {
     const pickedFiles = files.filter((f) => selected.has(f.id))
     onSelect(pickedFiles)
+    setSelected(new Set())
     onOpenChange(false)
   }
 
@@ -723,7 +721,10 @@ export function FilePicker({
       {/* Backdrop */}
       <div
         role="presentation"
-        onClick={() => onOpenChange(false)}
+        onClick={() => {
+          setSelected(new Set())
+          onOpenChange(false)
+        }}
         style={{
           position: "fixed",
           inset: 0,
@@ -824,7 +825,7 @@ export function FilePicker({
             {SIDEBAR_ITEMS.map((item) => {
               const isActive = activeSection === item.id
               return (
-                <button
+                <Button variant="plain" size="unstyled"
                   key={item.id}
                   onClick={() => setActiveSection(item.id)}
                   style={{
@@ -847,7 +848,7 @@ export function FilePicker({
                 >
                   <span style={{ flexShrink: 0 }}>{item.icon}</span>
                   {item.label}
-                </button>
+                </Button>
               )
             })}
 
@@ -864,7 +865,7 @@ export function FilePicker({
                 e.target.value = ""
               }}
             />
-            <button
+            <Button variant="plain" size="unstyled"
               onClick={() => uploadInputRef.current?.click()}
               style={{
                 display: "flex",
@@ -887,7 +888,7 @@ export function FilePicker({
                 <path d="M1.5 11H11.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
               </svg>
               Upload
-            </button>
+            </Button>
           </div>
 
           {/* Main area */}
@@ -929,11 +930,12 @@ export function FilePicker({
                 <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
                   <SearchIcon />
                 </span>
-                <input
+                <Input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search files…"
+                  className="h-auto border-none px-0 py-0 focus-visible:outline-none"
                   style={{
                     flex: 1,
                     background: "transparent",
@@ -952,7 +954,7 @@ export function FilePicker({
                 {FILTER_CHIPS.map((chip) => {
                   const active = filter === chip.id
                   return (
-                    <button
+                    <Button variant="plain" size="unstyled"
                       key={chip.id}
                       onClick={() => setFilter(chip.id)}
                       style={{
@@ -973,7 +975,7 @@ export function FilePicker({
                       }}
                     >
                       {chip.label}
-                    </button>
+                    </Button>
                   )
                 })}
               </div>
@@ -990,7 +992,7 @@ export function FilePicker({
                 {(["grid", "list"] as ViewMode[]).map((mode) => {
                   const active = viewMode === mode
                   return (
-                    <button
+                    <Button variant="plain" size="unstyled"
                       key={mode}
                       onClick={() => setViewMode(mode)}
                       aria-label={mode === "grid" ? "Grid view" : "List view"}
@@ -1006,7 +1008,7 @@ export function FilePicker({
                       }}
                     >
                       {mode === "grid" ? <GridIcon /> : <ListIcon />}
-                    </button>
+                    </Button>
                   )
                 })}
               </div>
@@ -1174,8 +1176,11 @@ export function FilePicker({
 
               {/* Actions */}
               <div className="aurora-file-picker-actions" style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
-                <button
-                  onClick={() => onOpenChange(false)}
+                <Button variant="plain" size="unstyled"
+                  onClick={() => {
+                    setSelected(new Set())
+                    onOpenChange(false)
+                  }}
                   style={{
                     padding: "7px 14px",
                     background: "var(--aurora-control-surface)",
@@ -1198,26 +1203,26 @@ export function FilePicker({
                   }}
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button variant="plain" size="unstyled"
                   onClick={handleConfirm}
                   disabled={selected.size === 0}
                   style={{
                     padding: "7px 18px",
                     background:
                       selected.size > 0
-                        ? "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)"
+                        ? "var(--aurora-accent-gradient)"
                         : "var(--aurora-control-surface)",
                     boxShadow:
                       selected.size > 0
-                        ? "inset 0 1px 0 rgba(255,255,255,0.22), 0 2px 8px color-mix(in srgb, #29b6f6 25%, transparent)"
+                        ? "inset 0 1px 0 rgba(255,255,255,0.22), 0 2px 8px color-mix(in srgb, var(--aurora-accent-primary) 25%, transparent)"
                         : "none",
                     border:
                       selected.size > 0
                         ? "none"
                         : "1px solid var(--aurora-border-default)",
                     borderRadius: "10px",
-                    color: selected.size > 0 ? "#fff" : "var(--aurora-text-muted)",
+                    color: selected.size > 0 ? "var(--aurora-accent-foreground)" : "var(--aurora-text-muted)",
                     fontSize: "13px",
                     fontWeight: 600,
                     cursor: selected.size > 0 ? "pointer" : "default",
@@ -1228,7 +1233,7 @@ export function FilePicker({
                   {selected.size > 0
                     ? `Attach ${selected.size} ${selected.size === 1 ? "file" : "files"}`
                     : "Select files"}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

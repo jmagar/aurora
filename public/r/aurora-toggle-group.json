@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-toggle-group",
+  "type": "registry:ui",
+  "title": "Aurora Toggle Group",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Grouped toggle container for segmented command choices.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-toggle"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/toggle-group.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface ToggleGroupProps extends React.HTMLAttributes<HTMLDivElement> {\n  orientation?: \"horizontal\" | \"vertical\"\n}\n\nconst ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(({ className, orientation = \"horizontal\", style, ...props }, ref) => (\n  <div\n    ref={ref}\n    role=\"group\"\n    className={cn(\"inline-flex rounded-[8px] border p-1\", orientation === \"vertical\" ? \"flex-col\" : \"items-center\", className)}\n    style={{\n      background: \"var(--aurora-control-surface)\",\n      borderColor: \"var(--aurora-border-default)\",\n      ...style,\n    }}\n    {...props}\n  />\n))\nToggleGroup.displayName = \"ToggleGroup\"\n\nexport { ToggleGroup }\nexport default ToggleGroup\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/toggle-group.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/toggle-group.tsx",
+    "installTarget": "@ui/aurora/toggle-group.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/toggle-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-toggle`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "forms"
+  ]
+}

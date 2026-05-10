@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-aspect-ratio",
+  "type": "registry:ui",
+  "title": "Aurora Aspect Ratio",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Fixed-ratio media wrapper for previews, charts, and embedded surfaces.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/aspect-ratio.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface AspectRatioProps extends React.HTMLAttributes<HTMLDivElement> {\n  ratio?: number\n}\n\nconst AspectRatio = React.forwardRef<HTMLDivElement, AspectRatioProps>(({ className, ratio = 16 / 9, style, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn(\"relative w-full overflow-hidden\", className)}\n    style={{\n      aspectRatio: `${ratio}`,\n      ...style,\n    }}\n    {...props}\n  />\n))\nAspectRatio.displayName = \"AspectRatio\"\n\nexport { AspectRatio }\nexport default AspectRatio\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/aspect-ratio.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/aspect-ratio.tsx",
+    "installTarget": "@ui/aurora/aspect-ratio.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/aspect-ratio.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "layout"
+  ]
+}

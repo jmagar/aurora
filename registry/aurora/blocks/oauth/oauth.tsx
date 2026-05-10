@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -128,7 +129,7 @@ function AppIcon({ app }: { app: OAuthApp }) {
         fontFamily: "var(--aurora-font-display)",
         fontSize: "20px",
         fontWeight: 800,
-        color: "#051520",
+        color: "var(--aurora-accent-foreground)",
         flexShrink: 0,
       }}
     >
@@ -142,88 +143,43 @@ function AppIcon({ app }: { app: OAuthApp }) {
 // ---------------------------------------------------------------------------
 
 function AllowButton({ onClick }: { onClick?: () => void }) {
-  const [hovered, setHovered] = React.useState(false)
   return (
-    <button
+    <Button
+      type="button"
+      variant="aurora"
+      size="lg"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        flex: 1,
-        height: "42px",
-        borderRadius: "10px",
-        background: hovered
-          ? "color-mix(in srgb, var(--aurora-accent-primary) 18%, var(--aurora-panel-strong))"
-          : "var(--aurora-panel-strong)",
-        border: `1px solid ${hovered ? "var(--aurora-accent-primary)" : "var(--aurora-border-strong)"}`,
-        boxShadow: hovered ? "var(--aurora-active-glow)" : "none",
-        color: "var(--aurora-accent-primary)",
-        fontFamily: "var(--aurora-font-sans)",
-        fontSize: "14px",
-        fontWeight: 600,
-        cursor: "pointer",
-        transition: "background 0.15s, border-color 0.15s, box-shadow 0.15s",
-      }}
+      style={{ flex: 1 }}
     >
       Allow
-    </button>
+    </Button>
   )
 }
 
 function DenyButton({ onClick }: { onClick?: () => void }) {
-  const [hovered, setHovered] = React.useState(false)
   return (
-    <button
+    <Button
+      type="button"
+      variant="neutral"
+      size="lg"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        flex: 1,
-        height: "42px",
-        borderRadius: "10px",
-        background: hovered ? "var(--aurora-hover-bg)" : "transparent",
-        border: "1px solid var(--aurora-border-default)",
-        color: hovered ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-        fontFamily: "var(--aurora-font-sans)",
-        fontSize: "14px",
-        fontWeight: 500,
-        cursor: "pointer",
-        transition: "background 0.15s, border-color 0.15s, color 0.15s",
-      }}
+      style={{ flex: 1 }}
     >
       Deny
-    </button>
+    </Button>
   )
 }
 
 function RevokeButton({ onClick }: { onClick?: () => void }) {
-  const [hovered, setHovered] = React.useState(false)
   return (
-    <button
+    <Button
+      type="button"
+      variant="destructive"
+      size="sm"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        height: "28px",
-        padding: "0 10px",
-        borderRadius: "7px",
-        background: hovered
-          ? "color-mix(in srgb, var(--aurora-error) 12%, transparent)"
-          : "transparent",
-        border: `1px solid ${hovered ? "var(--aurora-error)" : "var(--aurora-border-default)"}`,
-        color: hovered ? "var(--aurora-error)" : "var(--aurora-text-muted)",
-        fontFamily: "var(--aurora-font-sans)",
-        fontSize: "12px",
-        fontWeight: 500,
-        cursor: "pointer",
-        transition: "background 0.12s, border-color 0.12s, color 0.12s",
-        whiteSpace: "nowrap",
-      }}
     >
       Revoke
-    </button>
+    </Button>
   )
 }
 
@@ -418,23 +374,16 @@ function SuccessView({ app }: { app: OAuthApp }) {
           You can close this window or return to the app.
         </div>
       </div>
-      <button
+      <Button
+        type="button"
+        variant="neutral"
         onClick={() => window.close?.()}
         style={{
           marginTop: "4px",
-          height: "36px",
-          padding: "0 20px",
-          borderRadius: "9px",
-          background: "transparent",
-          border: "1px solid var(--aurora-border-default)",
-          color: "var(--aurora-text-muted)",
-          fontFamily: "var(--aurora-font-sans)",
-          fontSize: "13px",
-          cursor: "pointer",
         }}
       >
         Close window
-      </button>
+      </Button>
     </div>
   )
 }

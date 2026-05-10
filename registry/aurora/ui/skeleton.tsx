@@ -89,7 +89,7 @@ Skeleton.displayName = "Skeleton";
 // SkeletonRow — pre-composed avatar + two text lines + button
 // ---------------------------------------------------------------------------
 
-export interface SkeletonRowProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type SkeletonRowProps = React.HTMLAttributes<HTMLDivElement>
 
 export const SkeletonRow = React.forwardRef<HTMLDivElement, SkeletonRowProps>(
   function SkeletonRow({ className, ...rest }, ref) {

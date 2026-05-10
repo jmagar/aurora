@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
+import { Clock3, GitBranch, Plus, Send, Trash2 } from "lucide-react"
 
 const section: React.CSSProperties = {
   display: "flex",
@@ -21,11 +22,11 @@ const row: React.CSSProperties = {
 }
 
 const label: React.CSSProperties = {
-  fontSize: "11px",
-  fontFamily: "var(--aurora-font-mono)",
+  fontSize: "var(--aurora-type-label)",
+  fontFamily: "var(--aurora-font-sans)",
+  fontWeight: "var(--aurora-weight-label)",
   color: "var(--aurora-text-muted)",
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
+  letterSpacing: "var(--aurora-letter-label)",
   marginBottom: "8px",
 }
 
@@ -56,7 +57,7 @@ export default function ButtonsDemo() {
       <div>
         <h2 style={heading}>Button</h2>
         <p style={subheading}>
-          All variants and sizes. Gradients, glows, and focus rings are built in.
+          Operator-grade action controls with restrained surfaces, crisp borders, and low-noise focus states.
         </p>
       </div>
 
@@ -140,31 +141,26 @@ export default function ButtonsDemo() {
       </div>
 
       <div style={section}>
-        <div style={label}>With icons (inline SVG)</div>
+        <div style={label}>With icons</div>
         <div style={row}>
           <Button variant="aurora">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M8 2v12M2 8h12" />
-            </svg>
+            <Plus className="size-3.5" aria-hidden />
             New agent
           </Button>
           <Button variant="neutral">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
+            <GitBranch className="size-3.5" aria-hidden />
             Deploy
           </Button>
           <Button variant="ghost">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <circle cx="8" cy="8" r="6" />
-              <path d="M8 5v3l2 2" />
-            </svg>
+            <Clock3 className="size-3.5" aria-hidden />
             View history
           </Button>
+          <Button variant="rose">
+            <Send className="size-3.5" aria-hidden />
+            Send update
+          </Button>
           <Button variant="destructive">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M4 4l8 8M12 4l-8 8" />
-            </svg>
+            <Trash2 className="size-3.5" aria-hidden />
             Disconnect
           </Button>
         </div>

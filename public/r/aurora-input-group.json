@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-input-group",
+  "type": "registry:ui",
+  "title": "Aurora Input Group",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Grouped input shell with addons for protocol, units, and compact command prefixes.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-input"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/input-group.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nconst InputGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, style, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn(\"flex min-h-9 w-full items-center overflow-hidden rounded-[8px] border\", className)}\n    style={{\n      background: \"var(--aurora-control-surface)\",\n      borderColor: \"var(--aurora-border-strong)\",\n      ...style,\n    }}\n    {...props}\n  />\n))\nInputGroup.displayName = \"InputGroup\"\n\nconst InputGroupAddon = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, style, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn(\"inline-flex h-full items-center border-r px-3 aurora-text-control\", className)}\n    style={{ borderColor: \"var(--aurora-border-default)\", color: \"var(--aurora-text-muted)\", ...style }}\n    {...props}\n  />\n))\nInputGroupAddon.displayName = \"InputGroupAddon\"\n\nexport { InputGroup, InputGroupAddon }\nexport default InputGroup\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/input-group.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/input-group.tsx",
+    "installTarget": "@ui/aurora/input-group.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/input-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-input`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "forms"
+  ]
+}

@@ -1,5 +1,6 @@
 "use client"
 
+import { Button } from "@/registry/aurora/ui/button";
 import React, { useState, useRef } from "react"
 import { Terminal, TerminalLine } from "@/registry/aurora/blocks/terminal/terminal"
 
@@ -77,7 +78,7 @@ export default function TerminalDemo() {
         >
           Terminal
         </h2>
-        <button
+        <Button variant="plain" size="unstyled"
           onClick={replay}
           disabled={replaying}
           style={{
@@ -108,7 +109,7 @@ export default function TerminalDemo() {
             />
           </svg>
           {replaying ? "Replaying…" : "Replay"}
-        </button>
+        </Button>
       </div>
 
       <Terminal

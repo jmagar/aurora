@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-stack-trace",
+  "type": "registry:block",
+  "title": "Aurora AI Stack Trace",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora-native stack trace parity surface from AI Elements.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-ai-elements"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai-elements/stack-trace.tsx",
+      "content": "\"use client\"\n\nexport { StackTrace } from \"./core\"\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/stack-trace.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai-elements/stack-trace.tsx",
+    "installTarget": "@components/aurora/ai/stack-trace.tsx"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/stack-trace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ]
+}

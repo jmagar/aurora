@@ -1,0 +1,26 @@
+services:
+  aurora-design-system:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    image: aurora-design-system:local
+    ports:
+      - "${AURORA_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - .:/app
+      - aurora-node-modules:/app/node_modules
+      - aurora-next-cache:/app/.next
+    command: pnpm dev --hostname 0.0.0.0
+    restart: unless-stopped
+
+volumes:
+  aurora-node-modules:
+  aurora-next-cache:

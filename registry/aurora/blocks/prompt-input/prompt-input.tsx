@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
+import { Textarea } from "@/registry/aurora/ui/textarea"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -30,6 +32,7 @@ export interface PromptInputProps {
   value: string
   onChange: (value: string) => void
   onSubmit: (value: string, attachments: Attachment[]) => void
+  onAddAttachment?: (attachment: Attachment) => void
   onStop?: () => void
   attachments?: Attachment[]
   onRemoveAttachment?: (id: string) => void
@@ -86,11 +89,11 @@ function AttachIcon() {
 
 function SendIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 15 15" fill="none" aria-hidden="true">
       <path
         d="M7.5 1.5L7.5 13.5M7.5 1.5L3 6M7.5 1.5L12 6"
         stroke="currentColor"
-        strokeWidth="1.6"
+        strokeWidth="1.85"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -140,6 +143,7 @@ export function PromptInput({
   onSubmit,
   onStop,
   attachments = [],
+  onAddAttachment,
   onRemoveAttachment,
   model = "claude-sonnet-4-6",
   onModelChange,
@@ -301,9 +305,7 @@ export function PromptInput({
         type: isImage ? "image" : "file",
         url: isImage ? URL.createObjectURL(f) : undefined,
       }
-      // Parent handles via onRemoveAttachment; we fire a synthetic add.
-      // Real usage: wire to parent attachment state.
-      console.info("attachment-added", att)
+      onAddAttachment?.(att)
     })
     e.target.value = ""
   }
@@ -312,8 +314,8 @@ export function PromptInput({
 
   const containerBoxShadow = isFocused
     ? [
-        "0 0 0 1px color-mix(in srgb, #29b6f6 55%, transparent)",
-        "0 0 0 3px color-mix(in srgb, #29b6f6 18%, transparent)",
+        "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)",
+        "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
         "var(--aurora-shadow-medium)",
       ].join(", ")
     : "var(--aurora-shadow-medium)"
@@ -352,7 +354,7 @@ export function PromptInput({
             Commands
           </div>
           {filteredSlash.map((cmd, i) => (
-            <button
+            <Button variant="plain" size="unstyled"
               key={cmd.id}
               role="option"
               aria-selected={i === slashIndex}
@@ -386,7 +388,7 @@ export function PromptInput({
                   {cmd.description}
                 </span>
               )}
-            </button>
+            </Button>
           ))}
         </div>
       )}
@@ -422,7 +424,7 @@ export function PromptInput({
             Mention
           </div>
           {filteredMentions.map((item, i) => (
-            <button
+            <Button variant="plain" size="unstyled"
               key={item.id}
               role="option"
               aria-selected={i === mentionIndex}
@@ -456,7 +458,7 @@ export function PromptInput({
               >
                 {item.kind}
               </span>
-            </button>
+            </Button>
           ))}
         </div>
       )}
@@ -479,7 +481,7 @@ export function PromptInput({
           }}
         >
           {DEFAULT_MODELS.map((m) => (
-            <button
+            <Button variant="plain" size="unstyled"
               key={m.id}
               onClick={() => {
                 onModelChange?.(m.id)
@@ -500,7 +502,7 @@ export function PromptInput({
               }}
             >
               {m.label}
-            </button>
+            </Button>
           ))}
         </div>
       )}
@@ -534,8 +536,8 @@ export function PromptInput({
                   alignItems: "center",
                   gap: "4px",
                   padding: "2px 8px 2px 6px",
-                  background: "color-mix(in srgb, #29b6f6 12%, transparent)",
-                  border: "1px solid color-mix(in srgb, #29b6f6 30%, transparent)",
+                  background: "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
+                  border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
                   borderRadius: "8px",
                   fontSize: "12px",
                   color: "var(--aurora-accent-primary)",
@@ -544,7 +546,7 @@ export function PromptInput({
               >
                 <FileIcon kind={m.kind} />
                 {m.label}
-                <button
+                <Button variant="plain" size="unstyled"
                   onClick={() => removeMention(m.id)}
                   aria-label={`Remove ${m.label}`}
                   style={{
@@ -560,7 +562,7 @@ export function PromptInput({
                   }}
                 >
                   ×
-                </button>
+                </Button>
               </span>
             ))}
           </div>
@@ -620,7 +622,7 @@ export function PromptInput({
                   {att.name}
                 </span>
                 {onRemoveAttachment && (
-                  <button
+                  <Button variant="plain" size="unstyled"
                     onClick={() => onRemoveAttachment(att.id)}
                     aria-label={`Remove ${att.name}`}
                     style={{
@@ -637,7 +639,7 @@ export function PromptInput({
                     }}
                   >
                     ×
-                  </button>
+                  </Button>
                 )}
               </div>
             ))}
@@ -645,7 +647,7 @@ export function PromptInput({
         )}
 
         {/* Textarea */}
-        <textarea
+        <Textarea
           ref={textareaRef}
           value={value}
           onChange={handleChange}
@@ -662,8 +664,10 @@ export function PromptInput({
           }}
           disabled={isStreaming}
           placeholder={isStreaming ? "Generating…" : placeholder}
+          autoResize
           rows={1}
           aria-label="Prompt input"
+          className="border-none focus-visible:outline-none"
           style={{
             display: "block",
             width: "100%",
@@ -681,7 +685,6 @@ export function PromptInput({
             overflowY: "auto",
             caretColor: "var(--aurora-accent-primary)",
           }}
-          style-placeholder-color="var(--aurora-text-muted)"
         />
 
         {/* Bottom toolbar */}
@@ -746,117 +749,55 @@ export function PromptInput({
           </ToolbarButton>
 
           {/* Model selector pill */}
-          <button
+          <Button
+            type="button"
+            variant="neutral"
+            size="sm"
             onClick={() => setShowModelMenu((o) => !o)}
             aria-haspopup="listbox"
             aria-expanded={showModelMenu}
             style={{
-              display: "inline-flex",
-              alignItems: "center",
               gap: "5px",
-              padding: "3px 9px",
-              background: "var(--aurora-control-surface)",
-              border: "1px solid var(--aurora-border-default)",
-              borderRadius: "20px",
               fontSize: "11px",
-              fontWeight: 600,
-              color: "var(--aurora-text-muted)",
-              cursor: "pointer",
-              transition: "border-color 0.15s, color 0.15s",
               marginLeft: "2px",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--aurora-border-strong)"
-              e.currentTarget.style.color = "var(--aurora-text-primary)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "var(--aurora-border-default)"
-              e.currentTarget.style.color = "var(--aurora-text-muted)"
             }}
           >
             {modelLabel}
             <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true">
               <path d="M2 3.5L4.5 6L7 3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </button>
+          </Button>
 
           {/* Spacer */}
           <div style={{ flex: 1 }} />
 
           {/* Stop button (streaming) */}
           {isStreaming && (
-            <button
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
               onClick={onStop}
               aria-label="Stop generation"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "32px",
-                height: "32px",
-                borderRadius: "10px",
-                background: "color-mix(in srgb, var(--aurora-error) 14%, transparent)",
-                border: "1px solid color-mix(in srgb, var(--aurora-error) 35%, transparent)",
-                color: "var(--aurora-error)",
-                cursor: "pointer",
-                transition: "background 0.15s",
-                flexShrink: 0,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "color-mix(in srgb, var(--aurora-error) 22%, transparent)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "color-mix(in srgb, var(--aurora-error) 14%, transparent)"
-              }}
+              style={{ flexShrink: 0 }}
             >
               <StopIcon />
-            </button>
+            </Button>
           )}
 
           {/* Send button */}
           {!isStreaming && (
-            <button
+            <Button
+              type="button"
+              variant="rose"
+              size="icon"
               onClick={handleSubmit}
               disabled={!value.trim() && attachments.length === 0}
               aria-label="Send message"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "32px",
-                height: "32px",
-                borderRadius: "10px",
-                background: "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)",
-                boxShadow: [
-                  "inset 0 1px 0 rgba(255,255,255,0.22)",
-                  "0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent)",
-                  "0 2px 10px color-mix(in srgb, #29b6f6 30%, transparent)",
-                ].join(", "),
-                border: "none",
-                color: "#fff",
-                cursor: "pointer",
-                transition: "opacity 0.15s, box-shadow 0.15s",
-                flexShrink: 0,
-              }}
-              onMouseEnter={(e) => {
-                if (!e.currentTarget.disabled) {
-                  e.currentTarget.style.boxShadow = [
-                    "inset 0 1px 0 rgba(255,255,255,0.30)",
-                    "0 0 0 1px color-mix(in srgb, #29b6f6 60%, transparent)",
-                    "0 2px 16px color-mix(in srgb, #29b6f6 45%, transparent)",
-                  ].join(", ")
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = [
-                  "inset 0 1px 0 rgba(255,255,255,0.22)",
-                  "0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent)",
-                  "0 2px 10px color-mix(in srgb, #29b6f6 30%, transparent)",
-                ].join(", ")
-              }}
+              style={{ flexShrink: 0 }}
             >
               <SendIcon />
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -873,36 +814,21 @@ function ToolbarButton({
   style,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const [hovered, setHovered] = React.useState(false)
   return (
-    <button
+    <Button
       {...props}
-      onMouseEnter={(e) => {
-        setHovered(true)
-        props.onMouseEnter?.(e)
-      }}
-      onMouseLeave={(e) => {
-        setHovered(false)
-        props.onMouseLeave?.(e)
-      }}
+      type="button"
+      variant="ghost"
+      size="icon"
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "28px",
-        height: "28px",
-        borderRadius: "8px",
-        background: hovered ? "var(--aurora-hover-bg)" : "transparent",
-        border: "none",
-        color: hovered ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-        cursor: "pointer",
-        transition: "background 0.12s, color 0.12s",
+        width: 28,
+        height: 28,
         flexShrink: 0,
         ...style,
       }}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 

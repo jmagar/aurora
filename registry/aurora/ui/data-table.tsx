@@ -111,12 +111,16 @@ export function DataTable<TRow extends Record<string, unknown>>({
                     scope="col"
                     onClick={() => handleSort(col)}
                     className={cn(
-                      "px-4 py-2.5 text-left text-[10px] font-semibold uppercase",
+                      "px-4 py-2.5 text-left",
                       col.sortable && "cursor-pointer select-none",
                       col.numeric && "text-right tabular-nums",
                     )}
                     style={{
-                      letterSpacing: "0.14em",
+                      fontFamily: "var(--aurora-font-sans)",
+                      fontSize: "var(--aurora-type-label)",
+                      fontWeight: "var(--aurora-weight-label)",
+                      letterSpacing: "var(--aurora-letter-label)",
+                      lineHeight: "var(--aurora-line-dense)",
                       color: "var(--aurora-text-muted)",
                       borderBottom: `1px solid var(--aurora-border-default)`,
                       whiteSpace: "nowrap",
@@ -154,11 +158,16 @@ export function DataTable<TRow extends Record<string, unknown>>({
                   <td
                     key={col.key}
                     className={cn(
-                      "px-4 py-2.5 text-[13px]",
+                      "px-4 py-2.5",
                       col.numeric && "text-right tabular-nums",
                     )}
                     style={{
                       color: "var(--aurora-text-primary)",
+                      fontFamily: "var(--aurora-font-sans)",
+                      fontSize: "var(--aurora-type-table)",
+                      fontWeight: "var(--aurora-weight-body)",
+                      letterSpacing: "var(--aurora-letter-ui)",
+                      lineHeight: 1.42,
                       borderBottom:
                         rowIdx < sorted.length - 1
                           ? `1px solid var(--aurora-border-default)`
@@ -177,8 +186,14 @@ export function DataTable<TRow extends Record<string, unknown>>({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-4 py-8 text-center text-[13px]"
-                  style={{ color: "var(--aurora-text-muted)" }}
+                  className="px-4 py-8 text-center"
+                  style={{
+                    color: "var(--aurora-text-muted)",
+                    fontFamily: "var(--aurora-font-sans)",
+                    fontSize: "var(--aurora-type-table)",
+                    fontWeight: "var(--aurora-weight-body)",
+                    lineHeight: 1.42,
+                  }}
                 >
                   No data
                 </td>

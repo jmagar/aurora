@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-card",
+  "type": "registry:ui",
+  "title": "Aurora Card",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Composed Aurora card shell with header, content, footer, title, and description slots.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/card.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nconst Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, style, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn(\"rounded-[8px] border\", className)}\n    style={{\n      background: \"var(--aurora-panel-medium)\",\n      borderColor: \"var(--aurora-border-default)\",\n      boxShadow: \"var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)\",\n      ...style,\n    }}\n    {...props}\n  />\n))\nCard.displayName = \"Card\"\n\nconst CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, style, ...props }, ref) => (\n  <div ref={ref} className={cn(\"border-b px-4 py-3\", className)} style={{ borderColor: \"var(--aurora-border-default)\", ...style }} {...props} />\n))\nCardHeader.displayName = \"CardHeader\"\n\nconst CardTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(({ className, style, ...props }, ref) => (\n  <h3\n    ref={ref}\n    className={cn(\"aurora-text-section\", className)}\n    style={{ color: \"var(--aurora-text-primary)\", fontSize: 17, ...style }}\n    {...props}\n  />\n))\nCardTitle.displayName = \"CardTitle\"\n\nconst CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(({ className, style, ...props }, ref) => (\n  <p ref={ref} className={cn(\"aurora-text-body-sm\", className)} style={{ color: \"var(--aurora-text-muted)\", marginTop: 4, ...style }} {...props} />\n))\nCardDescription.displayName = \"CardDescription\"\n\nconst CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (\n  <div ref={ref} className={cn(\"px-4 py-3\", className)} {...props} />\n))\nCardContent.displayName = \"CardContent\"\n\nconst CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, style, ...props }, ref) => (\n  <div ref={ref} className={cn(\"border-t px-4 py-3\", className)} style={{ borderColor: \"var(--aurora-border-default)\", ...style }} {...props} />\n))\nCardFooter.displayName = \"CardFooter\"\n\nexport { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }\nexport default Card\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/card.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/card.tsx",
+    "installTarget": "@ui/aurora/card.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/card.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "layout"
+  ]
+}

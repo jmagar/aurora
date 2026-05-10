@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -41,8 +42,8 @@ const TOKEN_COLORS: Record<TokenType, string> = {
   comment:  "var(--aurora-text-muted)",
   number:   "var(--aurora-warn)",
   operator: "var(--aurora-accent-strong)",
-  type:     "#b8d9f5",
-  function: "#67cbfa",
+  type:     "var(--aurora-code-type)",
+  function: "var(--aurora-code-function)",
   plain:    "var(--aurora-text-primary)",
 }
 
@@ -259,10 +260,9 @@ interface CodeLineProps {
   language: string
   diffType?: "add" | "remove" | "unchanged"
   errorDiagnostics?: Diagnostic[]
-  showGutterError?: boolean
 }
 
-function CodeLine({ lineIndex, content, language, diffType, errorDiagnostics, showGutterError }: CodeLineProps) {
+function CodeLine({ lineIndex, content, language, diffType, errorDiagnostics }: CodeLineProps) {
   const tokens = tokenizeLine(content, language)
 
   const bgColor =
@@ -540,27 +540,20 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
           <LanguageBadge language={language} />
 
           {onClose && (
-            <button
+            <Button
+              type="button"
+              variant="neutral"
+              size="icon"
               onClick={onClose}
               aria-label="Close"
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
                 width: "22px",
                 height: "22px",
-                borderRadius: "6px",
-                background: "transparent",
-                border: "1px solid var(--aurora-border-default)",
-                color: "var(--aurora-text-muted)",
-                cursor: "pointer",
                 fontSize: "13px",
-                lineHeight: 1,
-                padding: 0,
               }}
             >
               ×
-            </button>
+            </Button>
           )}
         </div>
 

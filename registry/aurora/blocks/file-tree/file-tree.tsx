@@ -1,6 +1,21 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
+import {
+  ChevronRight,
+  Copy,
+  File,
+  FileCode2,
+  FileJson,
+  FileText,
+  Folder,
+  FolderOpen,
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -20,6 +35,8 @@ export interface FileTreeProps {
   tree: TreeNode[]
   onSelect?: (node: TreeNode) => void
   onContextAction?: (action: ContextAction, node: TreeNode) => void
+  defaultExpandedIds?: string[]
+  defaultSelectedId?: string
 }
 
 export interface FileChipProps {
@@ -28,39 +45,25 @@ export interface FileChipProps {
 }
 
 // ---------------------------------------------------------------------------
-// Icon helpers (inline SVG only)
+// Icon helpers
 // ---------------------------------------------------------------------------
 
 function FolderIcon({ open }: { open: boolean }) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0 }}>
-      {open ? (
-        <path
-          d="M1 3.5C1 2.948 1.448 2.5 2 2.5H5.382L6.618 4H12C12.552 4 13 4.448 13 5V11C13 11.552 12.552 12 12 12H2C1.448 12 1 11.552 1 11V3.5Z"
-          fill="var(--aurora-warn)"
-          opacity="0.85"
-        />
-      ) : (
-        <>
-          <path
-            d="M1 3.5C1 2.948 1.448 2.5 2 2.5H5.382L6.618 4H12C12.552 4 13 4.448 13 5V11C13 11.552 12.552 12 12 12H2C1.448 12 1 11.552 1 11V3.5Z"
-            fill="var(--aurora-warn)"
-            opacity="0.55"
-          />
-          <path
-            d="M1 5H13V11C13 11.552 12.552 12 12 12H2C1.448 12 1 11.552 1 11V5Z"
-            fill="var(--aurora-warn)"
-            opacity="0.35"
-          />
-        </>
-      )}
-    </svg>
-  )
+  const Icon = open ? FolderOpen : Folder
+  return <Icon className="size-3.5 shrink-0" strokeWidth={1.7} style={{ color: "var(--aurora-warn)" }} aria-hidden />
 }
 
 function FileIcon({ language }: { language?: string }) {
+  const Icon =
+    language === "typescript" || language === "ts" || language === "tsx" || language === "rust"
+      ? FileCode2
+      : language === "json"
+        ? FileJson
+        : language === "md" || language === "markdown"
+          ? FileText
+          : File
   const color =
-    language === "typescript" || language === "ts" || language === "tsx"
+    language === "typescript" || language === "ts" || language === "tsx" || language === "rust"
       ? "var(--aurora-accent-primary)"
       : language === "css" || language === "scss"
       ? "var(--aurora-accent-pink)"
@@ -70,36 +73,21 @@ function FileIcon({ language }: { language?: string }) {
       ? "var(--aurora-text-muted)"
       : "var(--aurora-border-strong)"
 
-  return (
-    <svg width="13" height="14" viewBox="0 0 13 14" fill="none" style={{ flexShrink: 0 }}>
-      <rect x="1" y="1" width="9" height="12" rx="1.5" fill={color} opacity="0.25" />
-      <path
-        d="M7.5 1H2C1.448 1 1 1.448 1 2V12C1 12.552 1.448 13 2 13H11C11.552 13 12 12.552 12 12V5.5L7.5 1Z"
-        stroke={color}
-        strokeWidth="1"
-        fill="none"
-        opacity="0.8"
-      />
-      <path d="M7.5 1V5.5H12" stroke={color} strokeWidth="1" opacity="0.6" />
-    </svg>
-  )
+  return <Icon className="size-3.5 shrink-0" strokeWidth={1.65} style={{ color }} aria-hidden />
 }
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
-    <svg
-      width="10"
-      height="10"
-      viewBox="0 0 10 10"
-      fill="none"
+    <ChevronRight
+      className="size-3 shrink-0"
+      strokeWidth={1.8}
       style={{
-        flexShrink: 0,
         transform: open ? "rotate(90deg)" : "rotate(0deg)",
         transition: "transform 0.15s ease",
+        color: "var(--aurora-text-muted)",
       }}
-    >
-      <path d="M3 2L7 5L3 8" stroke="var(--aurora-text-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+      aria-hidden
+    />
   )
 }
 
@@ -135,11 +123,11 @@ function ContextMenu({ x, y, node, onAction, onClose }: ContextMenuProps) {
     }
   }, [onClose])
 
-  const items: { action: ContextAction; label: string; icon: string; danger?: boolean }[] = [
-    { action: "new-file", label: "New file", icon: "+" },
-    { action: "rename", label: "Rename", icon: "✎" },
-    { action: "copy-path", label: "Copy path", icon: "⎘" },
-    { action: "delete", label: "Delete", icon: "✕", danger: true },
+  const items: { action: ContextAction; label: string; icon: React.ReactNode; danger?: boolean }[] = [
+    { action: "new-file", label: "New file", icon: <Plus className="size-3.5" aria-hidden /> },
+    { action: "rename", label: "Rename", icon: <Pencil className="size-3.5" aria-hidden /> },
+    { action: "copy-path", label: "Copy path", icon: <Copy className="size-3.5" aria-hidden /> },
+    { action: "delete", label: "Delete", icon: <Trash2 className="size-3.5" aria-hidden />, danger: true },
   ]
 
   return (
@@ -152,8 +140,8 @@ function ContextMenu({ x, y, node, onAction, onClose }: ContextMenuProps) {
         zIndex: 9999,
         background: "var(--aurora-panel-strong)",
         border: "1px solid var(--aurora-border-strong)",
-        borderRadius: "var(--aurora-radius-1)",
-        boxShadow: "var(--aurora-shadow-strong)",
+        borderRadius: 8,
+        boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.04)",
         padding: "4px",
         minWidth: "160px",
         fontFamily: "var(--aurora-font-sans)",
@@ -204,13 +192,13 @@ function ContextMenuItem({
   onClick,
 }: {
   label: string
-  icon: string
+  icon: React.ReactNode
   danger?: boolean
   onClick: () => void
 }) {
   const [hovered, setHovered] = React.useState(false)
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -220,7 +208,7 @@ function ContextMenuItem({
         gap: "8px",
         width: "100%",
         padding: "6px 8px",
-        borderRadius: "8px",
+        borderRadius: "6px",
         background: hovered ? "var(--aurora-hover-bg)" : "transparent",
         border: "none",
         color: danger
@@ -235,9 +223,9 @@ function ContextMenuItem({
         transition: "background 0.1s, color 0.1s",
       }}
     >
-      <span style={{ width: "14px", textAlign: "center", fontSize: "12px" }}>{icon}</span>
+      <span style={{ alignItems: "center", display: "inline-flex", justifyContent: "center", width: 14 }}>{icon}</span>
       {label}
-    </button>
+    </Button>
   )
 }
 
@@ -296,25 +284,28 @@ function TreeRow({
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "5px",
-          paddingLeft: `${8 + depth * 16}px`,
+          gap: "6px",
+          paddingLeft: `${8 + depth * 14}px`,
           paddingRight: "8px",
-          height: "26px",
-          borderRadius: "8px",
+          height: "28px",
+          borderRadius: 6,
           cursor: "pointer",
           background: isSelected
-            ? "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)"
+            ? "color-mix(in srgb, var(--aurora-accent-primary) 7%, transparent)"
             : hovered
             ? "var(--aurora-hover-bg)"
             : "transparent",
-          boxShadow: isSelected ? "var(--aurora-active-glow)" : "none",
-          color: isSelected ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
+          border: isSelected
+            ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 38%, transparent)"
+            : "1px solid transparent",
+          boxShadow: isSelected ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)" : "none",
+          color: isSelected ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
           fontFamily: "var(--aurora-font-sans)",
           fontSize: "13px",
-          fontWeight: isSelected ? 500 : 400,
+          fontWeight: isSelected ? 620 : 450,
           userSelect: "none",
           outline: "none",
-          transition: "background 0.1s, color 0.1s",
+          transition: "background 0.1s, border-color 0.1s, color 0.1s",
           margin: "1px 0",
         }}
       >
@@ -361,9 +352,11 @@ function TreeRow({
 // FileTree — main export
 // ---------------------------------------------------------------------------
 
-export function FileTree({ tree, onSelect, onContextAction }: FileTreeProps) {
-  const [selected, setSelected] = React.useState<string | null>(null)
-  const [expanded, setExpanded] = React.useState<Set<string>>(new Set())
+export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, defaultSelectedId }: FileTreeProps) {
+  const [selected, setSelected] = React.useState<string | null>(defaultSelectedId ?? null)
+  const [expanded, setExpanded] = React.useState<Set<string>>(
+    () => new Set(defaultExpandedIds ?? tree.filter((node) => node.type === "folder").map((node) => node.id))
+  )
   const [contextMenu, setContextMenu] = React.useState<{
     x: number
     y: number
@@ -399,7 +392,7 @@ export function FileTree({ tree, onSelect, onContextAction }: FileTreeProps) {
       style={{
         background: "var(--aurora-panel-medium)",
         border: "1px solid var(--aurora-border-default)",
-        borderRadius: "var(--aurora-radius-2)",
+        borderRadius: 8,
         padding: "6px",
         fontFamily: "var(--aurora-font-sans)",
         overflowY: "auto",
@@ -458,7 +451,7 @@ export function FileChip({ node, onDismiss }: FileChipProps) {
       <FileIcon language={node.language} />
       <span>{node.name}</span>
       {onDismiss && (
-        <button
+        <Button variant="plain" size="unstyled"
           onClick={() => onDismiss(node)}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
@@ -469,19 +462,18 @@ export function FileChip({ node, onDismiss }: FileChipProps) {
             justifyContent: "center",
             width: "14px",
             height: "14px",
-            borderRadius: "3px",
+            borderRadius: 3,
             background: hovered ? "var(--aurora-hover-bg)" : "transparent",
             border: "none",
             color: hovered ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
             cursor: "pointer",
-            fontSize: "10px",
             padding: 0,
             lineHeight: 1,
             transition: "background 0.1s, color 0.1s",
           }}
         >
-          ×
-        </button>
+          <X className="size-3" aria-hidden />
+        </Button>
       )}
     </span>
   )

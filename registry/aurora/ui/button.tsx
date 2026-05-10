@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
   [
-    "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold",
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap",
     "transition-all duration-150 ease-out",
     "disabled:pointer-events-none disabled:opacity-45",
     "focus-visible:outline-none",
@@ -17,28 +17,33 @@ const buttonVariants = cva(
     variants: {
       variant: {
         aurora: [
-          "text-white border border-transparent",
-          "relative overflow-hidden",
+          "border text-[var(--aurora-text-primary)]",
+          "bg-transparent",
         ].join(" "),
         neutral: [
           "border text-[var(--aurora-text-primary)]",
           "bg-transparent",
         ].join(" "),
         rose: [
-          "text-white border border-transparent",
+          "border text-[var(--aurora-text-primary)]",
+          "bg-transparent",
         ].join(" "),
         ghost: [
           "border-transparent text-[var(--aurora-text-muted)]",
           "bg-transparent hover:text-[var(--aurora-text-primary)]",
         ].join(" "),
         destructive: [
-          "text-white border border-transparent",
+          "border text-[var(--aurora-error)]",
+          "bg-transparent",
         ].join(" "),
+        plain: "border-transparent bg-transparent text-inherit",
       },
       size: {
-        sm: "h-7 px-3 text-xs rounded-[10px]",
-        default: "h-9 px-4 rounded-[var(--aurora-radius-1)]",
-        lg: "h-11 px-6 text-base rounded-[var(--aurora-radius-2)]",
+        sm: "h-7 px-3 rounded-[7px]",
+        default: "h-8 px-3.5 rounded-[8px]",
+        lg: "h-10 px-5 rounded-[10px]",
+        icon: "size-8 rounded-[8px] p-0",
+        unstyled: "",
       },
     },
     defaultVariants: {
@@ -53,40 +58,52 @@ function getVariantStyle(variant: ButtonVariant | null | undefined): React.CSSPr
   switch (variant) {
     case "aurora":
       return {
-        background: "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)",
+        borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 42%, var(--aurora-border-strong))",
+        background: [
+          "linear-gradient(180deg, color-mix(in srgb, var(--aurora-accent-primary) 10%, transparent), transparent 58%)",
+          "var(--aurora-control-surface)",
+        ].join(", "),
         boxShadow: [
-          "inset 0 1px 0 rgba(255,255,255,0.25)",
-          "0 0 0 1px color-mix(in srgb, #29b6f6 40%, transparent)",
-          "0 2px 12px color-mix(in srgb, #29b6f6 30%, transparent)",
-          "0 4px 20px color-mix(in srgb, #1da8e6 20%, transparent)",
+          "inset 0 1px 0 rgba(255,255,255,0.055)",
+          "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 16%, transparent)",
+          "0 0 10px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
         ].join(", "),
       }
     case "neutral":
       return {
         borderColor: "var(--aurora-border-strong)",
-        background: "linear-gradient(180deg, rgba(23,54,75,0.6) 0%, rgba(12,26,36,0.8) 100%)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+        background: "var(--aurora-control-surface)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045)",
       }
     case "rose":
       return {
-        background: "linear-gradient(180deg, #f9a8c4 0%, #e879a0 100%)",
+        borderColor: "color-mix(in srgb, var(--aurora-accent-pink) 52%, var(--aurora-border-strong))",
+        background: [
+          "linear-gradient(180deg, color-mix(in srgb, var(--aurora-accent-pink) 14%, transparent), transparent 58%)",
+          "var(--aurora-control-surface)",
+        ].join(", "),
         boxShadow: [
-          "inset 0 1px 0 rgba(255,255,255,0.20)",
-          "0 0 0 1px color-mix(in srgb, #f9a8c4 35%, transparent)",
-          "0 2px 12px color-mix(in srgb, #f9a8c4 25%, transparent)",
+          "inset 0 1px 0 rgba(255,255,255,0.06)",
+          "0 0 0 1px color-mix(in srgb, var(--aurora-accent-pink) 18%, transparent)",
+          "0 0 13px color-mix(in srgb, var(--aurora-accent-pink) 16%, transparent)",
         ].join(", "),
       }
     case "ghost":
       return {}
     case "destructive":
       return {
-        background: "linear-gradient(180deg, #d9909a 0%, #c78490 100%)",
+        borderColor: "color-mix(in srgb, var(--aurora-error) 42%, var(--aurora-border-strong))",
+        background: [
+          "linear-gradient(180deg, color-mix(in srgb, var(--aurora-error) 9%, transparent), transparent 58%)",
+          "var(--aurora-control-surface)",
+        ].join(", "),
         boxShadow: [
-          "inset 0 1px 0 rgba(255,255,255,0.15)",
-          "0 0 0 1px color-mix(in srgb, #c78490 35%, transparent)",
-          "0 2px 10px color-mix(in srgb, #c78490 25%, transparent)",
+          "inset 0 1px 0 rgba(255,255,255,0.045)",
+          "0 0 0 1px color-mix(in srgb, var(--aurora-error) 14%, transparent)",
         ].join(", "),
       }
+    case "plain":
+      return {}
     default:
       return {}
   }
@@ -95,21 +112,23 @@ function getVariantStyle(variant: ButtonVariant | null | undefined): React.CSSPr
 function getHoverStyle(variant: ButtonVariant | null | undefined): string {
   switch (variant) {
     case "aurora":
-      return "hover:[box-shadow:inset_0_1px_0_rgba(255,255,255,0.30),0_0_0_1px_color-mix(in_srgb,#29b6f6_55%,transparent),0_2px_16px_color-mix(in_srgb,#29b6f6_40%,transparent),0_6px_28px_color-mix(in_srgb,#1da8e6_28%,transparent)]"
+      return "hover:border-[color-mix(in_srgb,var(--aurora-accent-primary)_58%,var(--aurora-border-strong))] hover:bg-[color-mix(in_srgb,var(--aurora-accent-primary)_8%,var(--aurora-control-surface))]"
     case "neutral":
       return "hover:border-[var(--aurora-border-strong)] hover:bg-[var(--aurora-hover-bg)]"
     case "rose":
-      return "hover:opacity-90"
+      return "hover:border-[color-mix(in_srgb,var(--aurora-accent-pink)_68%,var(--aurora-border-strong))] hover:bg-[color-mix(in_srgb,var(--aurora-accent-pink)_10%,var(--aurora-control-surface))] hover:[box-shadow:inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_color-mix(in_srgb,var(--aurora-accent-pink)_24%,transparent),0_0_18px_color-mix(in_srgb,var(--aurora-accent-pink)_24%,transparent)]"
     case "ghost":
       return "hover:bg-[var(--aurora-hover-bg)]"
     case "destructive":
-      return "hover:opacity-90"
+      return "hover:border-[color-mix(in_srgb,var(--aurora-error)_58%,var(--aurora-border-strong))] hover:bg-[color-mix(in_srgb,var(--aurora-error)_7%,var(--aurora-control-surface))]"
+    case "plain":
+      return ""
     default:
       return ""
   }
 }
 
-type ButtonVariant = "aurora" | "neutral" | "rose" | "ghost" | "destructive"
+type ButtonVariant = "aurora" | "neutral" | "rose" | "ghost" | "destructive" | "plain"
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -122,12 +141,26 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button"
     const variantStyle = getVariantStyle(variant)
     const hoverClass = getHoverStyle(variant)
+    const typographyStyle =
+      variant === "plain" && size === "unstyled"
+        ? {}
+        : {
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: size === "lg" ? "14px" : size === "sm" ? "12px" : "13px",
+            fontWeight: size === "lg" ? 680 : 650,
+            letterSpacing: "0.012em",
+            lineHeight: "var(--aurora-line-ui)",
+          }
 
     return (
       <Comp
         ref={ref}
         className={cn(buttonVariants({ variant, size }), hoverClass, className)}
-        style={{ ...variantStyle, ...style }}
+        style={{
+          ...typographyStyle,
+          ...variantStyle,
+          ...style,
+        }}
         {...props}
       />
     )

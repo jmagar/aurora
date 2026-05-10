@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { DataTable, type Column, type SortState } from "@/registry/aurora/ui/data-table";
+import { DataTable, type Column } from "@/registry/aurora/ui/data-table";
 
 // ---------------------------------------------------------------------------
 // Status badge
@@ -96,10 +96,6 @@ const GATEWAYS: GatewayRow[] = [
 // ---------------------------------------------------------------------------
 // Columns
 // ---------------------------------------------------------------------------
-
-const STATUS_SORT_ORDER: Record<GatewayStatus, number> = {
-  active: 0, deploying: 1, error: 2, inactive: 3,
-};
 
 const COLUMNS: Column<Record<string, unknown>>[] = [
   {

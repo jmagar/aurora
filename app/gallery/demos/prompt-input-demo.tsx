@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { PromptInput, Attachment } from "@/registry/aurora/blocks/prompt-input/prompt-input"
 
 export default function PromptInputDemo() {
@@ -24,6 +24,8 @@ export default function PromptInputDemo() {
 
   function handleSubmit(v: string, atts: Attachment[]) {
     if (isStreaming) return
+    void v
+    void atts
     setIsStreaming(true)
     setValue("")
     const t = setTimeout(() => setIsStreaming(false), 2000)

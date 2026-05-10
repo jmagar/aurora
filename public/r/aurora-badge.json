@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-badge",
+  "type": "registry:ui",
+  "title": "Aurora Badge",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Small status and label badge component with Aurora tint variants.",
+  "dependencies": [
+    "class-variance-authority@^0.7.1"
+  ],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/badge.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\nimport { cn } from \"@/lib/utils\"\n\nconst badgeVariants = cva(\n  [\n    \"inline-flex items-center gap-1.5\",\n    \"px-2 py-0.5\",\n    \"uppercase leading-none\",\n    \"border\",\n    \"whitespace-nowrap\",\n  ].join(\" \"),\n  {\n    variants: {\n      variant: {\n        default: [\n          \"text-[var(--aurora-accent-primary)]\",\n          \"border-[color-mix(in_srgb,var(--aurora-accent-primary)_30%,transparent)]\",\n        ].join(\" \"),\n        success: [\n          \"text-[var(--aurora-success)]\",\n          \"border-[color-mix(in_srgb,var(--aurora-success)_30%,transparent)]\",\n        ].join(\" \"),\n        warn: [\n          \"text-[var(--aurora-warn)]\",\n          \"border-[color-mix(in_srgb,var(--aurora-warn)_30%,transparent)]\",\n        ].join(\" \"),\n        error: [\n          \"text-[var(--aurora-error)]\",\n          \"border-[color-mix(in_srgb,var(--aurora-error)_30%,transparent)]\",\n        ].join(\" \"),\n        rose: [\n          \"text-[var(--aurora-accent-pink)]\",\n          \"border-[color-mix(in_srgb,var(--aurora-accent-pink)_30%,transparent)]\",\n        ].join(\" \"),\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  }\n)\n\nconst variantBgMap: Record<string, string> = {\n  default: \"color-mix(in srgb, var(--aurora-accent-primary) 10%, transparent)\",\n  success: \"color-mix(in srgb, var(--aurora-success) 10%, transparent)\",\n  warn: \"color-mix(in srgb, var(--aurora-warn) 10%, transparent)\",\n  error: \"color-mix(in srgb, var(--aurora-error) 10%, transparent)\",\n  rose: \"color-mix(in srgb, var(--aurora-accent-pink) 10%, transparent)\",\n}\n\nconst dotColorMap: Record<string, string> = {\n  default: \"var(--aurora-accent-primary)\",\n  success: \"var(--aurora-success)\",\n  warn: \"var(--aurora-warn)\",\n  error: \"var(--aurora-error)\",\n  rose: \"var(--aurora-accent-pink)\",\n}\n\nexport interface BadgeProps\n  extends React.HTMLAttributes<HTMLSpanElement>,\n    VariantProps<typeof badgeVariants> {\n  dot?: boolean\n}\n\nconst Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(\n  ({ className, variant, dot = false, style, children, ...props }, ref) => {\n    const resolvedVariant = variant ?? \"default\"\n    const bg = variantBgMap[resolvedVariant] ?? variantBgMap[\"default\"]\n    const dotColor = dotColorMap[resolvedVariant] ?? dotColorMap[\"default\"]\n\n    return (\n      <span\n        ref={ref}\n        className={cn(badgeVariants({ variant }), className)}\n        style={{\n          borderRadius: \"4px\",\n          background: bg,\n          fontFamily: \"var(--aurora-font-mono, 'JetBrains Mono', monospace)\",\n          fontSize: \"var(--aurora-type-micro)\",\n          fontWeight: 650,\n          letterSpacing: \"0.075em\",\n          ...style,\n        }}\n        {...props}\n      >\n        {dot && (\n          <span\n            aria-hidden=\"true\"\n            style={{\n              display: \"inline-block\",\n              width: \"5px\",\n              height: \"5px\",\n              borderRadius: \"50%\",\n              backgroundColor: dotColor,\n              flexShrink: 0,\n              boxShadow: `0 0 4px ${dotColor}`,\n            }}\n          />\n        )}\n        {children}\n      </span>\n    )\n  }\n)\nBadge.displayName = \"Badge\"\n\nexport { Badge, badgeVariants }\nexport default Badge\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/badge.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/badge.tsx",
+    "installTarget": "@ui/aurora/badge.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/badge.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui"
+  ]
+}

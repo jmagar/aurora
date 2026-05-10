@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/registry/aurora/ui/button";
 import {
   Tabs,
   TabsList,
@@ -71,7 +72,7 @@ function StatusDot({ status }: { status: string }) {
 
 function ActionBtn({ children }: { children: React.ReactNode }) {
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       type="button"
       style={{
         display: "inline-flex",
@@ -89,7 +90,7 @@ function ActionBtn({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 

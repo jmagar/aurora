@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-popover",
+  "type": "registry:ui",
+  "title": "Aurora Popover",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Lightweight anchored disclosure surface for inline details, previews, and quick editors.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/popover.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Button } from \"./button\"\nimport { cn } from \"@/lib/utils\"\n\ninterface PopoverContextValue {\n  open: boolean\n  setOpen: React.Dispatch<React.SetStateAction<boolean>>\n}\n\nconst PopoverContext = React.createContext<PopoverContextValue | null>(null)\n\nexport function Popover({ children, defaultOpen = false }: { children: React.ReactNode; defaultOpen?: boolean }) {\n  const [open, setOpen] = React.useState(defaultOpen)\n  return <PopoverContext.Provider value={{ open, setOpen }}>{children}</PopoverContext.Provider>\n}\n\nexport interface PopoverTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  asChild?: boolean\n}\n\nexport function PopoverTrigger({ children, asChild, onClick, ...props }: PopoverTriggerProps) {\n  const ctx = React.useContext(PopoverContext)\n  if (!ctx) throw new Error(\"PopoverTrigger must be used within Popover\")\n\n  if (asChild && React.isValidElement<React.HTMLAttributes<HTMLElement>>(children)) {\n    return React.cloneElement(children, {\n      onClick: (event: React.MouseEvent<HTMLElement>) => {\n        children.props.onClick?.(event)\n        ctx.setOpen((value) => !value)\n      },\n    })\n  }\n\n  return (\n    <Button variant=\"plain\" size=\"unstyled\"\n      type=\"button\"\n      aria-expanded={ctx.open}\n      onClick={(event) => {\n        onClick?.(event)\n        ctx.setOpen((value) => !value)\n      }}\n      {...props}\n    >\n      {children}\n    </Button>\n  )\n}\n\nexport interface PopoverContentProps extends React.HTMLAttributes<HTMLDivElement> {\n  align?: \"start\" | \"center\" | \"end\"\n}\n\nexport const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentProps>(\n  ({ className, align = \"start\", style, ...props }, ref) => {\n    const ctx = React.useContext(PopoverContext)\n    if (!ctx?.open) return null\n\n    return (\n      <div\n        ref={ref}\n        role=\"dialog\"\n        className={cn(\"absolute z-50 mt-2 w-72 rounded-[var(--aurora-radius-1)] border p-4\", className)}\n        style={{\n          insetInlineStart: align === \"start\" ? 0 : undefined,\n          insetInlineEnd: align === \"end\" ? 0 : undefined,\n          left: align === \"center\" ? \"50%\" : undefined,\n          transform: align === \"center\" ? \"translateX(-50%)\" : undefined,\n          background: \"var(--aurora-panel-strong)\",\n          borderColor: \"var(--aurora-border-strong)\",\n          boxShadow: \"var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.04)\",\n          color: \"var(--aurora-text-primary)\",\n          ...style,\n        }}\n        {...props}\n      />\n    )\n  }\n)\nPopoverContent.displayName = \"PopoverContent\"\n\nexport function PopoverAnchor({ children, className }: { children: React.ReactNode; className?: string }) {\n  return <div className={cn(\"relative inline-block\", className)}>{children}</div>\n}\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/popover.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/popover.tsx",
+    "installTarget": "@ui/aurora/popover.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/popover.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "overlay"
+  ]
+}

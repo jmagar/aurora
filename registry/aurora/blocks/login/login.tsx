@@ -1,6 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
+import { Input } from "@/registry/aurora/ui/input"
+import { InputOTP } from "@/registry/aurora/ui/input-otp"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -80,8 +83,6 @@ interface AuroraInputProps {
 }
 
 function AuroraInput({ id, label, type = "text", value, onChange, placeholder, autoComplete, trailing }: AuroraInputProps) {
-  const [focused, setFocused] = React.useState(false)
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
       <label
@@ -95,46 +96,16 @@ function AuroraInput({ id, label, type = "text", value, onChange, placeholder, a
       >
         {label}
       </label>
-      <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-        <input
-          id={id}
-          type={type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          style={{
-            width: "100%",
-            height: "40px",
-            padding: trailing ? "0 40px 0 14px" : "0 14px",
-            background: "var(--aurora-control-surface)",
-            border: `1px solid ${focused ? "var(--aurora-accent-primary)" : "var(--aurora-border-default)"}`,
-            borderRadius: "10px",
-            fontFamily: "var(--aurora-font-sans)",
-            fontSize: "14px",
-            color: "var(--aurora-text-primary)",
-            outline: "none",
-            boxShadow: focused ? `0 0 0 3px var(--aurora-focus-ring)` : "none",
-            transition: "border-color 0.15s, box-shadow 0.15s",
-            boxSizing: "border-box",
-          }}
-        />
-        {trailing && (
-          <div
-            style={{
-              position: "absolute",
-              right: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "var(--aurora-text-muted)",
-            }}
-          >
-            {trailing}
-          </div>
-        )}
-      </div>
+      <Input
+        id={id}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        endAdornment={trailing}
+        className="h-10 rounded-[10px]"
+      />
     </div>
   )
 }
@@ -143,126 +114,19 @@ function AuroraInput({ id, label, type = "text", value, onChange, placeholder, a
 // Style D — Aurora glow border button
 // ---------------------------------------------------------------------------
 
-function GlowButton({
-  children,
-  onClick,
-  type = "button",
-  disabled,
-}: {
-  children: React.ReactNode
-  onClick?: () => void
-  type?: "button" | "submit"
-  disabled?: boolean
-}) {
-  const [hovered, setHovered] = React.useState(false)
-
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        width: "100%",
-        height: "44px",
-        borderRadius: "12px",
-        background: hovered
-          ? "color-mix(in srgb, var(--aurora-accent-primary) 15%, var(--aurora-panel-strong))"
-          : "var(--aurora-panel-strong)",
-        border: "1px solid " + (hovered ? "var(--aurora-accent-primary)" : "var(--aurora-border-strong)"),
-        boxShadow: hovered ? "var(--aurora-active-glow)" : "none",
-        color: "var(--aurora-accent-primary)",
-        fontFamily: "var(--aurora-font-sans)",
-        fontSize: "14px",
-        fontWeight: 600,
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled ? 0.5 : 1,
-        transition: "background 0.15s, border-color 0.15s, box-shadow 0.15s",
-        letterSpacing: "0.01em",
-      }}
-    >
-      {children}
-    </button>
-  )
-}
-
 // ---------------------------------------------------------------------------
 // OTP input — 6 boxes, auto-advance
 // ---------------------------------------------------------------------------
 
 function OtpInput({ onComplete }: { onComplete?: (otp: string) => void }) {
-  const [digits, setDigits] = React.useState<string[]>(Array(6).fill(""))
-  const inputRefs = React.useRef<(HTMLInputElement | null)[]>([])
+  const [value, setValue] = React.useState("")
 
-  function handleChange(index: number, value: string) {
-    const cleaned = value.replace(/\D/g, "").slice(-1)
-    const next = [...digits]
-    next[index] = cleaned
-    setDigits(next)
-
-    if (cleaned && index < 5) {
-      inputRefs.current[index + 1]?.focus()
-    }
-
-    const full = next.join("")
-    if (full.length === 6 && !full.includes("")) {
-      onComplete?.(full)
-    }
-  }
-
-  function handleKeyDown(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Backspace" && !digits[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus()
-    }
-    if (e.key === "ArrowLeft" && index > 0) inputRefs.current[index - 1]?.focus()
-    if (e.key === "ArrowRight" && index < 5) inputRefs.current[index + 1]?.focus()
-  }
-
-  function handlePaste(e: React.ClipboardEvent) {
-    e.preventDefault()
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6)
-    const next = [...digits]
-    for (let i = 0; i < pasted.length; i++) next[i] = pasted[i]
-    setDigits(next)
-    const focusIdx = Math.min(pasted.length, 5)
-    inputRefs.current[focusIdx]?.focus()
-    if (pasted.length === 6) onComplete?.(pasted)
-  }
+  React.useEffect(() => {
+    if (value.length === 6) onComplete?.(value)
+  }, [onComplete, value])
 
   return (
-    <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-      {digits.map((digit, i) => (
-        <input
-          key={i}
-          ref={(el) => { inputRefs.current[i] = el }}
-          type="text"
-          inputMode="numeric"
-          maxLength={1}
-          value={digit}
-          onChange={(e) => handleChange(i, e.target.value)}
-          onKeyDown={(e) => handleKeyDown(i, e)}
-          onPaste={handlePaste}
-          aria-label={`OTP digit ${i + 1}`}
-          style={{
-            width: "44px",
-            height: "52px",
-            textAlign: "center",
-            fontFamily: "var(--aurora-font-mono)",
-            fontSize: "20px",
-            fontWeight: 700,
-            color: digit ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
-            background: "var(--aurora-control-surface)",
-            border: `1.5px solid ${digit ? "var(--aurora-accent-primary)" : "var(--aurora-border-default)"}`,
-            borderRadius: "10px",
-            outline: "none",
-            boxShadow: digit ? "var(--aurora-active-glow)" : "none",
-            transition: "border-color 0.15s, box-shadow 0.15s",
-            caretColor: "var(--aurora-accent-primary)",
-          }}
-        />
-      ))}
-    </div>
+    <InputOTP length={6} value={value} onChange={setValue} className="justify-center gap-2.5" />
   )
 }
 
@@ -295,7 +159,7 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
         placeholder="••••••••"
         autoComplete="current-password"
         trailing={
-          <button
+          <Button variant="plain" size="unstyled"
             type="button"
             onClick={() => setShowPw((p) => !p)}
             style={{
@@ -309,12 +173,12 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
             aria-label={showPw ? "Hide password" : "Show password"}
           >
             <EyeIcon visible={showPw} />
-          </button>
+          </Button>
         }
       />
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
+        <Button variant="plain" size="unstyled"
           type="button"
           style={{
             background: "none",
@@ -328,12 +192,12 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
           }}
         >
           Forgot password?
-        </button>
+        </Button>
       </div>
 
-      <GlowButton type="submit" onClick={() => onSubmit?.({ email, password })}>
+      <Button type="submit" variant="aurora" size="lg" onClick={() => onSubmit?.({ email, password })} style={{ width: "100%" }}>
         Sign in
-      </GlowButton>
+      </Button>
 
       <div
         style={{
@@ -356,24 +220,15 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
         <div style={{ flex: 1, height: "1px", background: "var(--aurora-border-default)" }} />
       </div>
 
-      <button
+      <Button
         type="button"
+        variant="neutral"
+        size="lg"
         onClick={() => email && onMagicLink?.(email)}
-        style={{
-          width: "100%",
-          height: "40px",
-          borderRadius: "10px",
-          background: "transparent",
-          border: "1px solid var(--aurora-border-default)",
-          color: "var(--aurora-text-muted)",
-          fontFamily: "var(--aurora-font-sans)",
-          fontSize: "13px",
-          cursor: "pointer",
-          transition: "border-color 0.12s, color 0.12s",
-        }}
+        style={{ width: "100%" }}
       >
         Send magic link
-      </button>
+      </Button>
     </>
   )
 }
@@ -457,7 +312,7 @@ function TwoFactorView({ onSubmit }: LoginProps) {
         </div>
         <OtpInput onComplete={(otp) => onSubmit?.({ otp })} />
       </div>
-      <GlowButton onClick={() => {}}>Verify</GlowButton>
+      <Button type="button" variant="aurora" size="lg" onClick={() => {}} style={{ width: "100%" }}>Verify</Button>
     </div>
   )
 }

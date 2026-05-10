@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-tool",
+  "type": "registry:block",
+  "title": "Aurora AI Tool",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora-native tool parity surface from AI Elements.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-ai-elements",
+    "aurora-tool-calls"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai-elements/tool.tsx",
+      "content": "\"use client\"\n\nexport { ToolCalls as Tool } from \"@/registry/aurora/blocks/tool-calls/tool-calls\"\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/tool.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai-elements/tool.tsx",
+    "installTarget": "@components/aurora/ai/tool.tsx"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/tool.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-tool-calls`.",
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ]
+}

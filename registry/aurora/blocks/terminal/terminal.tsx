@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -86,32 +87,22 @@ function TitlebarButton({
   onClick?: () => void
   title?: string
 }) {
-  const [hovered, setHovered] = React.useState(false)
   return (
-    <button
+    <Button
+      type="button"
+      variant="neutral"
+      size="icon"
       onClick={onClick}
       title={title}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
         width: "26px",
         height: "22px",
-        borderRadius: "6px",
-        background: hovered ? "var(--aurora-hover-bg)" : "transparent",
-        border: `1px solid ${hovered ? "var(--aurora-border-strong)" : "var(--aurora-border-default)"}`,
-        color: hovered ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-        cursor: "pointer",
         fontSize: "10px",
-        fontWeight: 600,
         fontFamily: "var(--aurora-font-mono)",
-        transition: "background 0.12s, border-color 0.12s, color 0.12s",
       }}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 

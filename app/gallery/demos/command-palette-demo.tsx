@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 import { CommandPalette, useCommandPalette } from "@/registry/aurora/blocks/command-palette/command-palette"
 import type { CommandItem } from "@/registry/aurora/blocks/command-palette/command-palette"
 
@@ -41,9 +42,9 @@ export default function CommandPaletteDemo() {
         Command Palette
       </h2>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "40px 20px", background: "var(--aurora-panel-medium)", border: "1px solid var(--aurora-border-default)", borderRadius: "var(--aurora-radius-2)", textAlign: "center" }}>
-        <button onClick={() => setOpen(true)} style={{ display: "inline-flex", alignItems: "center", gap: "10px", padding: "10px 20px", background: "color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-control-surface))", border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 30%, var(--aurora-border-default))", borderRadius: "12px", color: "var(--aurora-accent-primary)", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
+        <Button variant="aurora" size="lg" onClick={() => setOpen(true)}>
           Open Command Palette (⌘K)
-        </button>
+        </Button>
         <p style={{ fontSize: "12px", color: "var(--aurora-text-muted)", margin: 0 }}>
           Press ⌘K or click the button. Use arrows to navigate, Enter to select, Esc to close.
         </p>

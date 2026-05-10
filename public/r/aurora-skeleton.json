@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-skeleton",
+  "type": "registry:ui",
+  "title": "Aurora Skeleton",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Shimmer skeleton loader with Aurora panel-medium base and hover-bg highlight.",
+  "dependencies": [
+    "class-variance-authority@^0.7.1"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-button",
+    "aurora-input"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/skeleton.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\n\n// ---------------------------------------------------------------------------\n// Keyframe injection\n// ---------------------------------------------------------------------------\n\nconst SHIMMER_ID = \"aurora-skeleton-shimmer\";\n\nfunction injectShimmer() {\n  if (typeof document === \"undefined\") return;\n  if (document.getElementById(SHIMMER_ID)) return;\n  const style = document.createElement(\"style\");\n  style.id = SHIMMER_ID;\n  style.textContent = `\n    @keyframes aurora-shimmer {\n      0%   { background-position: -800px 0; }\n      100% { background-position:  800px 0; }\n    }\n    .aurora-shimmer {\n      background: linear-gradient(\n        90deg,\n        var(--aurora-panel-strong) 25%,\n        color-mix(in srgb, var(--aurora-border-strong) 60%, transparent) 37%,\n        var(--aurora-panel-strong) 63%\n      );\n      background-size: 800px 100%;\n      animation: aurora-shimmer 1.4s ease-in-out infinite;\n    }\n  `;\n  document.head.appendChild(style);\n}\n\n// ---------------------------------------------------------------------------\n// CVA variants\n// ---------------------------------------------------------------------------\n\nconst skeletonVariants = cva(\"aurora-shimmer shrink-0\", {\n  variants: {\n    variant: {\n      text:   \"h-3.5 w-full rounded\",\n      title:  \"h-5 w-full rounded\",\n      avatar: \"size-9 rounded-full\",\n      button: \"h-9 w-24 rounded-lg\",\n      card:   \"h-32 w-full rounded-2xl\",\n    },\n  },\n  defaultVariants: {\n    variant: \"text\",\n  },\n});\n\n// ---------------------------------------------------------------------------\n// Types\n// ---------------------------------------------------------------------------\n\nexport interface SkeletonProps\n  extends React.HTMLAttributes<HTMLDivElement>,\n    VariantProps<typeof skeletonVariants> {\n  /** Override default width with a Tailwind/inline class */\n  width?: string;\n}\n\n// ---------------------------------------------------------------------------\n// Skeleton\n// ---------------------------------------------------------------------------\n\nexport const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(\n  function Skeleton({ variant, width, className, ...rest }, ref) {\n    React.useEffect(injectShimmer, []);\n\n    return (\n      <div\n        ref={ref}\n        aria-hidden=\"true\"\n        className={cn(skeletonVariants({ variant }), width, className)}\n        {...rest}\n      />\n    );\n  },\n);\n\nSkeleton.displayName = \"Skeleton\";\n\n// ---------------------------------------------------------------------------\n// SkeletonRow — pre-composed avatar + two text lines + button\n// ---------------------------------------------------------------------------\n\nexport type SkeletonRowProps = React.HTMLAttributes<HTMLDivElement>\n\nexport const SkeletonRow = React.forwardRef<HTMLDivElement, SkeletonRowProps>(\n  function SkeletonRow({ className, ...rest }, ref) {\n    React.useEffect(injectShimmer, []);\n\n    return (\n      <div\n        ref={ref}\n        aria-hidden=\"true\"\n        className={cn(\"flex items-center gap-3\", className)}\n        {...rest}\n      >\n        {/* Avatar */}\n        <Skeleton variant=\"avatar\" />\n\n        {/* Text block */}\n        <div className=\"flex flex-1 flex-col gap-2\">\n          <Skeleton variant=\"title\" width=\"w-1/3\" />\n          <Skeleton variant=\"text\"  width=\"w-2/3\" />\n        </div>\n\n        {/* Button */}\n        <Skeleton variant=\"button\" />\n      </div>\n    );\n  },\n);\n\nSkeletonRow.displayName = \"SkeletonRow\";\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/skeleton.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/skeleton.tsx",
+    "installTarget": "@ui/aurora/skeleton.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/skeleton.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "feedback"
+  ]
+}

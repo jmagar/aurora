@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import {
   PermissionsDropdown,
   PermissionChip,
@@ -133,7 +134,7 @@ export function PermissionsDropdownDemo() {
         </div>
       </div>
 
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={() => setTools(INITIAL_TOOLS)}
         style={{
           alignSelf: "flex-start",
@@ -149,7 +150,7 @@ export function PermissionsDropdownDemo() {
         }}
       >
         Reset to defaults
-      </button>
+      </Button>
     </div>
   )
 }

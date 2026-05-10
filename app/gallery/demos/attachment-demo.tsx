@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import { Button } from "@/registry/aurora/ui/button"
 import { AttachmentChip, AttachmentGrid, AttachmentDocCard, AttachmentAudioChip, AttachmentUploadProgress, AttachmentDragZone } from "@/registry/aurora/blocks/attachment/attachment"
 import type { AttachmentGridItem } from "@/registry/aurora/blocks/attachment/attachment"
 
@@ -42,7 +43,7 @@ export default function AttachmentDemo() {
         <p style={{ fontSize: "12px", color: "var(--aurora-text-muted)", marginBottom: "10px", fontWeight: 500 }}>AttachmentChip - dismissible file pills</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
           {chips.map((c) => <AttachmentChip key={c.id} name={c.name} size={c.size} onDismiss={() => setChips((prev) => prev.filter((x) => x.id !== c.id))} />)}
-          {chips.length === 0 && <button onClick={() => setChips(INITIAL_CHIPS)} style={{ padding: "4px 10px", background: "var(--aurora-control-surface)", border: "1px solid var(--aurora-border-default)", borderRadius: "8px", color: "var(--aurora-text-muted)", fontSize: "12px", cursor: "pointer" }}>Reset</button>}
+          {chips.length === 0 && <Button size="sm" variant="neutral" onClick={() => setChips(INITIAL_CHIPS)}>Reset</Button>}
         </div>
       </div>
 
@@ -51,7 +52,7 @@ export default function AttachmentDemo() {
         {gridItems.length > 0 ? (
           <div style={{ maxWidth: "360px" }}><AttachmentGrid items={gridItems} columns={3} onRemove={(id) => setGridItems((prev) => prev.filter((i) => i.id !== id))} /></div>
         ) : (
-          <button onClick={() => setGridItems(GRID_ITEMS)} style={{ padding: "6px 14px", background: "var(--aurora-control-surface)", border: "1px solid var(--aurora-border-default)", borderRadius: "8px", color: "var(--aurora-text-muted)", fontSize: "12px", cursor: "pointer" }}>Reset grid</button>
+          <Button size="sm" variant="neutral" onClick={() => setGridItems(GRID_ITEMS)}>Reset grid</Button>
         )}
       </div>
 

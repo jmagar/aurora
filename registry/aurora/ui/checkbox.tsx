@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "./button"
 
 // ---------------------------------------------------------------------------
 // Shared CSS injection
@@ -128,11 +129,11 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
       transition: "background 150ms, border-color 150ms, box-shadow 150ms",
       boxShadow: focused
         ? [
-            "0 0 0 3px color-mix(in srgb, #29b6f6 22%, transparent)",
-            "0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent)",
+            "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)",
+            "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)",
           ].join(", ")
         : checked
-        ? "0 0 0 1px color-mix(in srgb, #29b6f6 25%, transparent)"
+        ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 25%, transparent)"
         : "none",
       outline: "none",
       padding: 0,
@@ -147,7 +148,7 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
 
     return (
       <label htmlFor={id} style={wrapperStyle} className={className}>
-        <button
+        <Button variant="plain" size="unstyled"
           ref={ref}
           id={id}
           role="checkbox"
@@ -167,16 +168,18 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
               style={{ animation: "aurora-check-pop 180ms cubic-bezier(0.4,0,0.2,1) both" }}
             />
           )}
-        </button>
+        </Button>
 
         {children && (
           <span
             style={{
-              fontSize: 14,
               color: disabled ? "var(--aurora-text-muted)" : "var(--aurora-text-primary)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "var(--aurora-type-control)",
+              fontWeight: "var(--aurora-weight-body)",
+              letterSpacing: "var(--aurora-letter-ui)",
               userSelect: "none",
-              lineHeight: 1.4,
+              lineHeight: "var(--aurora-line-ui)",
             }}
           >
             {children}
@@ -307,11 +310,11 @@ const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(
       transition: "background 150ms, border-color 150ms, box-shadow 150ms",
       boxShadow: focused
         ? [
-            "0 0 0 3px color-mix(in srgb, #29b6f6 22%, transparent)",
-            "0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent)",
+            "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)",
+            "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)",
           ].join(", ")
         : checked
-        ? "0 0 0 1px color-mix(in srgb, #29b6f6 25%, transparent)"
+        ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 25%, transparent)"
         : "none",
       outline: "none",
       padding: 0,
@@ -328,7 +331,7 @@ const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(
         }}
         className={className}
       >
-        <button
+        <Button variant="plain" size="unstyled"
           ref={ref}
           id={id}
           role="radio"
@@ -344,16 +347,18 @@ const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(
           onBlur={() => setFocused(false)}
         >
           {checked && <span style={dotStyle} />}
-        </button>
+        </Button>
 
         {children && (
           <span
             style={{
-              fontSize: 14,
               color: disabled ? "var(--aurora-text-muted)" : "var(--aurora-text-primary)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "var(--aurora-type-control)",
+              fontWeight: "var(--aurora-weight-body)",
+              letterSpacing: "var(--aurora-letter-ui)",
               userSelect: "none",
-              lineHeight: 1.4,
+              lineHeight: "var(--aurora-line-ui)",
             }}
           >
             {children}

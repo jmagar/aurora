@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-label",
+  "type": "registry:ui",
+  "title": "Aurora Label",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Accessible form label matching Aurora control typography.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/label.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nconst Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(({ className, style, ...props }, ref) => (\n  <label\n    ref={ref}\n    className={cn(\"aurora-text-label\", className)}\n    style={{\n      color: \"var(--aurora-text-muted)\",\n      cursor: \"default\",\n      ...style,\n    }}\n    {...props}\n  />\n))\nLabel.displayName = \"Label\"\n\nexport { Label }\nexport default Label\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/label.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/label.tsx",
+    "installTarget": "@ui/aurora/label.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/label.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "forms"
+  ]
+}

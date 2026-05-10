@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-voice-selector",
+  "type": "registry:block",
+  "title": "Aurora AI Voice Selector",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora-native voice selector parity surface from AI Elements.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-ai-elements"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai-elements/voice-selector.tsx",
+      "content": "\"use client\"\n\nexport { VoiceSelector } from \"./core\"\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/voice-selector.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai-elements/voice-selector.tsx",
+    "installTarget": "@components/aurora/ai/voice-selector.tsx"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/voice-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ]
+}

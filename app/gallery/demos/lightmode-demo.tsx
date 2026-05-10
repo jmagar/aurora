@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/registry/aurora/ui/button";
 
 type BadgeEntry = { label: string; bg: string; border: string; color: string; dot: string };
 
@@ -47,9 +48,9 @@ export default function LightmodeDemo() {
       </div>
 
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <button style={{ display: "inline-flex", alignItems: "center", height: 32, padding: "0 14px", borderRadius: "var(--aurora-radius-1)", border: "none", background: "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", boxShadow: "0 0 0 1px color-mix(in srgb, #29b6f6 40%, transparent), 0 2px 10px color-mix(in srgb, #29b6f6 25%, transparent)" }}>Deploy</button>
-        <button style={{ display: "inline-flex", alignItems: "center", height: 32, padding: "0 14px", borderRadius: "var(--aurora-radius-1)", border: "1px solid var(--aurora-border-strong)", background: "var(--aurora-control-surface)", color: "var(--aurora-text-primary)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Configure</button>
-        <button style={{ display: "inline-flex", alignItems: "center", height: 32, padding: "0 14px", borderRadius: "var(--aurora-radius-1)", border: "1px solid color-mix(in srgb, #c78490 35%, transparent)", background: "color-mix(in srgb, #c78490 10%, transparent)", color: "var(--aurora-error)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Delete</button>
+        <Button variant="aurora">Deploy</Button>
+        <Button variant="neutral">Configure</Button>
+        <Button variant="destructive">Delete</Button>
       </div>
 
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 16px", borderRadius: 8, border: "1px solid color-mix(in srgb, #c6a36b 30%, transparent)", background: "color-mix(in srgb, #c6a36b 10%, transparent)" }}>

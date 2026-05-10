@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/registry/aurora/ui/button";
 import { EmptyState } from "@/registry/aurora/ui/empty-state";
 
 function PlusIcon() {
@@ -42,27 +43,14 @@ function PluginIcon() {
 }
 
 function AuroraButton({ children, onClick, variant = "primary" }: { children: React.ReactNode; onClick?: () => void; variant?: "primary" | "ghost" }) {
-  const isPrimary = variant === "primary";
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        padding: "8px 16px",
-        borderRadius: 8,
-        fontSize: 13,
-        fontWeight: 600,
-        cursor: "pointer",
-        border: isPrimary ? "1px solid var(--aurora-accent-primary)" : "1px solid var(--aurora-border-default)",
-        background: isPrimary ? "var(--aurora-accent-primary)" : "var(--aurora-control-surface)",
-        color: isPrimary ? "#000" : "var(--aurora-text-primary)",
-      }}
+      variant={variant === "primary" ? "aurora" : "neutral"}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 

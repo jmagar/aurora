@@ -57,7 +57,7 @@ export default function BrandDemo() {
           Logo &amp; mark
         </h2>
         <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          The Labby stacked-plane mark and wordmark at every usage size. The mark uses four rhombus planes in depth; the "y" in the wordmark carries the pink accent.
+          The Labby stacked-plane mark and wordmark at every usage size. The mark uses four rhombus planes in depth; the &quot;y&quot; in the wordmark carries the pink accent.
         </p>
       </div>
 

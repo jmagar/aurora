@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // CSS injected once
@@ -106,7 +107,7 @@ function SegmentedControl({
         const active = value === s
         const cfg = STATE_CONFIG[s]
         return (
-          <button
+          <Button variant="plain" size="unstyled"
             key={s}
             type="button"
             role="radio"
@@ -131,39 +132,10 @@ function SegmentedControl({
             }}
           >
             {cfg.label}
-          </button>
+          </Button>
         )
       })}
     </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// State badge (compact display)
-// ---------------------------------------------------------------------------
-
-function StateBadge({ state }: { state: ToolPermissionState }) {
-  const cfg = STATE_CONFIG[state]
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        height: 18,
-        padding: "0 6px",
-        borderRadius: 5,
-        border: `1px solid ${cfg.border}`,
-        background: cfg.bg,
-        color: cfg.color,
-        fontSize: 10,
-        fontWeight: 700,
-        fontFamily: "var(--font-sans, Inter, sans-serif)",
-        letterSpacing: "0.04em",
-        textTransform: "uppercase",
-      }}
-    >
-      {cfg.label}
-    </span>
   )
 }
 
@@ -214,7 +186,7 @@ function MasterToggle({
       </span>
 
       {/* Toggle pill */}
-      <button
+      <Button variant="plain" size="unstyled"
         type="button"
         role="switch"
         aria-checked={enabled}
@@ -258,7 +230,7 @@ function MasterToggle({
           }}
         />
         {enabled ? "Enabled" : "Disabled"}
-      </button>
+      </Button>
     </div>
   )
 }
@@ -496,7 +468,7 @@ export function PermissionChip({
   const hasRestrictions = restrictedCount > 0
 
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       type="button"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
@@ -592,7 +564,7 @@ export function PermissionChip({
           />
         </svg>
       )}
-    </button>
+    </Button>
   )
 }
 

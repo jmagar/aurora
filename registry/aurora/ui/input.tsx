@@ -31,7 +31,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={type}
           className={cn(
             // Layout
-            "h-9 w-full px-3 py-2 text-sm",
+            "h-9 w-full px-3 py-2",
             // Typography
             "font-[var(--aurora-font-sans,_Inter,_sans-serif)]",
             "text-[var(--aurora-text-primary)]",
@@ -53,6 +53,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
           style={{
             background: "var(--aurora-control-surface, #0c1a24)",
+            fontSize: "var(--aurora-type-body-sm)",
+            fontWeight: "var(--aurora-weight-body)",
+            letterSpacing: "var(--aurora-letter-ui)",
+            lineHeight: "var(--aurora-line-ui)",
             // Focus shadow applied via CSS — we use a focus-within wrapper trick
             // or inline via onFocus/onBlur in more complex setups.
             // Here we rely on the focus-visible ring below.
@@ -61,8 +65,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           onFocus={(e) => {
             e.currentTarget.style.borderColor = "var(--aurora-border-strong)"
             e.currentTarget.style.boxShadow = [
-              "0 0 0 3px color-mix(in srgb, #29b6f6 22%, transparent)",
-              "0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent)",
+              "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)",
+              "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)",
             ].join(", ")
             props.onFocus?.(e)
           }}
@@ -75,8 +79,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         {hasEnd && (
           <span
-            className="pointer-events-none absolute right-3 flex items-center text-[var(--aurora-text-muted)]"
-            aria-hidden="true"
+            className="absolute right-3 flex items-center text-[var(--aurora-text-muted)]"
           >
             {endAdornment}
           </span>

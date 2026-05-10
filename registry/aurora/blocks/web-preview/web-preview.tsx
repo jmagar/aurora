@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -112,30 +113,21 @@ function ChromeButton({
   onClick?: () => void
   title?: string
 }) {
-  const [hovered, setHovered] = React.useState(false)
   return (
-    <button
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
       onClick={onClick}
       title={title}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
         width: "28px",
         height: "26px",
-        borderRadius: "7px",
-        background: hovered ? "var(--aurora-hover-bg)" : "transparent",
-        border: "1px solid " + (hovered ? "var(--aurora-border-strong)" : "transparent"),
-        color: hovered ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-        cursor: "pointer",
-        transition: "background 0.1s, border-color 0.1s, color 0.1s",
         padding: 0,
       }}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 
@@ -405,7 +397,7 @@ function UnfurlCard({ url, title, description, favicon }: WebPreviewProps) {
 }
 
 function SkeletonVariant({ url }: { url: string }) {
-  const domain = getDomain(url)
+  void url
   return (
     <div
       style={{

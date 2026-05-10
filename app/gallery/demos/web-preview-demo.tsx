@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import { WebPreview, WebPreviewVariant } from "@/registry/aurora/blocks/web-preview/web-preview"
 
 const VARIANTS: { id: WebPreviewVariant; label: string; description: string }[] = [
@@ -25,7 +26,7 @@ export function WebPreviewDemo() {
         {VARIANTS.map((v) => {
           const active = variant === v.id
           return (
-            <button
+            <Button variant="plain" size="unstyled"
               key={v.id}
               onClick={() => setVariant(v.id)}
               title={v.description}
@@ -47,11 +48,11 @@ export function WebPreviewDemo() {
               }}
             >
               {v.label}
-            </button>
+            </Button>
           )
         })}
         {variant === "browser" && (
-          <button
+          <Button variant="plain" size="unstyled"
             onClick={simulateLoad}
             style={{
               height: "32px",
@@ -66,7 +67,7 @@ export function WebPreviewDemo() {
             }}
           >
             Simulate loading
-          </button>
+          </Button>
         )}
       </div>
 

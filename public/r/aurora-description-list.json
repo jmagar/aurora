@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-description-list",
+  "type": "registry:ui",
+  "title": "Aurora Description List",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Dense key-value metadata layout for operational detail panels.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/description-list.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nconst DescriptionList = React.forwardRef<HTMLDListElement, React.HTMLAttributes<HTMLDListElement>>(\n  ({ className, ...props }, ref) => (\n    <dl ref={ref} className={cn(\"grid gap-0 overflow-hidden rounded-[8px] border\", className)} style={{ borderColor: \"var(--aurora-border-default)\" }} {...props} />\n  )\n)\nDescriptionList.displayName = \"DescriptionList\"\n\nexport interface DescriptionItemProps extends React.HTMLAttributes<HTMLDivElement> {\n  label: React.ReactNode\n  value: React.ReactNode\n}\n\nconst DescriptionItem = React.forwardRef<HTMLDivElement, DescriptionItemProps>(\n  ({ className, label, value, ...props }, ref) => (\n    <div\n      ref={ref}\n      className={cn(\"grid grid-cols-[150px_minmax(0,1fr)] gap-4 border-b px-4 py-3 last:border-b-0\", className)}\n      style={{ borderColor: \"var(--aurora-border-default)\" }}\n      {...props}\n    >\n      <dt style={{ color: \"var(--aurora-text-muted)\", fontSize: \"var(--aurora-type-label)\", fontWeight: \"var(--aurora-weight-label)\", letterSpacing: \"var(--aurora-letter-label)\", lineHeight: \"var(--aurora-line-dense)\" }}>\n        {label}\n      </dt>\n      <dd style={{ color: \"var(--aurora-text-primary)\", fontSize: \"var(--aurora-type-table)\", fontWeight: \"var(--aurora-weight-body)\", lineHeight: 1.42, margin: 0, minWidth: 0 }}>\n        {value}\n      </dd>\n    </div>\n  )\n)\nDescriptionItem.displayName = \"DescriptionItem\"\n\nexport { DescriptionList, DescriptionItem }\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/description-list.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/description-list.tsx",
+    "installTarget": "@ui/aurora/description-list.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/description-list.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "data-display"
+  ]
+}

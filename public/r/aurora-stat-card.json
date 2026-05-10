@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-stat-card",
+  "type": "registry:ui",
+  "title": "Aurora Stat Card",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Metric stat card with label, large value, trend indicator, and Aurora panel styling.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-button",
+    "aurora-input",
+    "aurora-radio-group",
+    "aurora-select"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/stat-card.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\n// ---------------------------------------------------------------------------\n// Types\n// ---------------------------------------------------------------------------\n\nexport interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {\n  label: string;\n  value: React.ReactNode;\n  delta?: React.ReactNode;\n  deltaPositive?: boolean;\n  description?: React.ReactNode;\n  tone?: \"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\";\n}\n\nexport interface StatGridProps extends React.HTMLAttributes<HTMLDivElement> {\n  children: React.ReactNode;\n}\n\n// ---------------------------------------------------------------------------\n// StatCard\n// ---------------------------------------------------------------------------\n\nexport const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(\n  function StatCard({ label, value, delta, deltaPositive, description, tone = \"neutral\", className, style, ...rest }, ref) {\n    const deltaColor =\n      deltaPositive === undefined\n        ? \"var(--aurora-text-muted)\"\n        : deltaPositive\n          ? \"var(--aurora-accent-strong)\"\n          : \"var(--aurora-error)\";\n    const toneColor =\n      tone === \"info\"\n        ? \"var(--aurora-accent-primary)\"\n        : tone === \"success\"\n          ? \"var(--aurora-success)\"\n          : tone === \"warn\"\n            ? \"var(--aurora-warn)\"\n            : tone === \"error\"\n              ? \"var(--aurora-error)\"\n              : \"var(--aurora-border-strong)\";\n\n    return (\n      <div\n        ref={ref}\n        className={cn(\"relative flex min-h-[116px] flex-col gap-2 overflow-hidden px-4 py-3.5\", className)}\n        style={{\n          width: \"100%\",\n          maxWidth: 220,\n          background: \"var(--aurora-panel-medium)\",\n          border: `1px solid var(--aurora-border-strong)`,\n          borderRadius: 8,\n          boxShadow:\n            \"var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)\",\n          ...style,\n        }}\n        {...rest}\n      >\n        <span\n          aria-hidden=\"true\"\n          style={{\n            background: toneColor,\n            bottom: 0,\n            left: 0,\n            opacity: tone === \"neutral\" ? 0.45 : 0.9,\n            position: \"absolute\",\n            top: 0,\n            width: 3,\n          }}\n        />\n\n        <span\n          style={{\n            fontFamily: \"var(--aurora-font-sans)\",\n            fontSize: \"var(--aurora-type-body-sm)\",\n            fontWeight: \"var(--aurora-weight-label)\",\n            letterSpacing: \"var(--aurora-letter-ui)\",\n            color: \"var(--aurora-text-muted)\",\n            lineHeight: 1.25,\n          }}\n        >\n          {label}\n        </span>\n\n        <span\n          className=\"tabular-nums\"\n          style={{\n            fontFamily: \"var(--aurora-font-display)\",\n            fontWeight: 800,\n            fontSize: 26,\n            letterSpacing: \"-0.025em\",\n            lineHeight: 1,\n            color: \"var(--aurora-text-primary)\",\n          }}\n        >\n          {value}\n        </span>\n\n        <span\n          style={{\n            color: \"var(--aurora-text-muted)\",\n            fontFamily: \"var(--aurora-font-sans)\",\n            fontSize: \"var(--aurora-type-caption)\",\n            lineHeight: 1.35,\n            minHeight: 15,\n          }}\n        >\n          {description}\n        </span>\n\n        {delta !== undefined && (\n          <span\n            style={{\n              alignSelf: \"flex-start\",\n              background: `color-mix(in srgb, ${deltaColor} 10%, transparent)`,\n              border: `1px solid color-mix(in srgb, ${deltaColor} 24%, transparent)`,\n              borderRadius: 5,\n              color: deltaColor,\n              fontFamily: \"var(--aurora-font-sans)\",\n              fontSize: \"var(--aurora-type-caption)\",\n              fontWeight: \"var(--aurora-weight-ui)\",\n              letterSpacing: \"var(--aurora-letter-ui)\",\n              lineHeight: 1,\n              marginTop: \"auto\",\n              padding: \"4px 6px\",\n            }}\n          >\n            {deltaPositive === true && delta !== undefined\n              ? typeof delta === \"string\" && !delta.startsWith(\"+\")\n                ? `+${delta}`\n                : delta\n              : delta}\n          </span>\n        )}\n      </div>\n    );\n  },\n);\n\nStatCard.displayName = \"StatCard\";\n\n// ---------------------------------------------------------------------------\n// StatGrid\n// ---------------------------------------------------------------------------\n\nexport const StatGrid = React.forwardRef<HTMLDivElement, StatGridProps>(\n  function StatGrid({ children, className, style, ...rest }, ref) {\n    return (\n      <div\n        ref={ref}\n        className={cn(\"gap-4\", className)}\n        style={{\n          display: \"grid\",\n          gridTemplateColumns: \"repeat(auto-fill, minmax(180px, 220px))\",\n          justifyContent: \"start\",\n          ...style,\n        }}\n        {...rest}\n      >\n        {children}\n      </div>\n    );\n  },\n);\n\nStatGrid.displayName = \"StatGrid\";\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/stat-card.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/stat-card.tsx",
+    "installTarget": "@ui/aurora/stat-card.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/stat-card.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "data-display"
+  ]
+}

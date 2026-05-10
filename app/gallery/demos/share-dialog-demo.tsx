@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import {
   ShareDialog,
   Collaborator,
@@ -39,7 +40,7 @@ export function ShareDialogDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "24px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-        <button
+        <Button variant="plain" size="unstyled"
           onClick={() => setOpen(true)}
           style={{
             display: "inline-flex",
@@ -64,7 +65,7 @@ export function ShareDialogDemo() {
             <path d="M4.4 6.3L9.6 3.7M4.4 7.7L9.6 10.3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
           Share
-        </button>
+        </Button>
         <span style={{ fontFamily: "var(--aurora-font-sans)", fontSize: "12px", color: "var(--aurora-text-muted)" }}>
           {collaborators.length} people with access
         </span>

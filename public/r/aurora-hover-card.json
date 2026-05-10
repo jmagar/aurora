@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-hover-card",
+  "type": "registry:ui",
+  "title": "Aurora Hover Card",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Hover-triggered detail panel for source metadata and compact previews.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/hover-card.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport interface HoverCardProps extends React.HTMLAttributes<HTMLDivElement> {\n  trigger: React.ReactNode\n}\n\nexport function HoverCard({ trigger, className, children, style, ...props }: HoverCardProps) {\n  return (\n    <span className={[\"group relative inline-flex\", className].filter(Boolean).join(\" \")} style={style} {...props}>\n      {trigger}\n      <span\n        className=\"pointer-events-none absolute left-0 top-[calc(100%+8px)] z-40 hidden min-w-64 rounded-[8px] border p-3 text-left group-hover:block\"\n        style={{\n          background: \"var(--aurora-panel-strong)\",\n          borderColor: \"var(--aurora-border-strong)\",\n          boxShadow: \"var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)\",\n          color: \"var(--aurora-text-primary)\",\n        }}\n      >\n        {children}\n      </span>\n    </span>\n  )\n}\n\nexport default HoverCard\n\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/hover-card.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/hover-card.tsx",
+    "installTarget": "@ui/aurora/hover-card.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/hover-card.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "overlay"
+  ]
+}

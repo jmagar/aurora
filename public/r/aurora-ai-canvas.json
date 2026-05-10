@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-canvas",
+  "type": "registry:block",
+  "title": "Aurora AI Canvas",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora-native canvas parity surface from AI Elements.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-ai-elements"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai-elements/canvas.tsx",
+      "content": "\"use client\"\n\nexport { Canvas } from \"./core\"\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/canvas.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai-elements/canvas.tsx",
+    "installTarget": "@components/aurora/ai/canvas.tsx"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/canvas.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ]
+}

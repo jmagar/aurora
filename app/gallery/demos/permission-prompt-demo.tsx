@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import { Button } from "@/registry/aurora/ui/button"
 import { PermissionPrompt } from "@/registry/aurora/blocks/permission-prompt/permission-prompt"
 
 export default function PermissionPromptDemo() {
@@ -24,7 +25,7 @@ export default function PermissionPromptDemo() {
             {dismissed[p.id] ? (
               <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 14px", background: "var(--aurora-panel-medium)", border: "1px solid var(--aurora-border-default)", borderRadius: "var(--aurora-radius-1)", fontSize: "12px", color: "var(--aurora-text-muted)" }}>
                 <span>Dismissed</span>
-                <button onClick={() => setDismissed((prev) => ({ ...prev, [p.id]: false }))} style={{ background: "none", border: "1px solid var(--aurora-border-default)", borderRadius: "7px", color: "var(--aurora-text-muted)", fontSize: "11px", padding: "2px 8px", cursor: "pointer" }}>Reset</button>
+                <Button size="sm" variant="neutral" onClick={() => setDismissed((prev) => ({ ...prev, [p.id]: false }))}>Reset</Button>
               </div>
             ) : (
               <PermissionPrompt

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-navigation-menu",
+  "type": "registry:ui",
+  "title": "Aurora Navigation Menu",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Top-level navigation menu with active border and glow states.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/navigation-menu.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport type NavigationMenuProps = React.HTMLAttributes<HTMLElement>\nexport interface NavigationMenuItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {\n  active?: boolean\n}\n\nexport const NavigationMenu = React.forwardRef<HTMLElement, NavigationMenuProps>(\n  ({ className, style, ...props }, ref) => (\n    <nav\n      ref={ref}\n      className={[\"flex flex-wrap items-center gap-1 rounded-[8px] border p-1\", className].filter(Boolean).join(\" \")}\n      style={{\n        background: \"var(--aurora-control-surface)\",\n        borderColor: \"var(--aurora-border-default)\",\n        ...style,\n      }}\n      {...props}\n    />\n  )\n)\nNavigationMenu.displayName = \"NavigationMenu\"\n\nexport const NavigationMenuItem = React.forwardRef<HTMLAnchorElement, NavigationMenuItemProps>(\n  ({ active = false, className, style, ...props }, ref) => (\n    <a\n      ref={ref}\n      className={[\"rounded-[6px] border px-3 py-1.5 no-underline aurora-text-control\", className].filter(Boolean).join(\" \")}\n      style={{\n        background: active ? \"color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)\" : \"transparent\",\n        borderColor: active ? \"color-mix(in srgb, var(--aurora-accent-primary) 35%, transparent)\" : \"transparent\",\n        color: active ? \"var(--aurora-text-primary)\" : \"var(--aurora-text-muted)\",\n        boxShadow: active ? \"var(--aurora-active-glow)\" : \"none\",\n        ...style,\n      }}\n      {...props}\n    />\n  )\n)\nNavigationMenuItem.displayName = \"NavigationMenuItem\"\n\nexport default NavigationMenu\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/navigation-menu.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/navigation-menu.tsx",
+    "installTarget": "@ui/aurora/navigation-menu.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/navigation-menu.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "navigation"
+  ]
+}

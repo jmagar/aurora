@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
+import { Textarea } from "@/registry/aurora/ui/textarea"
 
 // ---------------------------------------------------------------------------
 // CSS injected once
@@ -57,7 +59,7 @@ function OptionCodePreview({ code }: { code: string }) {
       style={{
         margin: "8px 0 0",
         padding: "8px 10px",
-        borderRadius: 8,
+        borderRadius: "var(--aurora-radius-1)",
         background: "var(--aurora-bg)",
         border: "1px solid var(--aurora-border-default)",
         fontSize: 11,
@@ -96,7 +98,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
   const boxShadow = selected
     ? [
         "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
-        "var(--aurora-active-glow, 0 0 16px color-mix(in srgb, #29b6f6 18%, transparent))",
+        "var(--aurora-active-glow)",
       ].join(", ")
     : hovered
     ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 15%, transparent)"
@@ -109,7 +111,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
     : "var(--aurora-panel-medium)"
 
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       type="button"
       role={type === "radio" ? "radio" : "checkbox"}
       aria-checked={selected}
@@ -122,7 +124,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
         gap: 12,
         width: "100%",
         padding: "12px 14px",
-        borderRadius: "var(--radius-1, 14px)",
+        borderRadius: "var(--aurora-radius-1)",
         border: `1.5px solid ${borderColor}`,
         background,
         cursor: "pointer",
@@ -203,7 +205,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
         )}
         {option.preview && <OptionCodePreview code={option.preview} />}
       </div>
-    </button>
+    </Button>
   )
 }
 
@@ -235,7 +237,7 @@ function TextInput({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <textarea
+      <Textarea
         rows={3}
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -248,7 +250,7 @@ function TextInput({
           resize: "vertical",
           minHeight: 80,
           padding: "10px 12px",
-          borderRadius: "var(--radius-1, 14px)",
+          borderRadius: "var(--aurora-radius-1)",
           border: focused
             ? "1.5px solid var(--aurora-accent-primary)"
             : "1.5px solid var(--aurora-border-strong)",
@@ -261,8 +263,8 @@ function TextInput({
           transition: "border-color 150ms, box-shadow 150ms",
           boxShadow: focused
             ? [
-                "0 0 0 3px color-mix(in srgb, #29b6f6 18%, transparent)",
-                "0 0 0 1px color-mix(in srgb, #29b6f6 40%, transparent)",
+                "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
+                "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 40%, transparent)",
               ].join(", ")
             : "none",
           boxSizing: "border-box",
@@ -286,43 +288,15 @@ function SubmitButton({
   disabled?: boolean
   label: string
 }) {
-  const [hovered, setHovered] = React.useState(false)
-
   return (
-    <button
+    <Button
       type="button"
+      variant="aurora"
+      size="default"
       disabled={disabled}
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
         gap: 6,
-        height: 34,
-        padding: "0 18px",
-        borderRadius: 10,
-        border: "1px solid transparent",
-        background: disabled
-          ? "var(--aurora-control-surface)"
-          : hovered
-          ? "linear-gradient(180deg, #5dd0fb 0%, #1da8e6 100%)"
-          : "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)",
-        color: disabled ? "var(--aurora-text-muted)" : "white",
-        fontSize: 13,
-        fontWeight: 600,
-        fontFamily: "var(--font-sans, Inter, sans-serif)",
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled ? 0.5 : 1,
-        outline: "none",
-        transition: "background 120ms, opacity 120ms",
-        boxShadow: disabled
-          ? "none"
-          : [
-              "inset 0 1px 0 rgba(255,255,255,0.22)",
-              "0 0 0 1px color-mix(in srgb, #29b6f6 38%, transparent)",
-              "0 2px 12px color-mix(in srgb, #29b6f6 28%, transparent)",
-            ].join(", "),
         alignSelf: "flex-end",
       }}
     >
@@ -330,7 +304,7 @@ function SubmitButton({
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
         <path d="M2 6H10M7 3L10 6L7 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-    </button>
+    </Button>
   )
 }
 

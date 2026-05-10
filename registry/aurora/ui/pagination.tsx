@@ -78,18 +78,25 @@ const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
         aria-current={isActive ? "page" : undefined}
         className={cn(
           "inline-flex items-center justify-center rounded-[var(--aurora-radius-1)]",
-          "border text-sm font-medium transition-all duration-150",
+          "border transition-all duration-150",
           "select-none cursor-pointer",
           "hover:border-[var(--aurora-border-strong)] hover:text-[var(--aurora-text-primary)]",
           "focus-visible:outline-none focus-visible:ring-2",
           "[&:focus-visible]:ring-[var(--aurora-focus-ring)]",
-          size === "sm" && "h-7 min-w-7 px-2 text-xs",
+          size === "sm" && "h-7 min-w-7 px-2",
           size === "default" && "h-8 min-w-8 px-2.5",
-          size === "lg" && "h-10 min-w-10 px-3 text-base",
-          isActive && "font-semibold",
+          size === "lg" && "h-10 min-w-10 px-3",
           className
         )}
-        style={{ ...activeStyle, ...style }}
+        style={{
+          fontFamily: "var(--aurora-font-sans)",
+          fontSize: size === "lg" ? "var(--aurora-type-body)" : size === "sm" ? "var(--aurora-type-label)" : "var(--aurora-type-control)",
+          fontWeight: isActive ? "var(--aurora-weight-label)" : "var(--aurora-weight-ui)",
+          letterSpacing: "var(--aurora-letter-ui)",
+          lineHeight: "var(--aurora-line-dense)",
+          ...activeStyle,
+          ...style,
+        }}
         {...props}
       />
     )

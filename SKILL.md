@@ -1,136 +1,151 @@
 ---
-name: Aurora Design System
-description: Use this skill when designing for Labby — the gateway-admin web UI inside jmagar/lab. Aurora is a dark-first, operator-first design system with a tokenized navy palette, dual-accent system (cyan primary + rose secondary), muted status colors, and a Manrope + Inter type pairing. Apply it whenever the user references Labby, gateway-admin, Aurora tokens, or the lab monorepo's web surface.
+name: aurora-design-system
+description: Use this skill when designing or implementing Aurora/Labby UI surfaces, shadcn registry components, registry/aurora tokens, app/gallery demos, or downstream Lab/gateway-admin screens that must follow the Aurora dark-first operator design system. Aurora uses a tokenized navy palette, cyan primary accent, rose secondary accent, muted status colors, and a Manrope + Inter type pairing.
 ---
 
 # Aurora Design System
 
+## Source of truth
+
+Inspect current repo files before making inventory, route, or API claims:
+
+- `registry/aurora/aurora.css` - canonical token bridge, semantic CSS variables, type classes, `.aurora-page-shell`, and `.aurora-nav-shell`.
+- `registry/aurora/ui/` - primitive React components.
+- `registry/aurora/blocks/` - composed React blocks.
+- `registry.json` - shadcn registry source entries and registry dependencies.
+- `public/r/registry.json` - generated shadcn registry output after `pnpm registry:build`.
+- `app/gallery/[section]/page.tsx` - gallery route map and generated static params.
+- `app/gallery/demos/` - live demos for the real React components.
+- `app/globals.css` - imports `registry/aurora/aurora.css`.
+
+Do not hard-code component counts, gallery route counts, or active branch names in deliverables. Derive them from `registry.json`, `app/gallery/[section]/page.tsx`, and git when needed.
+
 ## Brand & mark
 
-- **Primary mark: stacked plane.** Four isometric diamond planes (dark → light cyan, bottom to top) representing cli · api · mcp · web layers. This is the canonical favicon, app icon, and inline mark.
-- **Secondary mark: hub & spoke.** Six nodes radiating from a central core. Used when the "control plane fanning out to services" read is needed. Not the primary corporate mark.
-- **Wordmark:** Manrope 800, −0.04em tracking, sentence case. Accent (`--aurora-accent-primary`) on the suffix only — `Lab<accent>by</accent>`.
-- `assets/` holds SVG exports of both marks (plateless and with plate, favicon variants).
-- `Alternate Logos.html` — decision board documenting all explored directions and their keep/kill rationale.
+- **Primary mark: stacked plane.** Four isometric diamond planes (dark to light cyan, bottom to top) representing cli, api, mcp, and web layers. This is the canonical favicon, app icon, and inline mark when available in the current surface.
+- **Secondary mark: hub & spoke.** Six nodes radiating from a central core. Use only when the "control plane fanning out to services" read is needed.
+- **Wordmark:** Manrope 800, tight tracking, sentence case. Current gallery treatment renders `Labb` in primary text and accents the `y` with `--aurora-accent-pink`; verify `app/gallery/demos/brand-demo.tsx` before changing the canonical mark.
 
 ## Foundations
 
-- **Tokens live in `colors_and_type.css`.** Never use raw hex in product code. Reach for `--aurora-*` semantic vars or `color-mix(in srgb, var(--aurora-accent-primary) var(--aurora-tint-soft), transparent)` for tinted fills.
-- **Dark-first.** Apply `.dark` (or default `:root`) for canonical visuals; `.light` is a remap on the same token surface. Both have been verified against the full component set.
-- **Manrope** for display (titles, section headers, metric numbers, card titles). **Inter** for working UI (controls, body, tables, forms, metadata). **JetBrains Mono** for code, terminal, paths, IDs, badges — not for general prose or form labels.
-- **Locked type ramp** — once a slot is chosen (Display 1 / Display 2 / Compact Title / Card Title / Metric / Body / Control / Dense / Dense Meta / Eyebrow / Badge Label), only color may be overridden.
-- **`.aurora-page-shell`** — the canonical page background class (two-radial navy wash). Defined in `colors_and_type.css`; always use this class on `<body>` instead of hand-rolling the gradient. `.aurora-nav-shell` for sidebars/navs.
+- **Tokens live in `registry/aurora/aurora.css`.** Never use raw hex in product code. Reach for `--aurora-*` semantic vars or `color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent)` for tinted fills.
+- **Dark-first.** Apply `.dark` or the default root variables for canonical visuals. `.light` remaps the same token surface and must remain usable.
+- **Manrope** is for display: titles, section headers, metric numbers, and card titles. **Inter** is for working UI: controls, body, tables, forms, and metadata. **JetBrains Mono** is only for code, terminal output, paths, IDs, hashes, inline code, and badge chips.
+- **Locked type ramp.** Use the semantic type classes in `registry/aurora/aurora.css`; once a slot is chosen, override color before inventing a new size.
+- **Page shell:** use `.aurora-page-shell` for the canonical two-radial navy page wash and `.aurora-nav-shell` for sidebars/navs.
 
 ## Visual rules
 
-- Three lift tiers: Tier 0 page (flat, no shadow), Tier 1 toolbars/headers (`shadow-medium`), Tier 2 inspectors/primary panels (`shadow-strong`). Each elevated surface pairs an outer shadow with an `inset 0 1px 0 rgba(255,255,255,0.035–0.05)` highlight.
-- Borders: `--aurora-border-default` for resting, `--aurora-border-strong` for cards / inputs / selected.
-- Selected = **border + glow**, not fill. Use `--aurora-active-glow`.
-- Primary accent — Aurora cyan (`#29b6f6` / `#67cbfa` / `#1c7fac`). Secondary accent — Aurora rose (`#f9a8c4` / `#fbc4d6` / `#c46b88`). Rose is a **sanctioned secondary accent**: mono code highlights, key labels, send/agent affordance, rose-variant buttons. Maximum one or two rose touch points per screen.
-- Status colors are **muted** (`warn #c6a36b`, `error #c78490`, `success #7dd3c7`). Never neon.
-- **Buttons (Style D — Aurora glow border):** `border: 1px solid color-mix(in srgb, var(--aurora-accent-primary) 40%, transparent)` + `box-shadow: 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 20%, transparent), 0 0 12px color-mix(in srgb, var(--aurora-accent-primary) 15%, transparent)`. Three variants: `.btn-aurora` (cyan), `.btn-aurora-neutral` (muted), `.btn-aurora-rose` (rose). This is the canonical button style — all surfaces use it.
-- **No glassmorphism. No imagery on chrome.** The only sanctioned gradient is the two-radial page-shell wash (baked into `.aurora-page-shell`).
-- **Lucide line icons only**, 14–18px, stroke 1.5–1.75px. **No emoji as UI.**
+- Three lift tiers: Tier 0 page is flat; Tier 1 toolbars/headers use `var(--aurora-shadow-medium)`; Tier 2 inspectors/primary panels use `var(--aurora-shadow-strong)`. Pair elevated surfaces with an inset top highlight such as `inset 0 1px 0 rgba(255,255,255,0.04)`.
+- Borders: `--aurora-border-default` for resting separators and `--aurora-border-strong` for cards, inputs, and selected surfaces.
+- Selected and focused states use **border + glow**, not filled color. Use `var(--aurora-active-glow)`.
+- Primary accent is cyan: `--aurora-accent-primary`, `--aurora-accent-strong`, `--aurora-accent-deep`.
+- Secondary accent is rose: `--aurora-accent-pink`, `--aurora-accent-pink-strong`, `--aurora-accent-pink-deep`. Rose is sanctioned for mono code highlights, key labels, send/agent affordances, rose buttons, and active filter tags. Keep it to one or two touch points per screen.
+- Status colors are muted: `--aurora-warn`, `--aurora-error`, `--aurora-success`. Never use neon status colors.
+- **Buttons:** use the registry `Button` component from `registry/aurora/ui/button.tsx` with `variant="aurora" | "neutral" | "rose" | "ghost" | "destructive"`. The canonical style is Aurora glow border, implemented by the component.
+- **No glassmorphism. No imagery on chrome.** The only sanctioned chrome gradient is the `.aurora-page-shell` wash.
+- **Lucide line icons only**, 14-18px, stroke 1.5-1.75px. No emoji as UI.
 
-## Badges (resolved)
+## Component API Patterns
 
-**Style B is the canonical badge throughout the system.** Square chip, JetBrains Mono, 4px radius, optional glow dot in `currentColor`. Used everywhere — tables, status chips, tabs, breadcrumbs.
+- Use `rounded-[var(--aurora-radius-3)]` for the 22px panel radius.
+- Use inline or class-supported shadows like `boxShadow: "var(--aurora-shadow-strong)"`.
+- Use `boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)"` for Tier 2 panels when no local helper exists.
+- Registry entries should declare `registryDependencies` for Aurora components they import. At minimum, token-dependent components need `aurora-tokens`.
+- When adding a gallery demo, wire both `app/gallery/[section]/page.tsx` and `app/gallery/layout.tsx`.
+- After registry changes, run `pnpm registry:build` so `public/r/*.json` and `public/r/registry.json` stay aligned.
 
-```html
-<span class="badge-b bb-default"><span class="badge-dot"></span>Live</span>
-```
+## Badges
 
-The other three styles are available but not the default:
-- **Style A (pill + dot + tinted border)** — archived, available if needed.
-- **Style C (pill + no border + solid tint)** — low visual noise, list views.
-- **Style D (dot-only minimal)** — inline status in sidebars and body copy.
+Style B is the canonical badge throughout the system: square chip, JetBrains Mono, 4px radius, optional glow dot in `currentColor`. Use the React `Badge` component and its variants (`default`, `success`, `warn`, `error`, `rose`) before hand-rolling badge CSS.
 
-## Banners (resolved)
+The other badge patterns are secondary:
 
-Two banner styles in use:
-- **Style A1 (elevated + glowing dot + dismiss)** — high-priority alerts, error/warning/info.
-- **Style C (monospace tag + single-line)** — inline table rows, compact notices.
+- Style A: pill + dot + tinted border; archived but available if a specific surface needs it.
+- Style C: pill + no border + solid tint; useful for low-noise list views.
+- Style D: dot-only minimal; useful inline in sidebars and body copy.
+
+## Banners
+
+Two banner styles are in use:
+
+- Style A1: elevated + glowing dot + dismiss for high-priority alerts, error, warning, and info.
+- Style C: monospace tag + single-line for inline table rows and compact notices.
+
 Style B (left rule) was explored and removed.
 
-## Mono font usage
+## Mono Font Usage
 
-Mono (`JetBrains Mono`) is for: code blocks, terminal output, file paths, IDs/hashes, badge chips in code contexts, inline code snippets. It is **not** for: form labels, file tree names, body prose, general UI copy, or breadcrumb text.
+Mono (`JetBrains Mono`) is for code blocks, terminal output, file paths, IDs/hashes, badge chips in code contexts, and inline code snippets. It is not for form labels, file tree names, body prose, general UI copy, or breadcrumb text.
 
-## Content rules
+## Content Rules
 
-- **Sentence case** for all UI copy: buttons, headers, table columns, menu items. *Active gateways*, not *Active Gateways*.
-- **UPPERCASE only** for eyebrows (`AURORA_MUTED_LABEL`, 0.18em tracking, weight 700) and badge labels (`AURORA_BADGE_LABEL`, 0.14em).
-- **No exclamation marks** anywhere in chrome.
-- **No "we"**, **no apology framing**, **no marketing verbs**.
+- Use sentence case for UI copy: buttons, headers, table columns, and menu items. Use *Active gateways*, not *Active Gateways*.
+- Uppercase only for eyebrows and badge labels.
+- No exclamation marks in chrome.
+- No "we", no apology framing, no marketing verbs.
 - Status copy is matter-of-fact: *"Backend unavailable."*, *"Plex authorized."*, *"Couldn't reach gateway. Retrying."*
 
-## When designing new surfaces
+## Designing New Surfaces
 
-1. Add `class="aurora-page-shell"` to `<body>` — never hand-roll the radial wash.
-2. Build the working area on Tier 2 panels with `border-aurora-border-strong`, `radius-3` (22px), and `shadow-strong + highlight-strong`.
-3. Use the typography ramp; never invent sizes. Keep mono strictly for code/paths/IDs.
-4. Reach for the named tint scale through `color-mix()` for accent-tinted fills.
-5. Make selected and focus states use border + glow, not flooded color.
-6. Use Style D (Aurora glow border) buttons everywhere — import from the shell CSS or the shadcn registry.
-7. Verify the same surface in `.light` before shipping.
+1. Add `className="aurora-page-shell"` or `class="aurora-page-shell"` to the page shell when the surface owns the page background.
+2. Build working areas on Tier 2 panels with `borderColor: "var(--aurora-border-strong)"`, `borderRadius: "var(--aurora-radius-3)"`, and `boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)"`.
+3. Use the semantic typography ramp from `registry/aurora/aurora.css`; never invent sizes unless the ramp is missing a real use case.
+4. Keep mono strictly for code, paths, IDs, hashes, terminals, and badges.
+5. Use tokenized tint fills through `color-mix()` and Aurora semantic vars.
+6. Make selected and focus states use border + glow, not flooded color.
+7. Use the registry `Button` variants everywhere a React surface can import them.
+8. Verify the same surface in `.light` before shipping.
 
-## Component inventory
+## Component Inventory Guidance
 
-All 46 components are documented in `Design System Gallery.html` (shell) + `gallery/*.html` (sections):
+Use this section as a category map, not as a count source. Verify exact inventory from `registry.json` and exact gallery routes from `app/gallery/[section]/page.tsx`.
 
 **Foundations:** colors, type, spacing, brand
 
-**Controls:** button (Style D), badge (Style B canonical), switch, avatar, progress
+**Controls:** button, button group, badge, switch, avatar, progress, spinner, toolbar, kbd, separator, accordion, toggle, toggle group
 
-**Form elements:** input, select, textarea, checkbox/radio, tabs, pills
+**Form elements:** field, input, input group, input OTP, select, native select, textarea, checkbox, radio group, label, slider, number input, combobox, date picker, tabs, pills
 
-**Feedback:** banner (A1/C), toast (Labby stacked-plane mark + slide animation), tooltip, empty-state, skeleton
+**Feedback:** alert/callout, banner, toast/sonner, tooltip, empty-state, skeleton, shimmer
 
-**Navigation:** breadcrumb (badge left of name), sidebar (Zed-style), command palette (⌘K), scrollbars
+**Navigation:** breadcrumb, sidebar, command palette, navigation menu, menubar, scroll area/scrollbars, pagination
 
-**Data:** stat cards (narrow — `auto-fill minmax(175px, 220px)`), data table (sortable, 8px radius), filter bar (rose tags for active filters), pagination
+**Data:** stat cards, card, item, table, data table, chart, carousel, filter bar, marketplace catalog, status indicator, timeline, description list, search results, calendar
 
-**Overlays:** modal/dialog, dropdown menu, context menu, permissions dropdown, thinking disclosure
+**Overlays:** dialog, alert dialog, dropdown menu, context menu, hover card, popover, sheet/drawer, collapsible, permissions dropdown, thinking disclosure
 
-**Chat & AI:** prompt input (with `/` + `@` popups, model selector, streaming state), tool calls (grouped consecutive), reasoning/plans, code block, artifact, terminal (Aurora-native chrome — no Mac chrome, stacked-plane mark in titlebar), permission prompt, ask-user-question, attachment
+**Chat & AI:** prompt input, AI elements, message, inline citation, sources, suggestion, queue, checkpoint, confirmation, context, conversation, model selector, tool calls, reasoning/plans/chain-of-thought, code block, artifact, terminal, permission prompt, ask-user-question, attachment, agent, commit, package info, sandbox, schema display, snippet, stack trace, test results, environment variables
 
-**Content:** file picker, file tree (sans font for file names), code editor, web preview (Aurora browser chrome), share dialog
+**Voice & workflow:** audio player, mic selector, persona, speech input, transcription, voice selector, canvas, connection, controls, edge, node, panel
 
-**Auth & Errors:** login, OAuth flow, error pages (404/403/500)
+**Content:** aspect ratio, direction, image, open in chat, file picker, file tree, code editor, JSX preview, web preview, share dialog, callout, resizable panels
 
-### Additional design decisions captured here
+**Auth & Errors:** login, OAuth flow, error pages
 
-- **Terminal chrome**: Aurora-native only. No macOS circles/dots. Title bar uses `--aurora-panel-strong`, stacked-plane SVG mark, Kill/Clear/Run buttons in Style D.
-- **Left-border glow**: Always use `border-left: 3px solid` for active/inprog indicators (straight edge). Never `box-shadow` on rounded elements — it produces a rounded glow.
-- **Breadcrumb badge position**: Badge goes LEFT of the item name.
-- **Stat cards**: Never stretch full-width. Use `grid-template-columns: repeat(auto-fill, minmax(175px, 220px))`.
-- **Table radii**: Tables use `border-radius: 8px` on the wrapper — not the default 22px panel radius.
-- **Active filter tags**: Use rose (`filter-tag-rose`) for active filters, not cyan. Cyan blends into the control surface.
-- **Toasts**: Labby stacked-plane SVG replaces all colored dot/circle icons. Dismiss `×` is colored by status type.
+## Resolved Decisions
 
-## File map
+- **Terminal chrome:** Aurora-native only. No macOS circles/dots. Title bar uses `--aurora-panel-strong`, the stacked-plane mark when available, and Style D/Aurora `Button` actions for kill, clear, and run.
+- **Left-border glow:** Use `border-left: 3px solid` for active/in-progress indicators. Avoid box-shadow on rounded elements for left-edge indicators because it creates a rounded glow.
+- **Breadcrumb badge position:** Badge goes left of the item name.
+- **Stat cards:** Do not stretch full-width. Use narrow tracks like `repeat(auto-fill, minmax(175px, 220px))`.
+- **Table radii:** Tables use `border-radius: 8px` on the wrapper, not the default 22px panel radius.
+- **Active filter tags:** Use rose for active filters. Cyan blends into the control surface.
+- **Toasts:** The Labby stacked-plane mark replaces generic colored dot/circle icons where the mark is available. Dismiss `x` is colored by status type.
 
-- `colors_and_type.css` — full token surface + semantic type classes + `.aurora-page-shell` + `.aurora-nav-shell`
-- `Design System Gallery.html` — nav shell; loads `gallery/*.html` sections on click
-- `gallery/` — 46 individual section fragments (HTML only, no `<head>`). All shared component CSS lives in the shell, not in individual fragments.
-- `preview/` — legacy Type, Colors, Spacing, Components, Brand preview pages
-- `ui_kits/gateway-admin/dashboard.html` — hi-fi admin shell (uses `.aurora-page-shell`)
-- `assets/` — Labby stacked-plane + hub-and-spoke marks, favicons
-- `exports/` — SVG exports of both marks (plateless + plate variants)
-- `Alternate Logos.html` — logo decision board
+## shadcn Registry Workflow
 
-## shadcn registry
-
-React components published at **`github.com/jmagar/aurora-design-system`** under `registry/aurora/`:
-- `registry/aurora/aurora.css` — token bridge (CSS vars → shadcn semantic vars)
-- `registry/aurora/ui/` — 22 primitive components (tsx): button, badge, input, select, textarea, avatar, progress, switch, tabs, breadcrumb, pagination, dialog, dropdown-menu, tooltip, context-menu, checkbox, banner, toast, empty-state, skeleton, stat-card, data-table, filter-bar
-- `registry/aurora/blocks/` — 19 composed/AI components (tsx): code-block, prompt-input, sidebar, terminal, thinking, tool-calls, artifact, permission-prompt, ask-user-question, permissions-dropdown, attachment, command-palette, share-dialog, file-picker, file-tree, code-editor, web-preview, login, oauth, error-page
-
-The repo also ships a **live Next.js gallery** at `app/gallery/` — 46 demo routes rendering the real React components. Run `pnpm dev` and open `/gallery` to browse.
+React components are published from `github.com/jmagar/aurora-design-system` under `registry/aurora/`.
 
 Install any component:
+
 ```bash
 npx shadcn add https://raw.githubusercontent.com/jmagar/aurora-design-system/main/registry.json aurora-button
 ```
 
-Active branch: `feat/functional-components` — adds sortable DataTable, interactive pagination, and fully wired interactive demos for all components.
+Before claiming registry status:
+
+1. Inspect `registry.json`.
+2. Run `pnpm registry:build` after registry edits.
+3. Inspect `public/r/registry.json` or the specific generated `public/r/aurora-*.json` file.
+4. Run `pnpm lint` and, for route/demo changes, `pnpm build`.

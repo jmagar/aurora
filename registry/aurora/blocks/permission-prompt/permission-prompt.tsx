@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -114,108 +115,39 @@ function ActionButtons({
   onAllowAlways,
   compact,
 }: ActionButtonsProps) {
-  const [hoveredAllow, setHoveredAllow] = React.useState(false)
-  const [hoveredAlways, setHoveredAlways] = React.useState(false)
-  const [hoveredDeny, setHoveredDeny] = React.useState(false)
-
-  const allowBg = isDangerous
-    ? hoveredAllow
-      ? "color-mix(in srgb, var(--aurora-error) 22%, var(--aurora-control-surface))"
-      : "color-mix(in srgb, var(--aurora-error) 12%, var(--aurora-control-surface))"
-    : hoveredAllow
-    ? "color-mix(in srgb, var(--aurora-accent-primary) 22%, var(--aurora-control-surface))"
-    : "color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-control-surface))"
-
-  const allowColor = isDangerous ? "var(--aurora-error)" : "var(--aurora-accent-primary)"
-  const allowBorder = isDangerous
-    ? "1px solid color-mix(in srgb, var(--aurora-error) 35%, transparent)"
-    : "1px solid color-mix(in srgb, var(--aurora-accent-primary) 35%, transparent)"
-
   const gap = compact ? 6 : 8
+  const size = compact ? "sm" : "default"
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap, flexWrap: "wrap" }}>
-      {/* Allow */}
-      <button
+      <Button
         type="button"
+        variant={isDangerous ? "destructive" : "aurora"}
+        size={size}
         onClick={onAllow}
-        onMouseEnter={() => setHoveredAllow(true)}
-        onMouseLeave={() => setHoveredAllow(false)}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 5,
-          height: compact ? 28 : 32,
-          padding: compact ? "0 10px" : "0 14px",
-          borderRadius: 10,
-          border: allowBorder,
-          background: allowBg,
-          color: allowColor,
-          fontSize: compact ? 12 : 13,
-          fontWeight: 600,
-          fontFamily: "var(--font-sans, Inter, sans-serif)",
-          cursor: "pointer",
-          transition: "background 120ms, border-color 120ms",
-          outline: "none",
-        }}
       >
         {isDangerous ? "Run anyway" : "Allow"}
-      </button>
+      </Button>
 
-      {/* Allow always */}
       {!isDangerous && (
-        <button
+        <Button
           type="button"
+          variant="neutral"
+          size={size}
           onClick={onAllowAlways}
-          onMouseEnter={() => setHoveredAlways(true)}
-          onMouseLeave={() => setHoveredAlways(false)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            height: compact ? 28 : 32,
-            padding: compact ? "0 10px" : "0 14px",
-            borderRadius: 10,
-            border: "1px solid var(--aurora-border-default)",
-            background: hoveredAlways ? "var(--aurora-hover-bg)" : "transparent",
-            color: "var(--aurora-text-muted)",
-            fontSize: compact ? 12 : 13,
-            fontWeight: 500,
-            fontFamily: "var(--font-sans, Inter, sans-serif)",
-            cursor: "pointer",
-            transition: "background 120ms",
-            outline: "none",
-            whiteSpace: "nowrap",
-          }}
         >
           Allow always
-        </button>
+        </Button>
       )}
 
-      {/* Deny */}
-      <button
+      <Button
         type="button"
+        variant="neutral"
+        size={size}
         onClick={onDeny}
-        onMouseEnter={() => setHoveredDeny(true)}
-        onMouseLeave={() => setHoveredDeny(false)}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          height: compact ? 28 : 32,
-          padding: compact ? "0 10px" : "0 14px",
-          borderRadius: 10,
-          border: "1px solid var(--aurora-border-default)",
-          background: hoveredDeny ? "var(--aurora-hover-bg)" : "transparent",
-          color: "var(--aurora-text-muted)",
-          fontSize: compact ? 12 : 13,
-          fontWeight: 500,
-          fontFamily: "var(--font-sans, Inter, sans-serif)",
-          cursor: "pointer",
-          transition: "background 120ms",
-          outline: "none",
-        }}
       >
         Deny
-      </button>
+      </Button>
     </div>
   )
 }
@@ -448,8 +380,10 @@ function ModalPrompt({
         }}
       >
         {/* Close button */}
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           aria-label="Close"
           onClick={() => {
             onOpenChange?.(false)
@@ -459,21 +393,10 @@ function ModalPrompt({
             position: "absolute",
             top: 14,
             right: 14,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            border: "none",
-            background: "transparent",
-            color: "var(--aurora-text-muted)",
-            cursor: "pointer",
-            outline: "none",
           }}
         >
           <CloseIcon />
-        </button>
+        </Button>
 
         <div style={{ paddingRight: 32 }}>
           <p
@@ -598,30 +521,21 @@ function BannerPrompt({
         compact
       />
 
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         aria-label="Dismiss"
         onClick={() => {
           onOpenChange?.(false)
           onDeny?.()
         }}
         style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 26,
-          height: 26,
-          borderRadius: 7,
-          border: "none",
-          background: "transparent",
-          color: "var(--aurora-text-muted)",
-          cursor: "pointer",
           flexShrink: 0,
-          outline: "none",
         }}
       >
         <CloseIcon />
-      </button>
+      </Button>
     </div>
   )
 }
@@ -652,7 +566,7 @@ function InlinePrompt({
         borderLeft: isDangerous
           ? "3px solid var(--aurora-error)"
           : "3px solid var(--aurora-accent-primary)",
-        borderRadius: "var(--radius-1, 14px)",
+        borderRadius: "var(--aurora-radius-1)",
         padding: "14px 16px",
         ...style,
       }}

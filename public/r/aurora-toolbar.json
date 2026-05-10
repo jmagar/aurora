@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-toolbar",
+  "type": "registry:ui",
+  "title": "Aurora Toolbar",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Dense workbench toolbar with grouped controls and separators for editors, previews, and inspectors.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/toolbar.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nconst Toolbar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(\n  ({ className, style, ...props }, ref) => (\n    <div\n      ref={ref}\n      role=\"toolbar\"\n      className={cn(\"flex min-h-10 flex-wrap items-center gap-1.5 rounded-[8px] border px-2 py-1.5\", className)}\n      style={{\n        background: \"var(--aurora-panel-medium)\",\n        borderColor: \"var(--aurora-border-default)\",\n        boxShadow: \"var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)\",\n        ...style,\n      }}\n      {...props}\n    />\n  )\n)\nToolbar.displayName = \"Toolbar\"\n\nconst ToolbarGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(\n  ({ className, ...props }, ref) => (\n    <div ref={ref} className={cn(\"flex items-center gap-1.5\", className)} {...props} />\n  )\n)\nToolbarGroup.displayName = \"ToolbarGroup\"\n\nconst ToolbarSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(\n  ({ className, style, ...props }, ref) => (\n    <div\n      ref={ref}\n      role=\"separator\"\n      className={cn(\"mx-1 h-5 w-px\", className)}\n      style={{ background: \"var(--aurora-border-default)\", ...style }}\n      {...props}\n    />\n  )\n)\nToolbarSeparator.displayName = \"ToolbarSeparator\"\n\nexport { Toolbar, ToolbarGroup, ToolbarSeparator }\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/toolbar.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/toolbar.tsx",
+    "installTarget": "@ui/aurora/toolbar.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/toolbar.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "layout"
+  ]
+}

@@ -1,11 +1,12 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/registry/aurora/ui/button";
 import { Banner } from "@/registry/aurora/ui/banner";
 
 function ActionLink({ children }: { children: React.ReactNode }) {
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       type="button"
       style={{
         fontSize: 12,
@@ -20,7 +21,7 @@ function ActionLink({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 
@@ -94,13 +95,13 @@ export default function BannersDemo() {
               }}
             >
               All banners dismissed.{" "}
-              <button
+              <Button variant="plain" size="unstyled"
                 type="button"
                 onClick={() => setDismissed({})}
                 style={{ color: "var(--aurora-accent-primary)", background: "none", border: "none", cursor: "pointer", fontSize: 13, padding: 0, fontWeight: 600 }}
               >
                 Reset
-              </button>
+              </Button>
             </div>
           )}
         </div>

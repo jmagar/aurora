@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -21,13 +22,13 @@ export interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 // ---------------------------------------------------------------------------
-// Status colour map (literal hex values matching gallery)
+// Status colour map
 // ---------------------------------------------------------------------------
 
 const STATUS_COLOR: Record<BannerStatus, string> = {
-  warn:  "#c6a36b",
-  error: "#c78490",
-  info:  "#29b6f6",
+  warn:  "var(--aurora-warn)",
+  error: "var(--aurora-error)",
+  info:  "var(--aurora-accent-primary)",
 };
 
 const STATUS_LABEL: Record<BannerStatus, string> = {
@@ -61,7 +62,7 @@ function injectPulseKeyframes() {
 // <div class="banner-elev banner-elev-warn">
 //   <div class="dot"></div>
 //   <div><h4>…</h4><p>…</p></div>
-//   <button class="banner-elev-dismiss">×</button>
+//   <Button variant="plain" size="unstyled" class="banner-elev-dismiss">×</Button>
 // </div>
 // ---------------------------------------------------------------------------
 
@@ -148,7 +149,7 @@ function BannerElevated({
 
       {/* Dismiss × button */}
       {onDismiss && (
-        <button
+        <Button variant="plain" size="unstyled"
           type="button"
           aria-label="Dismiss"
           onClick={handleDismiss}
@@ -173,7 +174,7 @@ function BannerElevated({
           }}
         >
           ×
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -216,7 +217,7 @@ function BannerTag({
         style={{
           flexShrink: 0,
           borderRadius: 4,
-          fontFamily: "monospace",
+          fontFamily: "var(--aurora-font-mono)",
           fontSize: 10,
           fontWeight: 700,
           textTransform: "uppercase",

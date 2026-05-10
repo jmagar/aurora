@@ -39,10 +39,12 @@ const TREE: TreeNode[] = [
   { id: "env-example", name: ".env.example",type: "file", language: "sh" },
 ]
 
+const INITIAL_NODE = TREE[2]
+
 export function FileTreeDemo() {
-  const [selectedNode, setSelectedNode] = React.useState<TreeNode | null>(null)
+  const [selectedNode, setSelectedNode] = React.useState<TreeNode | null>(INITIAL_NODE)
   const [lastAction, setLastAction] = React.useState<string | null>(null)
-  const [openChips, setOpenChips] = React.useState<TreeNode[]>([])
+  const [openChips, setOpenChips] = React.useState<TreeNode[]>([INITIAL_NODE])
 
   function handleSelect(node: TreeNode) {
     setSelectedNode(node)
@@ -79,10 +81,9 @@ export function FileTreeDemo() {
         <div
           style={{
             fontFamily: "var(--aurora-font-sans)",
-            fontSize: "11px",
-            fontWeight: 600,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
+            fontSize: "var(--aurora-type-label)",
+            fontWeight: "var(--aurora-weight-label)",
+            letterSpacing: "var(--aurora-letter-label)",
             color: "var(--aurora-text-muted)",
           }}
         >
@@ -90,6 +91,7 @@ export function FileTreeDemo() {
         </div>
         <FileTree
           tree={TREE}
+          defaultSelectedId={INITIAL_NODE.id}
           onSelect={handleSelect}
           onContextAction={handleContextAction}
         />
@@ -99,10 +101,9 @@ export function FileTreeDemo() {
         <div
           style={{
             fontFamily: "var(--aurora-font-sans)",
-            fontSize: "11px",
-            fontWeight: 600,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
+            fontSize: "var(--aurora-type-label)",
+            fontWeight: "var(--aurora-weight-label)",
+            letterSpacing: "var(--aurora-letter-label)",
             color: "var(--aurora-text-muted)",
           }}
         >
@@ -111,24 +112,57 @@ export function FileTreeDemo() {
 
         <div
           style={{
-            padding: "16px",
+            padding: "18px",
             background: "var(--aurora-panel-medium)",
             border: "1px solid var(--aurora-border-default)",
             borderRadius: "var(--aurora-radius-2)",
             fontFamily: "var(--aurora-font-sans)",
             fontSize: "13px",
             color: "var(--aurora-text-muted)",
-            minHeight: "80px",
+            minHeight: "180px",
           }}
         >
           {selectedNode ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <div style={{ color: "var(--aurora-text-primary)", fontWeight: 600 }}>
-                {selectedNode.name}
+            <div style={{ display: "grid", gap: "14px" }}>
+              <div>
+                <div style={{ color: "var(--aurora-text-primary)", fontSize: 15, fontWeight: 720 }}>
+                  {selectedNode.name}
+                </div>
+                <div style={{ marginTop: 3 }}>
+                  {selectedNode.type === "folder" ? "Folder in gateway workspace" : "Tracked project file"}
+                </div>
               </div>
-              <div>Type: {selectedNode.type}</div>
-              {selectedNode.language && <div>Language: {selectedNode.language}</div>}
-              {selectedNode.children && <div>{selectedNode.children.length} children</div>}
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+                  gap: "10px",
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>Type</div>
+                  <div style={{ color: "var(--aurora-text-primary)", marginTop: 4 }}>{selectedNode.type}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>Language</div>
+                  <div style={{ color: "var(--aurora-text-primary)", marginTop: 4 }}>{selectedNode.language ?? "None"}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>Children</div>
+                  <div style={{ color: "var(--aurora-text-primary)", marginTop: 4 }}>{selectedNode.children?.length ?? 0}</div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  borderTop: "1px solid var(--aurora-border-default)",
+                  color: "var(--aurora-text-muted)",
+                  paddingTop: 12,
+                }}
+              >
+                Right-click any row to open file actions. Selecting files keeps the latest three as open tabs below.
+              </div>
             </div>
           ) : (
             "Click a file or folder to select it. Right-click for context menu."
@@ -142,8 +176,9 @@ export function FileTreeDemo() {
               background: "color-mix(in srgb, var(--aurora-accent-primary) 8%, var(--aurora-panel-medium))",
               border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 20%, transparent)",
               borderRadius: "10px",
-              fontFamily: "var(--aurora-font-mono)",
+              fontFamily: "var(--aurora-font-sans)",
               fontSize: "12px",
+              fontWeight: "var(--aurora-weight-ui)",
               color: "var(--aurora-accent-primary)",
             }}
           >
@@ -156,10 +191,9 @@ export function FileTreeDemo() {
             <div
               style={{
                 fontFamily: "var(--aurora-font-sans)",
-                fontSize: "11px",
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
+                fontSize: "var(--aurora-type-label)",
+                fontWeight: "var(--aurora-weight-label)",
+                letterSpacing: "var(--aurora-letter-label)",
                 color: "var(--aurora-text-muted)",
               }}
             >

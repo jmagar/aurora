@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import { OAuth, OAuthApp, OAuthScope, OAuthToken, OAuthMode } from "@/registry/aurora/blocks/oauth/oauth"
 
 const APP: OAuthApp = {
@@ -109,7 +110,7 @@ export function OAuthDemo() {
         {MODES.map((m) => {
           const active = mode === m.id
           return (
-            <button
+            <Button variant="plain" size="unstyled"
               key={m.id}
               onClick={() => setMode(m.id)}
               title={m.description}
@@ -131,7 +132,7 @@ export function OAuthDemo() {
               }}
             >
               {m.label}
-            </button>
+            </Button>
           )
         })}
       </div>

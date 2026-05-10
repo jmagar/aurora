@@ -8,7 +8,7 @@ const badgeVariants = cva(
   [
     "inline-flex items-center gap-1.5",
     "px-2 py-0.5",
-    "text-[10px] font-semibold uppercase tracking-widest leading-none",
+    "uppercase leading-none",
     "border",
     "whitespace-nowrap",
   ].join(" "),
@@ -17,23 +17,23 @@ const badgeVariants = cva(
       variant: {
         default: [
           "text-[var(--aurora-accent-primary)]",
-          "border-[color-mix(in_srgb,#29b6f6_30%,transparent)]",
+          "border-[color-mix(in_srgb,var(--aurora-accent-primary)_30%,transparent)]",
         ].join(" "),
         success: [
           "text-[var(--aurora-success)]",
-          "border-[color-mix(in_srgb,#7dd3c7_30%,transparent)]",
+          "border-[color-mix(in_srgb,var(--aurora-success)_30%,transparent)]",
         ].join(" "),
         warn: [
           "text-[var(--aurora-warn)]",
-          "border-[color-mix(in_srgb,#c6a36b_30%,transparent)]",
+          "border-[color-mix(in_srgb,var(--aurora-warn)_30%,transparent)]",
         ].join(" "),
         error: [
           "text-[var(--aurora-error)]",
-          "border-[color-mix(in_srgb,#c78490_30%,transparent)]",
+          "border-[color-mix(in_srgb,var(--aurora-error)_30%,transparent)]",
         ].join(" "),
         rose: [
           "text-[var(--aurora-accent-pink)]",
-          "border-[color-mix(in_srgb,#f9a8c4_30%,transparent)]",
+          "border-[color-mix(in_srgb,var(--aurora-accent-pink)_30%,transparent)]",
         ].join(" "),
       },
     },
@@ -44,19 +44,19 @@ const badgeVariants = cva(
 )
 
 const variantBgMap: Record<string, string> = {
-  default: "color-mix(in srgb, #29b6f6 10%, transparent)",
-  success: "color-mix(in srgb, #7dd3c7 10%, transparent)",
-  warn: "color-mix(in srgb, #c6a36b 10%, transparent)",
-  error: "color-mix(in srgb, #c78490 10%, transparent)",
-  rose: "color-mix(in srgb, #f9a8c4 10%, transparent)",
+  default: "color-mix(in srgb, var(--aurora-accent-primary) 10%, transparent)",
+  success: "color-mix(in srgb, var(--aurora-success) 10%, transparent)",
+  warn: "color-mix(in srgb, var(--aurora-warn) 10%, transparent)",
+  error: "color-mix(in srgb, var(--aurora-error) 10%, transparent)",
+  rose: "color-mix(in srgb, var(--aurora-accent-pink) 10%, transparent)",
 }
 
 const dotColorMap: Record<string, string> = {
-  default: "#29b6f6",
-  success: "#7dd3c7",
-  warn: "#c6a36b",
-  error: "#c78490",
-  rose: "#f9a8c4",
+  default: "var(--aurora-accent-primary)",
+  success: "var(--aurora-success)",
+  warn: "var(--aurora-warn)",
+  error: "var(--aurora-error)",
+  rose: "var(--aurora-accent-pink)",
 }
 
 export interface BadgeProps
@@ -79,6 +79,9 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
           borderRadius: "4px",
           background: bg,
           fontFamily: "var(--aurora-font-mono, 'JetBrains Mono', monospace)",
+          fontSize: "var(--aurora-type-micro)",
+          fontWeight: 650,
+          letterSpacing: "0.075em",
           ...style,
         }}
         {...props}

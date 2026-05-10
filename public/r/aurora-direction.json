@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-direction",
+  "type": "registry:ui",
+  "title": "Aurora Direction",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Minimal direction wrapper for LTR and RTL layout previews.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/direction.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport interface DirectionProps extends React.HTMLAttributes<HTMLDivElement> {\n  dir?: \"ltr\" | \"rtl\"\n}\n\nexport const Direction = React.forwardRef<HTMLDivElement, DirectionProps>(\n  ({ dir = \"ltr\", ...props }, ref) => <div ref={ref} dir={dir} {...props} />\n)\nDirection.displayName = \"Direction\"\n\nexport default Direction\n\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/direction.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/direction.tsx",
+    "installTarget": "@ui/aurora/direction.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/direction.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "layout"
+  ]
+}

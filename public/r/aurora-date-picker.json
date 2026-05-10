@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-date-picker",
+  "type": "registry:ui",
+  "title": "Aurora Date Picker",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Native date input with Aurora label and calendar affordance.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-input"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/date-picker.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { CalendarDays } from \"lucide-react\"\nimport { Input } from \"@/registry/aurora/ui/input\"\n\nexport interface DatePickerProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, \"type\"> {\n  label?: string\n}\n\nexport const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(\n  ({ className, label, ...props }, ref) => (\n    <label className={[\"grid gap-1.5\", className].filter(Boolean).join(\" \")}>\n      {label ? <span className=\"aurora-text-label\" style={{ color: \"var(--aurora-text-muted)\" }}>{label}</span> : null}\n      <span className=\"relative\">\n        <CalendarDays className=\"pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2\" aria-hidden style={{ color: \"var(--aurora-text-muted)\" }} />\n        <Input ref={ref} type=\"date\" style={{ paddingLeft: 34 }} {...props} />\n      </span>\n    </label>\n  )\n)\nDatePicker.displayName = \"DatePicker\"\n\nexport default DatePicker\n\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/date-picker.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/date-picker.tsx",
+    "installTarget": "@ui/aurora/date-picker.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/date-picker.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-input`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "forms"
+  ]
+}

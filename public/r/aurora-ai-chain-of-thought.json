@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-chain-of-thought",
+  "type": "registry:block",
+  "title": "Aurora AI Chain of Thought",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora-native chain of thought parity surface from AI Elements.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-ai-elements",
+    "aurora-thinking"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai-elements/chain-of-thought.tsx",
+      "content": "\"use client\"\n\nexport { Thinking as ChainOfThought } from \"@/registry/aurora/blocks/thinking/thinking\"\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/chain-of-thought.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai-elements/chain-of-thought.tsx",
+    "installTarget": "@components/aurora/ai/chain-of-thought.tsx"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/chain-of-thought.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`.",
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ]
+}

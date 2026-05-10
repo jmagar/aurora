@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // CSS injected once
@@ -102,21 +103,21 @@ function EyeIcon() {
 // ---------------------------------------------------------------------------
 
 const LANG_COLORS: Record<string, string> = {
-  typescript: "#3178c6",
-  javascript: "#f7df1e",
-  tsx: "#61dafb",
-  jsx: "#61dafb",
-  python: "#3572a5",
-  rust: "#dea584",
-  go: "#00add8",
-  bash: "#4eaa25",
-  sh: "#4eaa25",
-  json: "#f9a8c4",
-  css: "#563d7c",
-  html: "#e34c26",
-  sql: "#e38c00",
-  yaml: "#cb171e",
-  toml: "#9c4121",
+  typescript: "var(--aurora-code-type)",
+  javascript: "var(--aurora-warn)",
+  tsx: "var(--aurora-code-function)",
+  jsx: "var(--aurora-code-function)",
+  python: "var(--aurora-accent-deep)",
+  rust: "var(--aurora-accent-pink-deep)",
+  go: "var(--aurora-accent-primary)",
+  bash: "var(--aurora-success)",
+  sh: "var(--aurora-success)",
+  json: "var(--aurora-accent-pink)",
+  css: "var(--aurora-accent-deep)",
+  html: "var(--aurora-error)",
+  sql: "var(--aurora-warn)",
+  yaml: "var(--aurora-error)",
+  toml: "var(--aurora-accent-pink-deep)",
 }
 
 function LanguageBadge({ language }: { language: string }) {
@@ -156,32 +157,20 @@ function ToolbarBtn({
   title?: string
   children: React.ReactNode
 }) {
-  const [hovered, setHovered] = React.useState(false)
-
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="icon"
       title={title}
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
         width: 28,
         height: 28,
-        borderRadius: 8,
-        border: "1px solid transparent",
-        background: hovered ? "var(--aurora-hover-bg)" : "transparent",
-        color: hovered ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-        cursor: "pointer",
-        transition: "background 120ms, color 120ms",
-        outline: "none",
       }}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 
@@ -248,30 +237,18 @@ function TabPill({
   children: React.ReactNode
 }) {
   return (
-    <button
+    <Button
       type="button"
+      variant={active ? "neutral" : "ghost"}
+      size="sm"
       onClick={onClick}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
         gap: 5,
         fontSize: 12,
-        fontWeight: active ? 600 : 500,
-        fontFamily: "var(--font-sans, Inter, sans-serif)",
-        color: active ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-        background: active ? "var(--aurora-control-surface)" : "transparent",
-        border: active
-          ? "1px solid var(--aurora-border-default)"
-          : "1px solid transparent",
-        borderRadius: 8,
-        padding: "3px 10px",
-        cursor: "pointer",
-        transition: "background 120ms, color 120ms, border-color 120ms",
-        outline: "none",
       }}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 
@@ -502,13 +479,13 @@ function ArtifactCard({ title, language, code, isStreaming, style }: ArtifactPro
       style={{
         background: "var(--aurora-panel-medium)",
         border: "1px solid var(--aurora-border-default)",
-        borderRadius: "var(--radius-1, 14px)",
+        borderRadius: "var(--aurora-radius-1)",
         overflow: "hidden",
         ...style,
       }}
     >
       {/* Header row */}
-      <button
+      <Button variant="plain" size="unstyled"
         type="button"
         onClick={() => setOpen((o) => !o)}
         style={{
@@ -567,7 +544,7 @@ function ArtifactCard({ title, language, code, isStreaming, style }: ArtifactPro
         >
           <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </button>
+      </Button>
 
       {/* Collapsed preview */}
       {!open && (
@@ -607,7 +584,7 @@ function ArtifactCard({ title, language, code, isStreaming, style }: ArtifactPro
           >
             <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy"}>
               {copied ? (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path d="M2 7L5.5 10.5L12 4" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               ) : (
@@ -636,7 +613,7 @@ function ArtifactInline({ title, language, code, isStreaming, style }: ArtifactP
       style={{
         background: "var(--aurora-bg)",
         border: "1px solid var(--aurora-border-default)",
-        borderRadius: "var(--radius-1, 14px)",
+        borderRadius: "var(--aurora-radius-1)",
         overflow: "hidden",
         ...style,
       }}

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -43,8 +44,8 @@ const TOKEN_COLORS: Record<TokenType, string> = {
   comment: "var(--aurora-text-muted)",            // muted
   number: "var(--aurora-warn)",                   // warn amber
   operator: "var(--aurora-accent-strong)",        // bright cyan
-  type: "#b8d9f5",                                // light blue
-  function: "#67cbfa",                            // accent-strong
+  type: "var(--aurora-code-type)",
+  function: "var(--aurora-code-function)",
   plain: "var(--aurora-text-primary)",
   "diff-add": "var(--aurora-success)",
   "diff-remove": "var(--aurora-error)",
@@ -239,25 +240,16 @@ function CopyButton({ code }: { code: string }) {
   }
 
   return (
-    <button
+    <Button
+      type="button"
+      variant={copied ? "aurora" : "neutral"}
+      size="sm"
       onClick={handleCopy}
       aria-label={copied ? "Copied" : "Copy code"}
       title={copied ? "Copied!" : "Copy to clipboard"}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
         gap: "4px",
-        padding: "3px 9px",
-        background: copied
-          ? "color-mix(in srgb, var(--aurora-success) 15%, transparent)"
-          : "var(--aurora-control-surface)",
-        border: `1px solid ${copied ? "color-mix(in srgb, var(--aurora-success) 35%, transparent)" : "var(--aurora-border-default)"}`,
-        borderRadius: "8px",
-        cursor: "pointer",
         fontSize: "11px",
-        color: copied ? "var(--aurora-success)" : "var(--aurora-text-muted)",
-        fontWeight: 500,
-        transition: "all 0.15s",
         flexShrink: 0,
       }}
     >
@@ -277,7 +269,7 @@ function CopyButton({ code }: { code: string }) {
           Copy
         </>
       )}
-    </button>
+    </Button>
   )
 }
 

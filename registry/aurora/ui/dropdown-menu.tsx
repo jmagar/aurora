@@ -22,9 +22,17 @@ const menuContentStyle: React.CSSProperties = {
 
 const menuItemBase = [
   "relative flex cursor-pointer select-none items-center gap-2",
-  "rounded-[6px] px-2 py-2 text-sm outline-none",
+  "rounded-[6px] px-2 py-2 outline-none",
   "transition-colors duration-100",
 ].join(" ")
+
+const menuTextStyle: React.CSSProperties = {
+  fontFamily: "var(--aurora-font-sans)",
+  fontSize: "var(--aurora-type-control)",
+  fontWeight: "var(--aurora-weight-ui)",
+  letterSpacing: "var(--aurora-letter-ui)",
+  lineHeight: "var(--aurora-line-dense)",
+}
 
 // ─── Root primitives ──────────────────────────────────────────────────────────
 
@@ -78,7 +86,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
       inset && "pl-8",
       className
     )}
-    style={{ color: "var(--aurora-text-primary)", ...style }}
+    style={{ ...menuTextStyle, color: "var(--aurora-text-primary)", ...style }}
     {...props}
   >
     {children}
@@ -137,6 +145,7 @@ const DropdownMenuItem = React.forwardRef<
     )}
     style={{
       color: danger ? "var(--aurora-error)" : "var(--aurora-text-primary)",
+      ...menuTextStyle,
       ...style,
     }}
     {...props}
@@ -164,6 +173,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
       color: checked
         ? "var(--aurora-accent-primary)"
         : "var(--aurora-text-primary)",
+      ...menuTextStyle,
       ...style,
     }}
     checked={checked}
@@ -195,7 +205,7 @@ const DropdownMenuRadioItem = React.forwardRef<
       "data-[state=checked]:font-semibold",
       className
     )}
-    style={{ color: "var(--aurora-text-primary)", ...style }}
+    style={{ ...menuTextStyle, color: "var(--aurora-text-primary)", ...style }}
     {...props}
   >
     <span className="absolute left-2 flex size-3.5 items-center justify-center">
@@ -223,11 +233,19 @@ const DropdownMenuLabel = React.forwardRef<
   <DropdownMenuPrimitive.Label
     ref={ref}
     className={cn(
-      "px-2 py-1.5 text-xs font-semibold uppercase tracking-wider",
+      "px-2 py-1.5",
       inset && "pl-8",
       className
     )}
-    style={{ color: "var(--aurora-text-muted)", ...style }}
+    style={{
+      color: "var(--aurora-text-muted)",
+      fontFamily: "var(--aurora-font-sans)",
+      fontSize: "var(--aurora-type-label)",
+      fontWeight: "var(--aurora-weight-label)",
+      letterSpacing: "var(--aurora-letter-label)",
+      lineHeight: "var(--aurora-line-dense)",
+      ...style,
+    }}
     {...props}
   />
 ))
@@ -255,8 +273,13 @@ const DropdownMenuShortcut = ({
   ...props
 }: React.HTMLAttributes<HTMLSpanElement>) => (
   <span
-    className={cn("ml-auto text-xs tracking-widest opacity-60", className)}
-    style={{ color: "var(--aurora-text-muted)" }}
+    className={cn("ml-auto opacity-70", className)}
+    style={{
+      color: "var(--aurora-text-muted)",
+      fontFamily: "var(--aurora-font-mono)",
+      fontSize: "var(--aurora-type-caption)",
+      letterSpacing: 0,
+    }}
     {...props}
   />
 )

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-input-otp",
+  "type": "registry:ui",
+  "title": "Aurora Input OTP",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Segmented one-time-code input slots with Aurora control styling.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/input-otp.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport interface InputOTPProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"onChange\"> {\n  length?: number\n  value?: string\n  onChange?: (value: string) => void\n}\n\nexport function InputOTP({ length = 6, value = \"\", onChange, className, style, ...props }: InputOTPProps) {\n  const chars = value.padEnd(length).slice(0, length).split(\"\")\n\n  return (\n    <div className={[\"flex gap-2\", className].filter(Boolean).join(\" \")} style={style} {...props}>\n      {chars.map((char, index) => (\n        <input\n          key={index}\n          aria-label={`Digit ${index + 1}`}\n          inputMode=\"numeric\"\n          maxLength={1}\n          value={char.trim()}\n          onChange={(event) => {\n            const next = chars.slice()\n            next[index] = event.target.value.slice(-1)\n            onChange?.(next.join(\"\").trim())\n          }}\n          className=\"size-10 rounded-[8px] border text-center aurora-text-code\"\n          style={{\n            background: \"var(--aurora-control-surface)\",\n            borderColor: \"var(--aurora-border-strong)\",\n            color: \"var(--aurora-text-primary)\",\n          }}\n        />\n      ))}\n    </div>\n  )\n}\n\nexport default InputOTP\n\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/input-otp.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/input-otp.tsx",
+    "installTarget": "@ui/aurora/input-otp.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/input-otp.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "forms"
+  ]
+}

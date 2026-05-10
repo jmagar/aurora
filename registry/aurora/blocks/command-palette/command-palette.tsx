@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
+import { Input } from "@/registry/aurora/ui/input"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -254,16 +256,9 @@ export function CommandPalette({
 
   const flatItems = grouped.flatMap((g) => g.items)
 
-  // Reset selection when filter changes
-  React.useEffect(() => {
-    setActiveIdx(0)
-  }, [query])
-
   // Focus input when open
   React.useEffect(() => {
     if (open) {
-      setQuery("")
-      setActiveIdx(0)
       setTimeout(() => inputRef.current?.focus(), 0)
     }
   }, [open])
@@ -297,6 +292,8 @@ export function CommandPalette({
   function fire(item: CommandItem) {
     item.onSelect?.()
     onSelect?.(item)
+    setQuery("")
+    setActiveIdx(0)
     onOpenChange(false)
   }
 
@@ -318,7 +315,11 @@ export function CommandPalette({
       {/* Backdrop */}
       <div
         role="presentation"
-        onClick={() => onOpenChange(false)}
+        onClick={() => {
+          setQuery("")
+          setActiveIdx(0)
+          onOpenChange(false)
+        }}
         style={{
           position: "fixed",
           inset: 0,
@@ -365,13 +366,17 @@ export function CommandPalette({
           <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
             <SearchIcon />
           </span>
-          <input
+          <Input
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setActiveIdx(0)
+            }}
             placeholder="Search commands, skills, files…"
             aria-label="Search"
+            className="h-auto border-none px-0 py-0 focus-visible:outline-none"
             style={{
               flex: 1,
               background: "transparent",
@@ -429,7 +434,7 @@ export function CommandPalette({
                   const idx = flatIndex++
                   const isActive = idx === activeIdx
                   return (
-                    <button
+                    <Button variant="plain" size="unstyled"
                       key={item.id}
                       role="option"
                       aria-selected={isActive}
@@ -505,7 +510,7 @@ export function CommandPalette({
 
                       {/* Shortcut */}
                       {item.shortcut && <KbdBadge keys={item.shortcut} />}
-                    </button>
+                    </Button>
                   )
                 })}
               </div>

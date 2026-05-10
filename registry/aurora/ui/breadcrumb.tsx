@@ -8,6 +8,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { ChevronRight, Dot } from "lucide-react"
+import { Badge } from "./badge"
 import { cn } from "@/lib/utils"
 
 // ─── Variant context ──────────────────────────────────────────────────────────
@@ -92,10 +93,10 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
 
     const baseClass = cn(
       "transition-colors duration-150 hover:underline focus-visible:outline-none",
-      variant === "default" && "text-sm",
-      variant === "mono" && "text-xs",
-      variant === "pill-trail" &&
-        "inline-flex items-center rounded-full px-3 py-0.5 text-xs font-medium border transition-all",
+        variant === "default" && "aurora-text-control",
+        variant === "mono" && "aurora-text-code",
+        variant === "pill-trail" &&
+        "aurora-text-control inline-flex items-center rounded-full border px-3 py-0.5 transition-all",
       className
     )
 
@@ -137,11 +138,10 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, BreadcrumbPageProps>(
     const variant = React.useContext(BreadcrumbVariantContext)
 
     const baseClass = cn(
-      "font-medium",
-      variant === "default" && "text-sm",
-      variant === "mono" && "text-xs",
+      variant === "default" && "aurora-text-control",
+      variant === "mono" && "aurora-text-code",
       variant === "pill-trail" &&
-        "inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-semibold border",
+        "aurora-text-control inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5",
       className
     )
 
@@ -167,18 +167,7 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, BreadcrumbPageProps>(
         style={baseStyle}
         {...props}
       >
-        {badge && (
-          <span
-            className="inline-flex items-center rounded-[4px] px-1.5 py-0.5 text-[10px] font-semibold leading-none"
-            style={{
-              backgroundColor: "color-mix(in srgb, var(--aurora-accent-primary) 15%, transparent)",
-              color: "var(--aurora-accent-strong)",
-              border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 25%, transparent)",
-            }}
-          >
-            {badge}
-          </span>
-        )}
+        {badge && <Badge>{badge}</Badge>}
         {children}
       </span>
     )

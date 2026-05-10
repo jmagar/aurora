@@ -103,7 +103,7 @@ export default function ArtifactDemo() {
             fontWeight: 500,
           }}
         >
-          variant="panel" — full-featured with copy/download/expand
+          variant=&quot;panel&quot; - full-featured with copy/download/expand
         </p>
         <Artifact
           variant="panel"
@@ -123,7 +123,7 @@ export default function ArtifactDemo() {
             fontWeight: 500,
           }}
         >
-          variant="card" — compact collapsible in-chat card
+          variant=&quot;card&quot; - compact collapsible in-chat card
         </p>
         <Artifact
           variant="card"
@@ -143,7 +143,7 @@ export default function ArtifactDemo() {
             fontWeight: 500,
           }}
         >
-          variant="inline" — bare code block with minimal toolbar
+          variant=&quot;inline&quot; - bare code block with minimal toolbar
         </p>
         <Artifact
           variant="inline"
@@ -166,7 +166,7 @@ acquire_timeout_ms = 5_000`}
             fontWeight: 500,
           }}
         >
-          variant="panel" isStreaming — with blinking cursor and spinner
+          variant=&quot;panel&quot; isStreaming - with blinking cursor and spinner
         </p>
         <Artifact
           variant="panel"

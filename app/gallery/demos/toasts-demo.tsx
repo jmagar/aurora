@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/registry/aurora/ui/button";
 
 // Inline stacked-plane SVG mark — 16x16
 function LabbyMark16({ color }: { color: string }) {
@@ -97,7 +98,7 @@ function StaticToast({ status, title, description }: StaticToastProps) {
       </div>
 
       {/* Dismiss */}
-      <button
+      <Button variant="plain" size="unstyled"
         type="button"
         aria-label="Dismiss"
         onClick={() => setVisible(false)}
@@ -115,7 +116,7 @@ function StaticToast({ status, title, description }: StaticToastProps) {
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
           <path d="M1.5 1.5l10 10M11.5 1.5l-10 10" />
         </svg>
-      </button>
+      </Button>
     </div>
   );
 }

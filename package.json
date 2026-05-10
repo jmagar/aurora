@@ -2,11 +2,13 @@
   "name": "registry",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
+    "audit:composition": "node scripts/audit-composition.mjs",
     "registry:build": "shadcn build"
   },
   "dependencies": {

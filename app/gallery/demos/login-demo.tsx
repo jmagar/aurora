@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import { Login, LoginMode } from "@/registry/aurora/blocks/login/login"
 
 const MODES: { id: LoginMode; label: string }[] = [
@@ -53,7 +54,7 @@ export function LoginDemo() {
         {MODES.map((m) => {
           const active = mode === m.id
           return (
-            <button
+            <Button variant="plain" size="unstyled"
               key={m.id}
               onClick={() => { setMode(m.id); setLastEvent(null) }}
               style={{
@@ -74,7 +75,7 @@ export function LoginDemo() {
               }}
             >
               {m.label}
-            </button>
+            </Button>
           )
         })}
 

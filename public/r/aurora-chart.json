@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-chart",
+  "type": "registry:ui",
+  "title": "Aurora Chart",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Small tokenized SVG chart surface for operational metrics and registry summaries.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/chart.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport interface ChartDatum {\n  label: string\n  value: number\n}\n\nexport interface ChartProps extends React.HTMLAttributes<HTMLDivElement> {\n  data: ChartDatum[]\n  type?: \"bar\" | \"line\"\n}\n\nexport function Chart({ data, type = \"bar\", className, style, ...props }: ChartProps) {\n  const max = Math.max(1, ...data.map((item) => item.value))\n  const points = data.map((item, index) => {\n    const x = data.length === 1 ? 50 : (index / (data.length - 1)) * 100\n    const y = 90 - (item.value / max) * 72\n    return `${x},${y}`\n  }).join(\" \")\n\n  return (\n    <div\n      className={[\"rounded-[8px] border p-4\", className].filter(Boolean).join(\" \")}\n      style={{\n        background: \"var(--aurora-panel-medium)\",\n        borderColor: \"var(--aurora-border-default)\",\n        color: \"var(--aurora-text-primary)\",\n        ...style,\n      }}\n      {...props}\n    >\n      <svg viewBox=\"0 0 100 100\" role=\"img\" aria-label=\"Chart\" className=\"h-48 w-full overflow-visible\">\n        <g stroke=\"var(--aurora-border-default)\" strokeWidth=\"0.5\">\n          {[20, 40, 60, 80].map((y) => <line key={y} x1=\"0\" x2=\"100\" y1={y} y2={y} />)}\n        </g>\n        {type === \"line\" ? (\n          <>\n            <polyline points={points} fill=\"none\" stroke=\"var(--aurora-accent-primary)\" strokeWidth=\"2.5\" strokeLinecap=\"round\" strokeLinejoin=\"round\" />\n            {data.map((item, index) => {\n              const x = data.length === 1 ? 50 : (index / (data.length - 1)) * 100\n              const y = 90 - (item.value / max) * 72\n              return <circle key={item.label} cx={x} cy={y} r=\"2.2\" fill=\"var(--aurora-accent-strong)\" />\n            })}\n          </>\n        ) : (\n          data.map((item, index) => {\n            const width = 70 / data.length\n            const x = 12 + index * (76 / data.length)\n            const height = (item.value / max) * 72\n            return (\n              <rect\n                key={item.label}\n                x={x}\n                y={90 - height}\n                width={width}\n                height={height}\n                rx=\"1.5\"\n                fill=\"color-mix(in srgb, var(--aurora-accent-primary) 68%, transparent)\"\n              />\n            )\n          })\n        )}\n      </svg>\n      <div className=\"mt-3 grid gap-2\">\n        {data.map((item) => (\n          <div key={item.label} className=\"grid grid-cols-[minmax(0,1fr)_auto] gap-3 aurora-text-meta\">\n            <span className=\"truncate\">{item.label}</span>\n            <span className=\"aurora-text-code\" style={{ color: \"var(--aurora-text-primary)\" }}>{item.value}</span>\n          </div>\n        ))}\n      </div>\n    </div>\n  )\n}\n\nexport default Chart\n\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/chart.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/chart.tsx",
+    "installTarget": "@ui/aurora/chart.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/chart.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "data-display"
+  ]
+}

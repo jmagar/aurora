@@ -1,0 +1,13 @@
+.git
+.next
+.omc
+.codex
+.agents
+node_modules
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+Dockerfile
+docker-compose.yaml
+.dockerignore

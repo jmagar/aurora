@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -220,7 +221,7 @@ function ThinkingBlock({
       }}
     >
       {/* Summary / toggle button */}
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         style={{
@@ -280,7 +281,7 @@ function ThinkingBlock({
             strokeLinejoin="round"
           />
         </svg>
-      </button>
+      </Button>
 
       {/* Collapsible body */}
       <div
@@ -330,7 +331,7 @@ function CotBlock({
 
   return (
     <div>
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         style={{
@@ -368,7 +369,7 @@ function CotBlock({
         >
           <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </button>
+      </Button>
 
       {open && (
         <div style={{ padding: "4px 14px 12px" }}>
@@ -471,7 +472,7 @@ function PlanBlock({
 
   return (
     <div>
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         style={{
@@ -521,7 +522,7 @@ function PlanBlock({
         >
           <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </button>
+      </Button>
 
       {open && (
         <div style={{ padding: "4px 14px 12px", display: "flex", flexDirection: "column", gap: "2px" }}>
@@ -590,10 +591,6 @@ export function Thinking({
   defaultOpen,
   content,
 }: ThinkingProps) {
-  const borderLeftColor = isStreaming
-    ? "var(--aurora-accent-primary)"
-    : "var(--aurora-border-strong)"
-
   return (
     <>
       <style>{KEYFRAMES}</style>

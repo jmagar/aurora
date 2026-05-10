@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import { Input } from "@/registry/aurora/ui/input"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 import {
@@ -368,7 +369,7 @@ export default function FormsDemo() {
           </div>
           <div style={divider} />
           <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
-            <button
+            <Button variant="plain" size="unstyled"
               style={{
                 height: "36px",
                 padding: "0 16px",
@@ -383,8 +384,8 @@ export default function FormsDemo() {
               }}
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button variant="plain" size="unstyled"
               style={{
                 height: "36px",
                 padding: "0 16px",
@@ -404,7 +405,7 @@ export default function FormsDemo() {
               }}
             >
               Provision gateway
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Shared icons
@@ -16,16 +17,6 @@ function GenericFileIcon({ color = "var(--aurora-text-muted)" }: { color?: strin
         fill="none"
       />
       <path d="M9 1.5V5.5H13" stroke={color} strokeWidth="1.2" />
-    </svg>
-  )
-}
-
-function ImageFileIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <rect x="2" y="2" width="12" height="12" rx="2" stroke="var(--aurora-accent-pink)" strokeWidth="1.2" />
-      <circle cx="5.5" cy="5.5" r="1.2" fill="var(--aurora-accent-pink)" />
-      <path d="M2 10.5L5 7.5L7.5 10L10 7.5L14 11.5" stroke="var(--aurora-accent-pink)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -54,14 +45,6 @@ function PDFIcon() {
   )
 }
 
-function AudioIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M3 6V10M6 4V12M9 5.5V10.5M12 7V9" stroke="var(--aurora-accent-primary)" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
-}
-
 function CloudUploadIcon() {
   return (
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
@@ -81,8 +64,6 @@ function CloudUploadIcon() {
 // ---------------------------------------------------------------------------
 
 const IMAGE_EXTS = ["jpg", "jpeg", "png", "gif", "webp", "avif", "svg", "bmp"]
-const VIDEO_EXTS = ["mp4", "webm", "mov", "avi", "mkv"]
-const AUDIO_EXTS = ["mp3", "wav", "ogg", "flac", "aac", "m4a"]
 
 function getExt(name: string): string {
   return name.split(".").pop()?.toLowerCase() ?? ""
@@ -90,14 +71,6 @@ function getExt(name: string): string {
 
 function isImage(name: string): boolean {
   return IMAGE_EXTS.includes(getExt(name))
-}
-
-function isVideo(name: string): boolean {
-  return VIDEO_EXTS.includes(getExt(name))
-}
-
-function isAudio(name: string): boolean {
-  return AUDIO_EXTS.includes(getExt(name))
 }
 
 function isPDF(name: string): boolean {
@@ -184,24 +157,22 @@ export function AttachmentChip({ name, size, thumbnailUrl, onDismiss }: Attachme
       </div>
 
       {onDismiss && (
-        <button
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={onDismiss}
           aria-label={`Remove ${name}`}
           style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "var(--aurora-text-muted)",
+            width: 20,
+            height: 20,
             fontSize: "14px",
             lineHeight: 1,
-            padding: "0 0 0 2px",
-            display: "flex",
-            alignItems: "center",
             flexShrink: 0,
           }}
         >
           ×
-        </button>
+        </Button>
       )}
     </div>
   )
@@ -300,22 +271,16 @@ export function AttachmentGrid({ items, columns = 3, onRemove }: AttachmentGridP
               {formatBytes(item.size)}
             </span>
             {onRemove && (
-              <button
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
                 onClick={() => onRemove(item.id)}
                 aria-label={`Remove ${item.name}`}
-                style={{
-                  marginTop: "4px",
-                  background: "color-mix(in srgb, var(--aurora-error) 18%, transparent)",
-                  border: "1px solid color-mix(in srgb, var(--aurora-error) 40%, transparent)",
-                  borderRadius: "8px",
-                  color: "var(--aurora-error)",
-                  fontSize: "11px",
-                  padding: "2px 8px",
-                  cursor: "pointer",
-                }}
+                style={{ marginTop: "4px", fontSize: "11px" }}
               >
                 Remove
-              </button>
+              </Button>
             )}
           </div>
 
@@ -379,26 +344,24 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
       }}
     >
       {onDismiss && (
-        <button
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={onDismiss}
           aria-label={`Remove ${name}`}
           style={{
             position: "absolute",
             top: "6px",
             right: "6px",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "var(--aurora-text-muted)",
+            width: 22,
+            height: 22,
             fontSize: "14px",
             lineHeight: 1,
-            padding: "2px",
-            display: "flex",
-            alignItems: "center",
           }}
         >
           ×
-        </button>
+        </Button>
       )}
 
       {/* File type badge */}
@@ -489,30 +452,15 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
       </div>
 
       {onOpen && (
-        <button
+        <Button
+          type="button"
+          variant="neutral"
+          size="sm"
           onClick={onOpen}
-          style={{
-            background: "var(--aurora-control-surface)",
-            border: "1px solid var(--aurora-border-default)",
-            borderRadius: "8px",
-            color: "var(--aurora-text-muted)",
-            fontSize: "11px",
-            fontWeight: 500,
-            padding: "4px 8px",
-            cursor: "pointer",
-            transition: "color 0.12s, border-color 0.12s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = "var(--aurora-text-primary)"
-            e.currentTarget.style.borderColor = "var(--aurora-border-strong)"
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = "var(--aurora-text-muted)"
-            e.currentTarget.style.borderColor = "var(--aurora-border-default)"
-          }}
+          style={{ fontSize: "11px" }}
         >
           Open
-        </button>
+        </Button>
       )}
     </div>
   )
@@ -559,20 +507,16 @@ export function AttachmentAudioChip({
         }}
       >
         {/* Play/pause toggle */}
-        <button
+        <Button
+          type="button"
+          variant="aurora"
+          size="icon"
           onClick={() => setPlaying((p) => !p)}
           aria-label={playing ? "Pause" : "Play"}
           style={{
             width: "28px",
             height: "28px",
             borderRadius: "50%",
-            background: "var(--aurora-accent-primary)",
-            border: "none",
-            color: "#fff",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             flexShrink: 0,
           }}
         >
@@ -586,7 +530,7 @@ export function AttachmentAudioChip({
               <path d="M2.5 1.5L8.5 5L2.5 8.5V1.5Z" fill="currentColor" />
             </svg>
           )}
-        </button>
+        </Button>
 
         {/* Waveform bars */}
         <div
@@ -726,24 +670,22 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
       </span>
 
       {onCancel && !done && (
-        <button
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={onCancel}
           aria-label="Cancel upload"
           style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "var(--aurora-text-muted)",
+            width: 20,
+            height: 20,
             fontSize: "14px",
             lineHeight: 1,
-            padding: 0,
             flexShrink: 0,
-            display: "flex",
-            alignItems: "center",
           }}
         >
           ×
-        </button>
+        </Button>
       )}
     </div>
   )

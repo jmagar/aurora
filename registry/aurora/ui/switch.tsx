@@ -83,8 +83,8 @@ const Switch = React.forwardRef<
       }}
       onFocus={(e) => {
         e.currentTarget.style.boxShadow = [
-          "0 0 0 3px color-mix(in srgb, #29b6f6 22%, transparent)",
-          "0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent)",
+          "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)",
+          "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)",
         ].join(", ")
         props.onFocus?.(e)
       }}
@@ -92,8 +92,8 @@ const Switch = React.forwardRef<
         const checked = e.currentTarget.getAttribute("data-state") === "checked"
         e.currentTarget.style.boxShadow = checked
           ? [
-              "0 0 0 1px color-mix(in srgb, #29b6f6 25%, transparent)",
-              "0 2px 8px color-mix(in srgb, #29b6f6 18%, transparent)",
+              "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 25%, transparent)",
+              "0 2px 8px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
             ].join(", ")
           : "none"
         props.onBlur?.(e)
@@ -110,11 +110,11 @@ const Switch = React.forwardRef<
         )}
         style={{
           borderRadius: "inherit",
-          background: "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)",
+          background: "var(--aurora-accent-gradient)",
           boxShadow: [
             "inset 0 1px 0 rgba(255,255,255,0.15)",
-            "0 0 0 1px color-mix(in srgb, #29b6f6 30%, transparent)",
-            "0 2px 10px color-mix(in srgb, #29b6f6 22%, transparent)",
+            "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
+            "0 2px 10px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)",
           ].join(", "),
         }}
       />
@@ -127,7 +127,7 @@ const Switch = React.forwardRef<
           width: thumbSize,
           height: thumbSize,
           borderRadius: "50%",
-          background: "linear-gradient(180deg, #ffffff 0%, #daedf7 100%)",
+          background: "var(--aurora-switch-thumb-gradient)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.20)",
           flexShrink: 0,
         }}

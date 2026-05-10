@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -29,65 +30,31 @@ function ActionButton({
   href?: string
   variant?: "primary" | "ghost"
 }) {
-  const [hovered, setHovered] = React.useState(false)
-
-  const baseStyle: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "40px",
-    padding: "0 20px",
-    borderRadius: "10px",
-    fontFamily: "var(--aurora-font-sans)",
-    fontSize: "14px",
-    fontWeight: 600,
-    cursor: "pointer",
-    textDecoration: "none",
-    border: "1px solid",
-    transition: "background 0.15s, border-color 0.15s, box-shadow 0.15s, color 0.15s",
-  }
-
-  const primaryStyle: React.CSSProperties = {
-    ...baseStyle,
-    background: hovered
-      ? "color-mix(in srgb, var(--aurora-accent-primary) 15%, var(--aurora-panel-strong))"
-      : "var(--aurora-panel-strong)",
-    borderColor: hovered ? "var(--aurora-accent-primary)" : "var(--aurora-border-strong)",
-    boxShadow: hovered ? "var(--aurora-active-glow)" : "none",
-    color: "var(--aurora-accent-primary)",
-  }
-
-  const ghostStyle: React.CSSProperties = {
-    ...baseStyle,
-    background: hovered ? "var(--aurora-hover-bg)" : "transparent",
-    borderColor: hovered ? "var(--aurora-border-strong)" : "var(--aurora-border-default)",
-    color: hovered ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-  }
-
-  const style = variant === "primary" ? primaryStyle : ghostStyle
+  const buttonVariant = variant === "primary" ? "aurora" : "neutral"
 
   if (href) {
     return (
-      <a
-        href={href}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        style={style}
+      <Button
+        asChild
+        variant={buttonVariant}
+        size="lg"
       >
-        {children}
-      </a>
+        <a href={href}>
+          {children}
+        </a>
+      </Button>
     )
   }
 
   return (
-    <button
+    <Button
+      type="button"
+      variant={buttonVariant}
+      size="lg"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={style}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 
@@ -347,7 +314,7 @@ function Page500({ incidentId, onRetry, countdown: initialCountdown = 30 }: Erro
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [retrying, onRetry])
+  }, [countdown, retrying, onRetry])
 
   function handleManualRetry() {
     setRetrying(true)

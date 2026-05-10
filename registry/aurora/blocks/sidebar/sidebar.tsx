@@ -1,6 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { Avatar } from "@/registry/aurora/ui/avatar"
+import { Button } from "@/registry/aurora/ui/button"
+import { Input } from "@/registry/aurora/ui/input"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -169,58 +172,6 @@ function LiveBeacon() {
 }
 
 // ---------------------------------------------------------------------------
-// Avatar
-// ---------------------------------------------------------------------------
-
-function Avatar({
-  name,
-  avatarUrl,
-  size = 26,
-}: {
-  name?: string
-  avatarUrl?: string
-  size?: number
-}) {
-  const initials = name
-    ? name
-        .split(" ")
-        .map((w) => w[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "U"
-
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        background: avatarUrl
-          ? "transparent"
-          : "linear-gradient(135deg, var(--aurora-accent-primary) 0%, var(--aurora-accent-pink) 100%)",
-        border: "1.5px solid var(--aurora-border-strong)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-        flexShrink: 0,
-        fontSize: size * 0.36 + "px",
-        fontWeight: 700,
-        color: "#fff",
-        letterSpacing: "-0.02em",
-      }}
-    >
-      {avatarUrl ? (
-        <img src={avatarUrl} alt={name ?? "User"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      ) : (
-        initials
-      )}
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
 // Inline search input
 // ---------------------------------------------------------------------------
 
@@ -244,7 +195,7 @@ function SearchInput({
         border: `1px solid ${focused ? "var(--aurora-border-strong)" : "var(--aurora-border-default)"}`,
         borderRadius: "10px",
         boxShadow: focused
-          ? "0 0 0 2px color-mix(in srgb, #29b6f6 14%, transparent)"
+          ? "0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent)"
           : "none",
         transition: "border-color 0.15s, box-shadow 0.15s",
       }}
@@ -252,13 +203,14 @@ function SearchInput({
       <span style={{ color: "var(--aurora-text-muted)", display: "flex", flexShrink: 0 }}>
         <SearchIcon />
       </span>
-      <input
+      <Input
         type="text"
         placeholder="Search sessions…"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
+        className="h-auto border-none px-0 py-0 focus-visible:outline-none"
         style={{
           background: "transparent",
           border: "none",
@@ -291,7 +243,7 @@ function SessionItem({
   const [hovered, setHovered] = React.useState(false)
 
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       onClick={onSelect}
       title={iconOnly ? session.title : undefined}
       onMouseEnter={() => setHovered(true)}
@@ -364,7 +316,7 @@ function SessionItem({
           </span>
         </>
       )}
-    </button>
+    </Button>
   )
 }
 
@@ -396,7 +348,7 @@ function ProjectGroup({
   return (
     <div>
       {/* Group header */}
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         style={{
@@ -447,7 +399,7 @@ function ProjectGroup({
             </span>
           </>
         )}
-      </button>
+      </Button>
 
       {/* Sessions */}
       {(open || iconOnly) && (
@@ -541,7 +493,7 @@ export function Sidebar({
               </span>
 
               {/* New session button */}
-              <button
+              <Button variant="plain" size="unstyled"
                 onClick={onNewSession}
                 title="New session"
                 aria-label="New session"
@@ -569,7 +521,7 @@ export function Sidebar({
                 }}
               >
                 <PlusIcon />
-              </button>
+              </Button>
             </>
           )}
         </div>
@@ -626,7 +578,7 @@ export function Sidebar({
             height: "48px",
           }}
         >
-          <Avatar name={userName} avatarUrl={userAvatarUrl} size={26} />
+          <Avatar src={userAvatarUrl} alt={userName ?? "User"} fallback={userName ?? "U"} size={26} />
 
           {!iconOnly && (
             <>
@@ -645,7 +597,7 @@ export function Sidebar({
                 {userName ?? "User"}
               </span>
 
-              <button
+              <Button variant="plain" size="unstyled"
                 onClick={onSettings}
                 title="Settings"
                 aria-label="Settings"
@@ -671,7 +623,7 @@ export function Sidebar({
                 }}
               >
                 <SettingsIcon />
-              </button>
+              </Button>
             </>
           )}
         </div>

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-schema-display",
+  "type": "registry:block",
+  "title": "Aurora AI Schema Display",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora-native schema display parity surface from AI Elements.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-ai-elements"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai-elements/schema-display.tsx",
+      "content": "\"use client\"\n\nexport { SchemaDisplay } from \"./core\"\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/schema-display.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai-elements/schema-display.tsx",
+    "installTarget": "@components/aurora/ai/schema-display.tsx"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/schema-display.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ]
+}

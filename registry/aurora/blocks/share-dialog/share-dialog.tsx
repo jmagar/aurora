@@ -1,6 +1,17 @@
 "use client"
 
 import * as React from "react"
+import { Avatar } from "@/registry/aurora/ui/avatar"
+import { Button } from "@/registry/aurora/ui/button"
+import { Input } from "@/registry/aurora/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/registry/aurora/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/radio-group"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -100,13 +111,6 @@ function PersonAddIcon() {
 // Avatar
 // ---------------------------------------------------------------------------
 
-const AVATAR_COLORS = [
-  ["#1c7fac", "#07131c"],
-  ["#c46b88", "#1c0a10"],
-  ["#7dd3c7", "#07131c"],
-  ["#c6a36b", "#1c1307"],
-]
-
 function AvatarCircle({ name, avatar, size = 32 }: { name: string; avatar?: string; size?: number }) {
   const initials = name
     .split(" ")
@@ -114,40 +118,9 @@ function AvatarCircle({ name, avatar, size = 32 }: { name: string; avatar?: stri
     .slice(0, 2)
     .join("")
     .toUpperCase()
-  const colorIdx = name.charCodeAt(0) % AVATAR_COLORS.length
-  const [bg, fg] = AVATAR_COLORS[colorIdx]
-
-  if (avatar) {
-    return (
-      <img
-        src={avatar}
-        alt={name}
-        style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover" }}
-      />
-    )
-  }
 
   return (
-    <div
-      aria-label={name}
-      style={{
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        background: bg,
-        color: fg,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: size * 0.38,
-        fontWeight: 700,
-        fontFamily: "var(--aurora-font-display)",
-        flexShrink: 0,
-        userSelect: "none",
-      }}
-    >
-      {initials}
-    </div>
+    <Avatar src={avatar} alt={name} fallback={initials} size={size} />
   )
 }
 
@@ -169,37 +142,21 @@ function RoleSelect({
   onChange: (role: CollaboratorRole) => void
 }) {
   return (
-    <select
+    <Select
       value={value}
-      onChange={(e) => onChange(e.target.value as CollaboratorRole)}
-      aria-label="Role"
-      style={{
-        background: "var(--aurora-control-surface)",
-        border: "1px solid var(--aurora-border-default)",
-        borderRadius: "8px",
-        color: "var(--aurora-text-muted)",
-        fontSize: "11px",
-        fontWeight: 500,
-        padding: "3px 6px",
-        cursor: "pointer",
-        outline: "none",
-        fontFamily: "var(--aurora-font-sans)",
-        appearance: "none",
-        WebkitAppearance: "none",
-        paddingRight: "20px",
-        backgroundImage:
-          "url(\"data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23a7bcc9' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "right 6px center",
-        backgroundSize: "10px 6px",
-      }}
+      onValueChange={(next) => onChange(next as CollaboratorRole)}
     >
-      {(["viewer", "editor", "admin"] as CollaboratorRole[]).map((r) => (
-        <option key={r} value={r}>
-          {ROLE_LABELS[r]}
-        </option>
-      ))}
-    </select>
+      <SelectTrigger aria-label="Role" className="h-7 w-[104px] rounded-[8px] px-2 text-[11px]">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {(["viewer", "editor", "admin"] as CollaboratorRole[]).map((r) => (
+          <SelectItem key={r} value={r}>
+            {ROLE_LABELS[r]}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }
 
@@ -257,7 +214,7 @@ function ShareChip({ url }: { url: string }) {
       >
         {url}
       </span>
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={copy}
         aria-label="Copy link"
         style={{
@@ -273,7 +230,7 @@ function ShareChip({ url }: { url: string }) {
         }}
       >
         {copied ? <CheckIcon /> : <CopyIcon />}
-      </button>
+      </Button>
     </div>
   )
 }
@@ -292,7 +249,7 @@ function TabButton({
   children: React.ReactNode
 }) {
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       onClick={onClick}
       style={{
         background: "none",
@@ -310,7 +267,7 @@ function TabButton({
       }}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 
@@ -441,7 +398,7 @@ export function ShareDialog({
             </TabButton>
           </div>
 
-          <button
+          <Button variant="plain" size="unstyled"
             onClick={() => onOpenChange(false)}
             aria-label="Close"
             style={{
@@ -458,7 +415,7 @@ export function ShareDialog({
             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--aurora-text-muted)")}
           >
             <CloseIcon />
-          </button>
+          </Button>
         </div>
 
         {/* Body */}
@@ -510,7 +467,7 @@ export function ShareDialog({
                       {url}
                     </span>
                   </div>
-                  <button
+                  <Button variant="plain" size="unstyled"
                     onClick={copyLink}
                     style={{
                       display: "inline-flex",
@@ -524,7 +481,7 @@ export function ShareDialog({
                         ? "1px solid color-mix(in srgb, var(--aurora-success) 35%, transparent)"
                         : "none",
                       borderRadius: "10px",
-                      color: copied ? "var(--aurora-success)" : "#fff",
+                      color: copied ? "var(--aurora-success)" : "var(--aurora-accent-foreground)",
                       fontSize: "12px",
                       fontWeight: 600,
                       cursor: "pointer",
@@ -535,7 +492,7 @@ export function ShareDialog({
                   >
                     {copied ? <CheckIcon /> : <CopyIcon />}
                     {copied ? "Copied" : "Copy"}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -640,11 +597,12 @@ export function ShareDialog({
                   <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
                     <PersonAddIcon />
                   </span>
-                  <input
+                  <Input
                     type="email"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
                     placeholder="Add people by email…"
+                    className="h-auto border-none px-0 py-0 focus-visible:outline-none"
                     style={{
                       flex: 1,
                       background: "transparent",
@@ -657,7 +615,7 @@ export function ShareDialog({
                     }}
                   />
                 </div>
-                <button
+                <Button variant="plain" size="unstyled"
                   type="submit"
                   disabled={!inviteEmail.trim()}
                   style={{
@@ -667,7 +625,7 @@ export function ShareDialog({
                       : "var(--aurora-control-surface)",
                     border: "1px solid var(--aurora-border-default)",
                     borderRadius: "10px",
-                    color: inviteEmail.trim() ? "#fff" : "var(--aurora-text-muted)",
+                    color: inviteEmail.trim() ? "var(--aurora-accent-foreground)" : "var(--aurora-text-muted)",
                     fontSize: "12px",
                     fontWeight: 600,
                     cursor: inviteEmail.trim() ? "pointer" : "default",
@@ -677,7 +635,7 @@ export function ShareDialog({
                   }}
                 >
                   Invite
-                </button>
+                </Button>
               </form>
             </div>
           )}
@@ -698,16 +656,18 @@ export function ShareDialog({
                 >
                   Format
                 </p>
-                <div
-                  role="radiogroup"
+                <RadioGroup
+                  value={exportFormat}
+                  onValueChange={(next) => setExportFormat(next as ExportFormat)}
                   aria-label="Export format"
                   style={{ display: "flex", flexDirection: "column", gap: "6px" }}
                 >
                   {EXPORT_FORMATS.map((fmt) => {
                     const selected = exportFormat === fmt.id
                     return (
-                      <label
+                      <div
                         key={fmt.id}
+                        onClick={() => setExportFormat(fmt.id)}
                         style={{
                           display: "flex",
                           alignItems: "center",
@@ -724,13 +684,8 @@ export function ShareDialog({
                           transition: "background 0.12s, border-color 0.12s",
                         }}
                       >
-                        <input
-                          type="radio"
-                          name="export-format"
+                        <RadioGroupItem
                           value={fmt.id}
-                          checked={selected}
-                          onChange={() => setExportFormat(fmt.id)}
-                          style={{ accentColor: "var(--aurora-accent-primary)" }}
                         />
                         <div>
                           <p
@@ -758,10 +713,10 @@ export function ShareDialog({
                             {fmt.description}
                           </p>
                         </div>
-                      </label>
+                      </div>
                     )
                   })}
-                </div>
+                </RadioGroup>
               </div>
 
               {/* Share chip preview */}
@@ -782,7 +737,7 @@ export function ShareDialog({
               </div>
 
               {/* Download button */}
-              <button
+              <Button variant="plain" size="unstyled"
                 onClick={() => onExport?.(exportFormat)}
                 style={{
                   display: "inline-flex",
@@ -791,12 +746,12 @@ export function ShareDialog({
                   gap: "8px",
                   width: "100%",
                   padding: "11px",
-                  background: "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)",
+                  background: "var(--aurora-accent-gradient)",
                   boxShadow:
-                    "inset 0 1px 0 rgba(255,255,255,0.22), 0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent), 0 2px 10px color-mix(in srgb, #29b6f6 30%, transparent)",
+                    "inset 0 1px 0 rgba(255,255,255,0.22), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent), 0 2px 10px color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
                   border: "none",
                   borderRadius: "var(--aurora-radius-1)",
-                  color: "#fff",
+                  color: "var(--aurora-accent-foreground)",
                   fontSize: "14px",
                   fontWeight: 700,
                   cursor: "pointer",
@@ -808,7 +763,7 @@ export function ShareDialog({
               >
                 <DownloadIcon />
                 Export as {exportFormat.toUpperCase()}
-              </button>
+              </Button>
             </div>
           )}
         </div>

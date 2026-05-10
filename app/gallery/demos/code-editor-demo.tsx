@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import { CodeEditor, DiffLine, Diagnostic } from "@/registry/aurora/blocks/code-editor/code-editor"
 
 const RUST_CODE = `use axum::{
@@ -100,7 +101,7 @@ export function CodeEditorDemo() {
         {tabs.map((tab) => {
           const active = mode === tab.id
           return (
-            <button
+            <Button variant="plain" size="unstyled"
               key={tab.id}
               onClick={() => setMode(tab.id)}
               style={{
@@ -121,7 +122,7 @@ export function CodeEditorDemo() {
               }}
             >
               {tab.label}
-            </button>
+            </Button>
           )
         })}
       </div>

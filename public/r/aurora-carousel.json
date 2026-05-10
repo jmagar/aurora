@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-carousel",
+  "type": "registry:ui",
+  "title": "Aurora Carousel",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Horizontal scroll carousel with Aurora neutral controls for cards and media strips.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-button"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/carousel.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { ChevronLeft, ChevronRight } from \"lucide-react\"\nimport { Button } from \"@/registry/aurora/ui/button\"\n\nexport interface CarouselProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"title\"> {\n  title?: React.ReactNode\n}\n\nexport function Carousel({ title, className, children, style, ...props }: CarouselProps) {\n  const trackRef = React.useRef<HTMLDivElement>(null)\n\n  const scroll = (direction: -1 | 1) => {\n    trackRef.current?.scrollBy({ left: direction * 280, behavior: \"smooth\" })\n  }\n\n  return (\n    <section className={[\"grid gap-3\", className].filter(Boolean).join(\" \")} style={style} {...props}>\n      <div className=\"flex items-center justify-between gap-2\">\n        {title ? <h3 className=\"aurora-text-card-title\">{title}</h3> : <span />}\n        <div className=\"flex gap-2\">\n          <Button type=\"button\" size=\"icon\" variant=\"neutral\" aria-label=\"Previous slide\" onClick={() => scroll(-1)}>\n            <ChevronLeft className=\"size-4\" aria-hidden />\n          </Button>\n          <Button type=\"button\" size=\"icon\" variant=\"neutral\" aria-label=\"Next slide\" onClick={() => scroll(1)}>\n            <ChevronRight className=\"size-4\" aria-hidden />\n          </Button>\n        </div>\n      </div>\n      <div ref={trackRef} className=\"flex snap-x gap-3 overflow-x-auto pb-1\">\n        {React.Children.map(children, (child) => (\n          <div className=\"min-w-[240px] snap-start\">{child}</div>\n        ))}\n      </div>\n    </section>\n  )\n}\n\nexport const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(\n  ({ className, style, ...props }, ref) => (\n    <div\n      ref={ref}\n      className={[\"rounded-[8px] border p-4\", className].filter(Boolean).join(\" \")}\n      style={{\n        background: \"var(--aurora-panel-medium)\",\n        borderColor: \"var(--aurora-border-default)\",\n        boxShadow: \"var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)\",\n        ...style,\n      }}\n      {...props}\n    />\n  )\n)\nCarouselItem.displayName = \"CarouselItem\"\n\nexport default Carousel\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/carousel.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/carousel.tsx",
+    "installTarget": "@ui/aurora/carousel.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/carousel.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "layout"
+  ]
+}

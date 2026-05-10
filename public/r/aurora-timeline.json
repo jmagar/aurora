@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-timeline",
+  "type": "registry:ui",
+  "title": "Aurora Timeline",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Activity feed for agent runs, tool calls, deployments, and audit trails.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-status-indicator"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/timeline.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\nimport type { StatusTone } from \"./status-indicator\"\n\nconst toneColor: Record<StatusTone, string> = {\n  online: \"var(--aurora-success)\",\n  syncing: \"var(--aurora-accent-primary)\",\n  queued: \"var(--aurora-text-muted)\",\n  degraded: \"var(--aurora-warn)\",\n  offline: \"var(--aurora-text-muted)\",\n  error: \"var(--aurora-error)\",\n}\n\nexport type TimelineProps = React.HTMLAttributes<HTMLOListElement>\n\nconst Timeline = React.forwardRef<HTMLOListElement, TimelineProps>(({ className, ...props }, ref) => (\n  <ol ref={ref} className={cn(\"space-y-0\", className)} {...props} />\n))\nTimeline.displayName = \"Timeline\"\n\nexport interface TimelineItemProps extends Omit<React.LiHTMLAttributes<HTMLLIElement>, \"title\"> {\n  tone?: StatusTone\n  title: React.ReactNode\n  meta?: React.ReactNode\n}\n\nconst TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(\n  ({ className, tone = \"queued\", title, meta, children, ...props }, ref) => (\n    <li ref={ref} className={cn(\"relative grid grid-cols-[20px_minmax(0,1fr)] gap-3 pb-5 last:pb-0\", className)} {...props}>\n      <span aria-hidden=\"true\" className=\"absolute bottom-0 left-[5px] top-4 w-px bg-[var(--aurora-border-default)] last:hidden\" />\n      <span\n        aria-hidden=\"true\"\n        className=\"relative mt-1 size-2.5 rounded-full\"\n        style={{ background: toneColor[tone], boxShadow: `0 0 10px ${toneColor[tone]}` }}\n      />\n      <span className=\"min-w-0\">\n        <span className=\"flex flex-wrap items-baseline justify-between gap-2\">\n          <span style={{ color: \"var(--aurora-text-primary)\", fontSize: \"var(--aurora-type-control)\", fontWeight: \"var(--aurora-weight-label)\", letterSpacing: \"var(--aurora-letter-ui)\", lineHeight: \"var(--aurora-line-dense)\" }}>{title}</span>\n          {meta && <span style={{ color: \"var(--aurora-text-muted)\", fontSize: \"var(--aurora-type-caption)\", fontWeight: \"var(--aurora-weight-ui)\", letterSpacing: \"var(--aurora-letter-meta)\", lineHeight: 1.35 }}>{meta}</span>}\n        </span>\n        {children && <span className=\"block pt-1\" style={{ color: \"var(--aurora-text-muted)\", fontSize: \"var(--aurora-type-control)\", fontWeight: \"var(--aurora-weight-body)\", lineHeight: 1.5 }}>{children}</span>}\n      </span>\n    </li>\n  )\n)\nTimelineItem.displayName = \"TimelineItem\"\n\nexport { Timeline, TimelineItem }\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/timeline.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/timeline.tsx",
+    "installTarget": "@ui/aurora/timeline.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/timeline.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-status-indicator`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "data-display"
+  ]
+}

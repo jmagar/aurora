@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-model-selector",
+  "type": "registry:block",
+  "title": "Aurora AI Model Selector",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora-native model selector parity surface from AI Elements.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-ai-elements"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai-elements/model-selector.tsx",
+      "content": "\"use client\"\n\nexport { ModelSelector } from \"./core\"\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/model-selector.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai-elements/model-selector.tsx",
+    "installTarget": "@components/aurora/ai/model-selector.tsx"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/model-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ]
+}

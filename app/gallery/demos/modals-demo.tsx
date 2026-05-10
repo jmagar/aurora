@@ -12,6 +12,7 @@ import {
   DialogClose,
 } from "@/registry/aurora/ui/dialog";
 import { Button } from "@/registry/aurora/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/radio-group";
 
 // ---------------------------------------------------------------------------
 // Delete Gateway Dialog
@@ -100,10 +101,11 @@ function DeployDialog() {
           >
             Target environment
           </label>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <RadioGroup value={env} onValueChange={setEnv} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {["production", "staging", "dev-local"].map((e) => (
-              <label
+              <div
                 key={e}
+                onClick={() => setEnv(e)}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -120,14 +122,7 @@ function DeployDialog() {
                   color: "var(--aurora-text-primary)",
                 }}
               >
-                <input
-                  type="radio"
-                  name="deploy-env"
-                  value={e}
-                  checked={env === e}
-                  onChange={() => setEnv(e)}
-                  style={{ accentColor: "var(--aurora-accent-primary)" }}
-                />
+                <RadioGroupItem value={e} />
                 <span
                   style={{
                     fontFamily: "var(--aurora-font-mono, monospace)",
@@ -136,9 +131,9 @@ function DeployDialog() {
                 >
                   {e}
                 </span>
-              </label>
+              </div>
             ))}
-          </div>
+          </RadioGroup>
         </div>
 
         <DialogFooter>

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import { FilePicker, FileItem } from "@/registry/aurora/blocks/file-picker/file-picker"
 
 const MOCK_FILES: FileItem[] = [
@@ -67,7 +68,7 @@ export function FilePickerDemo() {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-        <button
+        <Button variant="plain" size="unstyled"
           onClick={() => setOpen(true)}
           style={{
             display: "inline-flex",
@@ -86,7 +87,7 @@ export function FilePickerDemo() {
           }}
         >
           Open file picker
-        </button>
+        </Button>
 
         {selectedFiles.length > 0 && (
           <span

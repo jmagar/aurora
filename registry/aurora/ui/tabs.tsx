@@ -35,7 +35,7 @@ const TabsTrigger = React.forwardRef<
     className={cn(
       // layout
       "relative inline-flex items-center gap-1.5 px-3 pb-2.5 pt-1",
-      "text-sm font-medium select-none cursor-pointer",
+      "select-none cursor-pointer",
       "transition-colors duration-150 focus-visible:outline-none",
       // resting state
       "text-[var(--aurora-text-muted)] hover:text-[var(--aurora-text-primary)]",
@@ -47,6 +47,13 @@ const TabsTrigger = React.forwardRef<
       "data-[state=active]:after:bg-[var(--aurora-accent-primary)]",
       className
     )}
+    style={{
+      fontFamily: "var(--aurora-font-sans)",
+      fontSize: "var(--aurora-type-body-sm)",
+      fontWeight: "var(--aurora-weight-ui)",
+      letterSpacing: "var(--aurora-letter-ui)",
+      lineHeight: "var(--aurora-line-ui)",
+    }}
     {...props}
   />
 ))
@@ -78,8 +85,7 @@ TabsContent.displayName = TabsPrimitive.Content.displayName
  * Note: PillGroup renders only the TabsList, not TabsContent.
  * Pair with TabsContent outside PillGroup if panel switching is needed.
  */
-export interface PillGroupProps
-  extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root> {}
+export type PillGroupProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
 
 const PillGroup = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.Root>,
@@ -111,7 +117,7 @@ const PillTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5",
-      "text-sm font-medium select-none cursor-pointer",
+      "select-none cursor-pointer",
       "transition-all duration-150 focus-visible:outline-none",
       // resting
       "text-[var(--aurora-text-muted)] hover:text-[var(--aurora-text-primary)]",
@@ -121,6 +127,13 @@ const PillTrigger = React.forwardRef<
       "[&[data-state=active]]:[box-shadow:var(--aurora-active-glow)]",
       className
     )}
+    style={{
+      fontFamily: "var(--aurora-font-sans)",
+      fontSize: "var(--aurora-type-body-sm)",
+      fontWeight: "var(--aurora-weight-ui)",
+      letterSpacing: "var(--aurora-letter-ui)",
+      lineHeight: "var(--aurora-line-ui)",
+    }}
     {...props}
   />
 ))

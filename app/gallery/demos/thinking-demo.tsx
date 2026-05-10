@@ -36,7 +36,7 @@ export default function ThinkingDemo() {
             fontWeight: 500,
           }}
         >
-          type="thinking" — expanded with content
+          type=&quot;thinking&quot; - expanded with content
         </p>
         <Thinking
           type="thinking"
@@ -64,7 +64,7 @@ I'll propose a three-phase refactor plan that keeps the service running througho
             fontWeight: 500,
           }}
         >
-          type="thinking" — collapsed (defaultOpen=false)
+          type=&quot;thinking&quot; - collapsed (defaultOpen=false)
         </p>
         <Thinking
           type="thinking"
@@ -84,7 +84,7 @@ I'll propose a three-phase refactor plan that keeps the service running througho
             fontWeight: 500,
           }}
         >
-          type="plan" — 6 steps mixed statuses
+          type=&quot;plan&quot; - 6 steps mixed statuses
         </p>
         <Thinking
           type="plan"

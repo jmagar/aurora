@@ -76,7 +76,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-9 w-full items-center justify-between gap-2 px-3 py-2",
-      "text-sm text-[var(--aurora-text-primary)]",
+      "text-[var(--aurora-text-primary)]",
       "border border-[var(--aurora-border-strong)]",
       "rounded-[var(--aurora-radius-1)]",
       "transition-all duration-150 ease-out",
@@ -88,11 +88,16 @@ const SelectTrigger = React.forwardRef<
     )}
     style={{
       background: "var(--aurora-control-surface, #0c1a24)",
+      fontFamily: "var(--aurora-font-sans)",
+      fontSize: "var(--aurora-type-body-sm)",
+      fontWeight: "var(--aurora-weight-ui)",
+      letterSpacing: "var(--aurora-letter-ui)",
+      lineHeight: "var(--aurora-line-ui)",
     }}
     onFocus={(e) => {
       e.currentTarget.style.boxShadow = [
-        "0 0 0 3px color-mix(in srgb, #29b6f6 22%, transparent)",
-        "0 0 0 1px color-mix(in srgb, #29b6f6 45%, transparent)",
+        "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)",
+        "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)",
       ].join(", ")
       props.onFocus?.(e)
     }}
@@ -198,10 +203,17 @@ const SelectLabel = React.forwardRef<
   <SelectPrimitive.Label
     ref={ref}
     className={cn(
-      "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-widest",
+      "px-2 py-1.5",
       "text-[var(--aurora-text-muted)]",
       className
     )}
+    style={{
+      fontFamily: "var(--aurora-font-sans)",
+      fontSize: "var(--aurora-type-label)",
+      fontWeight: "var(--aurora-weight-label)",
+      letterSpacing: "var(--aurora-letter-label)",
+      lineHeight: "var(--aurora-line-dense)",
+    }}
     {...props}
   />
 ))
@@ -217,13 +229,20 @@ const SelectItem = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex w-full cursor-default select-none items-center",
-      "rounded-[8px] py-1.5 pl-2 pr-8 text-sm",
+      "rounded-[8px] py-1.5 pl-2 pr-8",
       "outline-none transition-colors duration-100",
       "focus:bg-[var(--aurora-hover-bg)] focus:text-[var(--aurora-accent-strong)]",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-45",
       "text-[var(--aurora-text-primary)]",
       className
     )}
+    style={{
+      fontFamily: "var(--aurora-font-sans)",
+      fontSize: "var(--aurora-type-control)",
+      fontWeight: "var(--aurora-weight-ui)",
+      letterSpacing: "var(--aurora-letter-ui)",
+      lineHeight: "var(--aurora-line-dense)",
+    }}
     {...props}
   >
     <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">

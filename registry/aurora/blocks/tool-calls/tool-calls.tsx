@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -183,7 +184,7 @@ function SingleCallRow({ call, compact = false }: { call: ToolCall; compact?: bo
         marginLeft: compact ? "0" : "0",
       }}
     >
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={() => setExpanded((o) => !o)}
         style={{
           display: "flex",
@@ -271,7 +272,7 @@ function SingleCallRow({ call, compact = false }: { call: ToolCall; compact?: bo
         >
           <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </button>
+      </Button>
 
       {expanded && (
         <div
@@ -380,7 +381,7 @@ function GroupRow({ group }: { group: { tool: string; items: ToolCall[] } }) {
 
   return (
     <div style={{ borderLeft }}>
-      <button
+      <Button variant="plain" size="unstyled"
         onClick={() => setExpanded((o) => !o)}
         style={{
           display: "flex",
@@ -453,7 +454,7 @@ function GroupRow({ group }: { group: { tool: string; items: ToolCall[] } }) {
             <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}
-      </button>
+      </Button>
 
       {/* Expanded sub-list */}
       {expanded && items.length > 1 && (
@@ -486,7 +487,6 @@ function GroupRow({ group }: { group: { tool: string; items: ToolCall[] } }) {
 
 export function ToolCalls({ calls }: ToolCallsProps) {
   const groups = groupConsecutive(calls)
-  const hasRunning = calls.some((c) => c.status === "running")
 
   return (
     <>

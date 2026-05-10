@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-input",
+  "type": "registry:ui",
+  "title": "Aurora Input",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Text input with Aurora focus glow, leading/trailing adornment slots, and control-surface background.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/input.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {\n  /** Optional leading icon or adornment */\n  startAdornment?: React.ReactNode\n  /** Optional trailing icon or adornment */\n  endAdornment?: React.ReactNode\n}\n\nconst Input = React.forwardRef<HTMLInputElement, InputProps>(\n  ({ className, type = \"text\", startAdornment, endAdornment, style, ...props }, ref) => {\n    const hasStart = Boolean(startAdornment)\n    const hasEnd = Boolean(endAdornment)\n\n    return (\n      <div className=\"relative inline-flex w-full items-center\">\n        {hasStart && (\n          <span\n            className=\"pointer-events-none absolute left-3 flex items-center text-[var(--aurora-text-muted)]\"\n            aria-hidden=\"true\"\n          >\n            {startAdornment}\n          </span>\n        )}\n\n        <input\n          ref={ref}\n          type={type}\n          className={cn(\n            // Layout\n            \"h-9 w-full px-3 py-2\",\n            // Typography\n            \"font-[var(--aurora-font-sans,_Inter,_sans-serif)]\",\n            \"text-[var(--aurora-text-primary)]\",\n            \"placeholder:text-[var(--aurora-text-muted)]\",\n            // Background & border\n            \"border border-[var(--aurora-border-strong)]\",\n            // Rounded\n            \"rounded-[var(--aurora-radius-1)]\",\n            // Transitions\n            \"transition-all duration-150 ease-out\",\n            // Focus ring\n            \"focus-visible:outline-none\",\n            // Disabled\n            \"disabled:pointer-events-none disabled:opacity-45 disabled:cursor-not-allowed\",\n            // Adornment padding adjustments\n            hasStart && \"pl-9\",\n            hasEnd && \"pr-9\",\n            className\n          )}\n          style={{\n            background: \"var(--aurora-control-surface, #0c1a24)\",\n            fontSize: \"var(--aurora-type-body-sm)\",\n            fontWeight: \"var(--aurora-weight-body)\",\n            letterSpacing: \"var(--aurora-letter-ui)\",\n            lineHeight: \"var(--aurora-line-ui)\",\n            // Focus shadow applied via CSS — we use a focus-within wrapper trick\n            // or inline via onFocus/onBlur in more complex setups.\n            // Here we rely on the focus-visible ring below.\n            ...style,\n          }}\n          onFocus={(e) => {\n            e.currentTarget.style.borderColor = \"var(--aurora-border-strong)\"\n            e.currentTarget.style.boxShadow = [\n              \"0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)\",\n              \"0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)\",\n            ].join(\", \")\n            props.onFocus?.(e)\n          }}\n          onBlur={(e) => {\n            e.currentTarget.style.boxShadow = \"none\"\n            props.onBlur?.(e)\n          }}\n          {...props}\n        />\n\n        {hasEnd && (\n          <span\n            className=\"absolute right-3 flex items-center text-[var(--aurora-text-muted)]\"\n          >\n            {endAdornment}\n          </span>\n        )}\n      </div>\n    )\n  }\n)\nInput.displayName = \"Input\"\n\nexport { Input }\nexport default Input\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/input.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/input.tsx",
+    "installTarget": "@ui/aurora/input.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/input.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "forms"
+  ]
+}

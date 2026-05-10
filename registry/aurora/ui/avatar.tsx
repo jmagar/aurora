@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
-import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 // ─── Size map ─────────────────────────────────────────────────────────────────
@@ -19,10 +18,10 @@ type AvatarVariant = "default" | "beacon" | "bot" | "status"
 type StatusColor = "online" | "away" | "busy" | "offline"
 
 const statusColorMap: Record<StatusColor, string> = {
-  online: "#7dd3c7",
-  away: "#c6a36b",
-  busy: "#c78490",
-  offline: "#3a5568",
+  online: "var(--aurora-success)",
+  away: "var(--aurora-warn)",
+  busy: "var(--aurora-error)",
+  offline: "var(--aurora-status-offline)",
 }
 
 // ─── Keyframes injected once ──────────────────────────────────────────────────
@@ -55,8 +54,8 @@ export interface AvatarProps
   extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> {
   /** Visual variant */
   variant?: AvatarVariant
-  /** Size preset */
-  size?: AvatarSize
+  /** Size preset or explicit pixel size */
+  size?: AvatarSize | number
   /** Image src */
   src?: string
   /** Alt text */
@@ -85,7 +84,10 @@ const Avatar = React.forwardRef<
     },
     ref
   ) => {
-    const dims = sizeMap[size]
+    const dims =
+      typeof size === "number"
+        ? { wh: size, text: Math.max(9, Math.round(size * 0.34)), statusSize: Math.max(7, Math.round(size * 0.26)), statusOffset: -1 }
+        : sizeMap[size]
     const isBot = variant === "bot"
     const isBeacon = variant === "beacon"
     const hasStatus = variant === "status"
@@ -108,8 +110,8 @@ const Avatar = React.forwardRef<
           borderRadius: "var(--aurora-radius-1, 14px)",
           border: "1.5px solid var(--aurora-border-strong, #24536c)",
           boxShadow: [
-            "0 0 0 1px color-mix(in srgb, #29b6f6 20%, transparent)",
-            "0 2px 12px color-mix(in srgb, #29b6f6 18%, transparent)",
+            "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 20%, transparent)",
+            "0 2px 12px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
           ].join(", "),
         }
       : {}
@@ -137,7 +139,7 @@ const Avatar = React.forwardRef<
                 position: "absolute",
                 inset: -4,
                 borderRadius: "50%",
-                border: "2px solid #29b6f6",
+                border: "2px solid var(--aurora-accent-primary)",
                 animation: "aurora-beacon-ping 1.8s cubic-bezier(0.4,0,0.6,1) infinite",
                 pointerEvents: "none",
               }}
@@ -148,7 +150,7 @@ const Avatar = React.forwardRef<
                 position: "absolute",
                 inset: -2,
                 borderRadius: "50%",
-                border: "1.5px solid rgba(41,182,246,0.5)",
+                border: "1.5px solid color-mix(in srgb, var(--aurora-accent-primary) 50%, transparent)",
                 animation: "aurora-beacon-ring 1.8s ease-in-out infinite",
                 pointerEvents: "none",
               }}

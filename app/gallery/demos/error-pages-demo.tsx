@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button";
 import { ErrorPage } from "@/registry/aurora/blocks/error-page/error-page"
 
 type ErrorCode = 404 | 403 | 500
@@ -42,7 +43,7 @@ export function ErrorPagesDemo() {
         {VARIANTS.map((v) => {
           const isActive = active === v.code
           return (
-            <button
+            <Button variant="plain" size="unstyled"
               key={v.code}
               onClick={() => { setActive(v.code); setRetryCount(0) }}
               title={v.description}
@@ -64,7 +65,7 @@ export function ErrorPagesDemo() {
               }}
             >
               {v.label}
-            </button>
+            </Button>
           )
         })}
 

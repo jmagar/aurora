@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-button-group",
+  "type": "registry:ui",
+  "title": "Aurora Button Group",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Grouped action container for segmented command clusters and compact toolbar controls.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/button-group.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {\n  orientation?: \"horizontal\" | \"vertical\"\n}\n\nconst ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(\n  ({ className, orientation = \"horizontal\", style, ...props }, ref) => (\n    <div\n      ref={ref}\n      role=\"group\"\n      className={cn(\n        \"inline-flex rounded-[8px] border p-1\",\n        orientation === \"vertical\" ? \"flex-col\" : \"items-center\",\n        className\n      )}\n      style={{\n        background: \"var(--aurora-control-surface)\",\n        borderColor: \"var(--aurora-border-default)\",\n        boxShadow: \"inset 0 1px 0 rgba(255,255,255,0.04)\",\n        ...style,\n      }}\n      {...props}\n    />\n  )\n)\nButtonGroup.displayName = \"ButtonGroup\"\n\nexport { ButtonGroup }\nexport default ButtonGroup\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/button-group.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/button-group.tsx",
+    "installTarget": "@ui/aurora/button-group.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/button-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "forms"
+  ]
+}

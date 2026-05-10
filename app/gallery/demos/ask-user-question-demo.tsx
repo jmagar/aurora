@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import { Button } from "@/registry/aurora/ui/button"
 import { AskUserQuestion } from "@/registry/aurora/blocks/ask-user-question/ask-user-question"
 
 const MODEL_OPTIONS = [
@@ -33,7 +34,7 @@ export default function AskUserQuestionDemo() {
               <p style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "var(--aurora-success)" }}>Selected: {MODEL_OPTIONS.find((o) => o.id === modelAnswer)?.label}</p>
               <p style={{ margin: "3px 0 0", fontSize: "11px", color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-mono)" }}>{modelAnswer}</p>
             </div>
-            <button onClick={() => setModelAnswer(null)} style={{ background: "none", border: "1px solid var(--aurora-border-default)", borderRadius: "8px", color: "var(--aurora-text-muted)", fontSize: "11px", padding: "3px 10px", cursor: "pointer" }}>Reset</button>
+            <Button size="sm" variant="neutral" onClick={() => setModelAnswer(null)}>Reset</Button>
           </div>
         ) : (
           <AskUserQuestion question="Which model would you like to use for this session?" type="radio" options={MODEL_OPTIONS} onSubmit={(v) => setModelAnswer(v as string)} />
@@ -52,7 +53,7 @@ export default function AskUserQuestionDemo() {
                 </span>
               ))}
             </div>
-            <button onClick={() => setPermissionsAnswer(null)} style={{ alignSelf: "flex-start", background: "none", border: "1px solid var(--aurora-border-default)", borderRadius: "8px", color: "var(--aurora-text-muted)", fontSize: "11px", padding: "3px 10px", cursor: "pointer" }}>Reset</button>
+            <Button size="sm" variant="neutral" onClick={() => setPermissionsAnswer(null)} style={{ alignSelf: "flex-start" }}>Reset</Button>
           </div>
         ) : (
           <AskUserQuestion question="Which permissions should the agent have for this project?" type="multi" options={PERMISSION_OPTIONS} onSubmit={(v) => setPermissionsAnswer(v as string[])} />

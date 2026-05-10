@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-slider",
+  "type": "registry:ui",
+  "title": "Aurora Slider",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Range slider with Aurora accent track, glow thumb, and controlled or uncontrolled value support.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/slider.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface SliderProps\n  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, \"type\" | \"value\" | \"defaultValue\" | \"onChange\"> {\n  value?: number\n  defaultValue?: number\n  min?: number\n  max?: number\n  step?: number\n  onValueChange?: (value: number) => void\n}\n\nconst Slider = React.forwardRef<HTMLInputElement, SliderProps>(\n  ({ className, value, defaultValue = 0, min = 0, max = 100, step = 1, onValueChange, style, ...props }, ref) => {\n    const controlled = value !== undefined\n    const [internalValue, setInternalValue] = React.useState(defaultValue)\n    const current = controlled ? value : internalValue\n    const percent = max === min ? 0 : ((current - min) / (max - min)) * 100\n\n    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {\n      const next = Number(event.target.value)\n      if (!controlled) setInternalValue(next)\n      onValueChange?.(next)\n    }\n\n    return (\n      <input\n        ref={ref}\n        type=\"range\"\n        min={min}\n        max={max}\n        step={step}\n        value={current}\n        onChange={handleChange}\n        className={cn(\"aurora-slider h-5 w-full cursor-pointer appearance-none bg-transparent\", className)}\n        style={{\n          [\"--aurora-slider-value\" as string]: `${percent}%`,\n          ...style,\n        }}\n        {...props}\n      />\n    )\n  }\n)\nSlider.displayName = \"Slider\"\n\nexport { Slider }\nexport default Slider\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/slider.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/slider.tsx",
+    "installTarget": "@ui/aurora/slider.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/slider.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "forms"
+  ]
+}

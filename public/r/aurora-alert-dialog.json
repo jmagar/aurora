@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-alert-dialog",
+  "type": "registry:ui",
+  "title": "Aurora Alert Dialog",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Confirmation dialog built on the Aurora modal surface for destructive or high-friction decisions.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-button",
+    "aurora-dialog"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/alert-dialog.tsx",
+      "content": "\"use client\"\nimport {\n  Dialog,\n  DialogBody,\n  DialogClose,\n  DialogContent,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n} from \"@/registry/aurora/ui/dialog\"\n\nconst AlertDialog = Dialog\nconst AlertDialogTrigger = DialogTrigger\nconst AlertDialogContent = DialogContent\nconst AlertDialogHeader = DialogHeader\nconst AlertDialogTitle = DialogTitle\nconst AlertDialogDescription = DialogDescription\nconst AlertDialogBody = DialogBody\nconst AlertDialogFooter = DialogFooter\nconst AlertDialogCancel = DialogClose\nconst AlertDialogAction = DialogClose\n\nexport {\n  AlertDialog,\n  AlertDialogAction,\n  AlertDialogBody,\n  AlertDialogCancel,\n  AlertDialogContent,\n  AlertDialogDescription,\n  AlertDialogFooter,\n  AlertDialogHeader,\n  AlertDialogTitle,\n  AlertDialogTrigger,\n}\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/alert-dialog.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/alert-dialog.tsx",
+    "installTarget": "@ui/aurora/alert-dialog.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/alert-dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-dialog`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "overlay"
+  ]
+}

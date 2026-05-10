@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-scroll-area",
+  "type": "registry:ui",
+  "title": "Aurora Scroll Area",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Tokenized scroll viewport with Aurora border and scrollbar behavior.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/scroll-area.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {\n  viewportClassName?: string\n}\n\nexport const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(\n  ({ className, viewportClassName, style, children, ...props }, ref) => (\n    <div\n      ref={ref}\n      className={[\"overflow-hidden rounded-[8px] border\", className].filter(Boolean).join(\" \")}\n      style={{\n        background: \"var(--aurora-panel-medium)\",\n        borderColor: \"var(--aurora-border-default)\",\n        ...style,\n      }}\n      {...props}\n    >\n      <div className={[\"max-h-72 overflow-auto aurora-scrollbar\", viewportClassName].filter(Boolean).join(\" \")}>\n        {children}\n      </div>\n    </div>\n  )\n)\nScrollArea.displayName = \"ScrollArea\"\n\nexport default ScrollArea\n\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/scroll-area.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/scroll-area.tsx",
+    "installTarget": "@ui/aurora/scroll-area.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/scroll-area.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "layout"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-callout",
+  "type": "registry:ui",
+  "title": "Aurora Callout",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Inline contextual notice for forms, panels, docs, and permission flows.",
+  "dependencies": [],
+  "registryDependencies": [
+    "aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/ui/callout.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport type CalloutVariant = \"info\" | \"success\" | \"warn\" | \"error\" | \"rose\"\n\nconst colors: Record<CalloutVariant, string> = {\n  info: \"var(--aurora-accent-primary)\",\n  success: \"var(--aurora-success)\",\n  warn: \"var(--aurora-warn)\",\n  error: \"var(--aurora-error)\",\n  rose: \"var(--aurora-accent-pink)\",\n}\n\nexport interface CalloutProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"title\"> {\n  variant?: CalloutVariant\n  title?: React.ReactNode\n  icon?: React.ReactNode\n}\n\nconst Callout = React.forwardRef<HTMLDivElement, CalloutProps>(\n  ({ className, variant = \"info\", title, icon, children, style, ...props }, ref) => {\n    const color = colors[variant]\n\n    return (\n      <div\n        ref={ref}\n        className={cn(\"grid grid-cols-[auto_minmax(0,1fr)] gap-3 rounded-[var(--aurora-radius-1)] border p-4\", className)}\n        style={{\n          background: `color-mix(in srgb, ${color} 8%, var(--aurora-panel-medium))`,\n          borderColor: `color-mix(in srgb, ${color} 32%, transparent)`,\n          boxShadow: `inset 3px 0 0 ${color}`,\n          ...style,\n        }}\n        {...props}\n      >\n        <span\n          aria-hidden=\"true\"\n          className=\"mt-0.5 size-2 rounded-full\"\n          style={{ background: color, boxShadow: `0 0 10px ${color}` }}\n        >\n          {icon}\n        </span>\n        <div className=\"min-w-0\">\n          {title && (\n            <div style={{ color: \"var(--aurora-text-primary)\", fontSize: \"var(--aurora-type-control)\", fontWeight: \"var(--aurora-weight-label)\", letterSpacing: \"var(--aurora-letter-ui)\", lineHeight: \"var(--aurora-line-ui)\" }}>\n              {title}\n            </div>\n          )}\n          {children && (\n            <div style={{ color: \"var(--aurora-text-muted)\", fontSize: \"var(--aurora-type-control)\", fontWeight: \"var(--aurora-weight-body)\", lineHeight: 1.5, marginTop: title ? 4 : 0 }}>\n              {children}\n            </div>\n          )}\n        </div>\n      </div>\n    )\n  }\n)\nCallout.displayName = \"Callout\"\n\nexport { Callout }\nexport default Callout\n",
+      "type": "registry:ui",
+      "target": "@ui/aurora/callout.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "ui",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/ui/callout.tsx",
+    "installTarget": "@ui/aurora/callout.tsx"
+  },
+  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/callout.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "categories": [
+    "aurora",
+    "ui",
+    "feedback"
+  ]
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/registry/aurora/ui/button";
 import {
   Tooltip,
   TooltipTrigger,
@@ -27,7 +28,7 @@ function StatusDot({ color }: { color: string }) {
 
 function IconButton({ children, label }: { children: React.ReactNode; label: string }) {
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       type="button"
       aria-label={label}
       style={{
@@ -45,7 +46,7 @@ function IconButton({ children, label }: { children: React.ReactNode; label: str
       }}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 

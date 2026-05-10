@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-test-results",
+  "type": "registry:block",
+  "title": "Aurora AI Test Results",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora-native test results parity surface from AI Elements.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "aurora-tokens",
+    "aurora-ai-elements"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai-elements/test-results.tsx",
+      "content": "\"use client\"\n\nexport { TestResults } from \"./core\"\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/test-results.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai-elements/test-results.tsx",
+    "installTarget": "@components/aurora/ai/test-results.tsx"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/test-results.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ]
+}

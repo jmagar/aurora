@@ -1,5 +1,6 @@
 "use client"
 
+import { Button } from "@/registry/aurora/ui/button";
 import React, { useState } from "react"
 import { Sidebar, Project } from "@/registry/aurora/blocks/sidebar/sidebar"
 
@@ -94,7 +95,7 @@ export default function SidebarDemo() {
         </h2>
         <div style={{ display: "flex", gap: "6px" }}>
           {(["expanded", "icon-only"] as const).map((v) => (
-            <button
+            <Button variant="plain" size="unstyled"
               key={v}
               onClick={() => setVariant(v)}
               style={{
@@ -116,7 +117,7 @@ export default function SidebarDemo() {
               }}
             >
               {v}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

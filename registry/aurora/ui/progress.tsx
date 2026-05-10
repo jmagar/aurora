@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 // ─── Keyframes ────────────────────────────────────────────────────────────────
@@ -33,20 +32,20 @@ type ProgressVariant = "default" | "warn" | "error" | "rose"
 
 const fillStyleMap: Record<ProgressVariant, React.CSSProperties> = {
   default: {
-    background: "linear-gradient(90deg, #1da8e6 0%, #4dc8fa 60%, #67cbfa 100%)",
-    boxShadow: "0 0 8px color-mix(in srgb, #29b6f6 50%, transparent), 0 0 2px #29b6f6",
+    background: "linear-gradient(90deg, var(--aurora-accent-button) 0%, var(--aurora-accent-lift) 60%, var(--aurora-accent-strong) 100%)",
+    boxShadow: "0 0 8px color-mix(in srgb, var(--aurora-accent-primary) 50%, transparent), 0 0 2px var(--aurora-accent-primary)",
   },
   warn: {
-    background: "linear-gradient(90deg, #a07a3d 0%, #c6a36b 100%)",
-    boxShadow: "0 0 8px color-mix(in srgb, #c6a36b 40%, transparent)",
+    background: "linear-gradient(90deg, color-mix(in srgb, var(--aurora-warn) 72%, black) 0%, var(--aurora-warn) 100%)",
+    boxShadow: "0 0 8px color-mix(in srgb, var(--aurora-warn) 40%, transparent)",
   },
   error: {
-    background: "linear-gradient(90deg, #a05060 0%, #c78490 100%)",
-    boxShadow: "0 0 8px color-mix(in srgb, #c78490 40%, transparent)",
+    background: "linear-gradient(90deg, color-mix(in srgb, var(--aurora-error) 72%, black) 0%, var(--aurora-error) 100%)",
+    boxShadow: "0 0 8px color-mix(in srgb, var(--aurora-error) 40%, transparent)",
   },
   rose: {
-    background: "linear-gradient(90deg, #d0608a 0%, #f9a8c4 100%)",
-    boxShadow: "0 0 8px color-mix(in srgb, #f9a8c4 40%, transparent)",
+    background: "linear-gradient(90deg, var(--aurora-accent-pink-deep) 0%, var(--aurora-accent-pink) 100%)",
+    boxShadow: "0 0 8px color-mix(in srgb, var(--aurora-accent-pink) 40%, transparent)",
   },
 }
 
