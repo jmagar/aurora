@@ -16,10 +16,10 @@ Aurora is a dark-first, operator-grade design system featuring:
 
 ```bash
 # Install the Aurora token layer first
-npx shadcn@latest add https://raw.githubusercontent.com/jmagar/aurora-design-system/main/public/r/aurora-tokens.json
+npx shadcn@latest add https://aurora.tootie.tv/r/aurora-tokens.json
 
 # Then install any Aurora item
-npx shadcn@latest add https://raw.githubusercontent.com/jmagar/aurora-design-system/main/public/r/aurora-button.json
+npx shadcn@latest add https://aurora.tootie.tv/r/aurora-button.json
 ```
 
 ## Registry usage
@@ -31,7 +31,7 @@ Add Aurora to your project's `components.json`:
 ```json
 {
   "registries": {
-    "@aurora": "https://raw.githubusercontent.com/jmagar/aurora-design-system/main/public/r/{name}.json"
+    "@aurora": "https://aurora.tootie.tv/r/{name}.json"
   }
 }
 ```
@@ -46,6 +46,12 @@ npx shadcn@latest add @aurora/aurora-button
 ### Branded root URL hosting
 
 When you deploy this Next.js app, the root route is configured for shadcn content negotiation. Browsers still get the docs/gallery, while the shadcn CLI can resolve the root registry from `/` via the `Accept` or `User-Agent` headers.
+
+That means the branded registry URL is simply:
+
+```bash
+https://aurora.tootie.tv
+```
 
 The generated registry payloads are still available directly under `public/r/*.json`.
 

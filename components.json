@@ -17,5 +17,8 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
+  "registries": {
+    "@aurora": "https://aurora.tootie.tv/r/{name}.json"
+  },
   "iconLibrary": "lucide"
 }
