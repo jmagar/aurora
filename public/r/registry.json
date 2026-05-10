@@ -1,80 +1,4538 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "acme",
-  "homepage": "https://acme.com",
+  "name": "aurora",
+  "homepage": "https://github.com/jmagar/aurora-design-system",
   "items": [
     {
-      "name": "hello-world",
-      "type": "registry:component",
-      "title": "Hello World",
-      "description": "A simple hello world component",
-      "registryDependencies": ["button"],
+      "name": "aurora-tokens",
+      "type": "registry:style",
+      "title": "Aurora Design System Tokens",
+      "description": "Aurora CSS custom property token definitions for the full Aurora color, typography, shadow, and radius system.",
       "files": [
         {
-          "path": "registry/new-york/blocks/hello-world/hello-world.tsx",
-          "type": "registry:component"
+          "path": "registry/aurora/aurora.css",
+          "type": "registry:style"
         }
-      ]
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "categories": [
+        "aurora",
+        "style",
+        "theme"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "style",
+        "requiresTokens": false,
+        "sourcePath": "registry/aurora/aurora.css"
+      },
+      "docs": "Install this first.\n\nIt provides the Aurora token layer, shadcn token bridge, and base theme helpers used by the rest of the registry.\n\nImport the generated stylesheet once at your app root before installing Aurora UI or block items.",
+      "cssVars": {
+        "theme": {
+          "font-aurora-display": "'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+          "font-aurora-sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          "font-aurora-mono": "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace",
+          "radius-aurora-1": "14px",
+          "radius-aurora-2": "18px",
+          "radius-aurora-3": "22px"
+        },
+        "dark": {
+          "aurora-page-bg": "#07131c",
+          "aurora-bg": "var(--aurora-page-bg)",
+          "aurora-nav-bg": "#07111a",
+          "aurora-panel-medium": "#102330",
+          "aurora-panel-strong": "#13293a",
+          "aurora-control-surface": "#0c1a24",
+          "aurora-hover-bg": "#17364b",
+          "aurora-surface-raised": "linear-gradient(180deg, rgba(18, 40, 56, 0.96), rgba(12, 27, 38, 0.98))",
+          "aurora-border-default": "#1d3d4e",
+          "aurora-border-strong": "#24536c",
+          "aurora-text-primary": "#e6f4fb",
+          "aurora-text-muted": "#a7bcc9",
+          "aurora-accent-primary": "#29b6f6",
+          "aurora-accent-strong": "#67cbfa",
+          "aurora-accent-deep": "#1c7fac",
+          "aurora-accent-lift": "#4dc8fa",
+          "aurora-accent-button": "#1da8e6",
+          "aurora-accent-foreground": "#051520",
+          "aurora-accent-gradient": "linear-gradient(180deg, var(--aurora-accent-lift) 0%, var(--aurora-accent-button) 100%)",
+          "aurora-accent-pink": "#f9a8c4",
+          "aurora-accent-pink-strong": "#fbc4d6",
+          "aurora-accent-pink-deep": "#c46b88",
+          "aurora-accent-pink-button": "#e879a0",
+          "aurora-rose-gradient": "linear-gradient(180deg, var(--aurora-accent-pink) 0%, var(--aurora-accent-pink-button) 100%)",
+          "aurora-success": "#7dd3c7",
+          "aurora-warn": "#c6a36b",
+          "aurora-error": "#c78490",
+          "aurora-error-lift": "#d9909a",
+          "aurora-error-gradient": "linear-gradient(180deg, var(--aurora-error-lift) 0%, var(--aurora-error) 100%)",
+          "aurora-status-offline": "#3a5568",
+          "aurora-code-type": "#b8d9f5",
+          "aurora-code-function": "var(--aurora-accent-strong)",
+          "aurora-switch-thumb-gradient": "linear-gradient(180deg, #ffffff 0%, #daedf7 100%)",
+          "aurora-shadow-medium": "0 12px 24px rgba(0, 0, 0, 0.18)",
+          "aurora-shadow-strong": "0 20px 38px rgba(0, 0, 0, 0.26)",
+          "aurora-highlight-medium": "inset 0 1px 0 rgba(255, 255, 255, 0.035)",
+          "aurora-highlight-strong": "inset 0 1px 0 rgba(255, 255, 255, 0.055)",
+          "aurora-active-glow": "0 0 0 1px color-mix(in srgb, #29b6f6 28%, transparent), 0 2px 8px color-mix(in srgb, #29b6f6 18%, transparent)",
+          "aurora-focus-ring": "color-mix(in srgb, #29b6f6 30%, transparent)",
+          "aurora-radius-1": "14px",
+          "aurora-radius-2": "18px",
+          "aurora-radius-3": "22px",
+          "aurora-font-display": "'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+          "aurora-font-sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          "aurora-font-mono": "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace",
+          "aurora-type-body": "14px",
+          "aurora-type-body-sm": "13px",
+          "aurora-type-control": "13px",
+          "aurora-type-table": "13px",
+          "aurora-type-label": "12px",
+          "aurora-type-caption": "11px",
+          "aurora-type-micro": "10.5px",
+          "aurora-line-body": "1.58",
+          "aurora-line-ui": "1.35",
+          "aurora-line-dense": "1.28",
+          "aurora-letter-ui": "0.005em",
+          "aurora-letter-label": "0.012em",
+          "aurora-letter-meta": "0.018em",
+          "aurora-letter-eyebrow": "0.095em",
+          "aurora-weight-body": "480",
+          "aurora-weight-ui": "560",
+          "aurora-weight-label": "650",
+          "aurora-weight-heading": "760",
+          "aurora-shell-bg": "radial-gradient(circle at 12% 0%, rgba(41, 182, 246, 0.09), transparent 28%), radial-gradient(circle at 88% 0%, rgba(28, 127, 172, 0.10), transparent 24%), var(--aurora-page-bg)",
+          "background": "var(--aurora-page-bg)",
+          "foreground": "var(--aurora-text-primary)",
+          "card": "var(--aurora-panel-medium)",
+          "card-foreground": "var(--aurora-text-primary)",
+          "popover": "var(--aurora-panel-strong)",
+          "popover-foreground": "var(--aurora-text-primary)",
+          "primary": "var(--aurora-accent-primary)",
+          "primary-foreground": "var(--aurora-accent-foreground)",
+          "secondary": "var(--aurora-panel-medium)",
+          "secondary-foreground": "var(--aurora-text-primary)",
+          "muted": "var(--aurora-control-surface)",
+          "muted-foreground": "var(--aurora-text-muted)",
+          "accent": "var(--aurora-hover-bg)",
+          "accent-foreground": "var(--aurora-text-primary)",
+          "destructive": "var(--aurora-error)",
+          "destructive-foreground": "var(--aurora-text-primary)",
+          "border": "var(--aurora-border-default)",
+          "input": "var(--aurora-control-surface)",
+          "ring": "var(--aurora-focus-ring)",
+          "radius": "14px",
+          "sidebar": "var(--aurora-nav-bg)",
+          "sidebar-foreground": "var(--aurora-text-primary)",
+          "sidebar-primary": "var(--aurora-accent-primary)",
+          "sidebar-primary-foreground": "var(--aurora-accent-foreground)",
+          "sidebar-accent": "var(--aurora-hover-bg)",
+          "sidebar-accent-foreground": "var(--aurora-text-primary)",
+          "sidebar-border": "var(--aurora-border-default)",
+          "sidebar-ring": "var(--aurora-focus-ring)"
+        },
+        "light": {
+          "aurora-page-bg": "#f0f6f8",
+          "aurora-bg": "var(--aurora-page-bg)",
+          "aurora-nav-bg": "#e4f0f5",
+          "aurora-panel-medium": "#ffffff",
+          "aurora-panel-strong": "#f8fbfc",
+          "aurora-control-surface": "#edf5f8",
+          "aurora-hover-bg": "#dceef4",
+          "aurora-surface-raised": "linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(237, 245, 248, 0.98))",
+          "aurora-border-default": "#b8d0da",
+          "aurora-border-strong": "#8fb4c4",
+          "aurora-text-primary": "#07131c",
+          "aurora-text-muted": "#3d6070",
+          "aurora-accent-primary": "#0288d1",
+          "aurora-accent-strong": "#0277bd",
+          "aurora-accent-deep": "#01579b",
+          "aurora-accent-lift": "#1aa6e8",
+          "aurora-accent-button": "#0277bd",
+          "aurora-accent-foreground": "#ffffff",
+          "aurora-accent-pink": "#d63a6f",
+          "aurora-accent-pink-strong": "#e0527f",
+          "aurora-accent-pink-deep": "#a0284f",
+          "aurora-accent-pink-button": "#b82f60",
+          "aurora-success": "#2d7d6e",
+          "aurora-warn": "#8a6914",
+          "aurora-error": "#9c3545",
+          "aurora-error-lift": "#b84a5b",
+          "aurora-status-offline": "#6f8793",
+          "aurora-code-type": "#24536c",
+          "aurora-code-function": "#01579b",
+          "aurora-switch-thumb-gradient": "linear-gradient(180deg, #ffffff 0%, #d8edf6 100%)",
+          "aurora-shadow-medium": "0 4px 12px rgba(7, 19, 28, 0.08)",
+          "aurora-shadow-strong": "0 8px 24px rgba(7, 19, 28, 0.12)",
+          "aurora-shell-bg": "radial-gradient(circle at 12% 0%, rgba(2, 136, 209, 0.06), transparent 28%), radial-gradient(circle at 88% 0%, rgba(1, 87, 155, 0.05), transparent 24%), var(--aurora-page-bg)",
+          "background": "var(--aurora-page-bg)",
+          "foreground": "var(--aurora-text-primary)",
+          "card": "var(--aurora-panel-medium)",
+          "card-foreground": "var(--aurora-text-primary)",
+          "popover": "var(--aurora-panel-strong)",
+          "popover-foreground": "var(--aurora-text-primary)",
+          "primary": "var(--aurora-accent-primary)",
+          "primary-foreground": "var(--aurora-accent-foreground)",
+          "secondary": "var(--aurora-control-surface)",
+          "secondary-foreground": "var(--aurora-text-primary)",
+          "muted": "var(--aurora-control-surface)",
+          "muted-foreground": "var(--aurora-text-muted)",
+          "accent": "var(--aurora-hover-bg)",
+          "accent-foreground": "var(--aurora-text-primary)",
+          "destructive": "var(--aurora-error)",
+          "border": "var(--aurora-border-default)",
+          "input": "var(--aurora-control-surface)",
+          "ring": "var(--aurora-focus-ring)",
+          "sidebar": "var(--aurora-nav-bg)",
+          "sidebar-border": "var(--aurora-border-default)"
+        }
+      },
+      "css": {
+        "@layer base": {
+          ":root": {
+            "color-scheme": "dark"
+          },
+          ".dark": {
+            "color-scheme": "dark"
+          },
+          ".light": {
+            "color-scheme": "light"
+          },
+          "body": {
+            "background": "var(--aurora-shell-bg)",
+            "color": "var(--aurora-text-primary)",
+            "font-family": "var(--aurora-font-sans)"
+          }
+        }
+      }
     },
     {
-      "name": "example-form",
-      "type": "registry:component",
-      "title": "Example Form",
-      "description": "A contact form with Zod validation.",
-      "dependencies": ["zod"],
-      "registryDependencies": ["button", "input", "label", "textarea", "card"],
+      "name": "aurora-button",
+      "type": "registry:ui",
+      "title": "Aurora Button",
+      "description": "Multi-variant button with aurora glow, rose, neutral, ghost, and destructive styles. Inline-style gradients and box-shadow glows.",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.2.3",
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
       "files": [
         {
-          "path": "registry/new-york/blocks/example-form/example-form.tsx",
-          "type": "registry:component"
+          "path": "registry/aurora/ui/button.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/button.tsx"
         }
-      ]
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/button.tsx",
+        "installTarget": "@ui/aurora/button.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/button.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
-      "name": "complex-component",
-      "type": "registry:component",
-      "title": "Complex Component",
-      "description": "A complex component showing hooks, libs and components.",
-      "registryDependencies": ["card"],
+      "name": "aurora-badge",
+      "type": "registry:ui",
+      "title": "Aurora Badge",
+      "description": "Small status and label badge component with Aurora tint variants.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
       "files": [
         {
-          "path": "registry/new-york/blocks/complex-component/page.tsx",
-          "type": "registry:page",
-          "target": "app/pokemon/page.tsx"
-        },
-        {
-          "path": "registry/new-york/blocks/complex-component/components/pokemon-card.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/blocks/complex-component/components/pokemon-image.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/blocks/complex-component/lib/pokemon.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/new-york/blocks/complex-component/hooks/use-pokemon.ts",
-          "type": "registry:hook"
+          "path": "registry/aurora/ui/badge.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/badge.tsx"
         }
-      ]
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/badge.tsx",
+        "installTarget": "@ui/aurora/badge.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/badge.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
-      "name": "example-with-css",
-      "type": "registry:component",
-      "title": "Example with CSS",
-      "description": "A login form with a CSS file.",
+      "name": "aurora-input",
+      "type": "registry:ui",
+      "title": "Aurora Input",
+      "description": "Text input with Aurora focus glow, leading/trailing adornment slots, and control-surface background.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
       "files": [
         {
-          "path": "registry/new-york/blocks/example-with-css/example-card.tsx",
-          "type": "registry:component"
+          "path": "registry/aurora/ui/input.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/input.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/input.tsx",
+        "installTarget": "@ui/aurora/input.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/input.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-select",
+      "type": "registry:ui",
+      "title": "Aurora Select",
+      "description": "Radix select with Aurora panel dropdown, grouped options, separators, and keyboard navigation.",
+      "dependencies": [
+        "@radix-ui/react-select@^2.2.6"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/select.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/select.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/select.tsx",
+        "installTarget": "@ui/aurora/select.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/select.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-native-select",
+      "type": "registry:ui",
+      "title": "Aurora Native Select",
+      "description": "Browser-native select with Aurora control styling, chevron affordance, and native select ref/event semantics.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/native-select.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/native-select.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/native-select.tsx",
+        "installTarget": "@ui/aurora/native-select.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/native-select.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-textarea",
+      "type": "registry:ui",
+      "title": "Aurora Textarea",
+      "description": "Auto-resizing textarea with Aurora focus glow and control-surface background.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/textarea.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/textarea.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/textarea.tsx",
+        "installTarget": "@ui/aurora/textarea.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/textarea.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-avatar",
+      "type": "registry:ui",
+      "title": "Aurora Avatar",
+      "description": "Circular avatar with gradient fallback initials and Aurora border styling.",
+      "dependencies": [
+        "@radix-ui/react-avatar@^1.1.11"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/avatar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/avatar.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/avatar.tsx",
+        "installTarget": "@ui/aurora/avatar.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/avatar.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-progress",
+      "type": "registry:ui",
+      "title": "Aurora Progress",
+      "description": "Animated progress bar with Aurora accent-primary fill and panel track.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/progress.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/progress.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/progress.tsx",
+        "installTarget": "@ui/aurora/progress.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/progress.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-switch",
+      "type": "registry:ui",
+      "title": "Aurora Switch",
+      "description": "Toggle switch with Aurora glow active state and smooth transition.",
+      "dependencies": [
+        "@radix-ui/react-switch@^1.2.6"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/switch.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/switch.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/switch.tsx",
+        "installTarget": "@ui/aurora/switch.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/switch.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-tabs",
+      "type": "registry:ui",
+      "title": "Aurora Tabs",
+      "description": "Underline-style tabs with Aurora accent-primary active indicator.",
+      "dependencies": [
+        "@radix-ui/react-tabs@^1.1.13"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/tabs.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/tabs.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "navigation"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/tabs.tsx",
+        "installTarget": "@ui/aurora/tabs.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/tabs.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-breadcrumb",
+      "type": "registry:ui",
+      "title": "Aurora Breadcrumb",
+      "description": "Breadcrumb navigation with separator chevrons and Aurora muted text styling.",
+      "dependencies": [
+        "@radix-ui/react-slot@^1.2.3",
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/breadcrumb.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/breadcrumb.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "navigation"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/breadcrumb.tsx",
+        "installTarget": "@ui/aurora/breadcrumb.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/breadcrumb.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-pagination",
+      "type": "registry:ui",
+      "title": "Aurora Pagination",
+      "description": "Page navigation controls with Aurora neutral button style and active accent page indicator.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/pagination.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/pagination.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "navigation"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/pagination.tsx",
+        "installTarget": "@ui/aurora/pagination.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/pagination.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-dialog",
+      "type": "registry:ui",
+      "title": "Aurora Dialog",
+      "description": "Modal dialog with Aurora panel-strong background, strong shadow, and backdrop blur.",
+      "dependencies": [
+        "@radix-ui/react-dialog@^1.1.15",
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/dialog.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/dialog.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/dialog.tsx",
+        "installTarget": "@ui/aurora/dialog.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-dropdown-menu",
+      "type": "registry:ui",
+      "title": "Aurora Dropdown Menu",
+      "description": "Floating dropdown menu with Aurora panel-strong surface, hover-bg items, and keyboard navigation.",
+      "dependencies": [
+        "@radix-ui/react-dropdown-menu@^2.1.16",
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/dropdown-menu.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/dropdown-menu.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/dropdown-menu.tsx",
+        "installTarget": "@ui/aurora/dropdown-menu.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/dropdown-menu.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-tooltip",
+      "type": "registry:ui",
+      "title": "Aurora Tooltip",
+      "description": "Lightweight tooltip with Aurora panel-strong background and text-primary label.",
+      "dependencies": [
+        "@radix-ui/react-tooltip@^1.2.8"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/tooltip.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/tooltip.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/tooltip.tsx",
+        "installTarget": "@ui/aurora/tooltip.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/tooltip.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-context-menu",
+      "type": "registry:ui",
+      "title": "Aurora Context Menu",
+      "description": "Right-click context menu with Aurora panel surface, icons, and keyboard shortcuts.",
+      "dependencies": [
+        "@radix-ui/react-context-menu@^2.2.16",
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/context-menu.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/context-menu.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/context-menu.tsx",
+        "installTarget": "@ui/aurora/context-menu.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/context-menu.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-banner",
+      "type": "registry:ui",
+      "title": "Aurora Banner",
+      "description": "Full-width status banners with info, success, warn, and error Aurora tint variants.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/banner.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/banner.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/banner.tsx",
+        "installTarget": "@ui/aurora/banner.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/banner.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-toast",
+      "type": "registry:ui",
+      "title": "Aurora Toast",
+      "description": "Floating toast notifications with Aurora panel surface, status icons, and auto-dismiss.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/toast.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/toast.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/toast.tsx",
+        "installTarget": "@ui/aurora/toast.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/toast.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-empty-state",
+      "type": "registry:ui",
+      "title": "Aurora Empty State",
+      "description": "Centered empty state with icon slot, heading, description, and optional CTA button.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/empty-state.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/empty-state.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/empty-state.tsx",
+        "installTarget": "@ui/aurora/empty-state.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/empty-state.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+    },
+    {
+      "name": "aurora-skeleton",
+      "type": "registry:ui",
+      "title": "Aurora Skeleton",
+      "description": "Shimmer skeleton loader with Aurora panel-medium base and hover-bg highlight.",
+      "dependencies": [
+        "class-variance-authority@^0.7.1"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/skeleton.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/skeleton.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/skeleton.tsx",
+        "installTarget": "@ui/aurora/skeleton.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/skeleton.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+    },
+    {
+      "name": "aurora-stat-card",
+      "type": "registry:ui",
+      "title": "Aurora Stat Card",
+      "description": "Metric stat card with label, large value, trend indicator, and Aurora panel styling.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input",
+        "aurora-radio-group",
+        "aurora-select"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/stat-card.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/stat-card.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/stat-card.tsx",
+        "installTarget": "@ui/aurora/stat-card.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/stat-card.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`."
+    },
+    {
+      "name": "aurora-data-table",
+      "type": "registry:ui",
+      "title": "Aurora Data Table",
+      "description": "Sortable, paginated data table with Aurora panel headers, row hover states, and border-default separators.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/data-table.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/data-table.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/data-table.tsx",
+        "installTarget": "@ui/aurora/data-table.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/data-table.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-filter-bar",
+      "type": "registry:ui",
+      "title": "Aurora Filter Bar",
+      "description": "Horizontal filter toolbar with search input, select dropdowns, and Aurora button actions.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input",
+        "aurora-select"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/filter-bar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/filter-bar.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/filter-bar.tsx",
+        "installTarget": "@ui/aurora/filter-bar.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/filter-bar.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-select`."
+    },
+    {
+      "name": "aurora-prompt-input",
+      "type": "registry:block",
+      "title": "Aurora Prompt Input",
+      "description": "Full-featured AI prompt input with attach, slash commands, @mentions, model selector, send/stop buttons, attachment chips, and streaming state.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/prompt-input/prompt-input.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/prompt-input.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/prompt-input/prompt-input.tsx",
+        "installTarget": "@components/aurora/prompt-input.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/prompt-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
+    },
+    {
+      "name": "aurora-tool-calls",
+      "type": "registry:block",
+      "title": "Aurora Tool Calls",
+      "description": "Condensed, grouped tool call display for AI sessions. Supports running shimmer, completed, and error states with collapsible arg/result panels.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/tool-calls/tool-calls.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/tool-calls.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/tool-calls/tool-calls.tsx",
+        "installTarget": "@components/aurora/tool-calls.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/tool-calls.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+    },
+    {
+      "name": "aurora-thinking",
+      "type": "registry:block",
+      "title": "Aurora Thinking",
+      "description": "Reasoning and chain-of-thought disclosure block. Three variants: thinking (streaming text), cot (numbered steps with connector), plan (step list with status icons).",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/thinking/thinking.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/thinking.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/thinking/thinking.tsx",
+        "installTarget": "@components/aurora/thinking.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/thinking.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-code-block",
+      "type": "registry:block",
+      "title": "Aurora Code Block",
+      "description": "Syntax-highlighted code display with Aurora titlebar, copy button, optional line numbers, diff variant, and inline CodeChip export. Supports TypeScript, Rust, Bash, JSON, TOML, diff.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/code-block/code-block.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/code-block.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/code-block/code-block.tsx",
+        "installTarget": "@components/aurora/code-block.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-block.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
+    },
+    {
+      "name": "aurora-terminal",
+      "type": "registry:block",
+      "title": "Aurora Terminal",
+      "description": "Aurora-native terminal with 38px navy titlebar (Labby mark, session name, status dot, kill/clear/run buttons), full color system using Aurora tokens, compact in-chat variant, and blinking cursor.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/terminal/terminal.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/terminal.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/terminal/terminal.tsx",
+        "installTarget": "@components/aurora/terminal.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/terminal.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-sidebar",
+      "type": "registry:block",
+      "title": "Aurora Sidebar",
+      "description": "Zed-like project sidebar with collapsible project groups, session items with relative time, live beacon pulse, active accent border, search input, avatar bottom bar, and icon-only collapsed variant.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-avatar",
+        "aurora-button",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/sidebar/sidebar.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/sidebar.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "navigation"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/sidebar/sidebar.tsx",
+        "installTarget": "@components/aurora/sidebar.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/sidebar.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-button`, `aurora-input`."
+    },
+    {
+      "name": "aurora-checkbox",
+      "type": "registry:ui",
+      "title": "Aurora Checkbox & Radio",
+      "description": "Aurora-styled checkbox and radio group built on button[role=checkbox/radio] patterns. 16px control with accent-primary fill, animated check/dot, focus ring glow, and full keyboard support. Includes RadioGroup + RadioGroupItem exports.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input",
+        "aurora-radio-group",
+        "aurora-select"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/checkbox.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/checkbox.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/checkbox.tsx",
+        "installTarget": "@ui/aurora/checkbox.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/checkbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`."
+    },
+    {
+      "name": "aurora-artifact",
+      "type": "registry:block",
+      "title": "Aurora Artifact",
+      "description": "Artifact panel with preview/code tab switcher, copy/download/expand toolbar, language badge, and streaming cursor. Three variants: panel (full-featured), card (compact collapsible in-chat), inline (bare code strip).",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/artifact/artifact.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/artifact.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/artifact/artifact.tsx",
+        "installTarget": "@components/aurora/artifact.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/artifact.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-permission-prompt",
+      "type": "registry:block",
+      "title": "Aurora Permission Prompt",
+      "description": "Three-variant permission prompt (modal, banner, inline) showing tool name, action description, target chip, Allow/Deny/Allow-always buttons. Danger mode adds red border, warning strip, and destructive copy.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/permission-prompt/permission-prompt.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/permission-prompt.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/permission-prompt/permission-prompt.tsx",
+        "installTarget": "@components/aurora/permission-prompt.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/permission-prompt.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-ask-user-question",
+      "type": "registry:block",
+      "title": "Aurora Ask User Question",
+      "description": "Assistant question block with radio, multi-select, or free-text input. Option cards feature hover accent-border glow and active-glow on selection. Supports optional code preview panel per option.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ask-user-question/ask-user-question.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ask-user-question.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ask-user-question/ask-user-question.tsx",
+        "installTarget": "@components/aurora/ask-user-question.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ask-user-question.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
+    },
+    {
+      "name": "aurora-permissions-dropdown",
+      "type": "registry:block",
+      "title": "Aurora Permissions Dropdown",
+      "description": "LLM runtime permission config panel with master toggle, per-tool Allow/Ask/Block segmented controls, state badges, and scrollable tool list. Also exports PermissionChip for compact summary display.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/permissions-dropdown/permissions-dropdown.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/permissions-dropdown.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/permissions-dropdown/permissions-dropdown.tsx",
+        "installTarget": "@components/aurora/permissions-dropdown.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/permissions-dropdown.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-file-tree",
+      "type": "registry:block",
+      "title": "Aurora File Tree",
+      "description": "Recursive collapsible file tree with folder/file icons, hover and selected states, right-click context menu (New file, Rename, Delete, Copy path), and an inline FileChip export for referencing files in prose.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/file-tree/file-tree.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/file-tree.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "navigation"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/file-tree/file-tree.tsx",
+        "installTarget": "@components/aurora/file-tree.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/file-tree.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-code-editor",
+      "type": "registry:block",
+      "title": "Aurora Code Editor",
+      "description": "Display-only code editor panel with title bar (filename, language badge, close button), line numbers, syntax highlighting, minimap column, diff mode (add/remove line backgrounds), error diagnostics (squiggly underlines, gutter icons, error panel), status bar, and a compact variant.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/code-editor/code-editor.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/code-editor.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/code-editor/code-editor.tsx",
+        "installTarget": "@components/aurora/code-editor.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-editor.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-web-preview",
+      "type": "registry:block",
+      "title": "Aurora Web Preview",
+      "description": "Browser chrome component with Aurora panel titlebar, three neutral square window dots, address bar with lock icon, reload and share icon buttons. Four variants: browser (full chrome), unfurl-card (link preview with favicon, title, description, domain chip), skeleton (shimmer loading), and error (failed to load).",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/web-preview/web-preview.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/web-preview.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/web-preview/web-preview.tsx",
+        "installTarget": "@components/aurora/web-preview.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/web-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-login",
+      "type": "registry:block",
+      "title": "Aurora Login",
+      "description": "Full-page login card centered on Aurora radial page wash. Features Labby stacked-plane mark + wordmark, email/password fields with show/hide toggle, Style D glow-border sign-in button, forgot password link, magic-link sent state with envelope icon, and 6-box OTP input that auto-advances on keystroke for 2FA.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input",
+        "aurora-input-otp"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/login/login.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/login.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/login/login.tsx",
+        "installTarget": "@components/aurora/login.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/login.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-input-otp`."
+    },
+    {
+      "name": "aurora-oauth",
+      "type": "registry:block",
+      "title": "Aurora OAuth",
+      "description": "OAuth consent screen with app icon, scope checklist (sensitive scopes highlighted in warn color), and Allow/Deny buttons. Success/callback state with animated SVG check and close-window message. Token management table with token name, scopes chips, created date, last used, and Revoke button.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/oauth/oauth.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/oauth.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/oauth/oauth.tsx",
+        "installTarget": "@components/aurora/oauth.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/oauth.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-error-page",
+      "type": "registry:block",
+      "title": "Aurora Error Page",
+      "description": "Operator-first error pages for 404 (Not found + mono path + Go home button), 403 (Access denied + contact link), and 500 (Something went wrong + mono incident ID + animated countdown ring with auto-retry). No consumer-app illustrations — uses ghost numeric backdrop instead.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/error-page/error-page.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/error-page.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/error-page/error-page.tsx",
+        "installTarget": "@components/aurora/error-page.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/error-page.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-attachment",
+      "type": "registry:block",
+      "title": "Aurora Attachment",
+      "description": "Six attachment UI variants: inline rose-tinted chip (with image thumbnail), media grid with hover overlay, tall doc/PDF card with file-type badge and page count, animated audio chip with 5 waveform bars, upload progress tracker with fixed-80px accent-fill track, and drag-and-drop zone.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/attachment/attachment.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/attachment.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/attachment/attachment.tsx",
+        "installTarget": "@components/aurora/attachment.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/attachment.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-command-palette",
+      "type": "registry:block",
+      "title": "Aurora Command Palette",
+      "description": "Full-screen command palette with 72% alpha backdrop, centered 560px panel, magnifier search input with ⌘K shortcut hint, sectioned results (Recent, Actions, Skills, Navigate), keyboard shortcut kbd badges, arrow-key navigation, Enter to select, Escape to close, and a useCommandPalette hook that binds ⌘K globally.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/command-palette/command-palette.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/command-palette.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "navigation"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/command-palette/command-palette.tsx",
+        "installTarget": "@components/aurora/command-palette.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/command-palette.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+    },
+    {
+      "name": "aurora-share-dialog",
+      "type": "registry:block",
+      "title": "Aurora Share Dialog",
+      "description": "Two-tab share/export dialog: Share tab with copy-link URL input, collaborator rows (avatar + name + role dropdown), and email invite form; Export tab with format radio group (HTML, PDF, PNG, Markdown), inline share chip, and a gradient download button.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-avatar",
+        "aurora-button",
+        "aurora-input",
+        "aurora-radio-group",
+        "aurora-select"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/share-dialog/share-dialog.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/share-dialog.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/share-dialog/share-dialog.tsx",
+        "installTarget": "@components/aurora/share-dialog.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/share-dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`."
+    },
+    {
+      "name": "aurora-file-picker",
+      "type": "registry:block",
+      "title": "Aurora File Picker",
+      "description": "Modal file picker with sidebar navigation (Recent, Documents, Downloads, Project, Uploads), grid and list view modes, search bar, filter chips (All, Images, Documents, Code), drag-drop upload overlay, staged selection chips below the grid, and a multi-select confirm action using --font-sans for all file names.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/file-picker/file-picker.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/file-picker.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "application"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/file-picker/file-picker.tsx",
+        "installTarget": "@components/aurora/file-picker.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/file-picker.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+    },
+    {
+      "name": "aurora-field",
+      "type": "registry:ui",
+      "title": "Aurora Field",
+      "description": "Field wrapper for labels, descriptions, required markers, disabled state, and validation errors.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/field.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/field.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/field.tsx",
+        "installTarget": "@ui/aurora/field.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/field.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-radio-group",
+      "type": "registry:ui",
+      "title": "Aurora Radio Group",
+      "description": "Single-choice radio group extracted as an independently installable Aurora primitive.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-checkbox"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/radio-group.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/radio-group.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/radio-group.tsx",
+        "installTarget": "@ui/aurora/radio-group.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/radio-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-checkbox`."
+    },
+    {
+      "name": "aurora-slider",
+      "type": "registry:ui",
+      "title": "Aurora Slider",
+      "description": "Range slider with Aurora accent track, glow thumb, and controlled or uncontrolled value support.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/slider.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/slider.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/slider.tsx",
+        "installTarget": "@ui/aurora/slider.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/slider.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-number-input",
+      "type": "registry:ui",
+      "title": "Aurora Number Input",
+      "description": "Numeric stepper input with decrement and increment controls for tuning settings.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/number-input.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/number-input.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/number-input.tsx",
+        "installTarget": "@ui/aurora/number-input.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/number-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+    },
+    {
+      "name": "aurora-combobox",
+      "type": "registry:ui",
+      "title": "Aurora Combobox",
+      "description": "Searchable selection control for large option sets like gateways, models, branches, and files.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-input",
+        "aurora-search-results"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/combobox.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/combobox.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/combobox.tsx",
+        "installTarget": "@ui/aurora/combobox.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/combobox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-input`, `aurora-search-results`."
+    },
+    {
+      "name": "aurora-popover",
+      "type": "registry:ui",
+      "title": "Aurora Popover",
+      "description": "Lightweight anchored disclosure surface for inline details, previews, and quick editors.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/popover.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/popover.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/popover.tsx",
+        "installTarget": "@ui/aurora/popover.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/popover.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-sheet",
+      "type": "registry:ui",
+      "title": "Aurora Sheet",
+      "description": "Side and edge drawer built on Radix Dialog for inspectors, details panels, and mobile navigation.",
+      "dependencies": [
+        "@radix-ui/react-dialog@^1.1.15",
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/sheet.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/sheet.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/sheet.tsx",
+        "installTarget": "@ui/aurora/sheet.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/sheet.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-callout",
+      "type": "registry:ui",
+      "title": "Aurora Callout",
+      "description": "Inline contextual notice for forms, panels, docs, and permission flows.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/callout.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/callout.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/callout.tsx",
+        "installTarget": "@ui/aurora/callout.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/callout.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-status-indicator",
+      "type": "registry:ui",
+      "title": "Aurora Status Indicator",
+      "description": "Live status label with muted Aurora tones for connected, syncing, degraded, offline, and error states.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/status-indicator.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/status-indicator.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/status-indicator.tsx",
+        "installTarget": "@ui/aurora/status-indicator.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/status-indicator.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-timeline",
+      "type": "registry:ui",
+      "title": "Aurora Timeline",
+      "description": "Activity feed for agent runs, tool calls, deployments, and audit trails.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-status-indicator"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/timeline.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/timeline.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/timeline.tsx",
+        "installTarget": "@ui/aurora/timeline.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/timeline.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-status-indicator`."
+    },
+    {
+      "name": "aurora-description-list",
+      "type": "registry:ui",
+      "title": "Aurora Description List",
+      "description": "Dense key-value metadata layout for operational detail panels.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/description-list.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/description-list.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/description-list.tsx",
+        "installTarget": "@ui/aurora/description-list.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/description-list.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-resizable-panels",
+      "type": "registry:ui",
+      "title": "Aurora Resizable Panels",
+      "description": "Two-pane resizable workbench layout for chat, editor, preview, logs, and inspectors.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/resizable-panels.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/resizable-panels.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/resizable-panels.tsx",
+        "installTarget": "@ui/aurora/resizable-panels.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/resizable-panels.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-listbox",
+      "type": "registry:ui",
+      "title": "Aurora Listbox",
+      "description": "Shared Aurora listbox, group, and option row primitives for command palettes, search results, and combobox menus.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/listbox.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/listbox.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/listbox.tsx",
+        "installTarget": "@ui/aurora/listbox.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/listbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-search-results",
+      "type": "registry:ui",
+      "title": "Aurora Search Results",
+      "description": "Reusable grouped result list with active, empty, metadata, and keyboard-friendly option semantics.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-listbox"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/search-results.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/search-results.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/search-results.tsx",
+        "installTarget": "@ui/aurora/search-results.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/search-results.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-listbox`."
+    },
+    {
+      "name": "aurora-kbd",
+      "type": "registry:ui",
+      "title": "Aurora Kbd",
+      "description": "Keyboard shortcut keycap for command labels, menus, and dense workbench controls.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/kbd.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/kbd.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/kbd.tsx",
+        "installTarget": "@ui/aurora/kbd.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/kbd.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-toolbar",
+      "type": "registry:ui",
+      "title": "Aurora Toolbar",
+      "description": "Dense workbench toolbar with grouped controls and separators for editors, previews, and inspectors.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/toolbar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/toolbar.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/toolbar.tsx",
+        "installTarget": "@ui/aurora/toolbar.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/toolbar.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-separator",
+      "type": "registry:ui",
+      "title": "Aurora Separator",
+      "description": "Horizontal or vertical separator using Aurora border tokens for grouped controls, menus, and dense metadata panels.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/separator.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/separator.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/separator.tsx",
+        "installTarget": "@ui/aurora/separator.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/separator.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-spinner",
+      "type": "registry:ui",
+      "title": "Aurora Spinner",
+      "description": "Compact loading spinner with cyan, rose, and muted tones for asynchronous agent and registry work.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/spinner.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/spinner.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "feedback"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/spinner.tsx",
+        "installTarget": "@ui/aurora/spinner.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/spinner.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-button-group",
+      "type": "registry:ui",
+      "title": "Aurora Button Group",
+      "description": "Grouped action container for segmented command clusters and compact toolbar controls.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/button-group.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/button-group.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/button-group.tsx",
+        "installTarget": "@ui/aurora/button-group.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/button-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-accordion",
+      "type": "registry:ui",
+      "title": "Aurora Accordion",
+      "description": "Tokenized disclosure list for compact details, command output, and configuration sections.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/accordion.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/accordion.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/accordion.tsx",
+        "installTarget": "@ui/aurora/accordion.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/accordion.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-ai-elements",
+      "type": "registry:block",
+      "title": "Aurora AI Elements",
+      "description": "Aurora-native AI Elements parity block covering chat, code, voice, workflow, media, and utility surfaces.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-avatar",
+        "aurora-badge",
+        "aurora-button",
+        "aurora-native-select",
+        "aurora-separator",
+        "aurora-spinner",
+        "aurora-textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/ai-elements.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/ai-elements.tsx"
         },
         {
-          "path": "registry/new-york/blocks/example-with-css/example-card.css",
-          "type": "registry:component"
+          "path": "registry/aurora/blocks/ai-elements/core.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/core.tsx"
         }
-      ]
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/ai-elements.tsx",
+        "installTarget": "@components/aurora/ai/ai-elements.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/ai-elements.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-badge`, `aurora-button`, `aurora-native-select`, `aurora-separator`, `aurora-spinner`, `aurora-textarea`."
+    },
+    {
+      "name": "aurora-marketplace",
+      "type": "registry:block",
+      "title": "Aurora Marketplace",
+      "description": "Labby marketplace catalog surface with source cards, lens stats, search filters, card and table views, install/update actions, and a detail inspector.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-badge",
+        "aurora-button",
+        "aurora-description-list",
+        "aurora-filter-bar",
+        "aurora-sheet",
+        "aurora-stat-card",
+        "aurora-status-indicator"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/marketplace/marketplace.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/marketplace.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/marketplace/marketplace.tsx",
+        "installTarget": "@components/aurora/marketplace.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/marketplace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-button`, `aurora-description-list`, `aurora-filter-bar`, `aurora-sheet`, `aurora-stat-card`, `aurora-status-indicator`."
+    },
+    {
+      "name": "aurora-alert-dialog",
+      "type": "registry:ui",
+      "title": "Aurora Alert Dialog",
+      "description": "Confirmation dialog built on the Aurora modal surface for destructive or high-friction decisions.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button",
+        "aurora-dialog"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/alert-dialog.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/alert-dialog.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/alert-dialog.tsx",
+        "installTarget": "@ui/aurora/alert-dialog.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/alert-dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-dialog`."
+    },
+    {
+      "name": "aurora-aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aurora Aspect Ratio",
+      "description": "Fixed-ratio media wrapper for previews, charts, and embedded surfaces.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/aspect-ratio.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/aspect-ratio.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/aspect-ratio.tsx",
+        "installTarget": "@ui/aurora/aspect-ratio.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/aspect-ratio.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-calendar",
+      "type": "registry:ui",
+      "title": "Aurora Calendar",
+      "description": "Compact month calendar with Aurora focus, selected-day, and operator-friendly density.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/calendar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/calendar.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/calendar.tsx",
+        "installTarget": "@ui/aurora/calendar.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/calendar.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-card",
+      "type": "registry:ui",
+      "title": "Aurora Card",
+      "description": "Composed Aurora card shell with header, content, footer, title, and description slots.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/card.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/card.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/card.tsx",
+        "installTarget": "@ui/aurora/card.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/card.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-carousel",
+      "type": "registry:ui",
+      "title": "Aurora Carousel",
+      "description": "Horizontal scroll carousel with Aurora neutral controls for cards and media strips.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/carousel.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/carousel.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/carousel.tsx",
+        "installTarget": "@ui/aurora/carousel.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/carousel.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+    },
+    {
+      "name": "aurora-chart",
+      "type": "registry:ui",
+      "title": "Aurora Chart",
+      "description": "Small tokenized SVG chart surface for operational metrics and registry summaries.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/chart.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/chart.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/chart.tsx",
+        "installTarget": "@ui/aurora/chart.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/chart.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-collapsible",
+      "type": "registry:ui",
+      "title": "Aurora Collapsible",
+      "description": "Disclosure container for compact diagnostics and configuration details.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/collapsible.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/collapsible.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/collapsible.tsx",
+        "installTarget": "@ui/aurora/collapsible.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/collapsible.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-date-picker",
+      "type": "registry:ui",
+      "title": "Aurora Date Picker",
+      "description": "Native date input with Aurora label and calendar affordance.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/date-picker.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/date-picker.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/date-picker.tsx",
+        "installTarget": "@ui/aurora/date-picker.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/date-picker.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-input`."
+    },
+    {
+      "name": "aurora-direction",
+      "type": "registry:ui",
+      "title": "Aurora Direction",
+      "description": "Minimal direction wrapper for LTR and RTL layout previews.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/direction.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/direction.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/direction.tsx",
+        "installTarget": "@ui/aurora/direction.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/direction.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-hover-card",
+      "type": "registry:ui",
+      "title": "Aurora Hover Card",
+      "description": "Hover-triggered detail panel for source metadata and compact previews.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/hover-card.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/hover-card.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "overlay"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/hover-card.tsx",
+        "installTarget": "@ui/aurora/hover-card.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/hover-card.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-input-group",
+      "type": "registry:ui",
+      "title": "Aurora Input Group",
+      "description": "Grouped input shell with addons for protocol, units, and compact command prefixes.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/input-group.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/input-group.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/input-group.tsx",
+        "installTarget": "@ui/aurora/input-group.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/input-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-input`."
+    },
+    {
+      "name": "aurora-input-otp",
+      "type": "registry:ui",
+      "title": "Aurora Input OTP",
+      "description": "Segmented one-time-code input slots with Aurora control styling.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/input-otp.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/input-otp.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/input-otp.tsx",
+        "installTarget": "@ui/aurora/input-otp.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/input-otp.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-item",
+      "type": "registry:ui",
+      "title": "Aurora Item",
+      "description": "Reusable list item with icon, title, description, and action slot.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/item.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/item.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/item.tsx",
+        "installTarget": "@ui/aurora/item.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/item.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-label",
+      "type": "registry:ui",
+      "title": "Aurora Label",
+      "description": "Accessible form label matching Aurora control typography.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/label.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/label.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/label.tsx",
+        "installTarget": "@ui/aurora/label.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/label.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-menubar",
+      "type": "registry:ui",
+      "title": "Aurora Menubar",
+      "description": "Horizontal application menu bar with compact Aurora menu items.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/menubar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/menubar.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "navigation"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/menubar.tsx",
+        "installTarget": "@ui/aurora/menubar.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/menubar.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-navigation-menu",
+      "type": "registry:ui",
+      "title": "Aurora Navigation Menu",
+      "description": "Top-level navigation menu with active border and glow states.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/navigation-menu.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/navigation-menu.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "navigation"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/navigation-menu.tsx",
+        "installTarget": "@ui/aurora/navigation-menu.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/navigation-menu.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-scroll-area",
+      "type": "registry:ui",
+      "title": "Aurora Scroll Area",
+      "description": "Tokenized scroll viewport with Aurora border and scrollbar behavior.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/scroll-area.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/scroll-area.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "layout"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/scroll-area.tsx",
+        "installTarget": "@ui/aurora/scroll-area.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/scroll-area.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-table",
+      "type": "registry:ui",
+      "title": "Aurora Table",
+      "description": "Primitive table parts with Aurora 8px table radius and dense headers.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/table.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/table.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "data-display"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/table.tsx",
+        "installTarget": "@ui/aurora/table.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/table.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-toggle",
+      "type": "registry:ui",
+      "title": "Aurora Toggle",
+      "description": "Pressed-state toggle button for compact workbench controls.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/toggle.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/toggle.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/toggle.tsx",
+        "installTarget": "@ui/aurora/toggle.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/toggle.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+    },
+    {
+      "name": "aurora-toggle-group",
+      "type": "registry:ui",
+      "title": "Aurora Toggle Group",
+      "description": "Grouped toggle container for segmented command choices.",
+      "dependencies": [],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-toggle"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/toggle-group.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/toggle-group.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "forms"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/toggle-group.tsx",
+        "installTarget": "@ui/aurora/toggle-group.tsx"
+      },
+      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/toggle-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-toggle`."
+    },
+    {
+      "name": "aurora-ai-attachments",
+      "type": "registry:block",
+      "title": "Aurora AI Attachments",
+      "description": "Aurora-native attachments parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements",
+        "aurora-attachment"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/attachments.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/attachments.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/attachments.tsx",
+        "installTarget": "@components/aurora/ai/attachments.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/attachments.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-attachment`."
+    },
+    {
+      "name": "aurora-ai-chain-of-thought",
+      "type": "registry:block",
+      "title": "Aurora AI Chain of Thought",
+      "description": "Aurora-native chain of thought parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements",
+        "aurora-thinking"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/chain-of-thought.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/chain-of-thought.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/chain-of-thought.tsx",
+        "installTarget": "@components/aurora/ai/chain-of-thought.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/chain-of-thought.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
+    },
+    {
+      "name": "aurora-ai-checkpoint",
+      "type": "registry:block",
+      "title": "Aurora AI Checkpoint",
+      "description": "Aurora-native checkpoint parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/checkpoint.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/checkpoint.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/checkpoint.tsx",
+        "installTarget": "@components/aurora/ai/checkpoint.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/checkpoint.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-confirmation",
+      "type": "registry:block",
+      "title": "Aurora AI Confirmation",
+      "description": "Aurora-native confirmation parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/confirmation.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/confirmation.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/confirmation.tsx",
+        "installTarget": "@components/aurora/ai/confirmation.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/confirmation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-context",
+      "type": "registry:block",
+      "title": "Aurora AI Context",
+      "description": "Aurora-native context parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/context.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/context.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/context.tsx",
+        "installTarget": "@components/aurora/ai/context.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/context.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-conversation",
+      "type": "registry:block",
+      "title": "Aurora AI Conversation",
+      "description": "Aurora-native conversation parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/conversation.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/conversation.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/conversation.tsx",
+        "installTarget": "@components/aurora/ai/conversation.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/conversation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-inline-citation",
+      "type": "registry:block",
+      "title": "Aurora AI Inline Citation",
+      "description": "Aurora-native inline citation parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/inline-citation.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/inline-citation.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/inline-citation.tsx",
+        "installTarget": "@components/aurora/ai/inline-citation.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/inline-citation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-message",
+      "type": "registry:block",
+      "title": "Aurora AI Message",
+      "description": "Aurora-native message parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/message.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/message.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/message.tsx",
+        "installTarget": "@components/aurora/ai/message.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-model-selector",
+      "type": "registry:block",
+      "title": "Aurora AI Model Selector",
+      "description": "Aurora-native model selector parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/model-selector.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/model-selector.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/model-selector.tsx",
+        "installTarget": "@components/aurora/ai/model-selector.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/model-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-plan",
+      "type": "registry:block",
+      "title": "Aurora AI Plan",
+      "description": "Aurora-native plan parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements",
+        "aurora-thinking"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/plan.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/plan.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/plan.tsx",
+        "installTarget": "@components/aurora/ai/plan.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/plan.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
+    },
+    {
+      "name": "aurora-ai-queue",
+      "type": "registry:block",
+      "title": "Aurora AI Queue",
+      "description": "Aurora-native queue parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/queue.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/queue.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/queue.tsx",
+        "installTarget": "@components/aurora/ai/queue.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/queue.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-reasoning",
+      "type": "registry:block",
+      "title": "Aurora AI Reasoning",
+      "description": "Aurora-native reasoning parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements",
+        "aurora-thinking"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/reasoning.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/reasoning.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/reasoning.tsx",
+        "installTarget": "@components/aurora/ai/reasoning.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/reasoning.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
+    },
+    {
+      "name": "aurora-ai-shimmer",
+      "type": "registry:block",
+      "title": "Aurora AI Shimmer",
+      "description": "Aurora-native shimmer parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/shimmer.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/shimmer.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/shimmer.tsx",
+        "installTarget": "@components/aurora/ai/shimmer.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/shimmer.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-sources",
+      "type": "registry:block",
+      "title": "Aurora AI Sources",
+      "description": "Aurora-native sources parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/sources.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/sources.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/sources.tsx",
+        "installTarget": "@components/aurora/ai/sources.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/sources.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-suggestion",
+      "type": "registry:block",
+      "title": "Aurora AI Suggestion",
+      "description": "Aurora-native suggestion parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/suggestion.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/suggestion.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/suggestion.tsx",
+        "installTarget": "@components/aurora/ai/suggestion.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/suggestion.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-task",
+      "type": "registry:block",
+      "title": "Aurora AI Task",
+      "description": "Aurora-native task parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/task.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/task.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/task.tsx",
+        "installTarget": "@components/aurora/ai/task.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/task.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-tool",
+      "type": "registry:block",
+      "title": "Aurora AI Tool",
+      "description": "Aurora-native tool parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements",
+        "aurora-tool-calls"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/tool.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/tool.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/tool.tsx",
+        "installTarget": "@components/aurora/ai/tool.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/tool.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-tool-calls`."
+    },
+    {
+      "name": "aurora-ai-agent",
+      "type": "registry:block",
+      "title": "Aurora AI Agent",
+      "description": "Aurora-native agent parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/agent.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/agent.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/agent.tsx",
+        "installTarget": "@components/aurora/ai/agent.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/agent.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-commit",
+      "type": "registry:block",
+      "title": "Aurora AI Commit",
+      "description": "Aurora-native commit parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/commit.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/commit.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/commit.tsx",
+        "installTarget": "@components/aurora/ai/commit.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/commit.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-environment-variables",
+      "type": "registry:block",
+      "title": "Aurora AI Environment Variables",
+      "description": "Aurora-native environment variables parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/environment-variables.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/environment-variables.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/environment-variables.tsx",
+        "installTarget": "@components/aurora/ai/environment-variables.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/environment-variables.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-jsx-preview",
+      "type": "registry:block",
+      "title": "Aurora AI JSX Preview",
+      "description": "Aurora-native jsx preview parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/jsx-preview.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/jsx-preview.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/jsx-preview.tsx",
+        "installTarget": "@components/aurora/ai/jsx-preview.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/jsx-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-package-info",
+      "type": "registry:block",
+      "title": "Aurora AI Package Info",
+      "description": "Aurora-native package info parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/package-info.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/package-info.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/package-info.tsx",
+        "installTarget": "@components/aurora/ai/package-info.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/package-info.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-sandbox",
+      "type": "registry:block",
+      "title": "Aurora AI Sandbox",
+      "description": "Aurora-native sandbox parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/sandbox.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/sandbox.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/sandbox.tsx",
+        "installTarget": "@components/aurora/ai/sandbox.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/sandbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-schema-display",
+      "type": "registry:block",
+      "title": "Aurora AI Schema Display",
+      "description": "Aurora-native schema display parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/schema-display.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/schema-display.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/schema-display.tsx",
+        "installTarget": "@components/aurora/ai/schema-display.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/schema-display.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-snippet",
+      "type": "registry:block",
+      "title": "Aurora AI Snippet",
+      "description": "Aurora-native snippet parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/snippet.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/snippet.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/snippet.tsx",
+        "installTarget": "@components/aurora/ai/snippet.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/snippet.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-stack-trace",
+      "type": "registry:block",
+      "title": "Aurora AI Stack Trace",
+      "description": "Aurora-native stack trace parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/stack-trace.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/stack-trace.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/stack-trace.tsx",
+        "installTarget": "@components/aurora/ai/stack-trace.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/stack-trace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-test-results",
+      "type": "registry:block",
+      "title": "Aurora AI Test Results",
+      "description": "Aurora-native test results parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/test-results.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/test-results.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/test-results.tsx",
+        "installTarget": "@components/aurora/ai/test-results.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/test-results.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-audio-player",
+      "type": "registry:block",
+      "title": "Aurora AI Audio Player",
+      "description": "Aurora-native audio player parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/audio-player.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/audio-player.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/audio-player.tsx",
+        "installTarget": "@components/aurora/ai/audio-player.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/audio-player.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-mic-selector",
+      "type": "registry:block",
+      "title": "Aurora AI Mic Selector",
+      "description": "Aurora-native mic selector parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/mic-selector.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/mic-selector.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/mic-selector.tsx",
+        "installTarget": "@components/aurora/ai/mic-selector.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/mic-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-persona",
+      "type": "registry:block",
+      "title": "Aurora AI Persona",
+      "description": "Aurora-native persona parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/persona.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/persona.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/persona.tsx",
+        "installTarget": "@components/aurora/ai/persona.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/persona.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-speech-input",
+      "type": "registry:block",
+      "title": "Aurora AI Speech Input",
+      "description": "Aurora-native speech input parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/speech-input.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/speech-input.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/speech-input.tsx",
+        "installTarget": "@components/aurora/ai/speech-input.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/speech-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-transcription",
+      "type": "registry:block",
+      "title": "Aurora AI Transcription",
+      "description": "Aurora-native transcription parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/transcription.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/transcription.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/transcription.tsx",
+        "installTarget": "@components/aurora/ai/transcription.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/transcription.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-voice-selector",
+      "type": "registry:block",
+      "title": "Aurora AI Voice Selector",
+      "description": "Aurora-native voice selector parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/voice-selector.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/voice-selector.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/voice-selector.tsx",
+        "installTarget": "@components/aurora/ai/voice-selector.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/voice-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-canvas",
+      "type": "registry:block",
+      "title": "Aurora AI Canvas",
+      "description": "Aurora-native canvas parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/canvas.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/canvas.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/canvas.tsx",
+        "installTarget": "@components/aurora/ai/canvas.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/canvas.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-connection",
+      "type": "registry:block",
+      "title": "Aurora AI Connection",
+      "description": "Aurora-native connection parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/connection.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/connection.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/connection.tsx",
+        "installTarget": "@components/aurora/ai/connection.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/connection.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-controls",
+      "type": "registry:block",
+      "title": "Aurora AI Controls",
+      "description": "Aurora-native controls parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/controls.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/controls.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/controls.tsx",
+        "installTarget": "@components/aurora/ai/controls.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/controls.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-edge",
+      "type": "registry:block",
+      "title": "Aurora AI Edge",
+      "description": "Aurora-native edge parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/edge.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/edge.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/edge.tsx",
+        "installTarget": "@components/aurora/ai/edge.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/edge.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-node",
+      "type": "registry:block",
+      "title": "Aurora AI Node",
+      "description": "Aurora-native node parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/node.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/node.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/node.tsx",
+        "installTarget": "@components/aurora/ai/node.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/node.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-panel",
+      "type": "registry:block",
+      "title": "Aurora AI Panel",
+      "description": "Aurora-native panel parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/panel.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/panel.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/panel.tsx",
+        "installTarget": "@components/aurora/ai/panel.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/panel.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-image",
+      "type": "registry:block",
+      "title": "Aurora AI Image",
+      "description": "Aurora-native image parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/image.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/image.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/image.tsx",
+        "installTarget": "@components/aurora/ai/image.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/image.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-ai-open-in-chat",
+      "type": "registry:block",
+      "title": "Aurora AI Open In Chat",
+      "description": "Aurora-native open in chat parity surface from AI Elements.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "aurora-tokens",
+        "aurora-ai-elements"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai-elements/open-in-chat.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/open-in-chat.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai-elements/open-in-chat.tsx",
+        "installTarget": "@components/aurora/ai/open-in-chat.tsx"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/open-in-chat.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     }
   ]
 }

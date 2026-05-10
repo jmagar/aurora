@@ -7,7 +7,7 @@ Operator-first design system for [Labby](https://github.com/jmagar/labby) — an
 ## Overview
 
 Aurora is a dark-first, operator-grade design system featuring:
-- **41 components** — 22 UI primitives + 19 composed blocks
+- **128 registry items** — 64 UI primitives + 63 composed blocks + the Aurora token style layer
 - **CSS custom properties** — compatible with both dark and light themes
 - **shadcn registry** — install any component with one command
 - **Manrope + Inter + JetBrains Mono** font stack
@@ -15,9 +15,39 @@ Aurora is a dark-first, operator-grade design system featuring:
 ## Quick install
 
 ```bash
-# Add the Aurora token CSS first
-npx shadcn add https://raw.githubusercontent.com/jmagar/aurora-design-system/main/registry.json aurora-button
+# Install the Aurora token layer first
+npx shadcn@latest add https://raw.githubusercontent.com/jmagar/aurora-design-system/main/public/r/aurora-tokens.json
+
+# Then install any Aurora item
+npx shadcn@latest add https://raw.githubusercontent.com/jmagar/aurora-design-system/main/public/r/aurora-button.json
 ```
+
+## Registry usage
+
+### Namespaced installs
+
+Add Aurora to your project's `components.json`:
+
+```json
+{
+  "registries": {
+    "@aurora": "https://raw.githubusercontent.com/jmagar/aurora-design-system/main/public/r/{name}.json"
+  }
+}
+```
+
+Then install from the namespace:
+
+```bash
+npx shadcn@latest add @aurora/aurora-tokens
+npx shadcn@latest add @aurora/aurora-button
+```
+
+### Branded root URL hosting
+
+When you deploy this Next.js app, the root route is configured for shadcn content negotiation. Browsers still get the docs/gallery, while the shadcn CLI can resolve the root registry from `/` via the `Accept` or `User-Agent` headers.
+
+The generated registry payloads are still available directly under `public/r/*.json`.
 
 ## Setup
 
