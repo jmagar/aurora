@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "aurora_design_system",
+  "project_id": "9af183ae-f760-406a-abef-88b2aabfb612"
+}
