@@ -20,7 +20,7 @@ export interface TimelineItemProps extends Omit<React.LiHTMLAttributes<HTMLLIEle
 
 const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
   ({ className, tone = "queued", title, meta, children, ...props }, ref) => {
-    const safeTone = tone in toneColor ? tone : "queued"
+    const safeTone = Object.hasOwn(toneColor, tone) ? tone : "queued"
     if (tone !== safeTone) {
       devWarn(`[Aurora TimelineItem] Unknown tone "${tone}". Valid values: ${Object.keys(toneColor).join(", ")}. Falling back to "queued".`)
     }

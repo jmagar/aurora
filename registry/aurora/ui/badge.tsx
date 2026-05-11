@@ -65,7 +65,7 @@ function resolveTone(variant: BadgeTone | "default" | undefined): BadgeTone {
     devWarn('[Aurora Badge] variant="default" is deprecated. Use variant="neutral" instead.')
     return "neutral"
   }
-  if (!(variant in badgeToneMap)) {
+  if (!Object.hasOwn(badgeToneMap, variant)) {
     devWarn(
       `[Aurora Badge] Unknown variant "${variant}". Valid values: ${Object.keys(badgeToneMap).join(", ")}. Falling back to "neutral".`
     )

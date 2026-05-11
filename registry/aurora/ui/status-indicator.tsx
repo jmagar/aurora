@@ -27,7 +27,7 @@ export interface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanEleme
 }
 
 function StatusIndicator({ className, tone = "online", label, pulse, style, ...props }: StatusIndicatorProps) {
-  const safeTone = tone in toneColor ? tone : "online"
+  const safeTone = Object.hasOwn(toneColor, tone) ? tone : "online"
   if (tone !== safeTone) {
     devWarn(`[Aurora StatusIndicator] Unknown tone "${tone}". Valid values: ${Object.keys(toneColor).join(", ")}. Falling back to "online".`)
   }
