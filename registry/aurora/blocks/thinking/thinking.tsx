@@ -188,48 +188,43 @@ function ThinkingBlock({
   defaultOpen?: boolean
 }) {
   const [open, setOpen] = React.useState(defaultOpen ?? false)
-  const bodyRef = React.useRef<HTMLDivElement>(null)
-
-  // Height transition
-  const [height, setHeight] = React.useState<string | number>(open ? "auto" : 0)
-  React.useEffect(() => {
-    if (open) {
-      const el = bodyRef.current
-      if (el) {
-        setHeight(el.scrollHeight)
-        const t = setTimeout(() => setHeight("auto"), 250)
-        return () => clearTimeout(t)
-      }
-    } else {
-      setHeight(bodyRef.current?.scrollHeight ?? 0)
-      requestAnimationFrame(() => requestAnimationFrame(() => setHeight(0)))
-    }
-  }, [open])
 
   const borderLeftColor = isStreaming
     ? "var(--aurora-accent-primary)"
     : "var(--aurora-border-strong)"
 
   const showSkeleton = isStreaming && !content
+  const label = isStreaming && !duration
+    ? "Thinking…"
+    : duration !== undefined
+    ? `Thought for ${duration}s`
+    : "Reasoning"
 
   return (
     <div
       style={{
-        borderLeft: `3px solid ${borderLeftColor}`,
+        display: open ? "block" : "inline-block",
+        width: open ? "100%" : "max-content",
+        minWidth: 0,
+        border: open ? `1px solid var(--aurora-border-default)` : `1px solid ${borderLeftColor}`,
+        borderLeft: open ? `3px solid ${borderLeftColor}` : `1px solid ${borderLeftColor}`,
+        borderRadius: open ? "var(--aurora-radius-2)" : "999px",
+        background: open ? "var(--aurora-panel-medium)" : "var(--aurora-panel-strong)",
+        boxShadow: open ? "var(--aurora-highlight-medium)" : "none",
         animation: isStreaming ? "aurora-border-pulse 1.8s ease-in-out infinite" : "none",
-        transition: "border-color 0.3s",
+        transition: "border-color 0.3s, width 0.2s ease",
       }}
     >
-      {/* Summary / toggle button */}
       <Button variant="plain" size="unstyled"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         style={{
-          display: "flex",
+          display: open ? "flex" : "inline-flex",
           alignItems: "center",
           gap: "8px",
-          width: "100%",
-          padding: "8px 14px",
+          width: open ? "100%" : "auto",
+          minWidth: 0,
+          padding: open ? "8px 14px" : "7px 12px",
           background: "none",
           border: "none",
           cursor: "pointer",
@@ -249,51 +244,41 @@ function ThinkingBlock({
         <span
           style={{
             fontSize: "12px",
-            fontWeight: 500,
-            color: "var(--aurora-text-muted)",
+            fontWeight: 600,
+            color: open ? "var(--aurora-text-muted)" : "var(--aurora-text-primary)",
+            whiteSpace: "nowrap",
           }}
         >
-          {isStreaming && !duration
-            ? "Thinking…"
-            : duration !== undefined
-            ? `Thought for ${duration}s`
-            : "Reasoning"}
+          {label}
         </span>
 
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          aria-hidden="true"
-          style={{
-            marginLeft: "auto",
-            color: "var(--aurora-text-muted)",
-            transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.2s",
-          }}
-        >
-          <path
-            d="M2.5 4.5L6 7.5L9.5 4.5"
-            stroke="currentColor"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        {open && (
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            aria-hidden="true"
+            style={{
+              marginLeft: "auto",
+              color: "var(--aurora-text-muted)",
+              transform: "rotate(180deg)",
+              transition: "transform 0.2s",
+            }}
+          >
+            <path
+              d="M2.5 4.5L6 7.5L9.5 4.5"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
       </Button>
 
-      {/* Collapsible body */}
-      <div
-        ref={bodyRef}
-        style={{
-          overflow: "hidden",
-          height: typeof height === "number" ? `${height}px` : height,
-          transition: "height 0.22s ease-out",
-        }}
-        aria-hidden={!open}
-      >
-        {showSkeleton ? (
+      {open && (
+        showSkeleton ? (
           <SkeletonLines />
         ) : (
           <div
@@ -308,8 +293,8 @@ function ThinkingBlock({
             {content}
             {isStreaming && <Cursor />}
           </div>
-        )}
-      </div>
+        )
+      )}
     </div>
   )
 }
@@ -594,30 +579,32 @@ export function Thinking({
   return (
     <>
       <style>{KEYFRAMES}</style>
-      <div
-        style={{
-          background: "var(--aurora-panel-medium)",
-          border: "1px solid var(--aurora-border-default)",
-          borderRadius: "var(--aurora-radius-2)",
-          overflow: "hidden",
-          boxShadow: "var(--aurora-highlight-medium)",
-        }}
-      >
-        {type === "thinking" && (
-          <ThinkingBlock
-            isStreaming={isStreaming}
-            content={content}
-            duration={duration}
-            defaultOpen={defaultOpen}
-          />
-        )}
-        {type === "cot" && (
+      {type === "thinking" && (
+        <ThinkingBlock
+          isStreaming={isStreaming}
+          content={content}
+          duration={duration}
+          defaultOpen={defaultOpen}
+        />
+      )}
+      {type !== "thinking" && (
+        <div
+          style={{
+            background: "var(--aurora-panel-medium)",
+            border: "1px solid var(--aurora-border-default)",
+            borderRadius: "var(--aurora-radius-2)",
+            overflow: "hidden",
+            boxShadow: "var(--aurora-highlight-medium)",
+          }}
+        >
+          {type === "cot" && (
           <CotBlock steps={steps} isStreaming={isStreaming} defaultOpen={defaultOpen} />
-        )}
-        {type === "plan" && (
-          <PlanBlock steps={steps} isStreaming={isStreaming} defaultOpen={defaultOpen} />
-        )}
-      </div>
+          )}
+          {type === "plan" && (
+            <PlanBlock steps={steps} isStreaming={isStreaming} defaultOpen={defaultOpen} />
+          )}
+        </div>
+      )}
     </>
   )
 }

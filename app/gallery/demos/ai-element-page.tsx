@@ -7,7 +7,6 @@ import { Thinking } from "@/registry/aurora/blocks/thinking/thinking"
 import { ToolCalls } from "@/registry/aurora/blocks/tool-calls/tool-calls"
 import { Button } from "@/registry/aurora/ui/button"
 import { Callout } from "@/registry/aurora/ui/callout"
-import { Collapsible } from "@/registry/aurora/ui/collapsible"
 import {
   Agent,
   AudioPlayer,
@@ -159,7 +158,7 @@ function AiExample({ slug }: { slug: string }) {
     case "queue":
       return <Queue tasks={tasks} />
     case "reasoning":
-      return <Collapsible title="Reasoning summary" defaultOpen><p className="aurora-text-body" style={{ margin: 0 }}>Checked registry metadata, verified source paths, then selected the minimal install plan.</p></Collapsible>
+      return <Thinking type="thinking" content="Checked registry metadata, verified source paths, then selected the minimal install plan." />
     case "chain-of-thought":
       return <Thinking type="cot" steps={planSteps} defaultOpen />
     case "shimmer":
@@ -225,6 +224,7 @@ function AiExample({ slug }: { slug: string }) {
 
 export function AiElementPage({ slug }: { slug: string }) {
   const title = AI_TITLES[slug] ?? slug
+  const compactSurface = slug === "reasoning"
 
   return (
     <div className="grid gap-6">
@@ -233,7 +233,25 @@ export function AiElementPage({ slug }: { slug: string }) {
         heading={title}
         description={`Aurora AI Elements page for ${title.toLowerCase()}, using the real registry implementation with compact operator styling.`}
       />
-      <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
+      <section
+        className={compactSurface ? "inline-flex" : "grid gap-4"}
+        style={
+          compactSurface
+            ? {
+                alignSelf: "start",
+                justifySelf: "start",
+                width: "fit-content",
+                maxWidth: "100%",
+              }
+            : {
+                padding: "20px",
+                borderRadius: "var(--aurora-radius-2)",
+                border: "1px solid var(--aurora-border-strong)",
+                background: "var(--aurora-panel-strong)",
+                boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)",
+              }
+        }
+      >
         <AiExample slug={slug} />
       </section>
     </div>

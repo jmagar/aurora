@@ -3,6 +3,7 @@
 import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { usePathname } from "next/navigation"
+import { Thinking } from "@/registry/aurora/blocks/thinking/thinking"
 import { ToolCalls } from "@/registry/aurora/blocks/tool-calls/tool-calls"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/registry/aurora/ui/alert-dialog"
 import { AspectRatio } from "@/registry/aurora/ui/aspect-ratio"
@@ -333,6 +334,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "queue":
       return <Queue tasks={tasks} />
     case "reasoning":
+      return <Thinking type="thinking" content="Checked registry, compared source metadata, then selected the minimal install plan." />
     case "chain-of-thought":
       return <Collapsible title="Reasoning summary" defaultOpen><p className="aurora-text-body" style={{ margin: 0 }}>Checked registry, compared source metadata, then selected the minimal install plan.</p></Collapsible>
     case "shimmer":
