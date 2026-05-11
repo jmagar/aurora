@@ -3,16 +3,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import type { StatusTone } from "./status-indicator"
-
-const toneColor: Record<StatusTone, string> = {
-  online:     "var(--aurora-success)",
-  syncing:    "var(--aurora-info)",
-  queued:     "var(--aurora-neutral)",
-  degraded:   "var(--aurora-warn)",
-  offline:    "var(--aurora-neutral)",
-  error:      "var(--aurora-error)",
-  automating: "var(--aurora-accent-violet)",
-}
+import { toneColor } from "./status-indicator"
 
 export type TimelineProps = React.HTMLAttributes<HTMLOListElement>
 
@@ -34,7 +25,7 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
       <span
         aria-hidden="true"
         className="relative mt-1 size-2.5 rounded-full"
-        style={{ background: toneColor[tone], boxShadow: `0 0 10px ${toneColor[tone]}` }}
+        style={{ background: toneColor[tone].color, boxShadow: toneColor[tone].shadow }}
       />
       <span className="min-w-0">
         <span className="flex flex-wrap items-baseline justify-between gap-2">

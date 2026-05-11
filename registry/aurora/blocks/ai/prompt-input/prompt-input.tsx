@@ -154,6 +154,8 @@ export function PromptInput({
 }: PromptInputProps) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+  const objectUrlsRef = React.useRef<string[]>([])
+  const blurTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const [isFocused, setIsFocused] = React.useState(false)
   const [showModelMenu, setShowModelMenu] = React.useState(false)
@@ -299,16 +301,35 @@ export function PromptInput({
     const files = Array.from(e.target.files ?? [])
     files.forEach((f) => {
       const isImage = f.type.startsWith("image/")
+      let url: string | undefined
+      if (isImage) {
+        url = URL.createObjectURL(f)
+        objectUrlsRef.current.push(url)
+      }
       const att: Attachment = {
         id: `${Date.now()}-${f.name}`,
         name: f.name,
         type: isImage ? "image" : "file",
-        url: isImage ? URL.createObjectURL(f) : undefined,
+        url,
       }
       onAddAttachment?.(att)
     })
     e.target.value = ""
   }
+
+  // Revoke object URLs on unmount to prevent memory leaks
+  React.useEffect(() => {
+    return () => {
+      objectUrlsRef.current.forEach((u) => URL.revokeObjectURL(u))
+    }
+  }, [])
+
+  // Clear blur timer on unmount to prevent setState on unmounted component
+  React.useEffect(() => {
+    return () => {
+      if (blurTimerRef.current) clearTimeout(blurTimerRef.current)
+    }
+  }, [])
 
   const modelLabel = DEFAULT_MODELS.find((m) => m.id === model)?.label ?? model
 
@@ -536,8 +557,8 @@ export function PromptInput({
                   alignItems: "center",
                   gap: "4px",
                   padding: "2px 8px 2px 6px",
-                  background: "color-mix(in srgb, var(--aurora-accent-violet) 12%, transparent)",
-                  border: "1px solid color-mix(in srgb, var(--aurora-accent-violet) 30%, transparent)",
+                  background: "var(--aurora-accent-violet-surface)",
+                  border: "1px solid var(--aurora-accent-violet-border)",
                   borderRadius: "8px",
                   fontSize: "12px",
                   color: "var(--aurora-accent-violet)",
@@ -623,7 +644,13 @@ export function PromptInput({
                 </span>
                 {onRemoveAttachment && (
                   <Button variant="plain" size="unstyled"
-                    onClick={() => onRemoveAttachment(att.id)}
+                    onClick={() => {
+                      if (att.url) {
+                        URL.revokeObjectURL(att.url)
+                        objectUrlsRef.current = objectUrlsRef.current.filter((u) => u !== att.url)
+                      }
+                      onRemoveAttachment(att.id)
+                    }}
                     aria-label={`Remove ${att.name}`}
                     style={{
                       background: "none",
@@ -656,7 +683,8 @@ export function PromptInput({
           onBlur={() => {
             setIsFocused(false)
             // Delay close so click events on popups register first
-            setTimeout(() => {
+            if (blurTimerRef.current) clearTimeout(blurTimerRef.current)
+            blurTimerRef.current = setTimeout(() => {
               setSlashOpen(false)
               setMentionOpen(false)
               setShowModelMenu(false)
@@ -715,7 +743,8 @@ export function PromptInput({
           {/* Slash command trigger */}
           <ToolbarButton
             onClick={() => {
-              onChange(value + "/")
+              const sep = value.length > 0 && !value.endsWith(" ") ? " " : ""
+              onChange(value + sep + "/")
               setSlashQuery("")
               setSlashIndex(0)
               setSlashOpen(true)
@@ -733,7 +762,8 @@ export function PromptInput({
           {/* Mention trigger */}
           <ToolbarButton
             onClick={() => {
-              onChange(value + "@")
+              const sep = value.length > 0 && !value.endsWith(" ") ? " " : ""
+              onChange(value + sep + "@")
               setMentionQuery("")
               setMentionIndex(0)
               setMentionOpen(true)

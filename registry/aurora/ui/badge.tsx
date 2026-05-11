@@ -10,56 +10,63 @@ import { cn } from "@/lib/utils"
 // will render with neutral styling without any prop changes.
 export type BadgeTone = "info" | "success" | "warn" | "error" | "neutral" | "rose" | "violet"
 
-type ToneTokens = { text: string; border: string; bg: string; dot: string }
+type ToneTokens = { text: string; border: string; bg: string; dot: string; dotShadow: string }
 
 const badgeToneMap: Record<BadgeTone, ToneTokens> = {
   info: {
-    text:   "var(--aurora-info-foreground)",
-    border: "var(--aurora-info-border)",
-    bg:     "var(--aurora-info-surface)",
-    dot:    "var(--aurora-info)",
+    text:      "var(--aurora-info-foreground)",
+    border:    "var(--aurora-info-border)",
+    bg:        "var(--aurora-info-surface)",
+    dot:       "var(--aurora-info)",
+    dotShadow: "0 0 4px var(--aurora-info)",
   },
   success: {
-    text:   "var(--aurora-success-foreground)",
-    border: "var(--aurora-success-border)",
-    bg:     "var(--aurora-success-surface)",
-    dot:    "var(--aurora-success)",
+    text:      "var(--aurora-success-foreground)",
+    border:    "var(--aurora-success-border)",
+    bg:        "var(--aurora-success-surface)",
+    dot:       "var(--aurora-success)",
+    dotShadow: "0 0 4px var(--aurora-success)",
   },
   warn: {
-    text:   "var(--aurora-warn-foreground)",
-    border: "var(--aurora-warn-border)",
-    bg:     "var(--aurora-warn-surface)",
-    dot:    "var(--aurora-warn)",
+    text:      "var(--aurora-warn-foreground)",
+    border:    "var(--aurora-warn-border)",
+    bg:        "var(--aurora-warn-surface)",
+    dot:       "var(--aurora-warn)",
+    dotShadow: "0 0 4px var(--aurora-warn)",
   },
   error: {
-    text:   "var(--aurora-error-foreground)",
-    border: "var(--aurora-error-border)",
-    bg:     "var(--aurora-error-surface)",
-    dot:    "var(--aurora-error)",
+    text:      "var(--aurora-error-foreground)",
+    border:    "var(--aurora-error-border)",
+    bg:        "var(--aurora-error-surface)",
+    dot:       "var(--aurora-error)",
+    dotShadow: "0 0 4px var(--aurora-error)",
   },
   neutral: {
-    text:   "var(--aurora-neutral-foreground)",
-    border: "var(--aurora-neutral-border)",
-    bg:     "var(--aurora-neutral-surface)",
-    dot:    "var(--aurora-neutral)",
+    text:      "var(--aurora-neutral-foreground)",
+    border:    "var(--aurora-neutral-border)",
+    bg:        "var(--aurora-neutral-surface)",
+    dot:       "var(--aurora-neutral)",
+    dotShadow: "0 0 4px var(--aurora-neutral)",
   },
   rose: {
-    text:   "var(--aurora-accent-pink-strong)",
-    border: "var(--aurora-accent-pink-border)",
-    bg:     "var(--aurora-accent-pink-surface)",
-    dot:    "var(--aurora-accent-pink)",
+    text:      "var(--aurora-accent-pink-strong)",
+    border:    "var(--aurora-accent-pink-border)",
+    bg:        "var(--aurora-accent-pink-surface)",
+    dot:       "var(--aurora-accent-pink)",
+    dotShadow: "0 0 4px var(--aurora-accent-pink)",
   },
   violet: {
-    text:   "var(--aurora-accent-violet-strong)",
-    border: "var(--aurora-accent-violet-border)",
-    bg:     "var(--aurora-accent-violet-surface)",
-    dot:    "var(--aurora-accent-violet)",
+    text:      "var(--aurora-accent-violet-strong)",
+    border:    "var(--aurora-accent-violet-border)",
+    bg:        "var(--aurora-accent-violet-surface)",
+    dot:       "var(--aurora-accent-violet)",
+    dotShadow: "0 0 4px var(--aurora-accent-violet)",
   },
 }
 
-function resolveTone(variant: string | null | undefined): BadgeTone {
+function resolveTone(variant: BadgeTone | "default" | undefined): BadgeTone {
   if (!variant || variant === "default") return "neutral"
-  return (variant as BadgeTone) in badgeToneMap ? (variant as BadgeTone) : "neutral"
+  return variant
 }
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -71,7 +78,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className, variant, dot = false, style, children, ...props }, ref) => {
     const tone = resolveTone(variant)
-    const { text, border, bg, dot: dotColor } = badgeToneMap[tone]
+    const { text, border, bg, dot: dotColor, dotShadow } = badgeToneMap[tone]
 
     return (
       <span
@@ -103,7 +110,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
               borderRadius: "50%",
               backgroundColor: dotColor,
               flexShrink: 0,
-              boxShadow: `0 0 4px ${dotColor}`,
+              boxShadow: dotShadow,
             }}
           />
         )}

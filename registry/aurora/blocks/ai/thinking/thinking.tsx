@@ -334,8 +334,8 @@ function CotBlock({
         }}
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <rect x="2" y="2" width="10" height="10" rx="2" stroke="var(--aurora-accent-primary)" strokeWidth="1.3" />
-          <path d="M4.5 5H9.5M4.5 7H7.5M4.5 9H8.5" stroke="var(--aurora-accent-primary)" strokeWidth="1.1" strokeLinecap="round" />
+          <rect x="2" y="2" width="10" height="10" rx="2" stroke={AI_ACCENT} strokeWidth="1.3" />
+          <path d="M4.5 5H9.5M4.5 7H7.5M4.5 9H8.5" stroke={AI_ACCENT} strokeWidth="1.1" strokeLinecap="round" />
         </svg>
         <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
           Chain of Thought
@@ -475,7 +475,7 @@ function PlanBlock({
         }}
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M2 3H12M2 7H9M2 11H11" stroke="var(--aurora-accent-primary)" strokeWidth="1.3" strokeLinecap="round" />
+          <path d="M2 3H12M2 7H9M2 11H11" stroke={AI_ACCENT} strokeWidth="1.3" strokeLinecap="round" />
         </svg>
         <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
           Plan
@@ -524,7 +524,7 @@ function PlanBlock({
                 borderRadius: "10px",
                 background:
                   step.status === "inprog"
-                    ? "color-mix(in srgb, var(--aurora-accent-primary) 6%, transparent)"
+                    ? `color-mix(in srgb, ${AI_ACCENT} 6%, transparent)`
                     : step.status === "error"
                     ? "color-mix(in srgb, var(--aurora-error) 6%, transparent)"
                     : "transparent",
@@ -580,7 +580,7 @@ export function Thinking({
 }: ThinkingProps) {
   return (
     <>
-      <style>{KEYFRAMES}</style>
+      <style href="aurora-thinking-keyframes" precedence="default">{KEYFRAMES}</style>
       {type === "thinking" && (
         <ThinkingBlock
           isStreaming={isStreaming}
