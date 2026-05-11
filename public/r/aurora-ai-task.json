@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/task.tsx",
+      "path": "registry/aurora/blocks/ai/elements/task.tsx",
       "content": "\"use client\"\n\nexport { TaskList as Task } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/task.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/task.tsx",
-    "installTarget": "@components/aurora/ai/task.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/task.tsx",
+    "installTarget": "@components/aurora/ai/task.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/task.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

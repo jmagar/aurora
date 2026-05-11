@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/suggestion.tsx",
+      "path": "registry/aurora/blocks/ai/elements/suggestion.tsx",
       "content": "\"use client\"\n\nexport { Suggestion } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/suggestion.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/suggestion.tsx",
-    "installTarget": "@components/aurora/ai/suggestion.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/suggestion.tsx",
+    "installTarget": "@components/aurora/ai/suggestion.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/suggestion.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

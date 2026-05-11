@@ -15,8 +15,8 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/tool.tsx",
-      "content": "\"use client\"\n\nexport { ToolCalls as Tool } from \"@/registry/aurora/blocks/tool-calls/tool-calls\"\n",
+      "path": "registry/aurora/blocks/ai/elements/tool.tsx",
+      "content": "\"use client\"\n\nexport { ToolCalls as Tool } from \"@/registry/aurora/blocks/ai/tool-calls/tool-calls\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/tool.tsx"
     }
@@ -26,8 +26,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/tool.tsx",
-    "installTarget": "@components/aurora/ai/tool.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/tool.tsx",
+    "installTarget": "@components/aurora/ai/tool.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/tool.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-tool-calls`.",
   "categories": [

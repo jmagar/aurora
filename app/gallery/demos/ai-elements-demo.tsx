@@ -12,7 +12,7 @@ import {
   StackTrace,
   TaskList,
   TestResults,
-} from "@/registry/aurora/blocks/ai-elements/ai-elements"
+} from "@/registry/aurora/blocks/ai/elements/ai-elements"
 
 const panel: React.CSSProperties = {
   background: "var(--aurora-panel-medium)",

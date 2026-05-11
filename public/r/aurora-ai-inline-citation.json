@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/inline-citation.tsx",
+      "path": "registry/aurora/blocks/ai/elements/inline-citation.tsx",
       "content": "\"use client\"\n\nexport { InlineCitation } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/inline-citation.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/inline-citation.tsx",
-    "installTarget": "@components/aurora/ai/inline-citation.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/inline-citation.tsx",
+    "installTarget": "@components/aurora/ai/inline-citation.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/inline-citation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

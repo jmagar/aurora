@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { CodeBlock } from "@/registry/aurora/blocks/code-block/code-block"
+import { CodeBlock } from "@/registry/aurora/blocks/workspace/code-block/code-block"
 
 const RUST_CODE = `use std::sync::Arc;
 use tokio::sync::RwLock;

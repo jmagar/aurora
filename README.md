@@ -6,11 +6,18 @@ Operator-first design system for [Labby](https://github.com/jmagar/labby) — an
 
 ## Overview
 
-Aurora is a dark-first, operator-grade design system featuring:
+Aurora is a shadcn-compatible registry for agent products and operator-grade application workflows.
+
+It is a dark-first, operator-grade design system featuring:
 - **128 registry items** — 64 UI primitives + 63 composed blocks + the Aurora token style layer
 - **CSS custom properties** — compatible with both dark and light themes
 - **shadcn registry** — install any component with one command
 - **Manrope + Inter + JetBrains Mono** font stack
+
+Registry source is organized by responsibility:
+- `registry/aurora/styles/` contains the Aurora token and theme contract.
+- `registry/aurora/ui/` contains stable UI primitives.
+- `registry/aurora/blocks/` contains domain-oriented product blocks for AI, workspace, files, auth, navigation, and feedback workflows.
 
 ## Quick install
 
@@ -59,7 +66,7 @@ The generated registry payloads are still available directly under `public/r/*.j
 
 1. Add to `app/globals.css`:
 ```css
-@import "../registry/aurora/aurora.css";
+@import "../registry/aurora/styles/aurora.css";
 ```
 
 2. Add to `app/layout.tsx`:
@@ -97,29 +104,29 @@ import { Manrope, Inter, JetBrains_Mono } from "next/font/google"
 | DataTable | `@/registry/aurora/ui/data-table` |
 | FilterBar | `@/registry/aurora/ui/filter-bar` |
 
-### Composed Blocks (`registry/aurora/blocks/`)
+### Product Blocks (`registry/aurora/blocks/`)
 | Block | Import |
 |---|---|
-| PromptInput | `@/registry/aurora/blocks/prompt-input/prompt-input` |
-| Terminal | `@/registry/aurora/blocks/terminal/terminal` |
-| Thinking | `@/registry/aurora/blocks/thinking/thinking` |
-| ToolCalls | `@/registry/aurora/blocks/tool-calls/tool-calls` |
-| CodeBlock | `@/registry/aurora/blocks/code-block/code-block` |
-| Artifact | `@/registry/aurora/blocks/artifact/artifact` |
-| Sidebar | `@/registry/aurora/blocks/sidebar/sidebar` |
-| CommandPalette | `@/registry/aurora/blocks/command-palette/command-palette` |
-| PermissionPrompt | `@/registry/aurora/blocks/permission-prompt/permission-prompt` |
-| AskUserQuestion | `@/registry/aurora/blocks/ask-user-question/ask-user-question` |
-| PermissionsDropdown | `@/registry/aurora/blocks/permissions-dropdown/permissions-dropdown` |
-| Attachment | `@/registry/aurora/blocks/attachment/attachment` |
-| FilePicker | `@/registry/aurora/blocks/file-picker/file-picker` |
-| FileTree | `@/registry/aurora/blocks/file-tree/file-tree` |
-| CodeEditor | `@/registry/aurora/blocks/code-editor/code-editor` |
-| WebPreview | `@/registry/aurora/blocks/web-preview/web-preview` |
-| ShareDialog | `@/registry/aurora/blocks/share-dialog/share-dialog` |
-| Login | `@/registry/aurora/blocks/login/login` |
-| OAuth | `@/registry/aurora/blocks/oauth/oauth` |
-| ErrorPage | `@/registry/aurora/blocks/error-page/error-page` |
+| PromptInput | `@/registry/aurora/blocks/ai/prompt-input/prompt-input` |
+| Terminal | `@/registry/aurora/blocks/navigation/terminal/terminal` |
+| Thinking | `@/registry/aurora/blocks/ai/thinking/thinking` |
+| ToolCalls | `@/registry/aurora/blocks/ai/tool-calls/tool-calls` |
+| CodeBlock | `@/registry/aurora/blocks/workspace/code-block/code-block` |
+| Artifact | `@/registry/aurora/blocks/ai/artifact/artifact` |
+| Sidebar | `@/registry/aurora/blocks/workspace/sidebar/sidebar` |
+| CommandPalette | `@/registry/aurora/blocks/workspace/command-palette/command-palette` |
+| PermissionPrompt | `@/registry/aurora/blocks/auth/permission-prompt/permission-prompt` |
+| AskUserQuestion | `@/registry/aurora/blocks/ai/ask-user-question/ask-user-question` |
+| PermissionsDropdown | `@/registry/aurora/blocks/auth/permissions-dropdown/permissions-dropdown` |
+| Attachment | `@/registry/aurora/blocks/files/attachment/attachment` |
+| FilePicker | `@/registry/aurora/blocks/files/file-picker/file-picker` |
+| FileTree | `@/registry/aurora/blocks/files/file-tree/file-tree` |
+| CodeEditor | `@/registry/aurora/blocks/files/code-editor/code-editor` |
+| WebPreview | `@/registry/aurora/blocks/workspace/web-preview/web-preview` |
+| ShareDialog | `@/registry/aurora/blocks/workspace/share-dialog/share-dialog` |
+| Login | `@/registry/aurora/blocks/auth/login/login` |
+| OAuth | `@/registry/aurora/blocks/auth/oauth/oauth` |
+| ErrorPage | `@/registry/aurora/blocks/feedback/error-page/error-page` |
 
 ## Theming
 
@@ -150,7 +157,7 @@ pnpm lint
 
 ## Contributing
 
-1. Components live in `registry/aurora/ui/` (primitives) or `registry/aurora/blocks/<name>/` (composed)
+1. Components live in `registry/aurora/ui/` for primitives or `registry/aurora/blocks/<domain>/<name>/` for product blocks
 2. Add a demo at `app/gallery/demos/<name>-demo.tsx`
 3. Register in `app/gallery/[section]/page.tsx`
 4. Update `registry.json` with the new entry

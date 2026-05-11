@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Marketplace } from "@/registry/aurora/blocks/marketplace/marketplace"
+import { Marketplace } from "@/registry/aurora/blocks/workspace/marketplace/marketplace"
 
 export default function MarketplaceDemo() {
   return (

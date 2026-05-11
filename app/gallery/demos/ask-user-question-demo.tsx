@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { Button } from "@/registry/aurora/ui/button"
-import { AskUserQuestion } from "@/registry/aurora/blocks/ask-user-question/ask-user-question"
+import { AskUserQuestion } from "@/registry/aurora/blocks/ai/ask-user-question/ask-user-question"
 
 const MODEL_OPTIONS = [
   { id: "claude-opus-4-5", label: "Claude Opus 4.5", description: "Higher reasoning depth for complex planning." },

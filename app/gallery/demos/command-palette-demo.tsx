@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
-import { CommandPalette, useCommandPalette } from "@/registry/aurora/blocks/command-palette/command-palette"
-import type { CommandItem } from "@/registry/aurora/blocks/command-palette/command-palette"
+import { CommandPalette, useCommandPalette } from "@/registry/aurora/blocks/workspace/command-palette/command-palette"
+import type { CommandItem } from "@/registry/aurora/blocks/workspace/command-palette/command-palette"
 
 function ClockIcon() {
   return <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2" /><path d="M7 4V7L9 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" /></svg>

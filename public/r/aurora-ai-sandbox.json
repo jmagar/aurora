@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/sandbox.tsx",
+      "path": "registry/aurora/blocks/ai/elements/sandbox.tsx",
       "content": "\"use client\"\n\nexport { Sandbox } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/sandbox.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/sandbox.tsx",
-    "installTarget": "@components/aurora/ai/sandbox.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/sandbox.tsx",
+    "installTarget": "@components/aurora/ai/sandbox.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/sandbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

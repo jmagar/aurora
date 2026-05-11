@@ -6,7 +6,7 @@ import {
   ShareDialog,
   Collaborator,
   ExportFormat,
-} from "@/registry/aurora/blocks/share-dialog/share-dialog"
+} from "@/registry/aurora/blocks/workspace/share-dialog/share-dialog"
 
 const INITIAL_COLLABORATORS: Collaborator[] = [
   { id: "u1", name: "Josh Magar",  email: "jmagar@gmail.com",   role: "admin" },

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button";
-import { WebPreview, WebPreviewVariant } from "@/registry/aurora/blocks/web-preview/web-preview"
+import { WebPreview, WebPreviewVariant } from "@/registry/aurora/blocks/workspace/web-preview/web-preview"
 
 const VARIANTS: { id: WebPreviewVariant; label: string; description: string }[] = [
   { id: "browser",     label: "Browser chrome", description: "Full browser chrome with URL bar" },

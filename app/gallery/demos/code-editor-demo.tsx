@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button";
-import { CodeEditor, DiffLine, Diagnostic } from "@/registry/aurora/blocks/code-editor/code-editor"
+import { CodeEditor, DiffLine, Diagnostic } from "@/registry/aurora/blocks/files/code-editor/code-editor"
 
 const RUST_CODE = `use axum::{
     routing::{get, post},

@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/open-in-chat.tsx",
+      "path": "registry/aurora/blocks/ai/elements/open-in-chat.tsx",
       "content": "\"use client\"\n\nexport { OpenInChat } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/open-in-chat.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/open-in-chat.tsx",
-    "installTarget": "@components/aurora/ai/open-in-chat.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/open-in-chat.tsx",
+    "installTarget": "@components/aurora/ai/open-in-chat.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/open-in-chat.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

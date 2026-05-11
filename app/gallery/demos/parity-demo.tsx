@@ -3,8 +3,8 @@
 import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { usePathname } from "next/navigation"
-import { Thinking } from "@/registry/aurora/blocks/thinking/thinking"
-import { ToolCalls } from "@/registry/aurora/blocks/tool-calls/tool-calls"
+import { Thinking } from "@/registry/aurora/blocks/ai/thinking/thinking"
+import { ToolCalls } from "@/registry/aurora/blocks/ai/tool-calls/tool-calls"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/registry/aurora/ui/alert-dialog"
 import { AspectRatio } from "@/registry/aurora/ui/aspect-ratio"
 import { Badge } from "@/registry/aurora/ui/badge"
@@ -66,7 +66,7 @@ import {
   TestResults,
   Transcription,
   VoiceSelector,
-} from "@/registry/aurora/blocks/ai-elements/ai-elements"
+} from "@/registry/aurora/blocks/ai/elements/ai-elements"
 import { Callout } from "@/registry/aurora/ui/callout"
 import { Combobox } from "@/registry/aurora/ui/combobox"
 import { DescriptionItem, DescriptionList } from "@/registry/aurora/ui/description-list"

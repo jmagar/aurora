@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/test-results.tsx",
+      "path": "registry/aurora/blocks/ai/elements/test-results.tsx",
       "content": "\"use client\"\n\nexport { TestResults } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/test-results.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/test-results.tsx",
-    "installTarget": "@components/aurora/ai/test-results.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/test-results.tsx",
+    "installTarget": "@components/aurora/ai/test-results.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/test-results.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

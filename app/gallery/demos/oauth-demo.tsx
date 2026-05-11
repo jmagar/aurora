@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button";
-import { OAuth, OAuthApp, OAuthScope, OAuthToken, OAuthMode } from "@/registry/aurora/blocks/oauth/oauth"
+import { OAuth, OAuthApp, OAuthScope, OAuthToken, OAuthMode } from "@/registry/aurora/blocks/auth/oauth/oauth"
 
 const APP: OAuthApp = {
   name: "Labby CLI",

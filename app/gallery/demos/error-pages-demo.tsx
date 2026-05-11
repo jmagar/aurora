@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button";
-import { ErrorPage } from "@/registry/aurora/blocks/error-page/error-page"
+import { ErrorPage } from "@/registry/aurora/blocks/feedback/error-page/error-page"
 
 type ErrorCode = 404 | 403 | 500
 

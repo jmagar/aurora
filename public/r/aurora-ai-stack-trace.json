@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/stack-trace.tsx",
+      "path": "registry/aurora/blocks/ai/elements/stack-trace.tsx",
       "content": "\"use client\"\n\nexport { StackTrace } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/stack-trace.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/stack-trace.tsx",
-    "installTarget": "@components/aurora/ai/stack-trace.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/stack-trace.tsx",
+    "installTarget": "@components/aurora/ai/stack-trace.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/stack-trace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Thinking } from "@/registry/aurora/blocks/thinking/thinking"
+import { Thinking } from "@/registry/aurora/blocks/ai/thinking/thinking"
 
 export default function ThinkingDemo() {
   return (

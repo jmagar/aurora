@@ -2,7 +2,7 @@
 
 import { Button } from "@/registry/aurora/ui/button";
 import React, { useState, useRef } from "react"
-import { Terminal, TerminalLine } from "@/registry/aurora/blocks/terminal/terminal"
+import { Terminal, TerminalLine } from "@/registry/aurora/blocks/navigation/terminal/terminal"
 
 const INITIAL_LINES: TerminalLine[] = [
   { text: "aurora deploy --env production-edge --region us-east-1", type: "command" },

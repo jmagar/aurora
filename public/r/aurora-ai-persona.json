@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/persona.tsx",
+      "path": "registry/aurora/blocks/ai/elements/persona.tsx",
       "content": "\"use client\"\n\nexport { Persona } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/persona.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/persona.tsx",
-    "installTarget": "@components/aurora/ai/persona.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/persona.tsx",
+    "installTarget": "@components/aurora/ai/persona.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/persona.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

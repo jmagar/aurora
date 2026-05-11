@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/environment-variables.tsx",
+      "path": "registry/aurora/blocks/ai/elements/environment-variables.tsx",
       "content": "\"use client\"\n\nexport { EnvironmentVariables } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/environment-variables.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/environment-variables.tsx",
-    "installTarget": "@components/aurora/ai/environment-variables.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/environment-variables.tsx",
+    "installTarget": "@components/aurora/ai/environment-variables.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/environment-variables.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

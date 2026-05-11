@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import { Button } from "@/registry/aurora/ui/button"
-import { PermissionPrompt } from "@/registry/aurora/blocks/permission-prompt/permission-prompt"
+import { PermissionPrompt } from "@/registry/aurora/blocks/auth/permission-prompt/permission-prompt"
 
 export default function PermissionPromptDemo() {
   const [dismissed, setDismissed] = useState<Record<string, boolean>>({})

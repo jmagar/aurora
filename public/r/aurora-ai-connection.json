@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/connection.tsx",
+      "path": "registry/aurora/blocks/ai/elements/connection.tsx",
       "content": "\"use client\"\n\nexport { Connection } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/connection.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/connection.tsx",
-    "installTarget": "@components/aurora/ai/connection.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/connection.tsx",
+    "installTarget": "@components/aurora/ai/connection.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/connection.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

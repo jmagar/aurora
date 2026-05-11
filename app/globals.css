@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../registry/aurora/aurora.css";
+@import "../registry/aurora/styles/aurora.css";
 
 @custom-variant dark (&:is(.dark *));
 

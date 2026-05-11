@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button";
-import { Login, LoginMode } from "@/registry/aurora/blocks/login/login"
+import { Login, LoginMode } from "@/registry/aurora/blocks/auth/login/login"
 
 const MODES: { id: LoginMode; label: string }[] = [
   { id: "password",        label: "Password" },

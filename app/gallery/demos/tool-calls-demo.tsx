@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { ToolCalls, ToolCall } from "@/registry/aurora/blocks/tool-calls/tool-calls"
+import { ToolCalls, ToolCall } from "@/registry/aurora/blocks/ai/tool-calls/tool-calls"
 
 const now = new Date()
 const ms = (n: number) => new Date(now.getTime() - n)

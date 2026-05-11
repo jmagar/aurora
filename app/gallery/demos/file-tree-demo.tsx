@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { FileTree, FileChip, TreeNode, ContextAction } from "@/registry/aurora/blocks/file-tree/file-tree"
+import { FileTree, FileChip, TreeNode, ContextAction } from "@/registry/aurora/blocks/files/file-tree/file-tree"
 
 const TREE: TreeNode[] = [
   {

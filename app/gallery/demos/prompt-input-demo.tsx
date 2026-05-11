@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { PromptInput, Attachment } from "@/registry/aurora/blocks/prompt-input/prompt-input"
+import { PromptInput, Attachment } from "@/registry/aurora/blocks/ai/prompt-input/prompt-input"
 
 export default function PromptInputDemo() {
   const [value, setValue] = useState("")

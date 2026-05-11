@@ -18,9 +18,9 @@ const allowNativeSelect = new Set(["registry/aurora/ui/native-select.tsx"])
 const allowNativeButton = new Set(["registry/aurora/ui/button.tsx"])
 
 const allowedHiddenFileInputFiles = new Set([
-  "registry/aurora/blocks/attachment/attachment.tsx",
-  "registry/aurora/blocks/file-picker/file-picker.tsx",
-  "registry/aurora/blocks/prompt-input/prompt-input.tsx",
+  "registry/aurora/blocks/files/attachment/attachment.tsx",
+  "registry/aurora/blocks/files/file-picker/file-picker.tsx",
+  "registry/aurora/blocks/ai/prompt-input/prompt-input.tsx",
 ])
 
 function walk(dir) {

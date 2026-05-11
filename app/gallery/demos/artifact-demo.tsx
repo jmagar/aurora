@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Artifact } from "@/registry/aurora/blocks/artifact/artifact"
+import { Artifact } from "@/registry/aurora/blocks/ai/artifact/artifact"
 
 const TOML_CONTENT = `[gateway]
 name = "aurora-production-edge"

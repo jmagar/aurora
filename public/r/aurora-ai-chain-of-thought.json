@@ -15,8 +15,8 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/chain-of-thought.tsx",
-      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Thinking, type ThinkingProps } from \"@/registry/aurora/blocks/thinking/thinking\"\n\nexport function ChainOfThought(props: Omit<ThinkingProps, \"type\">) {\n  return <Thinking type=\"cot\" {...props} />\n}\n",
+      "path": "registry/aurora/blocks/ai/elements/chain-of-thought.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Thinking, type ThinkingProps } from \"@/registry/aurora/blocks/ai/thinking/thinking\"\n\nexport function ChainOfThought(props: Omit<ThinkingProps, \"type\">) {\n  return <Thinking type=\"cot\" {...props} />\n}\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/chain-of-thought.tsx"
     }
@@ -26,8 +26,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/chain-of-thought.tsx",
-    "installTarget": "@components/aurora/ai/chain-of-thought.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/chain-of-thought.tsx",
+    "installTarget": "@components/aurora/ai/chain-of-thought.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/chain-of-thought.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`.",
   "categories": [

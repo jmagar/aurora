@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react"
 import { Button } from "@/registry/aurora/ui/button"
-import { AttachmentChip, AttachmentGrid, AttachmentDocCard, AttachmentAudioChip, AttachmentUploadProgress, AttachmentDragZone } from "@/registry/aurora/blocks/attachment/attachment"
-import type { AttachmentGridItem } from "@/registry/aurora/blocks/attachment/attachment"
+import { AttachmentChip, AttachmentGrid, AttachmentDocCard, AttachmentAudioChip, AttachmentUploadProgress, AttachmentDragZone } from "@/registry/aurora/blocks/files/attachment/attachment"
+import type { AttachmentGridItem } from "@/registry/aurora/blocks/files/attachment/attachment"
 
 const GRID_ITEMS: AttachmentGridItem[] = [
   { id: "img1", name: "hero-banner.png", size: 248000, url: "https://picsum.photos/seed/a1/300/300", mediaType: "image" },

@@ -7,7 +7,7 @@ import {
   PermissionChip,
   ToolPermission,
   ToolPermissionState,
-} from "@/registry/aurora/blocks/permissions-dropdown/permissions-dropdown"
+} from "@/registry/aurora/blocks/auth/permissions-dropdown/permissions-dropdown"
 
 const INITIAL_TOOLS: ToolPermission[] = [
   { id: "list_routes",    name: "list_routes",    description: "Enumerate all configured gateway routes", state: "allow" },

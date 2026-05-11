@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button";
-import { FilePicker, FileItem } from "@/registry/aurora/blocks/file-picker/file-picker"
+import { FilePicker, FileItem } from "@/registry/aurora/blocks/files/file-picker/file-picker"
 
 const MOCK_FILES: FileItem[] = [
   {

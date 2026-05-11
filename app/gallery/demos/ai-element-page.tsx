@@ -2,9 +2,9 @@
 
 import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
-import { AttachmentChip } from "@/registry/aurora/blocks/attachment/attachment"
-import { Thinking } from "@/registry/aurora/blocks/thinking/thinking"
-import { ToolCalls } from "@/registry/aurora/blocks/tool-calls/tool-calls"
+import { AttachmentChip } from "@/registry/aurora/blocks/files/attachment/attachment"
+import { Thinking } from "@/registry/aurora/blocks/ai/thinking/thinking"
+import { ToolCalls } from "@/registry/aurora/blocks/ai/tool-calls/tool-calls"
 import { Button } from "@/registry/aurora/ui/button"
 import { Callout } from "@/registry/aurora/ui/callout"
 import {
@@ -47,7 +47,7 @@ import {
   TestResults,
   Transcription,
   VoiceSelector,
-} from "@/registry/aurora/blocks/ai-elements/ai-elements"
+} from "@/registry/aurora/blocks/ai/elements/ai-elements"
 
 const AI_TITLES: Record<string, string> = {
   attachments: "Attachments",

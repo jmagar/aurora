@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/context.tsx",
+      "path": "registry/aurora/blocks/ai/elements/context.tsx",
       "content": "\"use client\"\n\nexport { Context, ContextPanel } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/context.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/context.tsx",
-    "installTarget": "@components/aurora/ai/context.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/context.tsx",
+    "installTarget": "@components/aurora/ai/context.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/context.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

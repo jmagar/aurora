@@ -15,8 +15,8 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/attachments.tsx",
-      "content": "\"use client\"\n\nexport { AttachmentChip as Attachments } from \"@/registry/aurora/blocks/attachment/attachment\"\n",
+      "path": "registry/aurora/blocks/ai/elements/attachments.tsx",
+      "content": "\"use client\"\n\nexport { AttachmentChip as Attachments } from \"@/registry/aurora/blocks/files/attachment/attachment\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/attachments.tsx"
     }
@@ -26,8 +26,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/attachments.tsx",
-    "installTarget": "@components/aurora/ai/attachments.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/attachments.tsx",
+    "installTarget": "@components/aurora/ai/attachments.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/attachments.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-attachment`.",
   "categories": [

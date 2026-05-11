@@ -2,7 +2,7 @@
 
 import { Button } from "@/registry/aurora/ui/button";
 import React, { useState } from "react"
-import { Sidebar, Project } from "@/registry/aurora/blocks/sidebar/sidebar"
+import { Sidebar, Project } from "@/registry/aurora/blocks/workspace/sidebar/sidebar"
 
 const PROJECTS: Project[] = [
   {

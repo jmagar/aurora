@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/confirmation.tsx",
+      "path": "registry/aurora/blocks/ai/elements/confirmation.tsx",
       "content": "\"use client\"\n\nexport { Confirmation } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/confirmation.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/confirmation.tsx",
-    "installTarget": "@components/aurora/ai/confirmation.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/confirmation.tsx",
+    "installTarget": "@components/aurora/ai/confirmation.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/confirmation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

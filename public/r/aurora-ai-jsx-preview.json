@@ -14,7 +14,7 @@
   ],
   "files": [
     {
-      "path": "registry/aurora/blocks/ai-elements/jsx-preview.tsx",
+      "path": "registry/aurora/blocks/ai/elements/jsx-preview.tsx",
       "content": "\"use client\"\n\nexport { JsxPreview } from \"./core\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/jsx-preview.tsx"
@@ -25,8 +25,9 @@
     "style": "aurora",
     "family": "block",
     "requiresTokens": true,
-    "sourcePath": "registry/aurora/blocks/ai-elements/jsx-preview.tsx",
-    "installTarget": "@components/aurora/ai/jsx-preview.tsx"
+    "sourcePath": "registry/aurora/blocks/ai/elements/jsx-preview.tsx",
+    "installTarget": "@components/aurora/ai/jsx-preview.tsx",
+    "taxonomy": "ai"
   },
   "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/jsx-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
   "categories": [

@@ -10,7 +10,7 @@
       "description": "Aurora CSS custom property token definitions for the full Aurora color, typography, shadow, and radius system.",
       "files": [
         {
-          "path": "registry/aurora/aurora.css",
+          "path": "registry/aurora/styles/aurora.css",
           "type": "registry:style"
         }
       ],
@@ -26,7 +26,7 @@
         "style": "aurora",
         "family": "style",
         "requiresTokens": false,
-        "sourcePath": "registry/aurora/aurora.css"
+        "sourcePath": "registry/aurora/styles/aurora.css"
       },
       "docs": "Install this first.\n\nIt provides the Aurora token layer, shadcn token bridge, and base theme helpers used by the rest of the registry.\n\nImport the generated stylesheet once at your app root before installing Aurora UI or block items.",
       "cssVars": {
@@ -998,7 +998,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/prompt-input/prompt-input.tsx",
+          "path": "registry/aurora/blocks/ai/prompt-input/prompt-input.tsx",
           "type": "registry:component",
           "target": "@components/aurora/prompt-input.tsx"
         }
@@ -1014,8 +1014,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/prompt-input/prompt-input.tsx",
-        "installTarget": "@components/aurora/prompt-input.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/prompt-input/prompt-input.tsx",
+        "installTarget": "@components/aurora/prompt-input.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/prompt-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
     },
@@ -1032,7 +1033,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/tool-calls/tool-calls.tsx",
+          "path": "registry/aurora/blocks/ai/tool-calls/tool-calls.tsx",
           "type": "registry:component",
           "target": "@components/aurora/tool-calls.tsx"
         }
@@ -1048,8 +1049,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/tool-calls/tool-calls.tsx",
-        "installTarget": "@components/aurora/tool-calls.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/tool-calls/tool-calls.tsx",
+        "installTarget": "@components/aurora/tool-calls.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/tool-calls.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
     },
@@ -1065,7 +1067,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/thinking/thinking.tsx",
+          "path": "registry/aurora/blocks/ai/thinking/thinking.tsx",
           "type": "registry:component",
           "target": "@components/aurora/thinking.tsx"
         }
@@ -1081,8 +1083,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/thinking/thinking.tsx",
-        "installTarget": "@components/aurora/thinking.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/thinking/thinking.tsx",
+        "installTarget": "@components/aurora/thinking.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/thinking.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1099,7 +1102,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/code-block/code-block.tsx",
+          "path": "registry/aurora/blocks/workspace/code-block/code-block.tsx",
           "type": "registry:component",
           "target": "@components/aurora/code-block.tsx"
         }
@@ -1115,8 +1118,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/code-block/code-block.tsx",
-        "installTarget": "@components/aurora/code-block.tsx"
+        "sourcePath": "registry/aurora/blocks/workspace/code-block/code-block.tsx",
+        "installTarget": "@components/aurora/code-block.tsx",
+        "taxonomy": "workspace"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-block.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
     },
@@ -1132,7 +1136,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/terminal/terminal.tsx",
+          "path": "registry/aurora/blocks/navigation/terminal/terminal.tsx",
           "type": "registry:component",
           "target": "@components/aurora/terminal.tsx"
         }
@@ -1148,8 +1152,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/terminal/terminal.tsx",
-        "installTarget": "@components/aurora/terminal.tsx"
+        "sourcePath": "registry/aurora/blocks/navigation/terminal/terminal.tsx",
+        "installTarget": "@components/aurora/terminal.tsx",
+        "taxonomy": "navigation"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/terminal.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1167,7 +1172,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/sidebar/sidebar.tsx",
+          "path": "registry/aurora/blocks/workspace/sidebar/sidebar.tsx",
           "type": "registry:component",
           "target": "@components/aurora/sidebar.tsx"
         }
@@ -1183,8 +1188,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/sidebar/sidebar.tsx",
-        "installTarget": "@components/aurora/sidebar.tsx"
+        "sourcePath": "registry/aurora/blocks/workspace/sidebar/sidebar.tsx",
+        "installTarget": "@components/aurora/sidebar.tsx",
+        "taxonomy": "workspace"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/sidebar.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-button`, `aurora-input`."
     },
@@ -1236,7 +1242,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/artifact/artifact.tsx",
+          "path": "registry/aurora/blocks/ai/artifact/artifact.tsx",
           "type": "registry:component",
           "target": "@components/aurora/artifact.tsx"
         }
@@ -1252,8 +1258,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/artifact/artifact.tsx",
-        "installTarget": "@components/aurora/artifact.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/artifact/artifact.tsx",
+        "installTarget": "@components/aurora/artifact.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/artifact.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1269,7 +1276,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/permission-prompt/permission-prompt.tsx",
+          "path": "registry/aurora/blocks/auth/permission-prompt/permission-prompt.tsx",
           "type": "registry:component",
           "target": "@components/aurora/permission-prompt.tsx"
         }
@@ -1285,8 +1292,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/permission-prompt/permission-prompt.tsx",
-        "installTarget": "@components/aurora/permission-prompt.tsx"
+        "sourcePath": "registry/aurora/blocks/auth/permission-prompt/permission-prompt.tsx",
+        "installTarget": "@components/aurora/permission-prompt.tsx",
+        "taxonomy": "auth"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/permission-prompt.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1303,7 +1311,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ask-user-question/ask-user-question.tsx",
+          "path": "registry/aurora/blocks/ai/ask-user-question/ask-user-question.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ask-user-question.tsx"
         }
@@ -1319,8 +1327,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ask-user-question/ask-user-question.tsx",
-        "installTarget": "@components/aurora/ask-user-question.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/ask-user-question/ask-user-question.tsx",
+        "installTarget": "@components/aurora/ask-user-question.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ask-user-question.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
     },
@@ -1336,7 +1345,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/permissions-dropdown/permissions-dropdown.tsx",
+          "path": "registry/aurora/blocks/auth/permissions-dropdown/permissions-dropdown.tsx",
           "type": "registry:component",
           "target": "@components/aurora/permissions-dropdown.tsx"
         }
@@ -1352,8 +1361,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/permissions-dropdown/permissions-dropdown.tsx",
-        "installTarget": "@components/aurora/permissions-dropdown.tsx"
+        "sourcePath": "registry/aurora/blocks/auth/permissions-dropdown/permissions-dropdown.tsx",
+        "installTarget": "@components/aurora/permissions-dropdown.tsx",
+        "taxonomy": "auth"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/permissions-dropdown.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1371,7 +1381,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/file-tree/file-tree.tsx",
+          "path": "registry/aurora/blocks/files/file-tree/file-tree.tsx",
           "type": "registry:component",
           "target": "@components/aurora/file-tree.tsx"
         }
@@ -1387,8 +1397,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/file-tree/file-tree.tsx",
-        "installTarget": "@components/aurora/file-tree.tsx"
+        "sourcePath": "registry/aurora/blocks/files/file-tree/file-tree.tsx",
+        "installTarget": "@components/aurora/file-tree.tsx",
+        "taxonomy": "files"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/file-tree.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1404,7 +1415,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/code-editor/code-editor.tsx",
+          "path": "registry/aurora/blocks/files/code-editor/code-editor.tsx",
           "type": "registry:component",
           "target": "@components/aurora/code-editor.tsx"
         }
@@ -1420,8 +1431,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/code-editor/code-editor.tsx",
-        "installTarget": "@components/aurora/code-editor.tsx"
+        "sourcePath": "registry/aurora/blocks/files/code-editor/code-editor.tsx",
+        "installTarget": "@components/aurora/code-editor.tsx",
+        "taxonomy": "files"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-editor.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1437,7 +1449,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/web-preview/web-preview.tsx",
+          "path": "registry/aurora/blocks/workspace/web-preview/web-preview.tsx",
           "type": "registry:component",
           "target": "@components/aurora/web-preview.tsx"
         }
@@ -1453,8 +1465,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/web-preview/web-preview.tsx",
-        "installTarget": "@components/aurora/web-preview.tsx"
+        "sourcePath": "registry/aurora/blocks/workspace/web-preview/web-preview.tsx",
+        "installTarget": "@components/aurora/web-preview.tsx",
+        "taxonomy": "workspace"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/web-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1472,7 +1485,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/login/login.tsx",
+          "path": "registry/aurora/blocks/auth/login/login.tsx",
           "type": "registry:component",
           "target": "@components/aurora/login.tsx"
         }
@@ -1488,8 +1501,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/login/login.tsx",
-        "installTarget": "@components/aurora/login.tsx"
+        "sourcePath": "registry/aurora/blocks/auth/login/login.tsx",
+        "installTarget": "@components/aurora/login.tsx",
+        "taxonomy": "auth"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/login.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-input-otp`."
     },
@@ -1505,7 +1519,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/oauth/oauth.tsx",
+          "path": "registry/aurora/blocks/auth/oauth/oauth.tsx",
           "type": "registry:component",
           "target": "@components/aurora/oauth.tsx"
         }
@@ -1521,8 +1535,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/oauth/oauth.tsx",
-        "installTarget": "@components/aurora/oauth.tsx"
+        "sourcePath": "registry/aurora/blocks/auth/oauth/oauth.tsx",
+        "installTarget": "@components/aurora/oauth.tsx",
+        "taxonomy": "auth"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/oauth.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1538,7 +1553,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/error-page/error-page.tsx",
+          "path": "registry/aurora/blocks/feedback/error-page/error-page.tsx",
           "type": "registry:component",
           "target": "@components/aurora/error-page.tsx"
         }
@@ -1554,8 +1569,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/error-page/error-page.tsx",
-        "installTarget": "@components/aurora/error-page.tsx"
+        "sourcePath": "registry/aurora/blocks/feedback/error-page/error-page.tsx",
+        "installTarget": "@components/aurora/error-page.tsx",
+        "taxonomy": "feedback"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/error-page.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1571,7 +1587,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/attachment/attachment.tsx",
+          "path": "registry/aurora/blocks/files/attachment/attachment.tsx",
           "type": "registry:component",
           "target": "@components/aurora/attachment.tsx"
         }
@@ -1587,8 +1603,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/attachment/attachment.tsx",
-        "installTarget": "@components/aurora/attachment.tsx"
+        "sourcePath": "registry/aurora/blocks/files/attachment/attachment.tsx",
+        "installTarget": "@components/aurora/attachment.tsx",
+        "taxonomy": "files"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/attachment.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
@@ -1605,7 +1622,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/command-palette/command-palette.tsx",
+          "path": "registry/aurora/blocks/workspace/command-palette/command-palette.tsx",
           "type": "registry:component",
           "target": "@components/aurora/command-palette.tsx"
         }
@@ -1621,8 +1638,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/command-palette/command-palette.tsx",
-        "installTarget": "@components/aurora/command-palette.tsx"
+        "sourcePath": "registry/aurora/blocks/workspace/command-palette/command-palette.tsx",
+        "installTarget": "@components/aurora/command-palette.tsx",
+        "taxonomy": "workspace"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/command-palette.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
     },
@@ -1642,7 +1660,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/share-dialog/share-dialog.tsx",
+          "path": "registry/aurora/blocks/workspace/share-dialog/share-dialog.tsx",
           "type": "registry:component",
           "target": "@components/aurora/share-dialog.tsx"
         }
@@ -1658,8 +1676,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/share-dialog/share-dialog.tsx",
-        "installTarget": "@components/aurora/share-dialog.tsx"
+        "sourcePath": "registry/aurora/blocks/workspace/share-dialog/share-dialog.tsx",
+        "installTarget": "@components/aurora/share-dialog.tsx",
+        "taxonomy": "workspace"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/share-dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`."
     },
@@ -1676,7 +1695,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/file-picker/file-picker.tsx",
+          "path": "registry/aurora/blocks/files/file-picker/file-picker.tsx",
           "type": "registry:component",
           "target": "@components/aurora/file-picker.tsx"
         }
@@ -1692,8 +1711,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/file-picker/file-picker.tsx",
-        "installTarget": "@components/aurora/file-picker.tsx"
+        "sourcePath": "registry/aurora/blocks/files/file-picker/file-picker.tsx",
+        "installTarget": "@components/aurora/file-picker.tsx",
+        "taxonomy": "files"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/file-picker.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
     },
@@ -2372,12 +2392,12 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/ai-elements.tsx",
+          "path": "registry/aurora/blocks/ai/elements/ai-elements.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/ai-elements.tsx"
         },
         {
-          "path": "registry/aurora/blocks/ai-elements/core.tsx",
+          "path": "registry/aurora/blocks/ai/elements/core.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/core.tsx"
         }
@@ -2393,8 +2413,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/ai-elements.tsx",
-        "installTarget": "@components/aurora/ai/ai-elements.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/ai-elements.tsx",
+        "installTarget": "@components/aurora/ai/ai-elements.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/ai-elements.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-badge`, `aurora-button`, `aurora-native-select`, `aurora-separator`, `aurora-spinner`, `aurora-textarea`."
     },
@@ -2418,7 +2439,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/marketplace/marketplace.tsx",
+          "path": "registry/aurora/blocks/workspace/marketplace/marketplace.tsx",
           "type": "registry:component",
           "target": "@components/aurora/marketplace.tsx"
         }
@@ -2434,8 +2455,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/marketplace/marketplace.tsx",
-        "installTarget": "@components/aurora/marketplace.tsx"
+        "sourcePath": "registry/aurora/blocks/workspace/marketplace/marketplace.tsx",
+        "installTarget": "@components/aurora/marketplace.tsx",
+        "taxonomy": "workspace"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/marketplace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-button`, `aurora-description-list`, `aurora-filter-bar`, `aurora-sheet`, `aurora-stat-card`, `aurora-status-indicator`."
     },
@@ -3109,7 +3131,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/attachments.tsx",
+          "path": "registry/aurora/blocks/ai/elements/attachments.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/attachments.tsx"
         }
@@ -3125,8 +3147,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/attachments.tsx",
-        "installTarget": "@components/aurora/ai/attachments.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/attachments.tsx",
+        "installTarget": "@components/aurora/ai/attachments.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/attachments.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-attachment`."
     },
@@ -3145,7 +3168,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/chain-of-thought.tsx",
+          "path": "registry/aurora/blocks/ai/elements/chain-of-thought.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/chain-of-thought.tsx"
         }
@@ -3161,8 +3184,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/chain-of-thought.tsx",
-        "installTarget": "@components/aurora/ai/chain-of-thought.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/chain-of-thought.tsx",
+        "installTarget": "@components/aurora/ai/chain-of-thought.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/chain-of-thought.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
     },
@@ -3180,7 +3204,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/checkpoint.tsx",
+          "path": "registry/aurora/blocks/ai/elements/checkpoint.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/checkpoint.tsx"
         }
@@ -3196,8 +3220,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/checkpoint.tsx",
-        "installTarget": "@components/aurora/ai/checkpoint.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/checkpoint.tsx",
+        "installTarget": "@components/aurora/ai/checkpoint.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/checkpoint.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3215,7 +3240,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/confirmation.tsx",
+          "path": "registry/aurora/blocks/ai/elements/confirmation.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/confirmation.tsx"
         }
@@ -3231,8 +3256,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/confirmation.tsx",
-        "installTarget": "@components/aurora/ai/confirmation.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/confirmation.tsx",
+        "installTarget": "@components/aurora/ai/confirmation.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/confirmation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3250,7 +3276,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/context.tsx",
+          "path": "registry/aurora/blocks/ai/elements/context.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/context.tsx"
         }
@@ -3266,8 +3292,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/context.tsx",
-        "installTarget": "@components/aurora/ai/context.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/context.tsx",
+        "installTarget": "@components/aurora/ai/context.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/context.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3285,7 +3312,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/conversation.tsx",
+          "path": "registry/aurora/blocks/ai/elements/conversation.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/conversation.tsx"
         }
@@ -3301,8 +3328,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/conversation.tsx",
-        "installTarget": "@components/aurora/ai/conversation.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/conversation.tsx",
+        "installTarget": "@components/aurora/ai/conversation.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/conversation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3320,7 +3348,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/inline-citation.tsx",
+          "path": "registry/aurora/blocks/ai/elements/inline-citation.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/inline-citation.tsx"
         }
@@ -3336,8 +3364,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/inline-citation.tsx",
-        "installTarget": "@components/aurora/ai/inline-citation.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/inline-citation.tsx",
+        "installTarget": "@components/aurora/ai/inline-citation.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/inline-citation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3355,7 +3384,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/message.tsx",
+          "path": "registry/aurora/blocks/ai/elements/message.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/message.tsx"
         }
@@ -3371,8 +3400,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/message.tsx",
-        "installTarget": "@components/aurora/ai/message.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/message.tsx",
+        "installTarget": "@components/aurora/ai/message.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3390,7 +3420,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/model-selector.tsx",
+          "path": "registry/aurora/blocks/ai/elements/model-selector.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/model-selector.tsx"
         }
@@ -3406,8 +3436,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/model-selector.tsx",
-        "installTarget": "@components/aurora/ai/model-selector.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/model-selector.tsx",
+        "installTarget": "@components/aurora/ai/model-selector.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/model-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3426,7 +3457,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/plan.tsx",
+          "path": "registry/aurora/blocks/ai/elements/plan.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/plan.tsx"
         }
@@ -3442,8 +3473,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/plan.tsx",
-        "installTarget": "@components/aurora/ai/plan.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/plan.tsx",
+        "installTarget": "@components/aurora/ai/plan.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/plan.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
     },
@@ -3461,7 +3493,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/queue.tsx",
+          "path": "registry/aurora/blocks/ai/elements/queue.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/queue.tsx"
         }
@@ -3477,8 +3509,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/queue.tsx",
-        "installTarget": "@components/aurora/ai/queue.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/queue.tsx",
+        "installTarget": "@components/aurora/ai/queue.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/queue.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3497,7 +3530,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/reasoning.tsx",
+          "path": "registry/aurora/blocks/ai/elements/reasoning.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/reasoning.tsx"
         }
@@ -3513,8 +3546,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/reasoning.tsx",
-        "installTarget": "@components/aurora/ai/reasoning.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/reasoning.tsx",
+        "installTarget": "@components/aurora/ai/reasoning.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/reasoning.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
     },
@@ -3532,7 +3566,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/shimmer.tsx",
+          "path": "registry/aurora/blocks/ai/elements/shimmer.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/shimmer.tsx"
         }
@@ -3548,8 +3582,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/shimmer.tsx",
-        "installTarget": "@components/aurora/ai/shimmer.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/shimmer.tsx",
+        "installTarget": "@components/aurora/ai/shimmer.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/shimmer.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3567,7 +3602,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/sources.tsx",
+          "path": "registry/aurora/blocks/ai/elements/sources.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/sources.tsx"
         }
@@ -3583,8 +3618,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/sources.tsx",
-        "installTarget": "@components/aurora/ai/sources.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/sources.tsx",
+        "installTarget": "@components/aurora/ai/sources.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/sources.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3602,7 +3638,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/suggestion.tsx",
+          "path": "registry/aurora/blocks/ai/elements/suggestion.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/suggestion.tsx"
         }
@@ -3618,8 +3654,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/suggestion.tsx",
-        "installTarget": "@components/aurora/ai/suggestion.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/suggestion.tsx",
+        "installTarget": "@components/aurora/ai/suggestion.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/suggestion.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3637,7 +3674,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/task.tsx",
+          "path": "registry/aurora/blocks/ai/elements/task.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/task.tsx"
         }
@@ -3653,8 +3690,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/task.tsx",
-        "installTarget": "@components/aurora/ai/task.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/task.tsx",
+        "installTarget": "@components/aurora/ai/task.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/task.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3673,7 +3711,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/tool.tsx",
+          "path": "registry/aurora/blocks/ai/elements/tool.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/tool.tsx"
         }
@@ -3689,8 +3727,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/tool.tsx",
-        "installTarget": "@components/aurora/ai/tool.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/tool.tsx",
+        "installTarget": "@components/aurora/ai/tool.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/tool.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-tool-calls`."
     },
@@ -3708,7 +3747,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/agent.tsx",
+          "path": "registry/aurora/blocks/ai/elements/agent.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/agent.tsx"
         }
@@ -3724,8 +3763,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/agent.tsx",
-        "installTarget": "@components/aurora/ai/agent.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/agent.tsx",
+        "installTarget": "@components/aurora/ai/agent.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/agent.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3743,7 +3783,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/commit.tsx",
+          "path": "registry/aurora/blocks/ai/elements/commit.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/commit.tsx"
         }
@@ -3759,8 +3799,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/commit.tsx",
-        "installTarget": "@components/aurora/ai/commit.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/commit.tsx",
+        "installTarget": "@components/aurora/ai/commit.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/commit.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3778,7 +3819,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/environment-variables.tsx",
+          "path": "registry/aurora/blocks/ai/elements/environment-variables.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/environment-variables.tsx"
         }
@@ -3794,8 +3835,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/environment-variables.tsx",
-        "installTarget": "@components/aurora/ai/environment-variables.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/environment-variables.tsx",
+        "installTarget": "@components/aurora/ai/environment-variables.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/environment-variables.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3813,7 +3855,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/jsx-preview.tsx",
+          "path": "registry/aurora/blocks/ai/elements/jsx-preview.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/jsx-preview.tsx"
         }
@@ -3829,8 +3871,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/jsx-preview.tsx",
-        "installTarget": "@components/aurora/ai/jsx-preview.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/jsx-preview.tsx",
+        "installTarget": "@components/aurora/ai/jsx-preview.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/jsx-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3848,7 +3891,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/package-info.tsx",
+          "path": "registry/aurora/blocks/ai/elements/package-info.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/package-info.tsx"
         }
@@ -3864,8 +3907,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/package-info.tsx",
-        "installTarget": "@components/aurora/ai/package-info.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/package-info.tsx",
+        "installTarget": "@components/aurora/ai/package-info.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/package-info.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3883,7 +3927,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/sandbox.tsx",
+          "path": "registry/aurora/blocks/ai/elements/sandbox.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/sandbox.tsx"
         }
@@ -3899,8 +3943,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/sandbox.tsx",
-        "installTarget": "@components/aurora/ai/sandbox.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/sandbox.tsx",
+        "installTarget": "@components/aurora/ai/sandbox.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/sandbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3918,7 +3963,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/schema-display.tsx",
+          "path": "registry/aurora/blocks/ai/elements/schema-display.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/schema-display.tsx"
         }
@@ -3934,8 +3979,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/schema-display.tsx",
-        "installTarget": "@components/aurora/ai/schema-display.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/schema-display.tsx",
+        "installTarget": "@components/aurora/ai/schema-display.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/schema-display.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3953,7 +3999,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/snippet.tsx",
+          "path": "registry/aurora/blocks/ai/elements/snippet.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/snippet.tsx"
         }
@@ -3969,8 +4015,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/snippet.tsx",
-        "installTarget": "@components/aurora/ai/snippet.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/snippet.tsx",
+        "installTarget": "@components/aurora/ai/snippet.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/snippet.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -3988,7 +4035,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/stack-trace.tsx",
+          "path": "registry/aurora/blocks/ai/elements/stack-trace.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/stack-trace.tsx"
         }
@@ -4004,8 +4051,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/stack-trace.tsx",
-        "installTarget": "@components/aurora/ai/stack-trace.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/stack-trace.tsx",
+        "installTarget": "@components/aurora/ai/stack-trace.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/stack-trace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4023,7 +4071,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/test-results.tsx",
+          "path": "registry/aurora/blocks/ai/elements/test-results.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/test-results.tsx"
         }
@@ -4039,8 +4087,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/test-results.tsx",
-        "installTarget": "@components/aurora/ai/test-results.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/test-results.tsx",
+        "installTarget": "@components/aurora/ai/test-results.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/test-results.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4058,7 +4107,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/audio-player.tsx",
+          "path": "registry/aurora/blocks/ai/elements/audio-player.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/audio-player.tsx"
         }
@@ -4074,8 +4123,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/audio-player.tsx",
-        "installTarget": "@components/aurora/ai/audio-player.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/audio-player.tsx",
+        "installTarget": "@components/aurora/ai/audio-player.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/audio-player.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4093,7 +4143,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/mic-selector.tsx",
+          "path": "registry/aurora/blocks/ai/elements/mic-selector.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/mic-selector.tsx"
         }
@@ -4109,8 +4159,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/mic-selector.tsx",
-        "installTarget": "@components/aurora/ai/mic-selector.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/mic-selector.tsx",
+        "installTarget": "@components/aurora/ai/mic-selector.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/mic-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4128,7 +4179,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/persona.tsx",
+          "path": "registry/aurora/blocks/ai/elements/persona.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/persona.tsx"
         }
@@ -4144,8 +4195,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/persona.tsx",
-        "installTarget": "@components/aurora/ai/persona.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/persona.tsx",
+        "installTarget": "@components/aurora/ai/persona.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/persona.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4163,7 +4215,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/speech-input.tsx",
+          "path": "registry/aurora/blocks/ai/elements/speech-input.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/speech-input.tsx"
         }
@@ -4179,8 +4231,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/speech-input.tsx",
-        "installTarget": "@components/aurora/ai/speech-input.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/speech-input.tsx",
+        "installTarget": "@components/aurora/ai/speech-input.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/speech-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4198,7 +4251,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/transcription.tsx",
+          "path": "registry/aurora/blocks/ai/elements/transcription.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/transcription.tsx"
         }
@@ -4214,8 +4267,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/transcription.tsx",
-        "installTarget": "@components/aurora/ai/transcription.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/transcription.tsx",
+        "installTarget": "@components/aurora/ai/transcription.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/transcription.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4233,7 +4287,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/voice-selector.tsx",
+          "path": "registry/aurora/blocks/ai/elements/voice-selector.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/voice-selector.tsx"
         }
@@ -4249,8 +4303,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/voice-selector.tsx",
-        "installTarget": "@components/aurora/ai/voice-selector.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/voice-selector.tsx",
+        "installTarget": "@components/aurora/ai/voice-selector.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/voice-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4268,7 +4323,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/canvas.tsx",
+          "path": "registry/aurora/blocks/ai/elements/canvas.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/canvas.tsx"
         }
@@ -4284,8 +4339,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/canvas.tsx",
-        "installTarget": "@components/aurora/ai/canvas.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/canvas.tsx",
+        "installTarget": "@components/aurora/ai/canvas.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/canvas.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4303,7 +4359,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/connection.tsx",
+          "path": "registry/aurora/blocks/ai/elements/connection.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/connection.tsx"
         }
@@ -4319,8 +4375,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/connection.tsx",
-        "installTarget": "@components/aurora/ai/connection.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/connection.tsx",
+        "installTarget": "@components/aurora/ai/connection.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/connection.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4338,7 +4395,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/controls.tsx",
+          "path": "registry/aurora/blocks/ai/elements/controls.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/controls.tsx"
         }
@@ -4354,8 +4411,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/controls.tsx",
-        "installTarget": "@components/aurora/ai/controls.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/controls.tsx",
+        "installTarget": "@components/aurora/ai/controls.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/controls.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4373,7 +4431,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/edge.tsx",
+          "path": "registry/aurora/blocks/ai/elements/edge.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/edge.tsx"
         }
@@ -4389,8 +4447,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/edge.tsx",
-        "installTarget": "@components/aurora/ai/edge.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/edge.tsx",
+        "installTarget": "@components/aurora/ai/edge.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/edge.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4408,7 +4467,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/node.tsx",
+          "path": "registry/aurora/blocks/ai/elements/node.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/node.tsx"
         }
@@ -4424,8 +4483,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/node.tsx",
-        "installTarget": "@components/aurora/ai/node.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/node.tsx",
+        "installTarget": "@components/aurora/ai/node.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/node.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4443,7 +4503,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/panel.tsx",
+          "path": "registry/aurora/blocks/ai/elements/panel.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/panel.tsx"
         }
@@ -4459,8 +4519,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/panel.tsx",
-        "installTarget": "@components/aurora/ai/panel.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/panel.tsx",
+        "installTarget": "@components/aurora/ai/panel.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/panel.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4478,7 +4539,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/image.tsx",
+          "path": "registry/aurora/blocks/ai/elements/image.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/image.tsx"
         }
@@ -4494,8 +4555,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/image.tsx",
-        "installTarget": "@components/aurora/ai/image.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/image.tsx",
+        "installTarget": "@components/aurora/ai/image.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/image.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     },
@@ -4513,7 +4575,7 @@
       ],
       "files": [
         {
-          "path": "registry/aurora/blocks/ai-elements/open-in-chat.tsx",
+          "path": "registry/aurora/blocks/ai/elements/open-in-chat.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/open-in-chat.tsx"
         }
@@ -4529,8 +4591,9 @@
         "style": "aurora",
         "family": "block",
         "requiresTokens": true,
-        "sourcePath": "registry/aurora/blocks/ai-elements/open-in-chat.tsx",
-        "installTarget": "@components/aurora/ai/open-in-chat.tsx"
+        "sourcePath": "registry/aurora/blocks/ai/elements/open-in-chat.tsx",
+        "installTarget": "@components/aurora/ai/open-in-chat.tsx",
+        "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/open-in-chat.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
     }
