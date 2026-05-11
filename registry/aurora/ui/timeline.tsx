@@ -5,12 +5,13 @@ import { cn } from "@/lib/utils"
 import type { StatusTone } from "./status-indicator"
 
 const toneColor: Record<StatusTone, string> = {
-  online: "var(--aurora-success)",
-  syncing: "var(--aurora-accent-primary)",
-  queued: "var(--aurora-text-muted)",
-  degraded: "var(--aurora-warn)",
-  offline: "var(--aurora-text-muted)",
-  error: "var(--aurora-error)",
+  online:     "var(--aurora-success)",
+  syncing:    "var(--aurora-info)",
+  queued:     "var(--aurora-neutral)",
+  degraded:   "var(--aurora-warn)",
+  offline:    "var(--aurora-neutral)",
+  error:      "var(--aurora-error)",
+  automating: "var(--aurora-accent-violet)",
 }
 
 export type TimelineProps = React.HTMLAttributes<HTMLOListElement>

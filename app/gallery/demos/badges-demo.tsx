@@ -68,29 +68,33 @@ export default function BadgesDemo() {
       <div>
         <h2 style={heading}>Badge</h2>
         <p style={subheading}>
-          Status badges in five semantic variants — with and without the dot indicator.
+          Semantic badges communicate system meaning (info, success, warn, error, neutral). Expressive badges — rose and violet — carry identity emphasis, not status.
         </p>
       </div>
 
       <div style={section}>
-        <div style={groupLabel}>Variants — no dot</div>
+        <div style={groupLabel}>Semantic roles — with dot</div>
         <div style={row}>
-          <Badge variant="default">Active</Badge>
-          <Badge variant="success">Healthy</Badge>
-          <Badge variant="warn">Degraded</Badge>
-          <Badge variant="error">Offline</Badge>
+          <Badge variant="info"    dot>Syncing</Badge>
+          <Badge variant="success" dot>Healthy</Badge>
+          <Badge variant="warn"    dot>Degraded</Badge>
+          <Badge variant="error"   dot>Offline</Badge>
+          <Badge variant="neutral" dot>Queued</Badge>
+        </div>
+
+        <div style={groupLabel}>Expressive identity</div>
+        <div style={row}>
+          <Badge variant="violet" dot>Automated</Badge>
           <Badge variant="rose">Escalated</Badge>
         </div>
-      </div>
 
-      <div style={section}>
-        <div style={groupLabel}>Variants — with dot</div>
+        <div style={groupLabel}>Without dot</div>
         <div style={row}>
-          <Badge variant="default" dot>Running</Badge>
-          <Badge variant="success" dot>Healthy</Badge>
-          <Badge variant="warn" dot>Degraded</Badge>
-          <Badge variant="error" dot>Offline</Badge>
-          <Badge variant="rose" dot>Escalated</Badge>
+          <Badge variant="info">Info</Badge>
+          <Badge variant="success">Success</Badge>
+          <Badge variant="warn">Warning</Badge>
+          <Badge variant="error">Error</Badge>
+          <Badge variant="neutral">Neutral</Badge>
         </div>
       </div>
 

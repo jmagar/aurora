@@ -3,16 +3,20 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-export type StatusTone = "online" | "syncing" | "queued" | "degraded" | "offline" | "error"
+export type StatusTone = "online" | "syncing" | "queued" | "degraded" | "offline" | "error" | "automating"
 
 const toneColor: Record<StatusTone, string> = {
-  online: "var(--aurora-success)",
-  syncing: "var(--aurora-accent-primary)",
-  queued: "var(--aurora-text-muted)",
-  degraded: "var(--aurora-warn)",
-  offline: "var(--aurora-text-muted)",
-  error: "var(--aurora-error)",
+  online:     "var(--aurora-success)",
+  syncing:    "var(--aurora-info)",
+  queued:     "var(--aurora-neutral)",
+  degraded:   "var(--aurora-warn)",
+  offline:    "var(--aurora-neutral)",
+  error:      "var(--aurora-error)",
+  automating: "var(--aurora-accent-violet)",
 }
+
+// Dim tones use muted foreground so the label does not compete with the dot.
+const dimTones = new Set<StatusTone>(["queued", "offline"])
 
 export interface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: StatusTone
@@ -22,12 +26,15 @@ export interface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanEleme
 
 function StatusIndicator({ className, tone = "online", label, pulse = tone === "syncing", style, ...props }: StatusIndicatorProps) {
   const color = toneColor[tone]
+  const labelColor = dimTones.has(tone)
+    ? "var(--aurora-neutral-foreground)"
+    : "var(--aurora-text-primary)"
 
   return (
     <span
       className={cn("inline-flex items-center gap-2", className)}
       style={{
-        color: "var(--aurora-text-primary)",
+        color: labelColor,
         fontSize: "var(--aurora-type-body-sm)",
         fontWeight: "var(--aurora-weight-ui)",
         lineHeight: "var(--aurora-line-ui)",

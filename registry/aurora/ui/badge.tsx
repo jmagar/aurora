@@ -1,83 +1,90 @@
 "use client"
 
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-const badgeVariants = cva(
-  [
-    "inline-flex items-center gap-1.5",
-    "px-2 py-0.5",
-    "uppercase leading-none",
-    "border",
-    "whitespace-nowrap",
-  ].join(" "),
-  {
-    variants: {
-      variant: {
-        default: [
-          "text-[var(--aurora-accent-primary)]",
-          "border-[color-mix(in_srgb,var(--aurora-accent-primary)_30%,transparent)]",
-        ].join(" "),
-        success: [
-          "text-[var(--aurora-success)]",
-          "border-[color-mix(in_srgb,var(--aurora-success)_30%,transparent)]",
-        ].join(" "),
-        warn: [
-          "text-[var(--aurora-warn)]",
-          "border-[color-mix(in_srgb,var(--aurora-warn)_30%,transparent)]",
-        ].join(" "),
-        error: [
-          "text-[var(--aurora-error)]",
-          "border-[color-mix(in_srgb,var(--aurora-error)_30%,transparent)]",
-        ].join(" "),
-        rose: [
-          "text-[var(--aurora-accent-pink)]",
-          "border-[color-mix(in_srgb,var(--aurora-accent-pink)_30%,transparent)]",
-        ].join(" "),
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-)
+// Aurora badge tones: semantic roles (info/success/warn/error/neutral)
+// and expressive identities (rose/violet).
+// "default" is preserved as a backward-compatible alias for "neutral" —
+// existing callers using variant="default" for running/provisioning states
+// will render with neutral styling without any prop changes.
+export type BadgeTone = "info" | "success" | "warn" | "error" | "neutral" | "rose" | "violet"
 
-const variantBgMap: Record<string, string> = {
-  default: "color-mix(in srgb, var(--aurora-accent-primary) 10%, transparent)",
-  success: "color-mix(in srgb, var(--aurora-success) 10%, transparent)",
-  warn: "color-mix(in srgb, var(--aurora-warn) 10%, transparent)",
-  error: "color-mix(in srgb, var(--aurora-error) 10%, transparent)",
-  rose: "color-mix(in srgb, var(--aurora-accent-pink) 10%, transparent)",
+type ToneTokens = { text: string; border: string; bg: string; dot: string }
+
+const badgeToneMap: Record<BadgeTone, ToneTokens> = {
+  info: {
+    text:   "var(--aurora-info-foreground)",
+    border: "var(--aurora-info-border)",
+    bg:     "var(--aurora-info-surface)",
+    dot:    "var(--aurora-info)",
+  },
+  success: {
+    text:   "var(--aurora-success-foreground)",
+    border: "var(--aurora-success-border)",
+    bg:     "var(--aurora-success-surface)",
+    dot:    "var(--aurora-success)",
+  },
+  warn: {
+    text:   "var(--aurora-warn-foreground)",
+    border: "var(--aurora-warn-border)",
+    bg:     "var(--aurora-warn-surface)",
+    dot:    "var(--aurora-warn)",
+  },
+  error: {
+    text:   "var(--aurora-error-foreground)",
+    border: "var(--aurora-error-border)",
+    bg:     "var(--aurora-error-surface)",
+    dot:    "var(--aurora-error)",
+  },
+  neutral: {
+    text:   "var(--aurora-neutral-foreground)",
+    border: "var(--aurora-neutral-border)",
+    bg:     "var(--aurora-neutral-surface)",
+    dot:    "var(--aurora-neutral)",
+  },
+  rose: {
+    text:   "var(--aurora-accent-pink-strong)",
+    border: "var(--aurora-accent-pink-border)",
+    bg:     "var(--aurora-accent-pink-surface)",
+    dot:    "var(--aurora-accent-pink)",
+  },
+  violet: {
+    text:   "var(--aurora-accent-violet-strong)",
+    border: "var(--aurora-accent-violet-border)",
+    bg:     "var(--aurora-accent-violet-surface)",
+    dot:    "var(--aurora-accent-violet)",
+  },
 }
 
-const dotColorMap: Record<string, string> = {
-  default: "var(--aurora-accent-primary)",
-  success: "var(--aurora-success)",
-  warn: "var(--aurora-warn)",
-  error: "var(--aurora-error)",
-  rose: "var(--aurora-accent-pink)",
+function resolveTone(variant: string | null | undefined): BadgeTone {
+  if (!variant || variant === "default") return "neutral"
+  return (variant as BadgeTone) in badgeToneMap ? (variant as BadgeTone) : "neutral"
 }
 
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {
+export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Semantic or expressive tone. "default" is a deprecated alias for "neutral". */
+  variant?: BadgeTone | "default"
   dot?: boolean
 }
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className, variant, dot = false, style, children, ...props }, ref) => {
-    const resolvedVariant = variant ?? "default"
-    const bg = variantBgMap[resolvedVariant] ?? variantBgMap["default"]
-    const dotColor = dotColorMap[resolvedVariant] ?? dotColorMap["default"]
+    const tone = resolveTone(variant)
+    const { text, border, bg, dot: dotColor } = badgeToneMap[tone]
 
     return (
       <span
         ref={ref}
-        className={cn(badgeVariants({ variant }), className)}
+        className={cn(
+          "inline-flex items-center gap-1.5 px-2 py-0.5 uppercase leading-none border whitespace-nowrap",
+          className
+        )}
         style={{
           borderRadius: "4px",
           background: bg,
+          borderColor: border,
+          color: text,
           fontFamily: "var(--aurora-font-mono, 'JetBrains Mono', monospace)",
           fontSize: "var(--aurora-type-micro)",
           fontWeight: 650,
@@ -107,5 +114,8 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
 )
 Badge.displayName = "Badge"
 
-export { Badge, badgeVariants }
+// Note: badgeVariants (CVA export) has been removed.
+// Components that imported badgeVariants for composition should use
+// className overrides on the Badge component directly.
+export { Badge }
 export default Badge

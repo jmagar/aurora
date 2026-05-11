@@ -284,9 +284,40 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "sheet":
       return <Sheet><SheetTrigger asChild><Button>Open sheet</Button></SheetTrigger><SheetContent><SheetHeader><SheetTitle>Run inspector</SheetTitle></SheetHeader><SheetBody><p className="aurora-text-body">Live metadata and activity for the selected run.</p></SheetBody></SheetContent></Sheet>
     case "callout":
-      return <Callout title="Gateway policy changed" variant="warn">Restart dependent agents before running the next deployment.</Callout>
+      return (
+        <div className="grid gap-3">
+          <Callout title="Registry sync in progress" variant="info">
+            Generated payloads are being refreshed.
+          </Callout>
+          <Callout title="Deployment completed" variant="success">
+            All agents are running the latest build.
+          </Callout>
+          <Callout title="Gateway policy changed" variant="warn">
+            Restart dependent agents before the next deployment.
+          </Callout>
+          <Callout title="Connection failed" variant="error">
+            The upstream API is unreachable. Check credentials.
+          </Callout>
+          <Callout title="Agent queued" variant="neutral">
+            Waiting for an available runner slot.
+          </Callout>
+          <Callout title="Agent automation available" variant="violet">
+            This workflow can now execute unattended.
+          </Callout>
+        </div>
+      )
     case "status-indicator":
-      return <div className="grid gap-2"><StatusIndicator tone="online" label="Gateway connected" /><StatusIndicator tone="syncing" label="Syncing registry" /><StatusIndicator tone="degraded" label="Partial tool outage" /></div>
+      return (
+        <div className="grid gap-2">
+          <StatusIndicator tone="online"     label="Gateway connected" />
+          <StatusIndicator tone="syncing"    label="Syncing registry" />
+          <StatusIndicator tone="queued"     label="Queued for rollout" />
+          <StatusIndicator tone="degraded"   label="Elevated latency" />
+          <StatusIndicator tone="offline"    label="Agent offline" />
+          <StatusIndicator tone="error"      label="Connection failed" />
+          <StatusIndicator tone="automating" label="Automation executing" />
+        </div>
+      )
     case "timeline":
       return <Timeline><TimelineItem tone="online" title="Policy loaded" meta="09:41">Read and write grants resolved from project settings.</TimelineItem><TimelineItem tone="syncing" title="Registry build started" meta="09:42">Component JSON is being regenerated.</TimelineItem><TimelineItem tone="queued" title="Docker build queued" meta="next">Waiting for registry output.</TimelineItem></Timeline>
     case "description-list":

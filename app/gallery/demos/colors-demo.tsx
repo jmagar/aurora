@@ -2,52 +2,34 @@
 
 const COLOR_SECTIONS = [
   {
-    label: "Surfaces",
-    tokens: [
-      { name: "page-bg",         cssVar: "var(--aurora-page-bg)" },
-      { name: "nav-bg",          cssVar: "var(--aurora-nav-bg)" },
-      { name: "panel-medium",    cssVar: "var(--aurora-panel-medium)" },
-      { name: "panel-strong",    cssVar: "var(--aurora-panel-strong)" },
-      { name: "control-surface", cssVar: "var(--aurora-control-surface)" },
-      { name: "hover-bg",        cssVar: "var(--aurora-hover-bg)" },
-    ],
-  },
-  {
-    label: "Primary accent",
+    label: "Brand tokens — identity",
+    description: "Use cyan and rose for Aurora identity. Use violet to signal AI or automation emphasis. Never use brand tokens to communicate status.",
     tokens: [
       { name: "accent-primary", cssVar: "var(--aurora-accent-primary)" },
-      { name: "accent-strong",  cssVar: "var(--aurora-accent-strong)" },
-      { name: "accent-deep",    cssVar: "var(--aurora-accent-deep)" },
+      { name: "accent-pink",    cssVar: "var(--aurora-accent-pink)" },
+      { name: "accent-violet",  cssVar: "var(--aurora-accent-violet)" },
     ],
   },
   {
-    label: "Secondary accent",
+    label: "Semantic tokens — meaning",
+    description: "Use these roles in component APIs instead of reaching for hue names. Each role ships a full surface / border / foreground family.",
     tokens: [
-      { name: "accent-pink",        cssVar: "var(--aurora-accent-pink)" },
-      { name: "accent-pink-strong", cssVar: "var(--aurora-accent-pink-strong)" },
-      { name: "accent-pink-deep",   cssVar: "var(--aurora-accent-pink-deep)" },
-    ],
-  },
-  {
-    label: "Status",
-    tokens: [
+      { name: "info",    cssVar: "var(--aurora-info)" },
       { name: "success", cssVar: "var(--aurora-success)" },
       { name: "warn",    cssVar: "var(--aurora-warn)" },
       { name: "error",   cssVar: "var(--aurora-error)" },
+      { name: "neutral", cssVar: "var(--aurora-neutral)" },
     ],
   },
   {
-    label: "Borders",
+    label: "Interaction tokens — behavior",
+    description: "Use these shared tokens for overlays, selection, disabled states, and pressed states.",
     tokens: [
-      { name: "border-default", cssVar: "var(--aurora-border-default)" },
-      { name: "border-strong",  cssVar: "var(--aurora-border-strong)" },
-    ],
-  },
-  {
-    label: "Text",
-    tokens: [
-      { name: "text-primary", cssVar: "var(--aurora-text-primary)" },
-      { name: "text-muted",   cssVar: "var(--aurora-text-muted)" },
+      { name: "overlay",          cssVar: "var(--aurora-overlay)" },
+      { name: "disabled-surface", cssVar: "var(--aurora-disabled-surface)" },
+      { name: "subtle-bg",        cssVar: "var(--aurora-subtle-bg)" },
+      { name: "selected-bg",      cssVar: "var(--aurora-selected-bg)" },
+      { name: "pressed-bg",       cssVar: "var(--aurora-pressed-bg)" },
     ],
   },
 ];
@@ -63,14 +45,17 @@ export default function ColorsDemo() {
           Color tokens
         </h2>
         <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Aurora CSS custom properties that drive every surface, accent, status indicator, and text style across Labby.
+          Aurora colors separate brand tokens for identity, semantic tokens for meaning, and interaction tokens for behavior. Reach for semantic roles in component APIs — never use brand tokens to communicate state.
         </p>
       </div>
 
       {COLOR_SECTIONS.map((section) => (
         <div key={section.label}>
-          <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 4 }}>
             {section.label}
+          </p>
+          <p style={{ fontSize: 12, color: "var(--aurora-text-muted)", marginBottom: 12, lineHeight: 1.5 }}>
+            {section.description}
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
             {section.tokens.map((token) => (
