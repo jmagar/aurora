@@ -2,21 +2,16 @@
 
 import * as React from "react";
 import { Skeleton, SkeletonRow } from "@/registry/aurora/ui/skeleton";
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
 export default function SkeletonDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
-      <div>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-          Loading
-        </p>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-          Skeletons
-        </h2>
-        <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Shimmer placeholders that preserve layout during data fetches. Used in gateway lists, card grids, and data tables across Labby.
-        </p>
-      </div>
+      <GalleryPageIntro
+        eyebrow="Loading"
+        heading="Skeletons"
+        description="Three skeleton families is a reasonable baseline, but most systems need a few more composed patterns for chat, settings, and inspector layouts."
+      />
 
       {/* List skeleton */}
       <div>
@@ -127,6 +122,36 @@ export default function SkeletonDemo() {
               <Skeleton variant="button" style={{ width: 64, height: 28 }} />
             </div>
           ))}
+        </div>
+      </div>
+
+      <div>
+        <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
+          Conversation thread
+        </p>
+        <div style={{ display: "grid", gap: 12 }}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} style={{ display: "grid", gap: 8, justifyItems: i % 2 === 0 ? "start" : "end" }}>
+              <Skeleton variant="title" style={{ width: i % 2 === 0 ? 180 : 140, height: 12 }} />
+              <Skeleton variant="card" style={{ width: i % 2 === 0 ? "70%" : "58%", height: 72 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
+          Inspector sheet
+        </p>
+        <div style={{ display: "grid", gap: 14, maxWidth: 360, padding: 18, border: "1px solid var(--aurora-border-default)", borderRadius: 14, background: "var(--aurora-panel-medium)" }}>
+          <Skeleton variant="title" style={{ width: "52%" }} />
+          <Skeleton variant="text" style={{ width: "88%" }} />
+          <Skeleton variant="text" style={{ width: "72%" }} />
+          <Skeleton variant="card" style={{ height: 120 }} />
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+            <Skeleton variant="button" style={{ width: 96 }} />
+            <Skeleton variant="button" style={{ width: 112 }} />
+          </div>
         </div>
       </div>
     </div>

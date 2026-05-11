@@ -49,7 +49,7 @@ const BreadcrumbList = React.forwardRef<
     <ol
       ref={ref}
       className={cn(
-        "flex flex-wrap items-center gap-1 break-words",
+        "flex min-w-0 flex-wrap items-center gap-1.5 break-words",
         variant === "mono" && "font-mono",
         variant === "pill-trail" && "gap-1.5",
         className
@@ -73,7 +73,7 @@ const BreadcrumbItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <li
     ref={ref}
-    className={cn("inline-flex items-center gap-1", className)}
+    className={cn("inline-flex min-w-0 items-center gap-1", className)}
     {...props}
   />
 ))
@@ -92,10 +92,10 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
     const Comp = asChild ? Slot : "a"
 
     const baseClass = cn(
-      "transition-colors duration-150 hover:underline focus-visible:outline-none",
-        variant === "default" && "aurora-text-control",
-        variant === "mono" && "aurora-text-code",
-        variant === "pill-trail" &&
+      "inline-flex min-w-0 items-center gap-1 rounded-[8px] px-2 py-1 transition-colors duration-150 focus-visible:outline-none",
+      variant === "default" && "aurora-text-control",
+      variant === "mono" && "aurora-text-code",
+      variant === "pill-trail" &&
         "aurora-text-control inline-flex items-center rounded-full border px-3 py-0.5 transition-all",
       className
     )
@@ -110,6 +110,7 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
           }
         : {
             color: "var(--aurora-text-muted)",
+            backgroundColor: "transparent",
             ...style,
           }
 
@@ -117,7 +118,20 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
       <Comp
         ref={ref}
         className={baseClass}
-        style={baseStyle}
+        style={{
+          ...baseStyle,
+          boxShadow: "none",
+        }}
+        onFocus={(event: React.FocusEvent<HTMLAnchorElement>) => {
+          event.currentTarget.dataset.previousBoxShadow = event.currentTarget.style.boxShadow
+          event.currentTarget.style.boxShadow =
+            "0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 24%, transparent)"
+          props.onFocus?.(event)
+        }}
+        onBlur={(event: React.FocusEvent<HTMLAnchorElement>) => {
+          event.currentTarget.style.boxShadow = event.currentTarget.dataset.previousBoxShadow ?? ""
+          props.onBlur?.(event)
+        }}
         {...props}
       />
     )
@@ -164,7 +178,10 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, BreadcrumbPageProps>(
         aria-current="page"
         aria-disabled="true"
         className={cn("inline-flex items-center gap-1.5", baseClass)}
-        style={baseStyle}
+        style={{
+          ...baseStyle,
+          maxWidth: "100%",
+        }}
         {...props}
       >
         {badge && <Badge>{badge}</Badge>}

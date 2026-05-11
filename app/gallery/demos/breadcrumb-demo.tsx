@@ -1,19 +1,20 @@
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/registry/aurora/ui/breadcrumb";
+} from "@/registry/aurora/ui/breadcrumb"
 
 function Panel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
+    <div style={{ display: "grid", gap: 12 }}>
+      <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", margin: 0 }}>
         {label}
       </p>
       <div
@@ -27,105 +28,83 @@ function Panel({ label, children }: { label: string; children: React.ReactNode }
         {children}
       </div>
     </div>
-  );
+  )
 }
 
 export default function BreadcrumbDemo() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      <div>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-          Navigation
-        </p>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-          Breadcrumbs
-        </h2>
-        <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Three styles for navigating Labby hierarchy. The active page supports a badge left of the label to surface environment or version context.
-        </p>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+      <GalleryPageIntro
+        eyebrow="Navigation"
+        heading="Breadcrumb"
+        description="Tighter, calmer breadcrumb patterns for console hierarchy, file paths, and long current-page labels. These are meant to orient you quickly without shouting."
+      />
 
-      {/* Default — chevron */}
-      <Panel label="Default — chevron separator">
-        <Breadcrumb variant="default">
+      <Panel label="Workspace hierarchy">
+        <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="#">Gateways</BreadcrumbLink>
+              <BreadcrumbLink href="#">Workspace</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="#">us-east-1</BreadcrumbLink>
+              <BreadcrumbLink href="#">Aurora registry</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage badge="prod">production-edge.lab.local</BreadcrumbPage>
+              <BreadcrumbLink href="#">Components</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Menubar</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </Panel>
 
-      {/* Mono — dot separator */}
-      <Panel label="Mono — dot separator">
+      <Panel label="Artifact path">
         <Breadcrumb variant="mono">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="#">agents</BreadcrumbLink>
+              <BreadcrumbLink href="#">registry</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="#">labby-auth-proxy</BreadcrumbLink>
+              <BreadcrumbLink href="#">aurora</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage badge="v2.1">config.yaml</BreadcrumbPage>
+              <BreadcrumbLink href="#">ui</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage badge="tsx">menubar.tsx</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </Panel>
 
-      {/* Pill trail — no separator */}
-      <Panel label="Pill trail — no separator">
-        <Breadcrumb variant="pill-trail">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">Environments</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">Production</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-              <BreadcrumbPage badge="live">Plugins</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </Panel>
-
-      {/* Deep nesting example */}
-      <Panel label="Deep nesting — with badge on current page">
-        <Breadcrumb variant="default">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">Labby</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">Clusters</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">eu-central-1</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">Gateways</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage badge="degraded">fra-gw-03.lab.local</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+      <Panel label="Long current page">
+        <div style={{ maxWidth: 520 }}>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">Production</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">Gateways</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage badge="Live" style={{ maxWidth: 280, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  production-edge-gateway-policy-rollout
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
       </Panel>
     </div>
-  );
+  )
 }

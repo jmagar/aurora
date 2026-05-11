@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
 import { DataTable, type Column } from "@/registry/aurora/ui/data-table";
 
 // ---------------------------------------------------------------------------
@@ -159,6 +160,12 @@ const COLUMNS: Column<Record<string, unknown>>[] = [
 export default function TablesDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <GalleryPageIntro
+        eyebrow="Data"
+        heading="Tables"
+        description="This is the sortable data-table pattern. Keep the separate Table route for primitive structure when you need fully custom layouts."
+      />
+
       <p
         style={{
           fontSize: 11,

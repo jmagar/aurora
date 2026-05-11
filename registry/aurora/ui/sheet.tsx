@@ -14,38 +14,45 @@ type SheetSide = "left" | "right" | "top" | "bottom"
 
 export interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   side?: SheetSide
+  hideClose?: boolean
 }
 
 const sideClass: Record<SheetSide, string> = {
-  left: "left-0 top-0 h-full w-[min(420px,92vw)]",
-  right: "right-0 top-0 h-full w-[min(420px,92vw)]",
+  left: "left-0 top-0 h-full w-[min(396px,92vw)]",
+  right: "right-0 top-0 h-full w-[min(396px,92vw)]",
   top: "left-0 top-0 h-[min(360px,80vh)] w-full",
-  bottom: "bottom-0 left-0 h-[min(360px,80vh)] w-full",
+  bottom: "bottom-0 left-0 h-[min(420px,82vh)] w-full",
 }
 
 const SheetContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.Content>, SheetContentProps>(
-  ({ className, children, side = "right", style, ...props }, ref) => (
+  ({ className, children, side = "right", style, hideClose = false, ...props }, ref) => (
     <SheetPortal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[rgba(4,10,14,0.68)]" />
       <DialogPrimitive.Content
         ref={ref}
-        className={cn("fixed z-50 flex flex-col border focus-visible:outline-none", sideClass[side], className)}
+        className={cn("fixed z-50 flex flex-col overflow-hidden border focus-visible:outline-none", sideClass[side], className)}
         style={{
           background: "var(--aurora-panel-strong)",
           borderColor: "var(--aurora-border-strong)",
-          boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)",
+          boxShadow: "0 28px 72px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05)",
           color: "var(--aurora-text-primary)",
           ...style,
         }}
         {...props}
       >
         {children}
-        <SheetClose
-          className="absolute right-4 top-4 rounded-[8px] p-1 text-[var(--aurora-text-muted)] transition-colors hover:text-[var(--aurora-text-primary)] focus-visible:outline-none"
-          aria-label="Close"
-        >
-          <X className="size-4" aria-hidden />
-        </SheetClose>
+        {!hideClose ? (
+          <SheetClose
+            className="absolute right-5 top-5 rounded-full border p-1.5 text-[var(--aurora-text-muted)] transition-colors hover:text-[var(--aurora-text-primary)] focus-visible:outline-none focus-visible:ring-2 [&:focus-visible]:ring-[var(--aurora-focus-ring)]"
+            style={{
+              borderColor: "var(--aurora-border-default)",
+              background: "var(--aurora-control-surface)",
+            }}
+            aria-label="Close"
+          >
+            <X className="size-4" aria-hidden />
+          </SheetClose>
+        ) : null}
       </DialogPrimitive.Content>
     </SheetPortal>
   )
@@ -53,7 +60,7 @@ const SheetContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.
 SheetContent.displayName = "SheetContent"
 
 const SheetHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("border-b px-6 py-5 pr-12", className)} style={{ borderColor: "var(--aurora-border-default)" }} {...props} />
+  <div ref={ref} className={cn("border-b px-6 py-5 pr-16", className)} style={{ borderColor: "var(--aurora-border-default)" }} {...props} />
 ))
 SheetHeader.displayName = "SheetHeader"
 

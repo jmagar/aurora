@@ -20,6 +20,7 @@ const NativeSelect = React.forwardRef<HTMLSelectElement, NativeSelectProps>(
           "text-[var(--aurora-text-primary)]",
           "transition-all duration-150 ease-out",
           "focus-visible:outline-none",
+          "cursor-pointer",
           "disabled:pointer-events-none disabled:opacity-45 disabled:cursor-not-allowed",
           className
         )}
@@ -34,14 +35,16 @@ const NativeSelect = React.forwardRef<HTMLSelectElement, NativeSelectProps>(
           ...style,
         }}
         onFocus={(event) => {
-          event.currentTarget.style.boxShadow = [
-            "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)",
-            "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)",
-          ].join(", ")
+          event.currentTarget.dataset.previousBorderColor = event.currentTarget.style.borderColor
+          event.currentTarget.dataset.previousBoxShadow = event.currentTarget.style.boxShadow
+          event.currentTarget.style.borderColor = "color-mix(in srgb, var(--aurora-accent-primary) 42%, var(--aurora-border-strong))"
+          event.currentTarget.style.boxShadow =
+            "0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)"
           props.onFocus?.(event)
         }}
         onBlur={(event) => {
-          event.currentTarget.style.boxShadow = "none"
+          event.currentTarget.style.borderColor = event.currentTarget.dataset.previousBorderColor ?? ""
+          event.currentTarget.style.boxShadow = event.currentTarget.dataset.previousBoxShadow ?? ""
           props.onBlur?.(event)
         }}
         {...props}

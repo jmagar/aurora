@@ -20,7 +20,6 @@ import { InputGroup, InputGroupAddon } from "@/registry/aurora/ui/input-group"
 import { InputOTP } from "@/registry/aurora/ui/input-otp"
 import { Item } from "@/registry/aurora/ui/item"
 import { Label } from "@/registry/aurora/ui/label"
-import { Menubar, MenubarItem } from "@/registry/aurora/ui/menubar"
 import { NavigationMenu, NavigationMenuItem } from "@/registry/aurora/ui/navigation-menu"
 import { ScrollArea } from "@/registry/aurora/ui/scroll-area"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/registry/aurora/ui/table"
@@ -228,7 +227,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "label":
       return <div className="grid gap-2"><Label htmlFor="label-demo">Registry name</Label><Input id="label-demo" defaultValue="aurora-button" /></div>
     case "menubar":
-      return <Menubar><MenubarItem>File</MenubarItem><MenubarItem>Edit</MenubarItem><MenubarItem>View</MenubarItem></Menubar>
+      return <Callout title="Menubar">See the dedicated menubar demo for functional menu patterns.</Callout>
     case "navigation-menu":
       return <NavigationMenu><NavigationMenuItem active href="#">Overview</NavigationMenuItem><NavigationMenuItem href="#">Sources</NavigationMenuItem><NavigationMenuItem href="#">Runs</NavigationMenuItem></NavigationMenu>
     case "native-select":

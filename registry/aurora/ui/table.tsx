@@ -4,7 +4,7 @@ import * as React from "react"
 
 const Table = React.forwardRef<HTMLTableElement, React.TableHTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="overflow-hidden rounded-[8px] border" style={{ borderColor: "var(--aurora-border-default)" }}>
+    <div className="overflow-x-auto overflow-y-hidden rounded-[8px] border" style={{ borderColor: "var(--aurora-border-default)" }}>
       <table ref={ref} className={["w-full border-collapse text-left", className].filter(Boolean).join(" ")} {...props} />
     </div>
   )
@@ -55,4 +55,3 @@ TableCell.displayName = "TableCell"
 
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow }
 export default Table
-

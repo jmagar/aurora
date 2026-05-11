@@ -67,7 +67,10 @@ function OptionCodePreview({ code }: { code: string }) {
         fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
         color: "var(--aurora-text-primary)",
         overflowX: "auto",
-        whiteSpace: "pre",
+        whiteSpace: "pre-wrap",
+        overflowWrap: "anywhere",
+        wordBreak: "break-word",
+        maxWidth: "100%",
       }}
     >
       <code>{code}</code>
@@ -88,18 +91,20 @@ interface OptionCardProps {
 
 function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
   const [hovered, setHovered] = React.useState(false)
+  const [focused, setFocused] = React.useState(false)
 
   const borderColor = selected
     ? "var(--aurora-accent-primary)"
+    : focused
+    ? "color-mix(in srgb, var(--aurora-accent-primary) 38%, var(--aurora-border-default))"
     : hovered
     ? "color-mix(in srgb, var(--aurora-accent-primary) 45%, var(--aurora-border-default))"
     : "var(--aurora-border-default)"
 
   const boxShadow = selected
-    ? [
-        "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
-        "var(--aurora-active-glow)",
-      ].join(", ")
+    ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)"
+    : focused
+    ? "0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)"
     : hovered
     ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 15%, transparent)"
     : "none"
@@ -118,7 +123,10 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
       onClick={() => onToggle(option.id)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       style={{
+        position: "relative",
         display: "flex",
         alignItems: "flex-start",
         gap: 12,
@@ -130,11 +138,26 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
         cursor: "pointer",
         textAlign: "left",
         outline: "none",
+        overflow: "hidden",
         transition: "border-color 150ms, background 150ms, box-shadow 150ms",
         boxShadow,
         animation: "aurora-auq-fadein 180ms ease both",
       }}
     >
+      <span
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 10,
+          bottom: 10,
+          width: 3,
+          borderRadius: "0 999px 999px 0",
+          background: "var(--aurora-accent-primary)",
+          opacity: selected ? 1 : hovered ? 0.45 : 0,
+          transition: "opacity 150ms ease",
+        }}
+      />
       {/* Indicator */}
       <div
         style={{
@@ -355,6 +378,8 @@ export function AskUserQuestion({
         display: "flex",
         flexDirection: "column",
         gap: 14,
+        minWidth: 0,
+        width: "100%",
         ...style,
       }}
       role={type === "radio" ? "radiogroup" : undefined}
