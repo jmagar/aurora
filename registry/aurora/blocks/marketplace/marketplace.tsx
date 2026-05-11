@@ -331,26 +331,43 @@ function CatalogCard({
   )
 }
 
-function SourceCard({ source, onClick }: { source: MarketplaceSource; onClick: () => void }) {
+function SourceCard({
+  source,
+  selected,
+  onClick,
+}: {
+  source: MarketplaceSource
+  selected: boolean
+  onClick: () => void
+}) {
   return (
     <Button variant="plain" size="unstyled"
       type="button"
       onClick={onClick}
-      className="grid w-full min-w-0 gap-3 overflow-hidden rounded-[8px] border p-4 text-left transition-all hover:-translate-y-px focus-visible:outline-none"
+      aria-pressed={selected}
+      className="grid w-full min-w-0 gap-2.5 overflow-hidden rounded-[10px] border p-3.5 text-left transition-all hover:-translate-y-px focus-visible:outline-none"
       style={{
-        background: "var(--aurora-panel-medium)",
-        borderColor: "var(--aurora-border-default)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.035)",
+        background: selected
+          ? "color-mix(in srgb, var(--aurora-accent-primary) 8%, var(--aurora-panel-medium))"
+          : "var(--aurora-panel-medium)",
+        borderColor: selected
+          ? "color-mix(in srgb, var(--aurora-accent-primary) 44%, var(--aurora-border-strong))"
+          : "var(--aurora-border-default)",
+        boxShadow: selected
+          ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 16%, transparent)"
+          : "inset 0 1px 0 rgba(255,255,255,0.035)",
         whiteSpace: "normal",
       }}
     >
       <div className="flex min-w-0 items-start gap-3">
         <div
-          className="flex size-10 shrink-0 items-center justify-center rounded-[8px] border"
+          className="flex size-9 shrink-0 items-center justify-center rounded-[8px] border"
           style={{
             background: "var(--aurora-control-surface)",
-            borderColor: "var(--aurora-border-strong)",
-            color: "var(--aurora-accent-primary)",
+            borderColor: selected
+              ? "color-mix(in srgb, var(--aurora-accent-primary) 46%, var(--aurora-border-strong))"
+              : "var(--aurora-border-strong)",
+            color: selected ? "var(--aurora-accent-strong)" : "var(--aurora-accent-primary)",
             fontFamily: "var(--aurora-font-display)",
             fontWeight: 800,
           }}
@@ -365,10 +382,10 @@ function SourceCard({ source, onClick }: { source: MarketplaceSource; onClick: (
         </div>
         {source.autoUpdate && <StatusIndicator tone="syncing" label="Auto" style={{ marginLeft: "auto", fontSize: 11, flexShrink: 0 }} />}
       </div>
-      <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)", overflowWrap: "anywhere" }}>
+      <p className="line-clamp-2 aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)", overflowWrap: "anywhere" }}>
         {source.description}
       </p>
-      <div className="flex min-w-0 flex-wrap items-center gap-2 border-t pt-3" style={{ borderColor: "var(--aurora-border-default)" }}>
+      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 border-t pt-2.5" style={{ borderColor: "var(--aurora-border-default)" }}>
         <span className="aurora-text-meta">{source.installedCount} installed</span>
         <span className="aurora-text-meta">{source.pluginCount} available</span>
         <span className="ml-auto max-w-full truncate aurora-text-code" style={{ color: "var(--aurora-text-muted)", fontSize: 11 }}>
@@ -492,12 +509,12 @@ export function Marketplace({
       </div>
 
       <StatGrid style={{ gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("all")} className="text-left"><StatCard label="All items" value={summary.all} description="Installable catalog entries" tone={lens === "all" ? "info" : "neutral"} style={{ maxWidth: "none" }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("installed")} className="text-left"><StatCard label="Installed" value={summary.installed} description="Ready on this controller" tone={lens === "installed" ? "success" : "neutral"} style={{ maxWidth: "none" }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("plugins")} className="text-left"><StatCard label="Plugins" value={summary.plugins} description="Plugins, skills, commands" tone={lens === "plugins" ? "info" : "neutral"} style={{ maxWidth: "none" }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("mcp_servers")} className="text-left"><StatCard label="MCP servers" value={summary.mcpServers} description="Registry server entries" tone={lens === "mcp_servers" ? "info" : "neutral"} style={{ maxWidth: "none" }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("acp_agents")} className="text-left"><StatCard label="ACP agents" value={summary.acpAgents} description="Provider wiring targets" tone={lens === "acp_agents" ? "warn" : "neutral"} style={{ maxWidth: "none" }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("sources")} className="text-left"><StatCard label="Sources" value={summary.sources} description={`${summary.updates} updates available`} tone={lens === "sources" ? "info" : "neutral"} style={{ maxWidth: "none" }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("all")} className="w-full text-left"><StatCard label="All items" value={summary.all} description="Installable catalog entries" tone={lens === "all" ? "info" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("installed")} className="w-full text-left"><StatCard label="Installed" value={summary.installed} description="Ready on this controller" tone={lens === "installed" ? "success" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("plugins")} className="w-full text-left"><StatCard label="Plugins" value={summary.plugins} description="Plugins, skills, commands" tone={lens === "plugins" ? "info" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("mcp_servers")} className="w-full text-left"><StatCard label="MCP servers" value={summary.mcpServers} description="Registry server entries" tone={lens === "mcp_servers" ? "info" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("acp_agents")} className="w-full text-left"><StatCard label="ACP agents" value={summary.acpAgents} description="Provider wiring targets" tone={lens === "acp_agents" ? "warn" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("sources")} className="w-full text-left"><StatCard label="Sources" value={summary.sources} description={`${summary.updates} updates available`} tone={lens === "sources" ? "info" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
       </StatGrid>
 
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
@@ -518,22 +535,23 @@ export function Marketplace({
             </div>
           </div>
 
-          <div className="grid min-w-0 gap-3">
-            <p className="aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>Source</p>
-            <div className="grid min-w-0 gap-2">
-              <Button className="w-full justify-start overflow-hidden text-left" variant={sourceId === "all" ? "aurora" : "neutral"} size="sm" onClick={() => setSourceId("all")}>All sources</Button>
-              {sources.map((source) => (
-                <Button key={source.id} className="w-full justify-start overflow-hidden text-left" variant={sourceId === source.id ? "rose" : "neutral"} size="sm" onClick={() => setSourceId(source.id)}>
-                  {source.name}
-                </Button>
-              ))}
-            </div>
-          </div>
-
           <div className="grid min-w-0 gap-2 border-t pt-4" style={{ borderColor: "var(--aurora-border-default)" }}>
-            <p className="aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>Sources</p>
+            <div className="flex items-center justify-between gap-3">
+              <p className="aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>Sources</p>
+              <Button variant={sourceId === "all" ? "aurora" : "neutral"} size="sm" onClick={() => setSourceId("all")}>
+                All sources
+              </Button>
+            </div>
             {sources.map((source) => (
-              <SourceCard key={source.id} source={source} onClick={() => { setLens("all"); setSourceId(source.id) }} />
+              <SourceCard
+                key={source.id}
+                source={source}
+                selected={sourceId === source.id}
+                onClick={() => {
+                  setLens("all")
+                  setSourceId((current) => current === source.id ? "all" : source.id)
+                }}
+              />
             ))}
           </div>
         </aside>
