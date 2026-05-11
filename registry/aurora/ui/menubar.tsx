@@ -13,6 +13,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "./dropdown-menu"
+import { Button } from "./button"
 import { cn } from "@/lib/utils"
 
 export type MenubarProps = React.HTMLAttributes<HTMLDivElement>
@@ -48,11 +49,13 @@ export const MenubarRadioItem = DropdownMenuRadioItem
 export const MenubarTrigger = React.forwardRef<HTMLButtonElement, MenubarTriggerProps>(
   ({ className, style, type = "button", ...props }, ref) => (
     <DropdownMenuTrigger asChild>
-      <button
+      <Button
         ref={ref}
         role="menuitem"
         aria-haspopup="menu"
         type={type}
+        variant="plain"
+        size="unstyled"
         className={cn(
           "rounded-[8px] px-3 py-1.5 aurora-text-control transition-colors duration-150",
           "focus-visible:outline-none data-[state=open]:bg-[var(--aurora-hover-bg)]",

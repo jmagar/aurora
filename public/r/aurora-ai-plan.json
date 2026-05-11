@@ -16,7 +16,7 @@
   "files": [
     {
       "path": "registry/aurora/blocks/ai-elements/plan.tsx",
-      "content": "\"use client\"\n\nexport { Thinking as Plan } from \"@/registry/aurora/blocks/thinking/thinking\"\n",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Thinking, type ThinkingProps } from \"@/registry/aurora/blocks/thinking/thinking\"\n\nexport function Plan(props: Omit<ThinkingProps, \"type\">) {\n  return <Thinking type=\"plan\" {...props} />\n}\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/plan.tsx"
     }

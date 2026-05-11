@@ -656,10 +656,10 @@ export function Marketplace({
                         <td className="px-4 py-3" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
                           <div className="flex items-center gap-3">
                             <IdentityMark item={item} />
-                            <button type="button" onClick={() => handleAction(item)} className="min-w-0 text-left focus-visible:outline-none">
+                            <Button variant="plain" size="unstyled" type="button" onClick={() => handleAction(item)} className="min-w-0 text-left focus-visible:outline-none">
                               <p className="truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{item.name}</p>
                               <p className="truncate aurora-text-meta">{item.description || item.subtitle}</p>
-                            </button>
+                            </Button>
                           </div>
                         </td>
                         <td className="px-4 py-3 aurora-text-table" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>{KIND_META[item.kind].label}</td>

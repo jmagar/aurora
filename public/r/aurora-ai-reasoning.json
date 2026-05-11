@@ -16,7 +16,7 @@
   "files": [
     {
       "path": "registry/aurora/blocks/ai-elements/reasoning.tsx",
-      "content": "\"use client\"\n\nexport { Thinking as Reasoning } from \"@/registry/aurora/blocks/thinking/thinking\"\n",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { Thinking, type ThinkingProps } from \"@/registry/aurora/blocks/thinking/thinking\"\n\nexport function Reasoning(props: Omit<ThinkingProps, \"type\">) {\n  return <Thinking type=\"thinking\" {...props} />\n}\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/reasoning.tsx"
     }
