@@ -3,10 +3,6 @@
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export interface ToolCall {
   id: string
   tool: string
@@ -21,12 +17,20 @@ export interface ToolCallsProps {
   calls: ToolCall[]
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+type ToolCallGroup = {
+  tool: string
+  items: ToolCall[]
+}
 
-function groupConsecutive(calls: ToolCall[]): Array<{ tool: string; items: ToolCall[] }> {
-  const groups: Array<{ tool: string; items: ToolCall[] }> = []
+const statusColor: Record<ToolCall["status"], string> = {
+  running: "var(--aurora-accent-primary)",
+  completed: "var(--aurora-success)",
+  error: "var(--aurora-error)",
+}
+
+function groupConsecutive(calls: ToolCall[]): ToolCallGroup[] {
+  const groups: ToolCallGroup[] = []
+
   for (const call of calls) {
     const last = groups[groups.length - 1]
     if (last && last.tool === call.tool) {
@@ -35,6 +39,7 @@ function groupConsecutive(calls: ToolCall[]): Array<{ tool: string; items: ToolC
       groups.push({ tool: call.tool, items: [call] })
     }
   }
+
   return groups
 }
 
@@ -42,6 +47,7 @@ function durationMs(call: ToolCall): number | null {
   if (call.startedAt && call.completedAt) {
     return call.completedAt.getTime() - call.startedAt.getTime()
   }
+
   return null
 }
 
@@ -61,232 +67,261 @@ function prettifyToolName(tool: string): string {
 function firstArgPreview(args: Record<string, unknown>): string {
   const vals = Object.values(args)
   if (vals.length === 0) return ""
-  const v = vals[0]
-  if (typeof v === "string") return v.length > 60 ? v.slice(0, 60) + "…" : v
-  return JSON.stringify(v).slice(0, 60)
+
+  const first = vals[0]
+  if (typeof first === "string") {
+    return first.length > 72 ? `${first.slice(0, 72)}…` : first
+  }
+
+  return JSON.stringify(first).slice(0, 72)
 }
 
-// ---------------------------------------------------------------------------
-// Status icon
-// ---------------------------------------------------------------------------
+function toolGlyph(tool: string): string {
+  const segment = tool.split(/[._]/).filter(Boolean).at(-1) ?? tool
+  return segment.slice(0, 2).toUpperCase()
+}
 
-function StatusIcon({ status }: { status: ToolCall["status"] }) {
-  if (status === "running") {
-    return (
-      <span
-        style={{
-          display: "inline-block",
-          width: "14px",
-          height: "14px",
-          borderRadius: "50%",
-          border: "2px solid var(--aurora-accent-primary)",
-          borderTopColor: "transparent",
-          animation: "aurora-spin 0.7s linear infinite",
-          flexShrink: 0,
-        }}
-      />
-    )
-  }
-  if (status === "error") {
-    return (
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-        <circle cx="7" cy="7" r="6.5" stroke="var(--aurora-error)" strokeWidth="1.2" />
-        <path d="M7 4.5V7.5M7 9.5V9.6" stroke="var(--aurora-error)" strokeWidth="1.4" strokeLinecap="round" />
-      </svg>
-    )
-  }
+function Chevron({ expanded }: { expanded: boolean }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-      <circle cx="7" cy="7" r="6.5" stroke="var(--aurora-success)" strokeWidth="1.2" />
-      <path d="M4.5 7L6.2 8.7L9.5 5.3" stroke="var(--aurora-success)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden="true"
+      style={{
+        flexShrink: 0,
+        color: "var(--aurora-text-muted)",
+        transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+        transition: "transform 0.15s ease",
+      }}
+    >
+      <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
 
-// ---------------------------------------------------------------------------
-// Single call row
-// ---------------------------------------------------------------------------
+function StatusDot({ status, showConnector }: { status: ToolCall["status"]; showConnector: boolean }) {
+  const color = statusColor[status]
 
-function SingleCallRow({ call, compact = false }: { call: ToolCall; compact?: boolean }) {
-  const [expanded, setExpanded] = React.useState(false)
-  const ms = durationMs(call)
-  const preview = firstArgPreview(call.args)
+  return (
+    <span style={{ position: "relative", display: "flex", justifyContent: "center", paddingTop: 4 }}>
+      {showConnector && (
+        <span
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 14,
+            bottom: -22,
+            width: 1,
+            background: "var(--aurora-border-default)",
+          }}
+        />
+      )}
 
-  const rowBg =
-    call.status === "error"
-      ? "color-mix(in srgb, var(--aurora-error) 6%, transparent)"
-      : call.status === "running"
-      ? "transparent"
-      : "transparent"
+      {status === "running" ? (
+        <span
+          aria-hidden="true"
+          style={{
+            position: "relative",
+            display: "inline-flex",
+            width: 10,
+            height: 10,
+            borderRadius: "999px",
+            border: `2px solid ${color}`,
+            borderTopColor: "transparent",
+            animation: "aurora-spin 0.7s linear infinite",
+            background: "transparent",
+          }}
+        />
+      ) : (
+        <span
+          aria-hidden="true"
+          style={{
+            position: "relative",
+            display: "inline-flex",
+            width: 10,
+            height: 10,
+            borderRadius: "999px",
+            background: color,
+            boxShadow: `0 0 10px ${color}`,
+          }}
+        />
+      )}
+    </span>
+  )
+}
 
-  const borderLeft =
-    call.status === "error"
-      ? "2px solid var(--aurora-error)"
-      : call.status === "running"
-      ? "2px solid var(--aurora-accent-primary)"
-      : "2px solid var(--aurora-success)"
+function ToolBadge({ tool }: { tool: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        display: "inline-flex",
+        minWidth: 22,
+        height: 22,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 8,
+        border: "1px solid var(--aurora-border-default)",
+        background: "var(--aurora-control-surface)",
+        color: "var(--aurora-text-muted)",
+        fontFamily: "var(--aurora-font-mono)",
+        fontSize: 10,
+        fontWeight: 700,
+        letterSpacing: "0.04em",
+      }}
+    >
+      {toolGlyph(tool)}
+    </span>
+  )
+}
 
+function DetailCard({
+  label,
+  children,
+  tone = "var(--aurora-text-primary)",
+}: {
+  label: string
+  children: React.ReactNode
+  tone?: string
+}) {
   return (
     <div
       style={{
-        background: rowBg,
-        borderLeft,
-        marginLeft: compact ? "0" : "0",
+        background: "var(--aurora-control-surface)",
+        border: "1px solid var(--aurora-border-default)",
+        borderRadius: 12,
+        padding: "9px 11px",
+        color: tone,
+        fontSize: 12,
+        fontFamily: "var(--aurora-font-mono)",
+        whiteSpace: "pre-wrap",
+        wordBreak: "break-all",
+        overflowX: "auto",
       }}
     >
-      <Button variant="plain" size="unstyled"
-        onClick={() => setExpanded((o) => !o)}
+      <span
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
+          display: "block",
+          marginBottom: 6,
+          color: "var(--aurora-text-muted)",
+          fontSize: 10,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+        }}
+      >
+        {label}
+      </span>
+      {children}
+    </div>
+  )
+}
+
+function SingleCallRow({
+  call,
+  compact = false,
+  isLast = false,
+}: {
+  call: ToolCall
+  compact?: boolean
+  isLast?: boolean
+}) {
+  const [expanded, setExpanded] = React.useState(false)
+  const duration = durationMs(call)
+  const preview = firstArgPreview(call.args)
+
+  return (
+    <div style={{ position: "relative" }}>
+      <Button
+        variant="plain"
+        size="unstyled"
+        onClick={() => setExpanded((open) => !open)}
+        aria-expanded={expanded}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "20px minmax(0,1fr)",
+          alignItems: "start",
+          gap: 10,
           width: "100%",
-          padding: compact ? "5px 10px" : "8px 12px",
+          padding: compact ? "7px 0" : "8px 12px",
           background: "none",
           border: "none",
           cursor: "pointer",
           textAlign: "left",
         }}
       >
-        {call.status === "running" ? (
+        <StatusDot status={call.status} showConnector={!compact && !isLast} />
+
+        <span className="min-w-0">
           <span
             style={{
-              display: "inline-block",
-              width: "14px",
-              height: "14px",
-              borderRadius: "50%",
-              border: "2px solid var(--aurora-accent-primary)",
-              borderTopColor: "transparent",
-              animation: "aurora-spin 0.7s linear infinite",
-              flexShrink: 0,
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 8,
             }}
-          />
-        ) : (
-          <StatusIcon status={call.status} />
-        )}
+          >
+            <ToolBadge tool={call.tool} />
+            <span
+              style={{
+                color: "var(--aurora-text-primary)",
+                fontSize: compact ? 12 : 13,
+                fontWeight: 600,
+                lineHeight: 1.35,
+              }}
+            >
+              {prettifyToolName(call.tool)}
+            </span>
+            {duration !== null && (
+              <span
+                style={{
+                  marginLeft: "auto",
+                  color: "var(--aurora-text-muted)",
+                  fontSize: 11,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {formatDuration(duration)}
+              </span>
+            )}
+            <Chevron expanded={expanded} />
+          </span>
 
-        <span
-          style={{
-            fontSize: compact ? "12px" : "13px",
-            fontWeight: 500,
-            color: "var(--aurora-text-primary)",
-            fontFamily: "var(--aurora-font-mono)",
-            flexShrink: 0,
-          }}
-        >
-          {call.tool}
+          {preview && !expanded && (
+            <span
+              style={{
+                display: "block",
+                paddingTop: 4,
+                color: "var(--aurora-text-muted)",
+                fontSize: 12,
+                lineHeight: 1.45,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {preview}
+            </span>
+          )}
         </span>
-
-        {preview && (
-          <span
-            style={{
-              fontSize: "12px",
-              color: "var(--aurora-text-muted)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              minWidth: 0,
-              flex: 1,
-            }}
-          >
-            {preview}
-          </span>
-        )}
-
-        {ms !== null && (
-          <span
-            style={{
-              marginLeft: "auto",
-              fontSize: "11px",
-              color: "var(--aurora-text-muted)",
-              flexShrink: 0,
-              fontVariantNumeric: "tabular-nums",
-            }}
-          >
-            {formatDuration(ms)}
-          </span>
-        )}
-
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          aria-hidden="true"
-          style={{
-            flexShrink: 0,
-            color: "var(--aurora-text-muted)",
-            transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.15s",
-          }}
-        >
-          <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
       </Button>
 
       {expanded && (
         <div
           style={{
-            padding: "0 12px 10px",
+            marginLeft: 30,
+            padding: compact ? "0 0 10px" : "0 12px 12px 0",
             display: "flex",
             flexDirection: "column",
-            gap: "6px",
+            gap: 8,
           }}
         >
-          {/* Args */}
-          <div
-            style={{
-              background: "var(--aurora-control-surface)",
-              border: "1px solid var(--aurora-border-default)",
-              borderRadius: "10px",
-              padding: "8px 10px",
-              fontSize: "12px",
-              fontFamily: "var(--aurora-font-mono)",
-              color: "var(--aurora-text-muted)",
-              overflowX: "auto",
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-all",
-            }}
-          >
-            <span style={{ color: "var(--aurora-text-muted)", fontSize: "10px", display: "block", marginBottom: "4px", letterSpacing: "0.06em", textTransform: "uppercase" }}>args</span>
-            {JSON.stringify(call.args, null, 2)}
-          </div>
-
-          {/* Result */}
+          <DetailCard label="args">{JSON.stringify(call.args, null, 2)}</DetailCard>
           {call.result && (
-            <div
-              style={{
-                background: "var(--aurora-control-surface)",
-                border: "1px solid var(--aurora-border-default)",
-                borderRadius: "10px",
-                padding: "8px 10px",
-                fontSize: "12px",
-                fontFamily: "var(--aurora-font-mono)",
-                color:
-                  call.status === "error"
-                    ? "var(--aurora-error)"
-                    : "var(--aurora-text-primary)",
-                overflowX: "auto",
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-all",
-                maxHeight: "160px",
-                overflowY: "auto",
-              }}
-            >
-              <span
-                style={{
-                  color: "var(--aurora-text-muted)",
-                  fontSize: "10px",
-                  display: "block",
-                  marginBottom: "4px",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                }}
-              >
-                result
-              </span>
+            <DetailCard label="result" tone={call.status === "error" ? "var(--aurora-error)" : "var(--aurora-text-primary)"}>
               {call.result}
-            </div>
+            </DetailCard>
           )}
         </div>
       )}
@@ -294,160 +329,126 @@ function SingleCallRow({ call, compact = false }: { call: ToolCall; compact?: bo
   )
 }
 
-// ---------------------------------------------------------------------------
-// Group row
-// ---------------------------------------------------------------------------
-
-function GroupRow({ group }: { group: { tool: string; items: ToolCall[] } }) {
+function GroupRow({
+  group,
+  isLast = false,
+}: {
+  group: ToolCallGroup
+  isLast?: boolean
+}) {
   const [expanded, setExpanded] = React.useState(false)
-  const { tool, items } = group
+  const hasRunning = group.items.some((item) => item.status === "running")
+  const hasError = group.items.some((item) => item.status === "error")
+  const overallStatus: ToolCall["status"] = hasRunning ? "running" : hasError ? "error" : "completed"
 
-  const hasRunning = items.some((c) => c.status === "running")
-  const hasError = items.some((c) => c.status === "error")
-  const allDone = items.every((c) => c.status === "completed")
-
-  const overallStatus: ToolCall["status"] = hasRunning
-    ? "running"
-    : hasError
-    ? "error"
-    : "completed"
-
-  const totalMs = items.reduce((acc, c) => {
-    const ms = durationMs(c)
-    return ms !== null ? acc + ms : acc
+  const totalMs = group.items.reduce((sum, item) => {
+    const duration = durationMs(item)
+    return duration === null ? sum : sum + duration
   }, 0)
 
-  const label =
-    items.length === 1
-      ? prettifyToolName(tool)
-      : `${items.length} × ${prettifyToolName(tool)}`
-
-  const borderLeft =
-    overallStatus === "error"
-      ? "2px solid var(--aurora-error)"
-      : overallStatus === "running"
-      ? "2px solid var(--aurora-accent-primary)"
-      : "2px solid var(--aurora-success)"
-
   return (
-    <div style={{ borderLeft }}>
-      <Button variant="plain" size="unstyled"
-        onClick={() => setExpanded((o) => !o)}
+    <div style={{ position: "relative" }}>
+      <Button
+        variant="plain"
+        size="unstyled"
+        onClick={() => setExpanded((open) => !open)}
+        aria-expanded={expanded}
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
+          display: "grid",
+          gridTemplateColumns: "20px minmax(0,1fr)",
+          alignItems: "start",
+          gap: 10,
           width: "100%",
-          padding: "6px 10px",
+          padding: "8px 12px",
           background: "none",
           border: "none",
           cursor: "pointer",
           textAlign: "left",
         }}
-        aria-expanded={expanded}
       >
-        {overallStatus === "running" ? (
+        <StatusDot status={overallStatus} showConnector={!isLast} />
+
+        <span className="min-w-0">
           <span
             style={{
-              display: "inline-block",
-              width: "14px",
-              height: "14px",
-              borderRadius: "50%",
-              border: "2px solid var(--aurora-accent-primary)",
-              borderTopColor: "transparent",
-              animation: "aurora-spin 0.7s linear infinite",
-              flexShrink: 0,
-            }}
-          />
-        ) : (
-          <StatusIcon status={overallStatus} />
-        )}
-
-        <span
-          style={{
-            fontSize: "13px",
-            fontWeight: 500,
-            color: "var(--aurora-text-primary)",
-          }}
-        >
-          {label}
-        </span>
-
-        {allDone && totalMs > 0 && (
-          <span
-            style={{
-              marginLeft: "auto",
-              fontSize: "11px",
-              color: "var(--aurora-text-muted)",
-              fontVariantNumeric: "tabular-nums",
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 8,
             }}
           >
-            {formatDuration(totalMs)}
+            <ToolBadge tool={group.tool} />
+            <span
+              style={{
+                color: "var(--aurora-text-primary)",
+                fontSize: 13,
+                fontWeight: 600,
+                lineHeight: 1.35,
+              }}
+            >
+              {group.items.length} × {prettifyToolName(group.tool)}
+            </span>
+            {totalMs > 0 && (
+              <span
+                style={{
+                  marginLeft: "auto",
+                  color: "var(--aurora-text-muted)",
+                  fontSize: 11,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {formatDuration(totalMs)}
+              </span>
+            )}
+            <Chevron expanded={expanded} />
           </span>
-        )}
 
-        {items.length > 1 && (
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            aria-hidden="true"
+          <span
             style={{
-              flexShrink: 0,
-              marginLeft: allDone && totalMs > 0 ? "6px" : "auto",
+              display: "block",
+              paddingTop: 4,
               color: "var(--aurora-text-muted)",
-              transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 0.15s",
+              fontSize: 12,
+              lineHeight: 1.45,
             }}
           >
-            <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
+            {expanded ? "Hide grouped calls" : `${group.items.length} calls grouped together`}
+          </span>
+        </span>
       </Button>
 
-      {/* Expanded sub-list */}
-      {expanded && items.length > 1 && (
+      {expanded && (
         <div
           style={{
-            marginLeft: "22px",
+            marginLeft: 30,
+            marginRight: 12,
+            marginBottom: 10,
+            paddingLeft: 10,
             borderLeft: "1px solid var(--aurora-border-default)",
-            marginBottom: "4px",
           }}
         >
-          {items.map((call) => (
-            <SingleCallRow key={call.id} call={call} compact />
+          {group.items.map((call, index) => (
+            <SingleCallRow
+              key={call.id}
+              call={call}
+              compact
+              isLast={index === group.items.length - 1}
+            />
           ))}
-        </div>
-      )}
-
-      {/* Single item expanded inline */}
-      {expanded && items.length === 1 && (
-        <div style={{ marginLeft: "22px" }}>
-          <SingleCallRow call={items[0]} compact />
         </div>
       )}
     </div>
   )
 }
 
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
-
 export function ToolCalls({ calls }: ToolCallsProps) {
   const groups = groupConsecutive(calls)
 
   return (
     <>
-      {/* Keyframe styles injected once */}
       <style>{`
         @keyframes aurora-spin {
           to { transform: rotate(360deg); }
-        }
-        @keyframes aurora-shimmer {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
         }
       `}</style>
 
@@ -462,12 +463,11 @@ export function ToolCalls({ calls }: ToolCallsProps) {
           boxShadow: "var(--aurora-highlight-medium)",
         }}
       >
-        {/* Header */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "8px",
+            gap: 8,
             padding: "7px 12px",
             borderBottom: "1px solid var(--aurora-border-default)",
             background: "var(--aurora-panel-strong)",
@@ -478,7 +478,7 @@ export function ToolCalls({ calls }: ToolCallsProps) {
           </svg>
           <span
             style={{
-              fontSize: "12px",
+              fontSize: 12,
               fontWeight: 600,
               color: "var(--aurora-text-muted)",
               letterSpacing: "0.04em",
@@ -489,7 +489,7 @@ export function ToolCalls({ calls }: ToolCallsProps) {
           <span
             style={{
               marginLeft: "auto",
-              fontSize: "11px",
+              fontSize: 11,
               color: "var(--aurora-text-muted)",
               fontVariantNumeric: "tabular-nums",
             }}
@@ -498,19 +498,19 @@ export function ToolCalls({ calls }: ToolCallsProps) {
           </span>
         </div>
 
-        {/* Rows */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {groups.map((group, i) => (
+        <div style={{ display: "flex", flexDirection: "column", padding: "4px 0" }}>
+          {groups.map((group, index) => (
             <div
-              key={`${group.tool}-${i}`}
+              key={`${group.tool}-${index}`}
               style={{
-                borderBottom:
-                  i < groups.length - 1
-                    ? "1px solid var(--aurora-border-default)"
-                    : "none",
+                borderBottom: index < groups.length - 1 ? "1px solid var(--aurora-border-default)" : "none",
               }}
             >
-              <GroupRow group={group} />
+              {group.items.length === 1 ? (
+                <SingleCallRow call={group.items[0]} isLast={index === groups.length - 1} />
+              ) : (
+                <GroupRow group={group} isLast={index === groups.length - 1} />
+              )}
             </div>
           ))}
 
@@ -519,7 +519,7 @@ export function ToolCalls({ calls }: ToolCallsProps) {
               style={{
                 padding: "20px 12px",
                 textAlign: "center",
-                fontSize: "13px",
+                fontSize: 13,
                 color: "var(--aurora-text-muted)",
               }}
             >
