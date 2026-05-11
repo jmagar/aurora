@@ -47,8 +47,8 @@ export function LabbyWordmark({ fontSize = 30, style, ...props }: LabbyWordmarkP
       }}
       {...props}
     >
-      <span>Labb</span>
-      <span style={{ color: "var(--aurora-accent-pink)" }}>y</span>
+      <span>Lab</span>
+      <span style={{ color: "var(--aurora-accent-primary)" }}>by</span>
     </span>
   )
 }
