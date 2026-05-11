@@ -462,6 +462,10 @@ export function Marketplace({
     const set = new Set(catalogItems.map((item) => item.kind))
     return [...set].filter((value) => value !== "source")
   }, [catalogItems])
+  const activeSource = React.useMemo(
+    () => sources.find((source) => source.id === sourceId),
+    [sourceId, sources]
+  )
 
   function handleAction(item: MarketplaceCatalogItem) {
     setSelected(item)
@@ -566,11 +570,63 @@ export function Marketplace({
             </div>
           </div>
 
+          {activeSource ? (
+            <div
+              className="mb-4 grid gap-3 rounded-[10px] border p-4 sm:grid-cols-[minmax(0,1fr)_auto]"
+              style={{
+                background: "color-mix(in srgb, var(--aurora-accent-primary) 6%, var(--aurora-panel-medium))",
+                borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 30%, var(--aurora-border-strong))",
+              }}
+            >
+              <div className="flex min-w-0 items-start gap-3">
+                <div
+                  className="flex size-10 shrink-0 items-center justify-center rounded-[8px] border"
+                  style={{
+                    background: "var(--aurora-control-surface)",
+                    borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 42%, var(--aurora-border-strong))",
+                    color: "var(--aurora-accent-strong)",
+                    fontFamily: "var(--aurora-font-display)",
+                    fontWeight: 800,
+                  }}
+                >
+                  {identityInitials(activeSource.name)}
+                </div>
+                <div className="min-w-0">
+                  <p className="aurora-text-label" style={{ color: "var(--aurora-accent-strong)" }}>
+                    Source filter active
+                  </p>
+                  <p className="mt-1 truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>
+                    {activeSource.name}
+                  </p>
+                  <p className="mt-1 line-clamp-2 aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)" }}>
+                    {activeSource.description}
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <Badge variant="rose">{activeSource.installedCount} installed</Badge>
+                    <Badge>{activeSource.pluginCount} available</Badge>
+                    <span className="truncate aurora-text-code" style={{ color: "var(--aurora-text-muted)", fontSize: 11 }}>
+                      {activeSource.repository ?? activeSource.id}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-start sm:justify-end">
+                <Button variant="neutral" type="button" onClick={() => setSourceId("all")}>
+                  Clear source
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
           {filteredItems.length === 0 ? (
             <EmptyState
               icon={<ShoppingBag className="size-5" aria-hidden />}
-              title="No marketplace entries found"
-              description="Try a different search, switch the source filter, or clear the current lens to bring installable entries back into view."
+              title={query ? `No results for “${query}”` : "No marketplace entries found"}
+              description={
+                activeSource
+                  ? `No ${type === "all" ? "entries" : KIND_META[type].label.toLowerCase()} from ${activeSource.name} match the current filters.`
+                  : "Try a different search, switch the source filter, or clear the current lens to bring installable entries back into view."
+              }
               action={
                 <Button variant="neutral" type="button" onClick={clearFilters}>
                   Clear filters
@@ -596,7 +652,7 @@ export function Marketplace({
                   </thead>
                   <tbody>
                     {filteredItems.map((item) => (
-                      <tr key={item.id}>
+                      <tr key={item.id} className="transition-colors hover:bg-[color-mix(in_srgb,var(--aurora-accent-primary)_4%,transparent)]">
                         <td className="px-4 py-3" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
                           <div className="flex items-center gap-3">
                             <IdentityMark item={item} />
@@ -628,12 +684,38 @@ export function Marketplace({
       <Sheet open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle style={{ fontFamily: "var(--aurora-font-display)", fontSize: 18, fontWeight: 760 }}>
-              {selected?.name ?? "Marketplace item"}
-            </SheetTitle>
-            <SheetDescription className="aurora-text-body-sm">
-              {selected?.description}
-            </SheetDescription>
+            {selected ? (
+              <div className="grid gap-4">
+                <div className="flex min-w-0 items-start gap-3">
+                  <IdentityMark item={selected} />
+                  <div className="min-w-0">
+                    <SheetTitle style={{ fontFamily: "var(--aurora-font-display)", fontSize: 18, fontWeight: 760 }}>
+                      {selected.name}
+                    </SheetTitle>
+                    <SheetDescription className="mt-1 truncate aurora-text-meta">
+                      {selected.subtitle}
+                    </SheetDescription>
+                  </div>
+                </div>
+                <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)" }}>
+                  {selected.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant={selected.kind === "acp_agent" ? "rose" : "default"}>{KIND_META[selected.kind].label}</Badge>
+                  {selected.sourceName ? <Badge variant="rose">{selected.sourceName}</Badge> : null}
+                  <Badge variant={selected.hasUpdate ? "warn" : selected.installed ? "success" : "default"}>
+                    {selected.hasUpdate ? "Update available" : selected.installed ? "Installed" : selected.builtin ? "Built-in" : "Available"}
+                  </Badge>
+                </div>
+              </div>
+            ) : (
+              <>
+                <SheetTitle style={{ fontFamily: "var(--aurora-font-display)", fontSize: 18, fontWeight: 760 }}>
+                  Marketplace item
+                </SheetTitle>
+                <SheetDescription className="aurora-text-body-sm">Browse package details.</SheetDescription>
+              </>
+            )}
           </SheetHeader>
           <SheetBody>
             {selected && (
@@ -643,13 +725,13 @@ export function Marketplace({
                   <DescriptionItem label="Source" value={selected.sourceName ?? selected.sourceId ?? "None"} />
                   <DescriptionItem label="Ecosystem" value={selected.ecosystem} />
                   <DescriptionItem label="Distribution" value={selected.distribution ?? "Latest"} />
-                  <DescriptionItem label="Version" value={selected.version ?? "Latest"} />
+                  <DescriptionItem label="Version" value={versionLabel(selected.version, selected.updatedAt)} />
                   <DescriptionItem label="State" value={selected.hasUpdate ? "Update available" : selected.installed ? "Installed" : selected.builtin ? "Built-in" : "Available"} />
                 </DescriptionList>
                 <div className="flex flex-wrap gap-2">
                   {(selected.tags ?? []).map((tag) => <Badge key={tag}>{tag}</Badge>)}
                 </div>
-                <Button variant={selected.kind === "acp_agent" ? "rose" : "aurora"}>
+                <Button variant={selected.kind === "acp_agent" ? "rose" : "aurora"} onClick={() => onItemAction?.(selected)}>
                   {itemActionLabel(selected, readOnlyPreview)}
                 </Button>
               </div>
