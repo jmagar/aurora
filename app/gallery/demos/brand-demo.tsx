@@ -13,7 +13,7 @@ export default function BrandDemo() {
       <GalleryPageIntro
         eyebrow="Brand"
         heading="Logo & mark"
-        description='The Labby stacked-plane mark and wordmark at every usage size. The mark uses four rhombus planes in depth, and the wordmark keeps the pink accent on the "y".'
+        description='The Labby stacked-plane mark and wordmark at every usage size. The mark uses four rhombus planes in depth, and the wordmark carries the blue accent across the final "by".'
       />
 
       {/* Mark sizes */}
