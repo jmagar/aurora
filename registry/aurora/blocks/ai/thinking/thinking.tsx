@@ -3,6 +3,11 @@
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 
+// Aurora violet tokens represent AI/automation identity.
+// Do not use for semantic state (success/warn/error) — use the semantic token layer for that.
+const AI_ACCENT        = "var(--aurora-accent-violet)"
+const AI_ACCENT_STRONG = "var(--aurora-accent-violet-strong)"
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -74,7 +79,7 @@ function StepIcon({ status }: { status: StepStatus }) {
           width: "16px",
           height: "16px",
           borderRadius: "50%",
-          border: "2px solid var(--aurora-accent-primary)",
+          border: `2px solid ${AI_ACCENT}`,
           borderTopColor: "transparent",
           animation: "aurora-spin 0.7s linear infinite",
           flexShrink: 0,
@@ -162,7 +167,7 @@ function Cursor() {
         display: "inline-block",
         width: "2px",
         height: "1em",
-        background: "var(--aurora-accent-primary)",
+        background: AI_ACCENT,
         marginLeft: "2px",
         verticalAlign: "text-bottom",
         borderRadius: "1px",
@@ -189,9 +194,7 @@ function ThinkingBlock({
 }) {
   const [open, setOpen] = React.useState(defaultOpen ?? false)
 
-  const borderLeftColor = isStreaming
-    ? "var(--aurora-accent-primary)"
-    : "var(--aurora-border-strong)"
+  const borderLeftColor = isStreaming ? AI_ACCENT : "var(--aurora-border-strong)"
 
   const showSkeleton = isStreaming && !content
   const label = isStreaming && !duration
@@ -235,7 +238,7 @@ function ThinkingBlock({
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path
             d="M7 1.5C5.9 1.5 5 2.4 5 3.5C4.2 3.5 3.5 4.2 3.5 5C2.7 5 2 5.7 2 6.5C2 7.5 2.7 8.2 3.5 8.4V10C3.5 11.1 4.4 12 5.5 12H8.5C9.6 12 10.5 11.1 10.5 10V8.4C11.3 8.2 12 7.5 12 6.5C12 5.7 11.3 5 10.5 5C10.5 4.2 9.8 3.5 9 3.5C9 2.4 8.1 1.5 7 1.5Z"
-            stroke="var(--aurora-accent-primary)"
+            stroke={AI_ACCENT}
             strokeWidth="1.2"
             fill="none"
           />

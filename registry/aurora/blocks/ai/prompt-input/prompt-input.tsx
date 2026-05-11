@@ -370,14 +370,14 @@ export function PromptInput({
                 border: "none",
                 cursor: "pointer",
                 textAlign: "left",
-                borderLeft: i === slashIndex ? "2px solid var(--aurora-accent-primary)" : "2px solid transparent",
+                borderLeft: i === slashIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
               }}
             >
               <span
                 style={{
                   fontFamily: "var(--aurora-font-mono)",
                   fontSize: "13px",
-                  color: "var(--aurora-accent-primary)",
+                  color: "var(--aurora-accent-violet)",
                   minWidth: "90px",
                 }}
               >
@@ -440,7 +440,7 @@ export function PromptInput({
                 border: "none",
                 cursor: "pointer",
                 textAlign: "left",
-                borderLeft: i === mentionIndex ? "2px solid var(--aurora-accent-primary)" : "2px solid transparent",
+                borderLeft: i === mentionIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
                 color: "var(--aurora-text-primary)",
               }}
             >
@@ -536,11 +536,11 @@ export function PromptInput({
                   alignItems: "center",
                   gap: "4px",
                   padding: "2px 8px 2px 6px",
-                  background: "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
-                  border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
+                  background: "color-mix(in srgb, var(--aurora-accent-violet) 12%, transparent)",
+                  border: "1px solid color-mix(in srgb, var(--aurora-accent-violet) 30%, transparent)",
                   borderRadius: "8px",
                   fontSize: "12px",
-                  color: "var(--aurora-accent-primary)",
+                  color: "var(--aurora-accent-violet)",
                   fontWeight: 500,
                 }}
               >

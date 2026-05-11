@@ -92,7 +92,7 @@ export default function PromptInputDemo() {
                   height: "28px",
                   borderRadius: "50%",
                   background:
-                    "linear-gradient(135deg, var(--aurora-accent-primary) 0%, var(--aurora-accent-pink) 100%)",
+                    "linear-gradient(135deg, var(--aurora-accent-violet) 0%, var(--aurora-accent-pink) 100%)",
                   flexShrink: 0,
                   display: "flex",
                   alignItems: "center",
@@ -148,7 +148,7 @@ export default function PromptInputDemo() {
                     height: "28px",
                     borderRadius: "50%",
                     background:
-                      "linear-gradient(135deg, var(--aurora-accent-primary) 0%, var(--aurora-accent-pink) 100%)",
+                      "linear-gradient(135deg, var(--aurora-accent-violet) 0%, var(--aurora-accent-pink) 100%)",
                     flexShrink: 0,
                     display: "flex",
                     alignItems: "center",
@@ -180,7 +180,7 @@ export default function PromptInputDemo() {
                       width: "8px",
                       height: "8px",
                       borderRadius: "50%",
-                      border: "1.5px solid var(--aurora-accent-primary)",
+                      border: "1.5px solid var(--aurora-accent-violet)",
                       borderTopColor: "transparent",
                       animation: "spin 0.7s linear infinite",
                     }}
@@ -214,6 +214,16 @@ export default function PromptInputDemo() {
         <p
           style={{
             marginTop: "10px",
+            fontSize: "11px",
+            color: "var(--aurora-text-muted)",
+            textAlign: "center",
+          }}
+        >
+          Violet marks AI and automation affordances. Semantic colors stay reserved for system meaning.
+        </p>
+        <p
+          style={{
+            marginTop: "6px",
             fontSize: "11px",
             color: "var(--aurora-text-muted)",
             textAlign: "center",
