@@ -65,7 +65,21 @@ const badgeToneMap: Record<BadgeTone, ToneTokens> = {
 }
 
 function resolveTone(variant: BadgeTone | "default" | undefined): BadgeTone {
-  if (!variant || variant === "default") return "neutral"
+  if (!variant) return "neutral"
+  if (variant === "default") {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn('[Aurora Badge] variant="default" is deprecated. Use variant="neutral" instead.')
+    }
+    return "neutral"
+  }
+  if (!(variant in badgeToneMap)) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        `[Aurora Badge] Unknown variant "${variant}". Valid values: ${Object.keys(badgeToneMap).join(", ")}. Falling back to "neutral".`
+      )
+    }
+    return "neutral"
+  }
   return variant
 }
 
@@ -121,8 +135,5 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
 )
 Badge.displayName = "Badge"
 
-// Note: badgeVariants (CVA export) has been removed.
-// Components that imported badgeVariants for composition should use
-// className overrides on the Badge component directly.
 export { Badge }
 export default Badge

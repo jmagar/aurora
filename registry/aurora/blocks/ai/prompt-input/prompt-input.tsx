@@ -156,6 +156,7 @@ export function PromptInput({
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const objectUrlsRef = React.useRef<string[]>([])
   const blurTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const prevAttachmentsRef = React.useRef<Attachment[]>(attachments)
 
   const [isFocused, setIsFocused] = React.useState(false)
   const [showModelMenu, setShowModelMenu] = React.useState(false)
@@ -178,6 +179,19 @@ export function PromptInput({
     el.style.height = "auto"
     el.style.height = Math.min(el.scrollHeight, 200) + "px"
   }, [value])
+
+  // Revoke object URLs when parent removes attachments to prevent silent memory leaks
+  React.useEffect(() => {
+    const prev = prevAttachmentsRef.current
+    const removed = prev.filter((p) => !attachments.find((c) => c.id === p.id))
+    removed.forEach((att) => {
+      if (att.url) {
+        URL.revokeObjectURL(att.url)
+        objectUrlsRef.current = objectUrlsRef.current.filter((u) => u !== att.url)
+      }
+    })
+    prevAttachmentsRef.current = attachments
+  }, [attachments])
 
   const filteredSlash = slashCommands.filter((c) =>
     c.label.toLowerCase().includes(slashQuery.toLowerCase())
@@ -303,11 +317,18 @@ export function PromptInput({
       const isImage = f.type.startsWith("image/")
       let url: string | undefined
       if (isImage) {
-        url = URL.createObjectURL(f)
-        objectUrlsRef.current.push(url)
+        try {
+          url = URL.createObjectURL(f)
+          objectUrlsRef.current.push(url)
+        } catch (err) {
+          if (process.env.NODE_ENV !== "production") {
+            console.error("[Aurora PromptInput] Failed to create object URL for image:", f.name, err)
+          }
+          return
+        }
       }
       const att: Attachment = {
-        id: `${Date.now()}-${f.name}`,
+        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}-${f.name}`,
         name: f.name,
         type: isImage ? "image" : "file",
         url,

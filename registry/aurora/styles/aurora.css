@@ -56,8 +56,6 @@
   --aurora-error:   #c78490;
   --aurora-error-lift: #d9909a;
   --aurora-error-gradient: linear-gradient(180deg, var(--aurora-error-lift) 0%, var(--aurora-error) 100%);
-  --aurora-status-offline: #3a5568;
-
   /* Semantic state families — surface / border / foreground per state */
   --aurora-info:            #72c8f5;
   --aurora-info-surface:    color-mix(in srgb, var(--aurora-info) 12%, var(--aurora-panel-medium));
@@ -90,7 +88,7 @@
   --aurora-pressed-bg:        color-mix(in srgb, var(--aurora-accent-primary) 20%, transparent);
   --aurora-focus-ring-strong: color-mix(in srgb, var(--aurora-accent-primary) 52%, transparent);
 
-  /* --aurora-status-offline is deprecated; alias to --aurora-neutral for gradual migration */
+  /* --aurora-status-offline is deprecated; alias to --aurora-neutral. Remove after all consumers migrate. */
   --aurora-status-offline: var(--aurora-neutral);
 
   /* Code accents */
@@ -214,7 +212,6 @@
   --aurora-warn:    #8a6914;
   --aurora-error:   #9c3545;
   --aurora-error-lift: #b84a5b;
-  --aurora-status-offline: #6f8793;
 
   /* Semantic families (light) */
   --aurora-info:            #0f7db8;
@@ -248,7 +245,7 @@
   --aurora-pressed-bg:        color-mix(in srgb, var(--aurora-accent-primary) 16%, var(--aurora-panel-medium));
   --aurora-focus-ring-strong: color-mix(in srgb, var(--aurora-accent-primary) 40%, transparent);
 
-  /* Deprecated alias (light) */
+  /* --aurora-status-offline is deprecated; alias to --aurora-neutral. Remove after all consumers migrate. */
   --aurora-status-offline: var(--aurora-neutral);
   --aurora-code-type: #24536c;
   --aurora-code-function: #01579b;
