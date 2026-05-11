@@ -224,7 +224,7 @@ function AiExample({ slug }: { slug: string }) {
 
 export function AiElementPage({ slug }: { slug: string }) {
   const title = AI_TITLES[slug] ?? slug
-  const compactSurface = slug === "reasoning"
+  const compactSurface = slug === "reasoning" || slug === "tool"
 
   return (
     <div className="grid gap-6">
