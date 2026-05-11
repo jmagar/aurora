@@ -1,20 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn, devWarn } from "@/lib/utils"
+import { toneColor } from "./status-indicator"
 import type { StatusTone } from "./status-indicator"
 
 export type TimelineProps = React.HTMLAttributes<HTMLOListElement>
-
-const toneColor: Record<StatusTone, { color: string; shadow: string }> = {
-  online:     { color: "var(--aurora-success)",        shadow: "0 0 10px var(--aurora-success)" },
-  syncing:    { color: "var(--aurora-info)",           shadow: "0 0 10px var(--aurora-info)" },
-  queued:     { color: "var(--aurora-neutral)",        shadow: "0 0 10px var(--aurora-neutral)" },
-  degraded:   { color: "var(--aurora-warn)",           shadow: "0 0 10px var(--aurora-warn)" },
-  offline:    { color: "var(--aurora-neutral)",        shadow: "0 0 10px var(--aurora-neutral)" },
-  error:      { color: "var(--aurora-error)",          shadow: "0 0 10px var(--aurora-error)" },
-  automating: { color: "var(--aurora-accent-violet)",  shadow: "0 0 10px var(--aurora-accent-violet)" },
-}
 
 const Timeline = React.forwardRef<HTMLOListElement, TimelineProps>(({ className, ...props }, ref) => (
   <ol ref={ref} className={cn("space-y-0", className)} {...props} />
@@ -30,8 +21,8 @@ export interface TimelineItemProps extends Omit<React.LiHTMLAttributes<HTMLLIEle
 const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
   ({ className, tone = "queued", title, meta, children, ...props }, ref) => {
     const safeTone = tone in toneColor ? tone : "queued"
-    if (tone !== safeTone && process.env.NODE_ENV !== "production") {
-      console.warn(`[Aurora TimelineItem] Unknown tone "${tone}". Valid values: ${Object.keys(toneColor).join(", ")}. Falling back to "queued".`)
+    if (tone !== safeTone) {
+      devWarn(`[Aurora TimelineItem] Unknown tone "${tone}". Valid values: ${Object.keys(toneColor).join(", ")}. Falling back to "queued".`)
     }
 
     return (

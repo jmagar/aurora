@@ -4,10 +4,6 @@ import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export interface Attachment {
   id: string
   name: string
@@ -44,10 +40,6 @@ export interface PromptInputProps {
   mentionItems?: MentionItem[]
 }
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
 const DEFAULT_MODELS = [
   { id: "claude-opus-4-5", label: "Claude Opus 4.5" },
   { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" },
@@ -69,9 +61,10 @@ const DEFAULT_MENTIONS: MentionItem[] = [
   { id: "agent-reviewer", label: "Reviewer Agent", kind: "agent" },
 ]
 
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
+function insertTrigger(current: string, char: string, setter: (v: string) => void) {
+  const sep = current.length > 0 && !current.endsWith(" ") ? " " : ""
+  setter(current + sep + char)
+}
 
 function AttachIcon() {
   return (
@@ -133,10 +126,6 @@ function FileIcon({ kind }: { kind: "file" | "agent" | "folder" }) {
   )
 }
 
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
-
 export function PromptInput({
   value,
   onChange,
@@ -161,18 +150,15 @@ export function PromptInput({
   const [isFocused, setIsFocused] = React.useState(false)
   const [showModelMenu, setShowModelMenu] = React.useState(false)
 
-  // Slash command popup
   const [slashOpen, setSlashOpen] = React.useState(false)
   const [slashQuery, setSlashQuery] = React.useState("")
   const [slashIndex, setSlashIndex] = React.useState(0)
 
-  // Mention popup
   const [mentionOpen, setMentionOpen] = React.useState(false)
   const [mentionQuery, setMentionQuery] = React.useState("")
   const [mentionIndex, setMentionIndex] = React.useState(0)
   const [selectedMentions, setSelectedMentions] = React.useState<MentionItem[]>([])
 
-  // Auto-resize textarea
   React.useEffect(() => {
     const el = textareaRef.current
     if (!el) return
@@ -183,7 +169,8 @@ export function PromptInput({
   // Revoke object URLs when parent removes attachments to prevent silent memory leaks
   React.useEffect(() => {
     const prev = prevAttachmentsRef.current
-    const removed = prev.filter((p) => !attachments.find((c) => c.id === p.id))
+    const currentIds = new Set(attachments.map((c) => c.id))
+    const removed = prev.filter((p) => !currentIds.has(p.id))
     removed.forEach((att) => {
       if (att.url) {
         URL.revokeObjectURL(att.url)
@@ -338,16 +325,9 @@ export function PromptInput({
     e.target.value = ""
   }
 
-  // Revoke object URLs on unmount to prevent memory leaks
   React.useEffect(() => {
     return () => {
       objectUrlsRef.current.forEach((u) => URL.revokeObjectURL(u))
-    }
-  }, [])
-
-  // Clear blur timer on unmount to prevent setState on unmounted component
-  React.useEffect(() => {
-    return () => {
       if (blurTimerRef.current) clearTimeout(blurTimerRef.current)
     }
   }, [])
@@ -764,8 +744,7 @@ export function PromptInput({
           {/* Slash command trigger */}
           <ToolbarButton
             onClick={() => {
-              const sep = value.length > 0 && !value.endsWith(" ") ? " " : ""
-              onChange(value + sep + "/")
+              insertTrigger(value, "/", onChange)
               setSlashQuery("")
               setSlashIndex(0)
               setSlashOpen(true)
@@ -783,8 +762,7 @@ export function PromptInput({
           {/* Mention trigger */}
           <ToolbarButton
             onClick={() => {
-              const sep = value.length > 0 && !value.endsWith(" ") ? " " : ""
-              onChange(value + sep + "@")
+              insertTrigger(value, "@", onChange)
               setMentionQuery("")
               setMentionIndex(0)
               setMentionOpen(true)
@@ -855,10 +833,6 @@ export function PromptInput({
     </div>
   )
 }
-
-// ---------------------------------------------------------------------------
-// Toolbar icon button
-// ---------------------------------------------------------------------------
 
 function ToolbarButton({
   children,

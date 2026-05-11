@@ -1,13 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn, devWarn } from "@/lib/utils"
 
-// Aurora badge tones: semantic roles (info/success/warn/error/neutral)
-// and expressive identities (rose/violet).
-// "default" is preserved as a backward-compatible alias for "neutral" —
-// existing callers using variant="default" for running/provisioning states
-// will render with neutral styling without any prop changes.
 export type BadgeTone = "info" | "success" | "warn" | "error" | "neutral" | "rose" | "violet"
 
 type ToneTokens = { text: string; border: string; bg: string; dot: string; dotShadow: string }
@@ -67,17 +62,13 @@ const badgeToneMap: Record<BadgeTone, ToneTokens> = {
 function resolveTone(variant: BadgeTone | "default" | undefined): BadgeTone {
   if (!variant) return "neutral"
   if (variant === "default") {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn('[Aurora Badge] variant="default" is deprecated. Use variant="neutral" instead.')
-    }
+    devWarn('[Aurora Badge] variant="default" is deprecated. Use variant="neutral" instead.')
     return "neutral"
   }
   if (!(variant in badgeToneMap)) {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn(
-        `[Aurora Badge] Unknown variant "${variant}". Valid values: ${Object.keys(badgeToneMap).join(", ")}. Falling back to "neutral".`
-      )
-    }
+    devWarn(
+      `[Aurora Badge] Unknown variant "${variant}". Valid values: ${Object.keys(badgeToneMap).join(", ")}. Falling back to "neutral".`
+    )
     return "neutral"
   }
   return variant

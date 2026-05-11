@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn, devWarn } from "@/lib/utils"
 
 export type CalloutVariant = "info" | "success" | "warn" | "error" | "neutral" | "rose" | "violet"
 
@@ -75,8 +75,8 @@ export interface CalloutProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
 const Callout = React.forwardRef<HTMLDivElement, CalloutProps>(
   ({ className, variant = "info", title, icon, children, style, ...props }, ref) => {
     const safeVariant: CalloutVariant = variant in toneMap ? variant : "info"
-    if (safeVariant !== variant && process.env.NODE_ENV !== "production") {
-      console.warn(`[Aurora Callout] Unknown variant "${variant}". Falling back to "info".`)
+    if (safeVariant !== variant) {
+      devWarn(`[Aurora Callout] Unknown variant "${variant}". Falling back to "info".`)
     }
     const { accent, bg, border, text, accentShadow, accentInset } = toneMap[safeVariant]
 
