@@ -93,6 +93,11 @@ const AI_TITLES: Record<string, string> = {
   "open-in-chat": "Open in chat",
 }
 
+const AI_DESCRIPTIONS: Partial<Record<string, string>> = {
+  reasoning: "Compact reasoning stays collapsed until you need the full summary.",
+  tool: "A single inline tool event with expandable input and output.",
+}
+
 const sourceItems = [
   { title: "Gateway registry", href: "#", description: "Source-backed metadata", badge: "doc" },
   { title: "Runtime policy", href: "#", description: "Permission constraints", badge: "toml" },
@@ -225,13 +230,14 @@ function AiExample({ slug }: { slug: string }) {
 export function AiElementPage({ slug }: { slug: string }) {
   const title = AI_TITLES[slug] ?? slug
   const compactSurface = slug === "reasoning" || slug === "tool"
+  const description = AI_DESCRIPTIONS[slug] ?? `Aurora AI Elements page for ${title.toLowerCase()}, using the real registry implementation with compact operator styling.`
 
   return (
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow={`AI elements / ${slug}`}
         heading={title}
-        description={`Aurora AI Elements page for ${title.toLowerCase()}, using the real registry implementation with compact operator styling.`}
+        description={description}
       />
       <section
         className={compactSurface ? "inline-flex" : "grid gap-4"}

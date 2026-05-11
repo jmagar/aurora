@@ -84,56 +84,94 @@ export default function ToolCallsDemo() {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "var(--aurora-space-8)",
-        padding: "var(--aurora-space-8) var(--aurora-space-4)",
+        gap: "var(--aurora-space-6)",
+        padding: "var(--aurora-space-6) var(--aurora-space-4)",
+        maxWidth: 760,
       }}
     >
-      <div>
-        <h2
+      <div
+        style={{
+          display: "grid",
+          gap: 6,
+          padding: "14px 16px",
+          borderRadius: "var(--aurora-radius-2)",
+          border: "1px solid var(--aurora-border-strong)",
+          background: "var(--aurora-panel-strong)",
+          boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)",
+        }}
+      >
+        <p
           style={{
-            fontSize: "13px",
+            margin: 0,
+            fontSize: "12px",
             fontWeight: 600,
             color: "var(--aurora-text-muted)",
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            margin: "0 0 12px",
           }}
         >
-          Tool Calls — mixed statuses
-        </h2>
+          Tool vs tool calls
+        </p>
         <p
           style={{
-            fontSize: "12px",
-            color: "var(--aurora-text-muted)",
-            marginBottom: "12px",
+            margin: 0,
+            fontSize: "13px",
+            color: "var(--aurora-text-primary)",
+            lineHeight: 1.6,
           }}
         >
-          Completed ReadFile, completed Bash, running WriteFile, error Grep. Click any row to expand args/result.
+          <strong>Tool</strong> is the single inline invocation. <strong>Tool Calls</strong> is the stacked activity log when a reply runs more than one tool.
+        </p>
+      </div>
+
+      <div style={{ display: "grid", gap: 10 }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "var(--aurora-text-muted)",
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+          }}
+        >
+          Activity stack
+        </p>
+        <p
+          style={{
+            margin: 0,
+            fontSize: "12px",
+            color: "var(--aurora-text-muted)",
+            lineHeight: 1.55,
+          }}
+        >
+          Compact rows stay collapsed by default and only open when you need the input or output.
         </p>
         <ToolCalls calls={MIXED_CALLS} />
       </div>
 
-      <div>
-        <h3
+      <div style={{ display: "grid", gap: 10 }}>
+        <p
           style={{
-            fontSize: "13px",
+            margin: 0,
+            fontSize: "12px",
             fontWeight: 600,
             color: "var(--aurora-text-muted)",
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            margin: "0 0 12px",
           }}
         >
-          Tool Calls — grouped consecutive ReadFile
-        </h3>
+          Repeated calls
+        </p>
         <p
           style={{
+            margin: 0,
             fontSize: "12px",
             color: "var(--aurora-text-muted)",
-            marginBottom: "12px",
+            lineHeight: 1.55,
           }}
         >
-          Three consecutive ReadFile calls are automatically grouped into a single expandable row.
+          Keep this route when you want to show several related tool runs in sequence, even if the single-tool route stays minimal.
         </p>
         <ToolCalls calls={GROUPED_CALLS} />
       </div>
