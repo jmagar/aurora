@@ -18,6 +18,7 @@ import {
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 import { DescriptionItem, DescriptionList } from "@/registry/aurora/ui/description-list"
+import { EmptyState } from "@/registry/aurora/ui/empty-state"
 import { FilterBar, FilterSearch, FilterTagRose } from "@/registry/aurora/ui/filter-bar"
 import { Sheet, SheetBody, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/registry/aurora/ui/sheet"
 import { StatCard, StatGrid } from "@/registry/aurora/ui/stat-card"
@@ -222,6 +223,12 @@ function itemActionLabel(item: MarketplaceCatalogItem, readOnlyPreview: boolean)
   return "Install"
 }
 
+function versionLabel(version?: string, updatedAt?: string) {
+  if (!version) return updatedAt ?? "Latest"
+  if (version.toLowerCase() === "latest" || version.startsWith("v")) return version
+  return `v${version}`
+}
+
 function itemMatchesLens(item: MarketplaceCatalogItem, lens: MarketplaceLens) {
   if (lens === "all") return true
   if (lens === "installed") return Boolean(item.installed)
@@ -315,7 +322,7 @@ function CatalogCard({
       </div>
 
       <div className="flex items-center justify-between gap-3 border-t pt-3" style={{ borderColor: "var(--aurora-border-default)" }}>
-        <span className="aurora-text-meta">{item.version ? `v${item.version}` : item.updatedAt ?? "latest"}</span>
+        <span className="aurora-text-meta">{versionLabel(item.version, item.updatedAt)}</span>
         <Button variant={item.kind === "acp_agent" ? "rose" : "aurora"} size="sm" type="button" onClick={() => onAction?.(item)}>
           {itemActionLabel(item, readOnlyPreview)}
         </Button>
@@ -406,12 +413,13 @@ export function Marketplace({
     [sources]
   )
 
-  const allItems = React.useMemo(() => [...sourceItems, ...items], [items, sourceItems])
+  const catalogItems = React.useMemo(() => items, [items])
   const filteredItems = React.useMemo(() => {
+    const baseItems = lens === "sources" ? sourceItems : catalogItems
     const needle = query.trim().toLowerCase()
-    return allItems.filter((item) => {
-      const matchesLens = itemMatchesLens(item, lens)
-      const matchesType = type === "all" || item.kind === type
+    return baseItems.filter((item) => {
+      const matchesLens = lens === "sources" ? item.kind === "source" : itemMatchesLens(item, lens)
+      const matchesType = lens === "sources" ? true : type === "all" || item.kind === type
       const matchesSource = sourceId === "all" || item.sourceId === sourceId
       const text = [item.name, item.subtitle, item.description, item.sourceName, item.ecosystem, item.distribution, ...(item.tags ?? [])]
         .filter(Boolean)
@@ -419,25 +427,24 @@ export function Marketplace({
         .toLowerCase()
       return matchesLens && matchesType && matchesSource && (!needle || text.includes(needle))
     })
-  }, [allItems, lens, query, sourceId, type])
+  }, [catalogItems, lens, query, sourceId, sourceItems, type])
 
   const summary = React.useMemo(() => {
-    const catalog = allItems.filter((item) => item.kind !== "source")
     return {
-      all: allItems.length,
-      installed: catalog.filter((item) => item.installed).length,
-      plugins: catalog.filter((item) => item.kind === "plugin" || item.kind === "skill" || item.kind === "command").length,
-      mcpServers: catalog.filter((item) => item.kind === "mcp_server").length,
-      acpAgents: catalog.filter((item) => item.kind === "acp_agent").length,
+      all: catalogItems.length,
+      installed: catalogItems.filter((item) => item.installed).length,
+      plugins: catalogItems.filter((item) => item.kind === "plugin" || item.kind === "skill" || item.kind === "command").length,
+      mcpServers: catalogItems.filter((item) => item.kind === "mcp_server").length,
+      acpAgents: catalogItems.filter((item) => item.kind === "acp_agent").length,
       sources: sources.length,
-      updates: catalog.filter((item) => item.hasUpdate).length,
+      updates: catalogItems.filter((item) => item.hasUpdate).length,
     }
-  }, [allItems, sources.length])
+  }, [catalogItems, sources.length])
 
   const typeOptions = React.useMemo(() => {
-    const set = new Set(allItems.map((item) => item.kind))
+    const set = new Set(catalogItems.map((item) => item.kind))
     return [...set].filter((value) => value !== "source")
-  }, [allItems])
+  }, [catalogItems])
 
   function handleAction(item: MarketplaceCatalogItem) {
     setSelected(item)
@@ -445,19 +452,20 @@ export function Marketplace({
   }
 
   function clearFilters() {
+    setLens("all")
     setQuery("")
     setType("all")
     setSourceId("all")
   }
 
   return (
-    <section className="grid gap-5">
+    <section className="grid gap-5 overflow-x-hidden">
       <div className="rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-medium)", borderColor: "var(--aurora-border-default)" }}>
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
+        <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 max-w-3xl">
             <p className="aurora-text-eyebrow" style={{ color: "var(--aurora-text-muted)" }}>Operator catalog</p>
             <h2 className="aurora-text-section" style={{ fontSize: 28, marginTop: 8 }}>Marketplace</h2>
-            <p className="mt-2 max-w-3xl aurora-text-body" style={{ color: "var(--aurora-text-muted)" }}>
+            <p className="mt-2 aurora-text-body" style={{ color: "var(--aurora-text-muted)" }}>
               Browse Claude and Codex plugins, MCP Registry servers, ACP agents, and installable components through one Labby catalog.
             </p>
             {readOnlyPreview && (
@@ -466,16 +474,16 @@ export function Marketplace({
               </p>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="neutral" size="sm" onClick={() => setView(view === "cards" ? "table" : "cards")}>
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
+            <Button className="justify-center sm:justify-start" variant="neutral" size="sm" onClick={() => setView(view === "cards" ? "table" : "cards")}>
               {view === "cards" ? <LayoutList className="size-3.5" aria-hidden /> : <Grid2X2 className="size-3.5" aria-hidden />}
               {view === "cards" ? "Table view" : "Card view"}
             </Button>
-            <Button variant="neutral" size="sm" onClick={onAddSource}>
+            <Button className="justify-center sm:justify-start" variant="neutral" size="sm" onClick={onAddSource}>
               <Plus className="size-3.5" aria-hidden />
               Add source
             </Button>
-            <Button variant="aurora" size="sm" onClick={onRefresh}>
+            <Button className="col-span-2 justify-center sm:col-span-1 sm:justify-start" variant="aurora" size="sm" onClick={onRefresh}>
               <RefreshCw className="size-3.5" aria-hidden />
               Refresh
             </Button>
@@ -483,19 +491,19 @@ export function Marketplace({
         </div>
       </div>
 
-      <StatGrid>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("all")} className="text-left"><StatCard label="All items" value={summary.all} description="Sources and catalog entries" tone={lens === "all" ? "info" : "neutral"} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("installed")} className="text-left"><StatCard label="Installed" value={summary.installed} description="Ready on this controller" tone={lens === "installed" ? "success" : "neutral"} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("plugins")} className="text-left"><StatCard label="Plugins" value={summary.plugins} description="Plugins, skills, commands" tone={lens === "plugins" ? "info" : "neutral"} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("mcp_servers")} className="text-left"><StatCard label="MCP servers" value={summary.mcpServers} description="Registry server entries" tone={lens === "mcp_servers" ? "info" : "neutral"} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("acp_agents")} className="text-left"><StatCard label="ACP agents" value={summary.acpAgents} description="Provider wiring targets" tone={lens === "acp_agents" ? "warn" : "neutral"} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("sources")} className="text-left"><StatCard label="Sources" value={summary.sources} description={`${summary.updates} updates available`} tone={lens === "sources" ? "info" : "neutral"} /></Button>
+      <StatGrid style={{ gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("all")} className="text-left"><StatCard label="All items" value={summary.all} description="Installable catalog entries" tone={lens === "all" ? "info" : "neutral"} style={{ maxWidth: "none" }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("installed")} className="text-left"><StatCard label="Installed" value={summary.installed} description="Ready on this controller" tone={lens === "installed" ? "success" : "neutral"} style={{ maxWidth: "none" }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("plugins")} className="text-left"><StatCard label="Plugins" value={summary.plugins} description="Plugins, skills, commands" tone={lens === "plugins" ? "info" : "neutral"} style={{ maxWidth: "none" }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("mcp_servers")} className="text-left"><StatCard label="MCP servers" value={summary.mcpServers} description="Registry server entries" tone={lens === "mcp_servers" ? "info" : "neutral"} style={{ maxWidth: "none" }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("acp_agents")} className="text-left"><StatCard label="ACP agents" value={summary.acpAgents} description="Provider wiring targets" tone={lens === "acp_agents" ? "warn" : "neutral"} style={{ maxWidth: "none" }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("sources")} className="text-left"><StatCard label="Sources" value={summary.sources} description={`${summary.updates} updates available`} tone={lens === "sources" ? "info" : "neutral"} style={{ maxWidth: "none" }} /></Button>
       </StatGrid>
 
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="grid min-w-0 gap-4 self-start overflow-hidden rounded-[var(--aurora-radius-2)] border p-4" style={{ background: "var(--aurora-panel-medium)", borderColor: "var(--aurora-border-default)" }}>
+        <aside className="grid min-w-0 gap-4 self-start overflow-hidden rounded-[var(--aurora-radius-2)] border p-4 lg:sticky lg:top-6" style={{ background: "var(--aurora-panel-medium)", borderColor: "var(--aurora-border-default)" }}>
           <FilterBar className="min-w-0 w-full" showClearAll={Boolean(query || type !== "all" || sourceId !== "all")} onClearAll={clearFilters}>
-            <FilterSearch value={query} onChange={(event) => setQuery(event.target.value)} onClear={() => setQuery("")} placeholder="Search marketplace" />
+            <FilterSearch aria-label="Search marketplace" value={query} onChange={(event) => setQuery(event.target.value)} onClear={() => setQuery("")} placeholder="Search marketplace…" />
           </FilterBar>
 
           <div className="grid min-w-0 gap-3">
@@ -531,7 +539,7 @@ export function Marketplace({
         </aside>
 
         <main className="min-w-0">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="aurora-text-meta">{filteredItems.length} results</p>
             <div className="flex flex-wrap gap-2">
               {query && <FilterTagRose onRemove={() => setQuery("")}>Search: {query}</FilterTagRose>}
@@ -540,8 +548,19 @@ export function Marketplace({
             </div>
           </div>
 
-          {view === "cards" ? (
-            <div className="grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
+          {filteredItems.length === 0 ? (
+            <EmptyState
+              icon={<ShoppingBag className="size-5" aria-hidden />}
+              title="No marketplace entries found"
+              description="Try a different search, switch the source filter, or clear the current lens to bring installable entries back into view."
+              action={
+                <Button variant="neutral" type="button" onClick={clearFilters}>
+                  Clear filters
+                </Button>
+              }
+            />
+          ) : view === "cards" ? (
+            <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-3">
               {filteredItems.map((item) => <CatalogCard key={item.id} item={item} readOnlyPreview={readOnlyPreview} onAction={handleAction} />)}
             </div>
           ) : (
@@ -559,24 +578,24 @@ export function Marketplace({
                   </thead>
                   <tbody>
                     {filteredItems.map((item) => (
-                      <tr key={item.id} className="cursor-pointer" onClick={() => handleAction(item)}>
+                      <tr key={item.id}>
                         <td className="px-4 py-3" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
                           <div className="flex items-center gap-3">
                             <IdentityMark item={item} />
-                            <div className="min-w-0">
+                            <button type="button" onClick={() => handleAction(item)} className="min-w-0 text-left focus-visible:outline-none">
                               <p className="truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{item.name}</p>
                               <p className="truncate aurora-text-meta">{item.description || item.subtitle}</p>
-                            </div>
+                            </button>
                           </div>
                         </td>
                         <td className="px-4 py-3 aurora-text-table" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>{KIND_META[item.kind].label}</td>
                         <td className="px-4 py-3 aurora-text-table" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>{item.sourceName ?? item.subtitle}</td>
-                        <td className="px-4 py-3 aurora-text-table" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>{item.version ?? "latest"}</td>
+                        <td className="px-4 py-3 aurora-text-table" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>{versionLabel(item.version, item.updatedAt)}</td>
                         <td className="px-4 py-3" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
                           <StatusIndicator tone={item.hasUpdate ? "degraded" : item.installed ? "online" : item.builtin ? "queued" : "offline"} label={item.hasUpdate ? "Update" : item.installed ? "Installed" : item.builtin ? "Built-in" : "Available"} />
                         </td>
                         <td className="px-4 py-3 text-right" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
-                          <Button variant={item.kind === "acp_agent" ? "rose" : "aurora"} size="sm" type="button">{itemActionLabel(item, readOnlyPreview)}</Button>
+                          <Button variant={item.kind === "acp_agent" ? "rose" : "aurora"} size="sm" type="button" onClick={() => handleAction(item)}>{itemActionLabel(item, readOnlyPreview)}</Button>
                         </td>
                       </tr>
                     ))}
