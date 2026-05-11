@@ -99,6 +99,16 @@ const AI_CANONICAL_DEMOS: Record<string, React.ComponentType> = Object.fromEntri
   Object.entries(AI_DEMOS).map(([slug, Demo]) => [`ai-${slug}`, Demo])
 )
 
+const SECTION_TITLE_OVERRIDES: Record<string, string> = {
+  colors: "Color tokens",
+  type: "Typography",
+  spacing: "Spacing & radii",
+  brand: "Brand & mark",
+  lightmode: "Light mode",
+  oauth: "OAuth flow",
+  kbd: "Kbd",
+}
+
 const DEMOS: Record<string, React.ComponentType> = {
   ...COMPONENT_DEMOS,
   ...AI_DEMOS,
@@ -175,9 +185,28 @@ export function generateStaticParams() {
   return Object.keys(DEMOS).map((section) => ({ section }))
 }
 
+function formatSectionTitle(section: string) {
+  const override = SECTION_TITLE_OVERRIDES[section]
+  if (override) return override
+
+  const words = section.split("-").map((word) => {
+    if (word === "ai") return "AI"
+    if (word === "otp") return "OTP"
+    if (word === "jsx") return "JSX"
+    return word.charAt(0).toUpperCase() + word.slice(1)
+  })
+
+  return words.join(" ")
+}
+
 export default async function SectionPage({ params }: { params: Promise<{ section: string }> }) {
   const { section } = await params
   const Demo = DEMOS[section]
   if (!Demo) notFound()
-  return <Demo />
+  return (
+    <>
+      <h1 className="sr-only">{formatSectionTitle(section)}</h1>
+      <Demo />
+    </>
+  )
 }

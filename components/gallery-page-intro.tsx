@@ -27,15 +27,16 @@ export function GalleryPageIntro({ eyebrow, heading, description, style, ...prop
       >
         {eyebrow}
       </p>
-      <h1
+      <h2
         className="aurora-text-display-2"
         style={{
           margin: 0,
           color: "var(--aurora-text-primary)",
+          textWrap: "balance",
         }}
       >
         {heading}
-      </h1>
+      </h2>
       <p
         className="aurora-text-body"
         style={{

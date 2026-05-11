@@ -36,9 +36,9 @@ export default function NativeSelectDemo() {
         <p className="aurora-text-label" style={{ margin: 0, color: "var(--aurora-text-muted)" }}>
           Form elements
         </p>
-        <h1 className="aurora-text-display-2" style={{ margin: 0 }}>
+        <h2 className="aurora-text-display-2" style={{ margin: 0 }}>
           Native select
-        </h1>
+        </h2>
         <p className="aurora-text-body" style={{ margin: 0, maxWidth: 760, color: "var(--aurora-text-muted)" }}>
           A styled native select for simple browser-managed option menus, preserving the native select ref and event contract.
         </p>

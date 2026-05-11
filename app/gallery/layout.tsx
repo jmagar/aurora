@@ -199,21 +199,52 @@ const NAV = [
   ]},
 ]
 
+const NAV_SLUG_ALIASES: Record<string, string> = {
+  tokens: "colors",
+  typography: "type",
+  button: "buttons",
+  badge: "badges",
+  banner: "banners",
+  toast: "toasts",
+  "empty-state": "empty",
+  "stat-card": "stats",
+  "filter-bar": "filters",
+  dialog: "modals",
+  "dropdown-menu": "dropdowns",
+  "error-page": "error-pages",
+}
+
 export default function GalleryLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [light, setLight] = React.useState(false)
+  const [navOpen, setNavOpen] = React.useState(false)
 
   React.useEffect(() => {
+    const previousColorScheme = document.documentElement.style.colorScheme
     document.documentElement.classList.toggle("light", light)
     document.documentElement.classList.toggle("dark", !light)
+    document.documentElement.style.colorScheme = light ? "light" : "dark"
+
+    return () => {
+      document.documentElement.style.colorScheme = previousColorScheme
+    }
   }, [light])
+
+  const activeSlug = React.useMemo(() => {
+    const section = pathname.split("/").pop() ?? ""
+    const normalized = section.startsWith("ai-") ? section.slice(3) : section
+    return NAV_SLUG_ALIASES[normalized] ?? normalized
+  }, [pathname])
 
   return (
     <div className="aurora-gallery-shell">
+      <a href="#gallery-main" className="aurora-gallery-skip-link">
+        Skip to content
+      </a>
       <style>{`
         .aurora-gallery-shell {
           display: grid;
-          grid-template-columns: 220px minmax(0, 1fr);
+          grid-template-columns: 248px minmax(0, 1fr);
           min-height: 100vh;
         }
 
@@ -224,17 +255,160 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
           overflow-y: auto;
           background: var(--aurora-nav-bg);
           border-right: 1px solid var(--aurora-border-default);
-          padding: 18px 12px 24px;
+          padding: 18px 12px 16px;
           display: flex;
           flex-direction: column;
-          gap: 2px;
+          gap: 12px;
         }
 
         .aurora-gallery-main {
           width: 100%;
           min-width: 0;
           max-width: 1200px;
-          padding: 40px 48px;
+          margin: 0 auto;
+          padding: 40px clamp(24px, 4vw, 48px) 56px;
+        }
+
+        .aurora-gallery-skip-link {
+          position: fixed;
+          left: 16px;
+          top: 16px;
+          z-index: 60;
+          border-radius: 10px;
+          border: 1px solid color-mix(in srgb, var(--aurora-accent-primary) 46%, transparent);
+          background: var(--aurora-panel-strong);
+          color: var(--aurora-text-primary);
+          padding: 10px 14px;
+          text-decoration: none;
+          transform: translateY(-160%);
+          transition: transform 120ms ease;
+          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+        }
+
+        .aurora-gallery-skip-link:focus-visible {
+          transform: translateY(0);
+          outline: none;
+          box-shadow:
+            0 0 0 2px color-mix(in srgb, var(--aurora-panel-strong) 82%, transparent),
+            0 0 0 4px color-mix(in srgb, var(--aurora-accent-primary) 52%, transparent),
+            0 10px 28px rgba(0, 0, 0, 0.28);
+        }
+
+        .aurora-gallery-nav-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 0 4px 16px;
+          border-bottom: 1px solid var(--aurora-border-default);
+        }
+
+        .aurora-gallery-brand-link {
+          border-radius: 10px;
+          text-decoration: none;
+        }
+
+        .aurora-gallery-brand-link:focus-visible {
+          outline: none;
+          box-shadow:
+            0 0 0 2px color-mix(in srgb, var(--aurora-nav-bg) 88%, transparent),
+            0 0 0 4px color-mix(in srgb, var(--aurora-accent-primary) 44%, transparent);
+        }
+
+        .aurora-gallery-nav-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+
+        .aurora-gallery-nav-body {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          min-width: 0;
+        }
+
+        .aurora-gallery-section-heading {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--aurora-text-muted);
+          padding: 14px 8px 6px;
+        }
+
+        .aurora-gallery-link {
+          display: block;
+          padding: 7px 10px;
+          border-radius: 10px;
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--aurora-text-muted);
+          text-decoration: none;
+          background: transparent;
+          border: 1px solid transparent;
+          transition:
+            background-color 120ms ease,
+            border-color 120ms ease,
+            box-shadow 120ms ease,
+            color 120ms ease;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        .aurora-gallery-link:hover {
+          color: var(--aurora-text-primary);
+          background: color-mix(in srgb, var(--aurora-control-surface) 74%, transparent);
+          border-color: color-mix(in srgb, var(--aurora-border-strong) 44%, transparent);
+        }
+
+        .aurora-gallery-link[aria-current="page"] {
+          font-weight: 600;
+          color: var(--aurora-text-primary);
+          background: var(--aurora-control-surface);
+          border-color: color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent);
+          box-shadow: 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent);
+        }
+
+        .aurora-gallery-link:focus-visible,
+        .aurora-gallery-button:focus-visible {
+          outline: none;
+          box-shadow:
+            0 0 0 2px color-mix(in srgb, var(--aurora-nav-bg) 82%, transparent),
+            0 0 0 4px color-mix(in srgb, var(--aurora-accent-primary) 44%, transparent);
+        }
+
+        .aurora-gallery-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 32px;
+          border-radius: 9px;
+          border: 1px solid var(--aurora-border-strong);
+          background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.1));
+          color: var(--aurora-text-primary);
+          cursor: pointer;
+          padding: 0 12px;
+          font-size: 12px;
+          font-weight: 600;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+          touch-action: manipulation;
+          transition:
+            border-color 120ms ease,
+            background-color 120ms ease,
+            color 120ms ease,
+            box-shadow 120ms ease;
+        }
+
+        .aurora-gallery-button:hover {
+          border-color: color-mix(in srgb, var(--aurora-accent-primary) 24%, var(--aurora-border-strong));
+          background: color-mix(in srgb, var(--aurora-control-surface) 82%, rgba(0, 0, 0, 0.12));
+        }
+
+        .aurora-gallery-mobile-only {
+          display: none;
         }
 
         @media (max-width: 760px) {
@@ -248,10 +422,32 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
             top: 0;
             z-index: 20;
             height: auto;
-            max-height: 46vh;
             border-right: 0;
             border-bottom: 1px solid var(--aurora-border-default);
             padding: 12px;
+            gap: 10px;
+          }
+
+          .aurora-gallery-nav-header {
+            align-items: center;
+            padding-bottom: 0;
+            border-bottom: 0;
+          }
+
+          .aurora-gallery-mobile-only {
+            display: inline-flex;
+          }
+
+          .aurora-gallery-nav-body {
+            display: none;
+            max-height: min(65vh, 520px);
+            overflow-y: auto;
+            padding-top: 4px;
+            border-top: 1px solid var(--aurora-border-default);
+          }
+
+          .aurora-gallery-nav[data-open="true"] .aurora-gallery-nav-body {
+            display: flex;
           }
 
           .aurora-gallery-main {
@@ -260,49 +456,64 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
           }
         }
       `}</style>
-      <nav className="aurora-gallery-nav">
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 4px 18px", borderBottom: "1px solid var(--aurora-border-default)", marginBottom: 10 }}>
-          <LabbyLockup markSize={28} wordmarkSize={17} />
+      <nav
+        className="aurora-gallery-nav"
+        aria-label="Component gallery"
+        data-open={navOpen ? "true" : "false"}
+      >
+        <div className="aurora-gallery-nav-header">
+          <Link href="/gallery/buttons" className="aurora-gallery-brand-link">
+            <LabbyLockup markSize={28} wordmarkSize={17} />
+          </Link>
+          <div className="aurora-gallery-nav-actions">
+            <button
+              type="button"
+              className="aurora-gallery-button aurora-gallery-mobile-only"
+              aria-controls="gallery-nav-body"
+              aria-expanded={navOpen}
+              onClick={() => setNavOpen((value) => !value)}
+            >
+              {navOpen ? "Hide components" : "Browse components"}
+            </button>
+            <button
+              type="button"
+              className="aurora-gallery-button"
+              aria-pressed={light}
+              onClick={() => setLight((value) => !value)}
+            >
+              {light ? "Dark mode" : "Light mode"}
+            </button>
+          </div>
         </div>
 
-        {NAV.map((group) => (
-          <div key={group.group}>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--aurora-text-muted)", padding: "14px 8px 6px" }}>
+        <div id="gallery-nav-body" className="aurora-gallery-nav-body">
+          {NAV.map((group) => (
+            <div key={group.group}>
+              <div className="aurora-gallery-section-heading">
               {group.group}
+              </div>
+              {group.items.map((item) => {
+                const active = activeSlug === item.slug
+                return (
+                  <Link
+                    key={item.slug}
+                    href={`/gallery/${item.slug}`}
+                    className="aurora-gallery-link"
+                    aria-current={active ? "page" : undefined}
+                    onClick={() => setNavOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
             </div>
-            {group.items.map((item) => {
-              const active = pathname === `/gallery/${item.slug}`
-              return (
-                <Link key={item.slug} href={`/gallery/${item.slug}`} style={{
-                  display: "block", padding: "7px 10px", borderRadius: 8, fontSize: 13,
-                  fontWeight: active ? 600 : 500,
-                  color: active ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-                  textDecoration: "none",
-                  background: active ? "var(--aurora-control-surface)" : "transparent",
-                  border: active ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent)" : "1px solid transparent",
-                  boxShadow: active ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)" : "none",
-                  transition: "background 120ms, color 120ms",
-                }}>
-                  {item.label}
-                </Link>
-              )
-            })}
-          </div>
-        ))}
-
-        <div style={{ marginTop: "auto", paddingTop: 14, borderTop: "1px solid var(--aurora-border-default)" }}>
-          <button onClick={() => setLight(v => !v)} style={{
-            width: "100%", height: 28, padding: "0 10px", borderRadius: 8, fontSize: 12, fontWeight: 600,
-            cursor: "pointer", background: "linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.1))",
-            color: "var(--aurora-text-primary)", border: "1px solid var(--aurora-border-strong)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,.06)",
-          }}>
-            {light ? "Dark mode" : "Light mode"}
-          </button>
+          ))}
         </div>
       </nav>
 
-      <main className="aurora-gallery-main">{children}</main>
+      <main id="gallery-main" className="aurora-gallery-main" tabIndex={-1}>
+        {children}
+      </main>
     </div>
   )
 }
