@@ -329,14 +329,15 @@ function SourceCard({ source, onClick }: { source: MarketplaceSource; onClick: (
     <Button variant="plain" size="unstyled"
       type="button"
       onClick={onClick}
-      className="grid gap-3 rounded-[8px] border p-4 text-left transition-all hover:-translate-y-px focus-visible:outline-none"
+      className="grid w-full min-w-0 gap-3 overflow-hidden rounded-[8px] border p-4 text-left transition-all hover:-translate-y-px focus-visible:outline-none"
       style={{
         background: "var(--aurora-panel-medium)",
         borderColor: "var(--aurora-border-default)",
         boxShadow: "inset 0 1px 0 rgba(255,255,255,0.035)",
+        whiteSpace: "normal",
       }}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex min-w-0 items-start gap-3">
         <div
           className="flex size-10 shrink-0 items-center justify-center rounded-[8px] border"
           style={{
@@ -355,15 +356,15 @@ function SourceCard({ source, onClick }: { source: MarketplaceSource; onClick: (
           </p>
           <p className="truncate aurora-text-meta">by {source.owner}</p>
         </div>
-        {source.autoUpdate && <StatusIndicator tone="syncing" label="Auto" style={{ marginLeft: "auto", fontSize: 11 }} />}
+        {source.autoUpdate && <StatusIndicator tone="syncing" label="Auto" style={{ marginLeft: "auto", fontSize: 11, flexShrink: 0 }} />}
       </div>
-      <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)" }}>
+      <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)", overflowWrap: "anywhere" }}>
         {source.description}
       </p>
-      <div className="flex flex-wrap items-center gap-2 border-t pt-3" style={{ borderColor: "var(--aurora-border-default)" }}>
+      <div className="flex min-w-0 flex-wrap items-center gap-2 border-t pt-3" style={{ borderColor: "var(--aurora-border-default)" }}>
         <span className="aurora-text-meta">{source.installedCount} installed</span>
         <span className="aurora-text-meta">{source.pluginCount} available</span>
-        <span className="ml-auto truncate aurora-text-code" style={{ color: "var(--aurora-text-muted)", fontSize: 11 }}>
+        <span className="ml-auto max-w-full truncate aurora-text-code" style={{ color: "var(--aurora-text-muted)", fontSize: 11 }}>
           {source.repository ?? source.id}
         </span>
       </div>
@@ -492,12 +493,12 @@ export function Marketplace({
       </StatGrid>
 
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="grid gap-4 self-start rounded-[var(--aurora-radius-2)] border p-4" style={{ background: "var(--aurora-panel-medium)", borderColor: "var(--aurora-border-default)" }}>
-          <FilterBar showClearAll={Boolean(query || type !== "all" || sourceId !== "all")} onClearAll={clearFilters}>
+        <aside className="grid min-w-0 gap-4 self-start overflow-hidden rounded-[var(--aurora-radius-2)] border p-4" style={{ background: "var(--aurora-panel-medium)", borderColor: "var(--aurora-border-default)" }}>
+          <FilterBar className="min-w-0 w-full" showClearAll={Boolean(query || type !== "all" || sourceId !== "all")} onClearAll={clearFilters}>
             <FilterSearch value={query} onChange={(event) => setQuery(event.target.value)} onClear={() => setQuery("")} placeholder="Search marketplace" />
           </FilterBar>
 
-          <div className="grid gap-3">
+          <div className="grid min-w-0 gap-3">
             <p className="aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>Type</p>
             <div className="flex flex-wrap gap-2">
               <Button variant={type === "all" ? "aurora" : "neutral"} size="sm" onClick={() => setType("all")}>All</Button>
@@ -509,19 +510,19 @@ export function Marketplace({
             </div>
           </div>
 
-          <div className="grid gap-3">
+          <div className="grid min-w-0 gap-3">
             <p className="aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>Source</p>
-            <div className="grid gap-2">
-              <Button variant={sourceId === "all" ? "aurora" : "neutral"} size="sm" onClick={() => setSourceId("all")}>All sources</Button>
+            <div className="grid min-w-0 gap-2">
+              <Button className="w-full justify-start overflow-hidden text-left" variant={sourceId === "all" ? "aurora" : "neutral"} size="sm" onClick={() => setSourceId("all")}>All sources</Button>
               {sources.map((source) => (
-                <Button key={source.id} variant={sourceId === source.id ? "rose" : "neutral"} size="sm" onClick={() => setSourceId(source.id)}>
+                <Button key={source.id} className="w-full justify-start overflow-hidden text-left" variant={sourceId === source.id ? "rose" : "neutral"} size="sm" onClick={() => setSourceId(source.id)}>
                   {source.name}
                 </Button>
               ))}
             </div>
           </div>
 
-          <div className="grid gap-2 border-t pt-4" style={{ borderColor: "var(--aurora-border-default)" }}>
+          <div className="grid min-w-0 gap-2 border-t pt-4" style={{ borderColor: "var(--aurora-border-default)" }}>
             <p className="aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>Sources</p>
             {sources.map((source) => (
               <SourceCard key={source.id} source={source} onClick={() => { setLens("all"); setSourceId(source.id) }} />
