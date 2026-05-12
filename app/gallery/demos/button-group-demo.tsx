@@ -29,7 +29,7 @@ const copy: React.CSSProperties = {
 
 export default function ButtonGroupDemo() {
   return (
-    <div style={{ display: "grid", gap: 24, padding: "32px 0" }}>
+    <div style={{ display: "grid", gap: 24, padding: 0 }}>
       <div>
         <h2 style={heading}>Button group</h2>
         <p style={copy}>Grouped command controls for segmented actions, compact run bars, and related toolbar decisions.</p>

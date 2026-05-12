@@ -38,7 +38,7 @@ const copy: React.CSSProperties = {
 
 export default function AiElementsDemo() {
   return (
-    <div style={{ display: "grid", gap: 28, padding: "32px 0" }}>
+    <div style={{ display: "grid", gap: 28, padding: 0 }}>
       <div>
         <h2 style={heading}>AI elements</h2>
         <p style={copy}>Agent transcript primitives for messages, citations, sources, task state, tests, errors, and runtime configuration.</p>

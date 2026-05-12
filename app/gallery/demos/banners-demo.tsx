@@ -3,10 +3,13 @@
 import * as React from "react";
 import { Button } from "@/registry/aurora/ui/button";
 import { Banner } from "@/registry/aurora/ui/banner";
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
 function ActionLink({ children }: { children: React.ReactNode }) {
   return (
-    <Button variant="plain" size="unstyled"
+    <Button
+      variant="plain"
+      size="unstyled"
       type="button"
       style={{
         fontSize: 12,
@@ -35,22 +38,16 @@ export default function BannersDemo() {
   const allDismissed = dismissed["a1-info"] && dismissed["a1-warn"] && dismissed["a1-error"];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      <div>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-          Feedback
-        </p>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-          Banners
-        </h2>
-        <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Contextual banners surface system-level notices, warnings, and errors inline. Style A1 (elevated) is used for persistent alerts; Style C (inline tag) fits dense panel headers.
-        </p>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+      <GalleryPageIntro
+        eyebrow="Feedback"
+        heading="Banners"
+        description="Contextual banners surface system-level notices, warnings, and errors inline. Style A1 (elevated) is used for persistent alerts; Style C (inline tag) fits dense panel headers."
+      />
 
       {/* Style A1 — Elevated */}
       <div>
-        <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
+        <p className="aurora-demo-label" style={{ marginBottom: 12 }}>
           Style A1 — Elevated with glow dot &amp; dismiss
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -95,7 +92,9 @@ export default function BannersDemo() {
               }}
             >
               All banners dismissed.{" "}
-              <Button variant="plain" size="unstyled"
+              <Button
+                variant="plain"
+                size="unstyled"
                 type="button"
                 onClick={() => setDismissed({})}
                 style={{ color: "var(--aurora-accent-primary)", background: "none", border: "none", cursor: "pointer", fontSize: 13, padding: 0, fontWeight: 600 }}
@@ -109,7 +108,7 @@ export default function BannersDemo() {
 
       {/* Style C — Inline tag */}
       <div>
-        <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
+        <p className="aurora-demo-label" style={{ marginBottom: 12 }}>
           Style C — Inline tag
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

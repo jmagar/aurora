@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Checkbox, RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/checkbox";
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
 export default function CheckboxesDemo() {
   const [notifyDeploy, setNotifyDeploy] = React.useState(true);
@@ -11,18 +12,12 @@ export default function CheckboxesDemo() {
   const [failover, setFailover] = React.useState("auto");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
-      <div>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-          Inputs
-        </p>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-          Checkboxes &amp; radio groups
-        </h2>
-        <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Aurora-styled selection controls used in gateway settings, policy editors, and notification preferences.
-        </p>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+      <GalleryPageIntro
+        eyebrow="Form elements"
+        heading="Checkboxes &amp; radio groups"
+        description="Aurora-styled selection controls used in gateway settings, policy editors, and notification preferences."
+      />
 
       {/* Checkbox states */}
       <div>

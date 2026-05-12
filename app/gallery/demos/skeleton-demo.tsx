@@ -77,11 +77,13 @@ export default function SkeletonDemo() {
         <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
           Table
         </p>
+        <div className="aurora-demo-table-scroll">
         <div
           style={{
             border: "1px solid var(--aurora-border-default)",
             borderRadius: 14,
             overflow: "hidden",
+            minWidth: 380,
           }}
         >
           {/* Header */}
@@ -123,6 +125,7 @@ export default function SkeletonDemo() {
             </div>
           ))}
         </div>
+        </div>{/* end table-scroll */}
       </div>
 
       <div>

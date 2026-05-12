@@ -28,7 +28,7 @@ const copy: React.CSSProperties = {
 
 export default function SpinnerDemo() {
   return (
-    <div style={{ display: "grid", gap: 24, padding: "32px 0" }}>
+    <div style={{ display: "grid", gap: 24, padding: 0 }}>
       <div>
         <h2 style={heading}>Spinner</h2>
         <p style={copy}>Compact loading indicators for registry refreshes, agent runs, and background verification.</p>

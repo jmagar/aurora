@@ -28,7 +28,7 @@ const copy: React.CSSProperties = {
 
 export default function SeparatorDemo() {
   return (
-    <div style={{ display: "grid", gap: 24, padding: "32px 0" }}>
+    <div style={{ display: "grid", gap: 24, padding: 0 }}>
       <div>
         <h2 style={heading}>Separator</h2>
         <p style={copy}>Tokenized dividers for dense metadata, grouped controls, tables, and agent evidence panels.</p>

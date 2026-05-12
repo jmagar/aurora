@@ -28,7 +28,7 @@ const copy: React.CSSProperties = {
 
 export default function AccordionDemo() {
   return (
-    <div style={{ display: "grid", gap: 24, padding: "32px 0" }}>
+    <div style={{ display: "grid", gap: 24, padding: 0 }}>
       <div>
         <h2 style={heading}>Accordion</h2>
         <p style={copy}>Disclosure sections for compact configuration, agent evidence, and command output.</p>
