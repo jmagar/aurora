@@ -208,7 +208,11 @@ const SLUG_TO_REGISTRY: Record<string, string> = {
 }
 
 export function getRegistryMeta(slug: string): RegistryMeta | null {
-  const registryName = SLUG_TO_REGISTRY[slug]
+  // Direct lookup first; fall back for canonical ai-{slug} routes (e.g. "ai-agent" → "agent")
+  const registryName =
+    SLUG_TO_REGISTRY[slug] ??
+    (slug.startsWith("ai-") ? SLUG_TO_REGISTRY[slug.slice(3)] : undefined)
+
   if (!registryName) return null
 
   const item = BY_NAME[registryName]
@@ -220,9 +224,7 @@ export function getRegistryMeta(slug: string): RegistryMeta | null {
     description: item.description ?? "",
     type: item.type,
     dependencies: item.dependencies ?? [],
-    registryDependencies: (item.registryDependencies ?? []).filter(
-      (dep) => dep !== "aurora-tokens"
-    ),
+    registryDependencies: item.registryDependencies ?? [],
     installUrl: `${REGISTRY_BASE_URL}/${item.name}.json`,
   }
 }

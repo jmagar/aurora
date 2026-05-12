@@ -176,7 +176,7 @@ const tasks = [
   { id: "3", title: "Publish result", status: "queued" as const },
 ]
 
-function Shell({ children }: { slug: string; children: React.ReactNode }) {
+function Shell({ children }: { children: React.ReactNode }) {
   return (
     <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
       {children}
@@ -383,7 +383,7 @@ function AiDemo({ slug }: { slug: string }) {
 
 export function ComponentDemoPage({ slug }: { slug: string }) {
   const isAi = slug in AI_TITLES
-  return <Shell slug={slug}>{isAi ? <AiDemo slug={slug} /> : <ShadcnDemo slug={slug} />}</Shell>
+  return <Shell>{isAi ? <AiDemo slug={slug} /> : <ShadcnDemo slug={slug} />}</Shell>
 }
 
 export function createComponentDemo(slug: string) {

@@ -10,6 +10,22 @@ function CopyButton({ value }: { value: string }) {
     navigator.clipboard.writeText(value).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
+    }).catch(() => {
+      // Fallback for non-secure contexts or denied permissions
+      try {
+        const el = document.createElement("textarea")
+        el.value = value
+        el.style.position = "fixed"
+        el.style.opacity = "0"
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand("copy")
+        document.body.removeChild(el)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 1800)
+      } catch {
+        // silent — nothing useful to surface to the user
+      }
     })
   }
 
@@ -66,10 +82,20 @@ interface ComponentInstallProps {
   className?: string
 }
 
+function parsePkgName(dep: string): string {
+  // Handles scoped packages: "@radix-ui/react-slot@^1.2.3" → "@radix-ui/react-slot"
+  if (dep.startsWith("@")) {
+    const withoutLeading = dep.slice(1)
+    const versionIdx = withoutLeading.indexOf("@")
+    return versionIdx === -1 ? dep : "@" + withoutLeading.slice(0, versionIdx)
+  }
+  return dep.split("@")[0]
+}
+
 export function ComponentInstall({ meta, className }: ComponentInstallProps) {
   const installCmd = `npx shadcn@latest add ${meta.installUrl}`
-  const npmDeps = meta.dependencies.length > 0 ? meta.dependencies.map((d) => d.split("@")[0]).join("  ") : null
-  const regDeps = meta.registryDependencies.length > 0 ? meta.registryDependencies.join("  ") : null
+  const hasNpmDeps = meta.dependencies.length > 0
+  const hasRegDeps = meta.registryDependencies.length > 0
 
   return (
     <div
@@ -138,7 +164,7 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
       </div>
 
       {/* Dependencies row */}
-      {(npmDeps || regDeps) && (
+      {(hasNpmDeps || hasRegDeps) && (
         <div
           style={{
             display: "flex",
@@ -148,7 +174,7 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
             borderTop: "1px solid var(--aurora-border-default)",
           }}
         >
-          {regDeps && (
+          {hasRegDeps && (
             <div>
               <span
                 style={{
@@ -182,7 +208,7 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
               ))}
             </div>
           )}
-          {npmDeps && (
+          {hasNpmDeps && (
             <div>
               <span
                 style={{
@@ -197,26 +223,23 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
               >
                 npm
               </span>
-              {meta.dependencies.map((dep) => {
-                const [pkgName] = dep.split("@").filter(Boolean)
-                return (
-                  <code
-                    key={dep}
-                    style={{
-                      fontSize: "11.5px",
-                      fontFamily: "var(--aurora-font-mono)",
-                      color: "var(--aurora-text-secondary)",
-                      background: "color-mix(in srgb, var(--aurora-control-surface) 70%, transparent)",
-                      border: "1px solid var(--aurora-border-default)",
-                      borderRadius: "5px",
-                      padding: "1px 6px",
-                      marginRight: "4px",
-                    }}
-                  >
-                    {pkgName}
-                  </code>
-                )
-              })}
+              {meta.dependencies.map((dep) => (
+                <code
+                  key={dep}
+                  style={{
+                    fontSize: "11.5px",
+                    fontFamily: "var(--aurora-font-mono)",
+                    color: "var(--aurora-text-secondary)",
+                    background: "color-mix(in srgb, var(--aurora-control-surface) 70%, transparent)",
+                    border: "1px solid var(--aurora-border-default)",
+                    borderRadius: "5px",
+                    padding: "1px 6px",
+                    marginRight: "4px",
+                  }}
+                >
+                  {parsePkgName(dep)}
+                </code>
+              ))}
             </div>
           )}
         </div>
