@@ -55,7 +55,7 @@ function StatusIndicator({ className, tone = "online", label, pulse, style, ...p
         className={cn("size-2 rounded-full", resolvedPulse && "animate-pulse")}
         style={{ background: color, boxShadow: shadow }}
       />
-      {label ?? tone}
+      {label ?? safeTone}
     </span>
   )
 }

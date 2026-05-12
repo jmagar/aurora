@@ -230,32 +230,32 @@ function ShadcnDemo({ slug }: { slug: string }) {
             </InputGroup>
           </div>
           <div className="grid gap-1.5">
-            <Label>Monthly budget</Label>
+            <Label htmlFor="parity-monthly-budget">Monthly budget</Label>
             <InputGroup>
               <InputGroupAddon>$</InputGroupAddon>
-              <Input type="number" defaultValue="49" />
+              <Input id="parity-monthly-budget" type="number" defaultValue="49" />
               <InputGroupAddon>/ mo</InputGroupAddon>
             </InputGroup>
           </div>
           <div className="grid gap-1.5">
-            <Label>Work email</Label>
+            <Label htmlFor="parity-work-email">Work email</Label>
             <InputGroup>
-              <Input defaultValue="jacob" />
+              <Input id="parity-work-email" defaultValue="jacob" />
               <InputGroupAddon>@aurora.tootie.tv</InputGroupAddon>
             </InputGroup>
           </div>
           <div className="grid gap-1.5">
-            <Label>API key</Label>
+            <Label htmlFor="parity-api-key">API key</Label>
             <InputGroup>
               <InputGroupAddon>sk-</InputGroupAddon>
-              <Input type="password" defaultValue="aur_live_k9x2mw" />
+              <Input id="parity-api-key" type="password" defaultValue="masked-demo-key" />
             </InputGroup>
           </div>
           <div className="grid gap-1.5">
-            <Label>Registry endpoint</Label>
+            <Label htmlFor="parity-registry-endpoint">Registry endpoint</Label>
             <InputGroup>
               <InputGroupAddon>/api/v1/</InputGroupAddon>
-              <Input defaultValue="registry" />
+              <Input id="parity-registry-endpoint" defaultValue="registry" />
               <InputGroupAddon><Badge variant="success" style={{ fontSize: "10px", padding: "1px 6px" }}>live</Badge></InputGroupAddon>
             </InputGroup>
           </div>

@@ -7,10 +7,12 @@ plan: docs/superpowers/plans/2026-05-11-aurora-color-token-expansion.md
 agent: Claude (claude-sonnet-4-6)
 session id: unknown
 transcript: unavailable
-working directory: /home/jmagar/workspace/aurora-design-system/.claude/worktrees/feat+aurora-color-token-expansion
-worktree: /home/jmagar/workspace/aurora-design-system/.claude/worktrees/feat+aurora-color-token-expansion
+working directory: aurora-design-system/.claude/worktrees/feat+aurora-color-token-expansion
+worktree: aurora-design-system/.claude/worktrees/feat+aurora-color-token-expansion
 pr: "#2 — feat: Aurora color token expansion — semantic, violet, and interaction layers — https://github.com/jmagar/aurora-design-system/pull/2"
 ---
+
+# Aurora Color Token Expansion Session
 
 ## User Request
 

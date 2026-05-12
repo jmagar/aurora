@@ -6,6 +6,10 @@ import { Button } from "@/registry/aurora/ui/button"
 // Aurora violet tokens represent AI/automation identity.
 // Do not use for semantic state (success/warn/error) — use the semantic token layer for that.
 const AI_ACCENT = "var(--aurora-accent-violet)"
+const PLAN_ROW_BACKGROUND = {
+  inprog: "var(--aurora-accent-violet-surface)",
+  error: "var(--aurora-error-surface)",
+} as const
 
 // ---------------------------------------------------------------------------
 // Types
@@ -523,10 +527,8 @@ function PlanBlock({
                 padding: "6px 8px",
                 borderRadius: "10px",
                 background:
-                  step.status === "inprog"
-                    ? `color-mix(in srgb, ${AI_ACCENT} 6%, transparent)`
-                    : step.status === "error"
-                    ? "color-mix(in srgb, var(--aurora-error) 6%, transparent)"
+                  step.status === "inprog" || step.status === "error"
+                    ? PLAN_ROW_BACKGROUND[step.status]
                     : "transparent",
               }}
             >
