@@ -300,6 +300,24 @@
   line-height: 1.2;
 }
 
+.aurora-text-display-1 {
+  color: var(--aurora-text-primary);
+  font-family: var(--aurora-font-display);
+  font-size: clamp(24px, 5vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+}
+
+.aurora-text-display-2 {
+  color: var(--aurora-text-primary);
+  font-family: var(--aurora-font-display);
+  font-size: clamp(17px, 3vw, 19px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
 .aurora-slider::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 999px;

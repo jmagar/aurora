@@ -1,5 +1,7 @@
 "use client";
 
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
+
 const COLOR_SECTIONS = [
   {
     label: "Surfaces",
@@ -54,35 +56,29 @@ const COLOR_SECTIONS = [
 
 export default function ColorsDemo() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      <div>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-          Foundations
-        </p>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-          Color tokens
-        </h2>
-        <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Aurora CSS custom properties that drive every surface, accent, status indicator, and text style across Labby.
-        </p>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
+      <GalleryPageIntro
+        eyebrow="Foundations"
+        heading="Color tokens"
+        description="Aurora CSS custom properties that drive every surface, accent, status indicator, and text style across Labby."
+      />
 
       {COLOR_SECTIONS.map((section) => (
         <div key={section.label}>
-          <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
+          <p className="aurora-demo-label" style={{ marginBottom: 12 }}>
             {section.label}
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+          <div className="aurora-demo-swatch-grid">
             {section.tokens.map((token) => (
-              <div key={token.name} style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 112 }}>
+              <div key={token.name} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <div
                   style={{
-                    width: 112,
-                    height: 60,
-                    borderRadius: 14,
+                    width: "100%",
+                    aspectRatio: "2 / 1",
+                    minHeight: 52,
+                    borderRadius: 12,
                     background: token.cssVar,
                     border: "1px solid var(--aurora-border-default)",
-                    flexShrink: 0,
                   }}
                 />
                 <div>

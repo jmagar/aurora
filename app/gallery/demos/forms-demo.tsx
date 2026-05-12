@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button";
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
 import { Input } from "@/registry/aurora/ui/input"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 import {
@@ -19,7 +20,7 @@ const section: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: "24px",
-  padding: "32px",
+  padding: "clamp(16px, 4vw, 32px)",
   background: "var(--aurora-panel-medium)",
   border: "1px solid var(--aurora-border-default)",
   borderRadius: "var(--aurora-radius-2)",
@@ -61,7 +62,7 @@ const errorText: React.CSSProperties = {
 
 const grid2: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "1fr 1fr",
+  gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))",
   gap: "16px",
 }
 
@@ -144,13 +145,12 @@ function ErrorInput(props: React.ComponentPropsWithoutRef<typeof Input>) {
 
 export default function FormsDemo() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px", padding: "32px 0" }}>
-      <div>
-        <h2 style={heading}>Forms</h2>
-        <p style={subheading}>
-          Input, Select, and Textarea across all states: default, focused, error, and disabled. Includes adornments, helper text, and real form layouts.
-        </p>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      <GalleryPageIntro
+        eyebrow="Form elements"
+        heading="Forms"
+        description="Input, Select, and Textarea across all states: default, focused, error, and disabled. Includes adornments, helper text, and real form layouts."
+      />
 
       <div style={section}>
         <div style={groupLabel}>Input — states</div>

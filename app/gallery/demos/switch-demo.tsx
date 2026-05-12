@@ -7,7 +7,7 @@ const section: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: "20px",
-  padding: "32px",
+  padding: "clamp(16px, 4vw, 32px)",
   background: "var(--aurora-panel-medium)",
   border: "1px solid var(--aurora-border-default)",
   borderRadius: "var(--aurora-radius-2)",
@@ -113,7 +113,7 @@ function LabeledSwitch({
 
 export default function SwitchDemo() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px", padding: "32px 0" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "32px", padding: 0 }}>
       <div>
         <h2 style={heading}>Switch</h2>
         <p style={subheading}>

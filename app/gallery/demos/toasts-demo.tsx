@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Button } from "@/registry/aurora/ui/button";
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
 // Inline stacked-plane SVG mark — 16x16
 function LabbyMark16({ color }: { color: string }) {
@@ -123,18 +124,12 @@ function StaticToast({ status, title, description }: StaticToastProps) {
 
 export default function ToastsDemo() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      <div>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-          Feedback
-        </p>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-          Toasts
-        </h2>
-        <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Transient notifications that slide in from the bottom-right. The icon slot holds the Labby stacked-plane mark in a tinted circle.
-        </p>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <GalleryPageIntro
+        eyebrow="Feedback"
+        heading="Toasts"
+        description="Transient notifications that slide in from the bottom-right. The icon slot holds the Labby stacked-plane mark in a tinted circle."
+      />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <StaticToast

@@ -53,7 +53,7 @@ export default function NewComponentsDemo() {
   const [retries, setRetries] = React.useState(3)
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 28, padding: "32px 0" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 28, padding: 0 }}>
       <div>
         <h2 style={heading}>New primitives</h2>
         <p style={copy}>The missing operator-facing pieces: fields, choice controls, search, overlays, run status, timeline, metadata, and split panes.</p>

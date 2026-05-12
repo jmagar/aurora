@@ -76,3 +76,74 @@
     font-family: var(--aurora-font-sans);
   }
 }
+
+/* ─── Gallery demo shared utilities ─────────────────────────────────────── */
+/* These classes give demo pages consistent responsive padding and layout    */
+/* without requiring each demo to manage breakpoints individually.           */
+
+.aurora-demo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: clamp(16px, 4vw, 32px);
+  background: var(--aurora-panel-medium);
+  border: 1px solid var(--aurora-border-default);
+  border-radius: var(--aurora-radius-2, 14px);
+}
+
+.aurora-demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.aurora-demo-row--end {
+  align-items: flex-end;
+}
+
+.aurora-demo-label {
+  font-size: 10px;
+  font-family: var(--aurora-font-mono);
+  font-weight: 600;
+  color: var(--aurora-text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.aurora-demo-heading {
+  font-size: clamp(15px, 3vw, 18px);
+  font-family: var(--aurora-font-display);
+  font-weight: 700;
+  color: var(--aurora-text-primary);
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+
+.aurora-demo-subheading {
+  font-size: 13px;
+  color: var(--aurora-text-muted);
+  font-family: var(--aurora-font-sans);
+  margin: 0 0 24px;
+  line-height: 1.55;
+}
+
+.aurora-demo-divider {
+  height: 1px;
+  background: var(--aurora-border-default);
+  margin: 4px 0;
+}
+
+/* Responsive token swatch grid — wraps fluidly on narrow viewports */
+.aurora-demo-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+/* Overflow-safe demo table wrapper */
+.aurora-demo-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--aurora-radius-2, 14px);
+}
