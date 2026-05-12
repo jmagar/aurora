@@ -276,7 +276,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "stack-trace":
       return <StackTrace frames={[{ file: "registry/aurora/ui/button.tsx", line: 141, label: "Button render" }]} />
     case "environment-variables":
-      return <EnvironmentVariables variables={[{ key: "NEXT_PUBLIC_API_URL", value: "https://aurora.tootie.tv" }, { key: "LAB_TOKEN", value: "tok_live_4ab93c", secret: true, required: true }]} />
+      return <EnvironmentVariables variables={[{ key: "NEXT_PUBLIC_API_URL", value: "https://aurora.tootie.tv" }, { key: "LAB_TOKEN", value: "masked-demo-token", secret: true, required: true }]} />
     case "checkpoint":
       return <Checkpoint label="Checkpoint saved" description="User-approved marketplace state captured." />
     case "confirmation":
