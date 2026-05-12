@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { usePathname } from "next/navigation"
 import { Thinking } from "@/registry/aurora/blocks/ai/thinking/thinking"
 import { ToolCalls } from "@/registry/aurora/blocks/ai/tool-calls/tool-calls"
@@ -88,41 +87,6 @@ import { Textarea } from "@/registry/aurora/ui/textarea"
 import { Timeline, TimelineItem } from "@/registry/aurora/ui/timeline"
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from "@/registry/aurora/ui/toolbar"
 
-const TITLES: Record<string, string> = {
-  "alert-dialog": "Alert dialog",
-  "aspect-ratio": "Aspect ratio",
-  calendar: "Calendar",
-  card: "Card",
-  carousel: "Carousel",
-  chart: "Chart",
-  collapsible: "Collapsible",
-  "date-picker": "Date picker",
-  direction: "Direction",
-  "hover-card": "Hover card",
-  "input-group": "Input group",
-  "input-otp": "Input OTP",
-  item: "Item",
-  label: "Label",
-  menubar: "Menubar",
-  "navigation-menu": "Navigation menu",
-  "scroll-area": "Scroll area",
-  table: "Table",
-  toggle: "Toggle",
-  "toggle-group": "Toggle group",
-  "number-input": "Number input",
-  combobox: "Combobox",
-  sheet: "Sheet",
-  callout: "Callout",
-  "status-indicator": "Status indicator",
-  timeline: "Timeline",
-  "description-list": "Description list",
-  "resizable-panels": "Resizable panels",
-  listbox: "Listbox",
-  "search-results": "Search results",
-  kbd: "Kbd",
-  toolbar: "Toolbar",
-}
-
 const AI_TITLES: Record<string, string> = {
   "chain-of-thought": "Chain of thought",
   checkpoint: "Checkpoint",
@@ -177,19 +141,11 @@ const tasks = [
   { id: "3", title: "Publish result", status: "queued" as const },
 ]
 
-function Shell({ slug, children }: { slug: string; children: React.ReactNode }) {
-  const title = TITLES[slug] ?? AI_TITLES[slug] ?? slug
+function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid gap-6">
-      <GalleryPageIntro
-        eyebrow={`Components / ${slug}`}
-        heading={title}
-        description="Aurora parity surface with dark-first tokens, operator typography, restrained borders, and controls that match the rest of the registry."
-      />
-      <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
-        {children}
-      </section>
-    </div>
+    <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
+      {children}
+    </section>
   )
 }
 
@@ -320,7 +276,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "stack-trace":
       return <StackTrace frames={[{ file: "registry/aurora/ui/button.tsx", line: 141, label: "Button render" }]} />
     case "environment-variables":
-      return <EnvironmentVariables variables={[{ key: "NEXT_PUBLIC_API_URL", value: "https://aurora.tootie.tv" }, { key: "LAB_TOKEN", value: "tok_live_4ab93c", secret: true, required: true }]} />
+      return <EnvironmentVariables variables={[{ key: "NEXT_PUBLIC_API_URL", value: "https://aurora.tootie.tv" }, { key: "LAB_TOKEN", value: "masked-demo-token", secret: true, required: true }]} />
     case "checkpoint":
       return <Checkpoint label="Checkpoint saved" description="User-approved marketplace state captured." />
     case "confirmation":
@@ -392,7 +348,7 @@ function AiDemo({ slug }: { slug: string }) {
 
 export function ComponentDemoPage({ slug }: { slug: string }) {
   const isAi = slug in AI_TITLES
-  return <Shell slug={slug}>{isAi ? <AiDemo slug={slug} /> : <ShadcnDemo slug={slug} />}</Shell>
+  return <Shell>{isAi ? <AiDemo slug={slug} /> : <ShadcnDemo slug={slug} />}</Shell>
 }
 
 export function createComponentDemo(slug: string) {
