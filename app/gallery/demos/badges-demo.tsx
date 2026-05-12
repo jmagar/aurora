@@ -1,8 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Badge } from "@/registry/aurora/ui/badge"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
+import { Badge } from "@/registry/aurora/ui/badge"
 
 const tableRow: React.CSSProperties = {
   display: "flex",
@@ -28,28 +28,32 @@ export default function BadgesDemo() {
       <GalleryPageIntro
         eyebrow="Controls"
         heading="Badge"
-        description="Status badges in five semantic variants — with and without the dot indicator."
+        description="Semantic badges communicate system meaning. Expressive badges carry identity emphasis, not status."
       />
 
       <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Variants — no dot</div>
+        <div className="aurora-demo-label">Semantic roles - with dot</div>
         <div className="aurora-demo-row">
-          <Badge variant="default">Active</Badge>
-          <Badge variant="success">Healthy</Badge>
-          <Badge variant="warn">Degraded</Badge>
-          <Badge variant="error">Offline</Badge>
-          <Badge variant="rose">Escalated</Badge>
-        </div>
-      </div>
-
-      <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Variants — with dot</div>
-        <div className="aurora-demo-row">
-          <Badge variant="default" dot>Running</Badge>
+          <Badge variant="info" dot>Syncing</Badge>
           <Badge variant="success" dot>Healthy</Badge>
           <Badge variant="warn" dot>Degraded</Badge>
           <Badge variant="error" dot>Offline</Badge>
-          <Badge variant="rose" dot>Escalated</Badge>
+          <Badge variant="neutral" dot>Queued</Badge>
+        </div>
+
+        <div className="aurora-demo-label">Expressive identity</div>
+        <div className="aurora-demo-row">
+          <Badge variant="violet" dot>Automated</Badge>
+          <Badge variant="rose">Escalated</Badge>
+        </div>
+
+        <div className="aurora-demo-label">Without dot</div>
+        <div className="aurora-demo-row">
+          <Badge variant="info">Info</Badge>
+          <Badge variant="success">Success</Badge>
+          <Badge variant="warn">Warning</Badge>
+          <Badge variant="error">Error</Badge>
+          <Badge variant="neutral">Neutral</Badge>
         </div>
       </div>
 
@@ -81,8 +85,7 @@ export default function BadgesDemo() {
       </div>
 
       <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Table context — agents list</div>
-        {/* Wrap table in scroll container for narrow viewports */}
+        <div className="aurora-demo-label">Table context - agents list</div>
         <div className="aurora-demo-table-scroll">
           <div
             style={{
@@ -110,11 +113,11 @@ export default function BadgesDemo() {
             </div>
 
             {([
-              { name: "labby-prod-01",     gateway: "us-east-1",  status: "default" as const, statusLabel: "Running",   health: "success" as const, healthLabel: "Healthy"  },
-              { name: "labby-staging-02",  gateway: "eu-west-1",  status: "warn"    as const, statusLabel: "Waiting",   health: "warn"    as const, healthLabel: "Degraded" },
-              { name: "labby-worker-03",   gateway: "us-west-2",  status: "success" as const, statusLabel: "Completed", health: "success" as const, healthLabel: "Healthy"  },
-              { name: "labby-eval-04",     gateway: "ap-south-1", status: "error"   as const, statusLabel: "Failed",    health: "error"   as const, healthLabel: "Offline"  },
-              { name: "labby-escalate-05", gateway: "us-east-1",  status: "rose"    as const, statusLabel: "Escalated", health: "warn"    as const, healthLabel: "Degraded" },
+              { name: "labby-prod-01", gateway: "us-east-1", status: "default" as const, statusLabel: "Running", health: "success" as const, healthLabel: "Healthy" },
+              { name: "labby-staging-02", gateway: "eu-west-1", status: "warn" as const, statusLabel: "Waiting", health: "warn" as const, healthLabel: "Degraded" },
+              { name: "labby-worker-03", gateway: "us-west-2", status: "success" as const, statusLabel: "Completed", health: "success" as const, healthLabel: "Healthy" },
+              { name: "labby-eval-04", gateway: "ap-south-1", status: "error" as const, statusLabel: "Failed", health: "error" as const, healthLabel: "Offline" },
+              { name: "labby-escalate-05", gateway: "us-east-1", status: "rose" as const, statusLabel: "Escalated", health: "warn" as const, healthLabel: "Degraded" },
             ] as const).map((r) => (
               <div key={r.name} style={{ ...tableRow, background: "var(--aurora-panel-medium)" }}>
                 <span style={{ flex: 2, color: "var(--aurora-text-primary)", fontFamily: "var(--aurora-font-mono)", fontSize: "12px" }}>

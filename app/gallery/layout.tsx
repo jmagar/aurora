@@ -205,11 +205,6 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
     }
   }, [light])
 
-  // Close mobile nav on route change
-  React.useEffect(() => {
-    setNavOpen(false)
-  }, [pathname])
-
   // Lock body scroll while mobile nav is open (iOS-safe technique)
   React.useEffect(() => {
     if (!navOpen) return

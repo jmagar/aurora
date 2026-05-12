@@ -1,18 +1,24 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn, devWarn } from "@/lib/utils"
 
-export type StatusTone = "online" | "syncing" | "queued" | "degraded" | "offline" | "error"
+export type StatusTone = "online" | "syncing" | "queued" | "degraded" | "offline" | "error" | "automating"
 
-const toneColor: Record<StatusTone, string> = {
-  online: "var(--aurora-success)",
-  syncing: "var(--aurora-accent-primary)",
-  queued: "var(--aurora-text-muted)",
-  degraded: "var(--aurora-warn)",
-  offline: "var(--aurora-text-muted)",
-  error: "var(--aurora-error)",
+export const toneColor: Record<StatusTone, { color: string; shadow: string }> = {
+  online:     { color: "var(--aurora-success)",        shadow: "0 0 10px var(--aurora-success)" },
+  syncing:    { color: "var(--aurora-info)",           shadow: "0 0 10px var(--aurora-info)" },
+  queued:     { color: "var(--aurora-neutral)",        shadow: "0 0 10px var(--aurora-neutral)" },
+  degraded:   { color: "var(--aurora-warn)",           shadow: "0 0 10px var(--aurora-warn)" },
+  offline:    { color: "var(--aurora-neutral)",        shadow: "0 0 10px var(--aurora-neutral)" },
+  error:      { color: "var(--aurora-error)",          shadow: "0 0 10px var(--aurora-error)" },
+  automating: { color: "var(--aurora-accent-violet)",  shadow: "0 0 10px var(--aurora-accent-violet)" },
 }
+
+// queued and offline use --aurora-neutral-foreground so labels don't compete visually with the dot
+const dimTones = new Set<StatusTone>(["queued", "offline"])
+
+const pulseTones = new Set<StatusTone>(["syncing", "automating"])
 
 export interface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: StatusTone
@@ -20,14 +26,23 @@ export interface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanEleme
   pulse?: boolean
 }
 
-function StatusIndicator({ className, tone = "online", label, pulse = tone === "syncing", style, ...props }: StatusIndicatorProps) {
-  const color = toneColor[tone]
+function StatusIndicator({ className, tone = "online", label, pulse, style, ...props }: StatusIndicatorProps) {
+  const safeTone = Object.hasOwn(toneColor, tone) ? tone : "online"
+  if (tone !== safeTone) {
+    devWarn(`[Aurora StatusIndicator] Unknown tone "${tone}". Valid values: ${Object.keys(toneColor).join(", ")}. Falling back to "online".`)
+  }
+
+  const resolvedPulse = pulse ?? pulseTones.has(safeTone)
+  const { color, shadow } = toneColor[safeTone]
+  const labelColor = dimTones.has(safeTone)
+    ? "var(--aurora-neutral-foreground)"
+    : "var(--aurora-text-primary)"
 
   return (
     <span
       className={cn("inline-flex items-center gap-2", className)}
       style={{
-        color: "var(--aurora-text-primary)",
+        color: labelColor,
         fontSize: "var(--aurora-type-body-sm)",
         fontWeight: "var(--aurora-weight-ui)",
         lineHeight: "var(--aurora-line-ui)",
@@ -37,10 +52,10 @@ function StatusIndicator({ className, tone = "online", label, pulse = tone === "
     >
       <span
         aria-hidden="true"
-        className={cn("size-2 rounded-full", pulse && "animate-pulse")}
-        style={{ background: color, boxShadow: `0 0 10px ${color}` }}
+        className={cn("size-2 rounded-full", resolvedPulse && "animate-pulse")}
+        style={{ background: color, boxShadow: shadow }}
       />
-      {label ?? tone}
+      {label ?? safeTone}
     </span>
   )
 }

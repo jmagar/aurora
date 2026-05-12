@@ -38,13 +38,58 @@
   --aurora-accent-pink-button: #e879a0;
   --aurora-rose-gradient: linear-gradient(180deg, var(--aurora-accent-pink) 0%, var(--aurora-accent-pink-button) 100%);
 
+  /* Expressive accent — Aurora violet (AI / automation identity) */
+  --aurora-accent-violet:        #a78bfa;
+  --aurora-accent-violet-strong: #c4b5fd;
+  --aurora-accent-violet-deep:   #7c3aed;
+  --aurora-accent-violet-button: #8b5cf6;
+  --aurora-accent-violet-surface: color-mix(in srgb, var(--aurora-accent-violet) 12%, var(--aurora-panel-medium));
+  --aurora-accent-violet-border:  color-mix(in srgb, var(--aurora-accent-violet) 32%, transparent);
+
+  /* Expressive surface tokens — rose (extends existing rose family) */
+  --aurora-accent-pink-surface: color-mix(in srgb, var(--aurora-accent-pink) 12%, var(--aurora-panel-medium));
+  --aurora-accent-pink-border:  color-mix(in srgb, var(--aurora-accent-pink) 32%, transparent);
+
   /* Status — muted, never neon */
   --aurora-success: #7dd3c7;
   --aurora-warn:    #c6a36b;
   --aurora-error:   #c78490;
   --aurora-error-lift: #d9909a;
   --aurora-error-gradient: linear-gradient(180deg, var(--aurora-error-lift) 0%, var(--aurora-error) 100%);
-  --aurora-status-offline: #3a5568;
+  /* Semantic state families — surface / border / foreground per state */
+  --aurora-info:            #72c8f5;
+  --aurora-info-surface:    color-mix(in srgb, var(--aurora-info) 12%, var(--aurora-panel-medium));
+  --aurora-info-border:     color-mix(in srgb, var(--aurora-info) 34%, transparent);
+  --aurora-info-foreground: #dff5ff;
+
+  --aurora-success-surface:    color-mix(in srgb, var(--aurora-success) 12%, var(--aurora-panel-medium));
+  --aurora-success-border:     color-mix(in srgb, var(--aurora-success) 34%, transparent);
+  --aurora-success-foreground: #dcfbf6;
+
+  --aurora-warn-surface:    color-mix(in srgb, var(--aurora-warn) 12%, var(--aurora-panel-medium));
+  --aurora-warn-border:     color-mix(in srgb, var(--aurora-warn) 34%, transparent);
+  --aurora-warn-foreground: #f8ead0;
+
+  --aurora-error-surface:    color-mix(in srgb, var(--aurora-error) 12%, var(--aurora-panel-medium));
+  --aurora-error-border:     color-mix(in srgb, var(--aurora-error) 34%, transparent);
+  --aurora-error-foreground: #fde6eb;
+
+  --aurora-neutral:            #91a8b6;
+  --aurora-neutral-surface:    color-mix(in srgb, var(--aurora-neutral) 10%, var(--aurora-panel-medium));
+  --aurora-neutral-border:     color-mix(in srgb, var(--aurora-neutral) 28%, transparent);
+  --aurora-neutral-foreground: #d7e3ea;
+
+  /* Interaction + system */
+  --aurora-overlay:           rgba(4, 10, 14, 0.72);
+  --aurora-disabled-text:     color-mix(in srgb, var(--aurora-text-muted) 72%, var(--aurora-border-strong));
+  --aurora-disabled-surface:  color-mix(in srgb, var(--aurora-control-surface) 88%, var(--aurora-border-default));
+  --aurora-subtle-bg:         color-mix(in srgb, var(--aurora-hover-bg) 52%, transparent);
+  --aurora-selected-bg:       color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent);
+  --aurora-pressed-bg:        color-mix(in srgb, var(--aurora-accent-primary) 20%, transparent);
+  --aurora-focus-ring-strong: color-mix(in srgb, var(--aurora-accent-primary) 52%, transparent);
+
+  /* --aurora-status-offline is deprecated; alias to --aurora-neutral. Remove after all consumers migrate. */
+  --aurora-status-offline: var(--aurora-neutral);
 
   /* Code accents */
   --aurora-code-type: #b8d9f5;
@@ -150,11 +195,58 @@
   --aurora-accent-pink-strong: #e0527f;
   --aurora-accent-pink-deep:   #a0284f;
   --aurora-accent-pink-button: #b82f60;
+
+  /* Violet (light) */
+  --aurora-accent-violet:         #7c3aed;
+  --aurora-accent-violet-strong:  #8b5cf6;
+  --aurora-accent-violet-deep:    #5b21b6;
+  --aurora-accent-violet-button:  #6d28d9;
+  --aurora-accent-violet-surface: color-mix(in srgb, var(--aurora-accent-violet) 10%, var(--aurora-panel-medium));
+  --aurora-accent-violet-border:  color-mix(in srgb, var(--aurora-accent-violet) 26%, transparent);
+
+  /* Rose surfaces (light) */
+  --aurora-accent-pink-surface: color-mix(in srgb, var(--aurora-accent-pink) 10%, var(--aurora-panel-medium));
+  --aurora-accent-pink-border:  color-mix(in srgb, var(--aurora-accent-pink) 26%, transparent);
+
   --aurora-success: #2d7d6e;
   --aurora-warn:    #8a6914;
   --aurora-error:   #9c3545;
   --aurora-error-lift: #b84a5b;
-  --aurora-status-offline: #6f8793;
+
+  /* Semantic families (light) */
+  --aurora-info:            #0f7db8;
+  --aurora-info-surface:    color-mix(in srgb, var(--aurora-info) 10%, var(--aurora-panel-medium));
+  --aurora-info-border:     color-mix(in srgb, var(--aurora-info) 26%, transparent);
+  --aurora-info-foreground: #0a4f74;
+
+  --aurora-success-surface:    color-mix(in srgb, var(--aurora-success) 12%, var(--aurora-panel-medium));
+  --aurora-success-border:     color-mix(in srgb, var(--aurora-success) 24%, transparent);
+  --aurora-success-foreground: #184b43;
+
+  --aurora-warn-surface:    color-mix(in srgb, var(--aurora-warn) 12%, var(--aurora-panel-medium));
+  --aurora-warn-border:     color-mix(in srgb, var(--aurora-warn) 24%, transparent);
+  --aurora-warn-foreground: #5c450c;
+
+  --aurora-error-surface:    color-mix(in srgb, var(--aurora-error) 10%, var(--aurora-panel-medium));
+  --aurora-error-border:     color-mix(in srgb, var(--aurora-error) 24%, transparent);
+  --aurora-error-foreground: #6f2330;
+
+  --aurora-neutral:            #6f8793;
+  --aurora-neutral-surface:    color-mix(in srgb, var(--aurora-neutral) 12%, var(--aurora-panel-medium));
+  --aurora-neutral-border:     color-mix(in srgb, var(--aurora-neutral) 24%, transparent);
+  --aurora-neutral-foreground: #334e5d;
+
+  /* Interaction (light) */
+  --aurora-overlay:           rgba(7, 19, 28, 0.18);
+  --aurora-disabled-text:     color-mix(in srgb, var(--aurora-text-muted) 66%, var(--aurora-border-strong));
+  --aurora-disabled-surface:  color-mix(in srgb, var(--aurora-control-surface) 78%, var(--aurora-panel-medium));
+  --aurora-subtle-bg:         color-mix(in srgb, var(--aurora-hover-bg) 66%, transparent);
+  --aurora-selected-bg:       color-mix(in srgb, var(--aurora-accent-primary) 10%, var(--aurora-panel-medium));
+  --aurora-pressed-bg:        color-mix(in srgb, var(--aurora-accent-primary) 16%, var(--aurora-panel-medium));
+  --aurora-focus-ring-strong: color-mix(in srgb, var(--aurora-accent-primary) 40%, transparent);
+
+  /* --aurora-status-offline is deprecated; alias to --aurora-neutral. Remove after all consumers migrate. */
+  --aurora-status-offline: var(--aurora-neutral);
   --aurora-code-type: #24536c;
   --aurora-code-function: #01579b;
   --aurora-switch-thumb-gradient: linear-gradient(180deg, #ffffff 0%, #d8edf6 100%);

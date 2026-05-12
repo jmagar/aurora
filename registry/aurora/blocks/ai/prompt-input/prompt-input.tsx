@@ -4,10 +4,6 @@ import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export interface Attachment {
   id: string
   name: string
@@ -44,10 +40,6 @@ export interface PromptInputProps {
   mentionItems?: MentionItem[]
 }
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
 const DEFAULT_MODELS = [
   { id: "claude-opus-4-5", label: "Claude Opus 4.5" },
   { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" },
@@ -69,9 +61,10 @@ const DEFAULT_MENTIONS: MentionItem[] = [
   { id: "agent-reviewer", label: "Reviewer Agent", kind: "agent" },
 ]
 
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
+function insertTrigger(current: string, char: string, setter: (v: string) => void) {
+  const sep = current.length > 0 && !current.endsWith(" ") ? " " : ""
+  setter(current + sep + char)
+}
 
 function AttachIcon() {
   return (
@@ -133,10 +126,6 @@ function FileIcon({ kind }: { kind: "file" | "agent" | "folder" }) {
   )
 }
 
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
-
 export function PromptInput({
   value,
   onChange,
@@ -154,28 +143,42 @@ export function PromptInput({
 }: PromptInputProps) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+  const objectUrlsRef = React.useRef<string[]>([])
+  const blurTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const prevAttachmentsRef = React.useRef<Attachment[]>(attachments)
 
   const [isFocused, setIsFocused] = React.useState(false)
   const [showModelMenu, setShowModelMenu] = React.useState(false)
 
-  // Slash command popup
   const [slashOpen, setSlashOpen] = React.useState(false)
   const [slashQuery, setSlashQuery] = React.useState("")
   const [slashIndex, setSlashIndex] = React.useState(0)
 
-  // Mention popup
   const [mentionOpen, setMentionOpen] = React.useState(false)
   const [mentionQuery, setMentionQuery] = React.useState("")
   const [mentionIndex, setMentionIndex] = React.useState(0)
   const [selectedMentions, setSelectedMentions] = React.useState<MentionItem[]>([])
 
-  // Auto-resize textarea
   React.useEffect(() => {
     const el = textareaRef.current
     if (!el) return
     el.style.height = "auto"
     el.style.height = Math.min(el.scrollHeight, 200) + "px"
   }, [value])
+
+  // Revoke object URLs when parent removes attachments to prevent silent memory leaks
+  React.useEffect(() => {
+    const prev = prevAttachmentsRef.current
+    const currentIds = new Set(attachments.map((c) => c.id))
+    const removed = prev.filter((p) => !currentIds.has(p.id))
+    removed.forEach((att) => {
+      if (att.url) {
+        URL.revokeObjectURL(att.url)
+        objectUrlsRef.current = objectUrlsRef.current.filter((u) => u !== att.url)
+      }
+    })
+    prevAttachmentsRef.current = attachments
+  }, [attachments])
 
   const filteredSlash = slashCommands.filter((c) =>
     c.label.toLowerCase().includes(slashQuery.toLowerCase())
@@ -299,16 +302,35 @@ export function PromptInput({
     const files = Array.from(e.target.files ?? [])
     files.forEach((f) => {
       const isImage = f.type.startsWith("image/")
+      let url: string | undefined
+      if (isImage) {
+        try {
+          url = URL.createObjectURL(f)
+          objectUrlsRef.current.push(url)
+        } catch (err) {
+          if (process.env.NODE_ENV !== "production") {
+            console.error("[Aurora PromptInput] Failed to create object URL for image:", f.name, err)
+          }
+          return
+        }
+      }
       const att: Attachment = {
-        id: `${Date.now()}-${f.name}`,
+        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}-${f.name}`,
         name: f.name,
         type: isImage ? "image" : "file",
-        url: isImage ? URL.createObjectURL(f) : undefined,
+        url,
       }
       onAddAttachment?.(att)
     })
     e.target.value = ""
   }
+
+  React.useEffect(() => {
+    return () => {
+      objectUrlsRef.current.forEach((u) => URL.revokeObjectURL(u))
+      if (blurTimerRef.current) clearTimeout(blurTimerRef.current)
+    }
+  }, [])
 
   const modelLabel = DEFAULT_MODELS.find((m) => m.id === model)?.label ?? model
 
@@ -370,14 +392,14 @@ export function PromptInput({
                 border: "none",
                 cursor: "pointer",
                 textAlign: "left",
-                borderLeft: i === slashIndex ? "2px solid var(--aurora-accent-primary)" : "2px solid transparent",
+                borderLeft: i === slashIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
               }}
             >
               <span
                 style={{
                   fontFamily: "var(--aurora-font-mono)",
                   fontSize: "13px",
-                  color: "var(--aurora-accent-primary)",
+                  color: "var(--aurora-accent-violet)",
                   minWidth: "90px",
                 }}
               >
@@ -440,7 +462,7 @@ export function PromptInput({
                 border: "none",
                 cursor: "pointer",
                 textAlign: "left",
-                borderLeft: i === mentionIndex ? "2px solid var(--aurora-accent-primary)" : "2px solid transparent",
+                borderLeft: i === mentionIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
                 color: "var(--aurora-text-primary)",
               }}
             >
@@ -536,11 +558,11 @@ export function PromptInput({
                   alignItems: "center",
                   gap: "4px",
                   padding: "2px 8px 2px 6px",
-                  background: "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
-                  border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
+                  background: "var(--aurora-accent-violet-surface)",
+                  border: "1px solid var(--aurora-accent-violet-border)",
                   borderRadius: "8px",
                   fontSize: "12px",
-                  color: "var(--aurora-accent-primary)",
+                  color: "var(--aurora-accent-violet)",
                   fontWeight: 500,
                 }}
               >
@@ -623,7 +645,13 @@ export function PromptInput({
                 </span>
                 {onRemoveAttachment && (
                   <Button variant="plain" size="unstyled"
-                    onClick={() => onRemoveAttachment(att.id)}
+                    onClick={() => {
+                      if (att.url) {
+                        URL.revokeObjectURL(att.url)
+                        objectUrlsRef.current = objectUrlsRef.current.filter((u) => u !== att.url)
+                      }
+                      onRemoveAttachment(att.id)
+                    }}
                     aria-label={`Remove ${att.name}`}
                     style={{
                       background: "none",
@@ -656,7 +684,8 @@ export function PromptInput({
           onBlur={() => {
             setIsFocused(false)
             // Delay close so click events on popups register first
-            setTimeout(() => {
+            if (blurTimerRef.current) clearTimeout(blurTimerRef.current)
+            blurTimerRef.current = setTimeout(() => {
               setSlashOpen(false)
               setMentionOpen(false)
               setShowModelMenu(false)
@@ -715,7 +744,7 @@ export function PromptInput({
           {/* Slash command trigger */}
           <ToolbarButton
             onClick={() => {
-              onChange(value + "/")
+              insertTrigger(value, "/", onChange)
               setSlashQuery("")
               setSlashIndex(0)
               setSlashOpen(true)
@@ -733,7 +762,7 @@ export function PromptInput({
           {/* Mention trigger */}
           <ToolbarButton
             onClick={() => {
-              onChange(value + "@")
+              insertTrigger(value, "@", onChange)
               setMentionQuery("")
               setMentionIndex(0)
               setMentionOpen(true)
@@ -804,10 +833,6 @@ export function PromptInput({
     </div>
   )
 }
-
-// ---------------------------------------------------------------------------
-// Toolbar icon button
-// ---------------------------------------------------------------------------
 
 function ToolbarButton({
   children,

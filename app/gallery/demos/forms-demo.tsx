@@ -66,21 +66,6 @@ const grid2: React.CSSProperties = {
   gap: "16px",
 }
 
-const heading: React.CSSProperties = {
-  fontSize: "18px",
-  fontFamily: "var(--aurora-font-display)",
-  fontWeight: 600,
-  color: "var(--aurora-text-primary)",
-  marginBottom: "4px",
-}
-
-const subheading: React.CSSProperties = {
-  fontSize: "13px",
-  color: "var(--aurora-text-muted)",
-  fontFamily: "var(--aurora-font-sans)",
-  marginBottom: "24px",
-}
-
 const divider: React.CSSProperties = {
   height: "1px",
   background: "var(--aurora-border-default)",

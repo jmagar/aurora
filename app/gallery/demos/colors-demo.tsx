@@ -1,58 +1,40 @@
-"use client";
+"use client"
 
-import { GalleryPageIntro } from "@/components/gallery-page-intro";
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 
 const COLOR_SECTIONS = [
   {
-    label: "Surfaces",
-    tokens: [
-      { name: "page-bg",         cssVar: "var(--aurora-page-bg)" },
-      { name: "nav-bg",          cssVar: "var(--aurora-nav-bg)" },
-      { name: "panel-medium",    cssVar: "var(--aurora-panel-medium)" },
-      { name: "panel-strong",    cssVar: "var(--aurora-panel-strong)" },
-      { name: "control-surface", cssVar: "var(--aurora-control-surface)" },
-      { name: "hover-bg",        cssVar: "var(--aurora-hover-bg)" },
-    ],
-  },
-  {
-    label: "Primary accent",
+    label: "Brand tokens - identity",
+    description: "Use cyan and rose for Aurora identity. Use violet to signal AI or automation emphasis. Never use brand tokens to communicate status.",
     tokens: [
       { name: "accent-primary", cssVar: "var(--aurora-accent-primary)" },
-      { name: "accent-strong",  cssVar: "var(--aurora-accent-strong)" },
-      { name: "accent-deep",    cssVar: "var(--aurora-accent-deep)" },
+      { name: "accent-pink", cssVar: "var(--aurora-accent-pink)" },
+      { name: "accent-violet", cssVar: "var(--aurora-accent-violet)" },
     ],
   },
   {
-    label: "Secondary accent",
+    label: "Semantic tokens - meaning",
+    description: "Use these roles in component APIs instead of reaching for hue names. Each role ships a full surface / border / foreground family.",
     tokens: [
-      { name: "accent-pink",        cssVar: "var(--aurora-accent-pink)" },
-      { name: "accent-pink-strong", cssVar: "var(--aurora-accent-pink-strong)" },
-      { name: "accent-pink-deep",   cssVar: "var(--aurora-accent-pink-deep)" },
-    ],
-  },
-  {
-    label: "Status",
-    tokens: [
+      { name: "info", cssVar: "var(--aurora-info)" },
       { name: "success", cssVar: "var(--aurora-success)" },
-      { name: "warn",    cssVar: "var(--aurora-warn)" },
-      { name: "error",   cssVar: "var(--aurora-error)" },
+      { name: "warn", cssVar: "var(--aurora-warn)" },
+      { name: "error", cssVar: "var(--aurora-error)" },
+      { name: "neutral", cssVar: "var(--aurora-neutral)" },
     ],
   },
   {
-    label: "Borders",
+    label: "Interaction tokens - behavior",
+    description: "Use these shared tokens for overlays, selection, disabled states, and pressed states.",
     tokens: [
-      { name: "border-default", cssVar: "var(--aurora-border-default)" },
-      { name: "border-strong",  cssVar: "var(--aurora-border-strong)" },
+      { name: "overlay", cssVar: "var(--aurora-overlay)" },
+      { name: "disabled-surface", cssVar: "var(--aurora-disabled-surface)" },
+      { name: "subtle-bg", cssVar: "var(--aurora-subtle-bg)" },
+      { name: "selected-bg", cssVar: "var(--aurora-selected-bg)" },
+      { name: "pressed-bg", cssVar: "var(--aurora-pressed-bg)" },
     ],
   },
-  {
-    label: "Text",
-    tokens: [
-      { name: "text-primary", cssVar: "var(--aurora-text-primary)" },
-      { name: "text-muted",   cssVar: "var(--aurora-text-muted)" },
-    ],
-  },
-];
+]
 
 export default function ColorsDemo() {
   return (
@@ -60,13 +42,16 @@ export default function ColorsDemo() {
       <GalleryPageIntro
         eyebrow="Foundations"
         heading="Color tokens"
-        description="Aurora CSS custom properties that drive every surface, accent, status indicator, and text style across Labby."
+        description="Aurora colors separate brand tokens for identity, semantic tokens for meaning, and interaction tokens for behavior."
       />
 
       {COLOR_SECTIONS.map((section) => (
         <div key={section.label}>
-          <p className="aurora-demo-label" style={{ marginBottom: 12 }}>
+          <p className="aurora-demo-label" style={{ marginBottom: 4 }}>
             {section.label}
+          </p>
+          <p style={{ fontSize: 12, color: "var(--aurora-text-muted)", margin: "0 0 12px", lineHeight: 1.5 }}>
+            {section.description}
           </p>
           <div className="aurora-demo-swatch-grid">
             {section.tokens.map((token) => (
@@ -95,5 +80,5 @@ export default function ColorsDemo() {
         </div>
       ))}
     </div>
-  );
+  )
 }

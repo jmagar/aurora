@@ -4,10 +4,10 @@ import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
-// CSS injected once
+// Keyframes (React 19 deduplication via href)
 // ---------------------------------------------------------------------------
 
-const ARTIFACT_CSS = `
+const ARTIFACT_KEYFRAMES = `
 @keyframes aurora-blink-cursor {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
@@ -16,15 +16,6 @@ const ARTIFACT_CSS = `
   to { transform: rotate(360deg); }
 }
 `
-
-let artifactCSSInjected = false
-function ensureArtifactCSS() {
-  if (artifactCSSInjected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.textContent = ARTIFACT_CSS
-  document.head.appendChild(el)
-  artifactCSSInjected = true
-}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -130,7 +121,7 @@ function LanguageBadge({ language }: { language: string }) {
         gap: 4,
         fontSize: 11,
         fontWeight: 600,
-        fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+        fontFamily: "var(--aurora-font-mono)",
         color,
         background: `color-mix(in srgb, ${color} 12%, transparent)`,
         border: `1px solid color-mix(in srgb, ${color} 25%, transparent)`,
@@ -197,7 +188,7 @@ function CodeDisplay({
         maxHeight,
         fontSize: 13,
         lineHeight: 1.65,
-        fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+        fontFamily: "var(--aurora-font-mono)",
         color: "var(--aurora-text-primary)",
         whiteSpace: "pre",
         background: "transparent",
@@ -302,7 +293,7 @@ function ArtifactPanel({
       style={{
         background: "var(--aurora-panel-medium)",
         border: "1px solid var(--aurora-border-default)",
-        borderRadius: "var(--radius-2, 18px)",
+        borderRadius: "var(--aurora-radius-2)",
         overflow: "hidden",
         boxShadow: [
           "0 2px 16px rgba(0,0,0,0.28)",
@@ -328,7 +319,7 @@ function ArtifactPanel({
             fontSize: 13,
             fontWeight: 600,
             color: "var(--aurora-text-primary)",
-            fontFamily: "var(--font-sans, Inter, sans-serif)",
+            fontFamily: "var(--aurora-font-sans)",
             flex: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -506,7 +497,7 @@ function ArtifactCard({ title, language, code, isStreaming, style }: ArtifactPro
             fontSize: 13,
             fontWeight: 600,
             color: "var(--aurora-text-primary)",
-            fontFamily: "var(--font-sans, Inter, sans-serif)",
+            fontFamily: "var(--aurora-font-sans)",
             flex: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -552,7 +543,7 @@ function ArtifactCard({ title, language, code, isStreaming, style }: ArtifactPro
           style={{
             padding: "0 12px 10px",
             fontSize: 11,
-            fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+            fontFamily: "var(--aurora-font-mono)",
             color: "var(--aurora-text-muted)",
             whiteSpace: "pre",
             overflow: "hidden",
@@ -633,7 +624,7 @@ function ArtifactInline({ title, language, code, isStreaming, style }: ArtifactP
           style={{
             fontSize: 12,
             color: "var(--aurora-text-muted)",
-            fontFamily: "var(--font-sans, Inter, sans-serif)",
+            fontFamily: "var(--aurora-font-sans)",
             flex: 1,
           }}
         >
@@ -662,13 +653,15 @@ export function Artifact({
   variant = "panel",
   ...props
 }: ArtifactProps) {
-  React.useEffect(() => {
-    ensureArtifactCSS()
-  }, [])
 
-  if (variant === "card") return <ArtifactCard {...props} variant={variant} />
-  if (variant === "inline") return <ArtifactInline {...props} variant={variant} />
-  return <ArtifactPanel {...props} variant={variant} />
+  return (
+    <>
+      <style href="aurora-artifact-keyframes" precedence="default">{ARTIFACT_KEYFRAMES}</style>
+      {variant === "card" && <ArtifactCard {...props} variant={variant} />}
+      {variant === "inline" && <ArtifactInline {...props} variant={variant} />}
+      {variant === "panel" && <ArtifactPanel {...props} variant={variant} />}
+    </>
+  )
 }
 
 export default Artifact

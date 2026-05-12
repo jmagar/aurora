@@ -3,6 +3,14 @@
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 
+// Aurora violet tokens represent AI/automation identity.
+// Do not use for semantic state (success/warn/error) — use the semantic token layer for that.
+const AI_ACCENT = "var(--aurora-accent-violet)"
+const PLAN_ROW_BACKGROUND = {
+  inprog: "var(--aurora-accent-violet-surface)",
+  error: "var(--aurora-error-surface)",
+} as const
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -74,7 +82,7 @@ function StepIcon({ status }: { status: StepStatus }) {
           width: "16px",
           height: "16px",
           borderRadius: "50%",
-          border: "2px solid var(--aurora-accent-primary)",
+          border: `2px solid ${AI_ACCENT}`,
           borderTopColor: "transparent",
           animation: "aurora-spin 0.7s linear infinite",
           flexShrink: 0,
@@ -162,7 +170,7 @@ function Cursor() {
         display: "inline-block",
         width: "2px",
         height: "1em",
-        background: "var(--aurora-accent-primary)",
+        background: AI_ACCENT,
         marginLeft: "2px",
         verticalAlign: "text-bottom",
         borderRadius: "1px",
@@ -189,9 +197,7 @@ function ThinkingBlock({
 }) {
   const [open, setOpen] = React.useState(defaultOpen ?? false)
 
-  const borderLeftColor = isStreaming
-    ? "var(--aurora-accent-primary)"
-    : "var(--aurora-border-strong)"
+  const borderLeftColor = isStreaming ? AI_ACCENT : "var(--aurora-border-strong)"
 
   const showSkeleton = isStreaming && !content
   const label = isStreaming && !duration
@@ -235,7 +241,7 @@ function ThinkingBlock({
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path
             d="M7 1.5C5.9 1.5 5 2.4 5 3.5C4.2 3.5 3.5 4.2 3.5 5C2.7 5 2 5.7 2 6.5C2 7.5 2.7 8.2 3.5 8.4V10C3.5 11.1 4.4 12 5.5 12H8.5C9.6 12 10.5 11.1 10.5 10V8.4C11.3 8.2 12 7.5 12 6.5C12 5.7 11.3 5 10.5 5C10.5 4.2 9.8 3.5 9 3.5C9 2.4 8.1 1.5 7 1.5Z"
-            stroke="var(--aurora-accent-primary)"
+            stroke={AI_ACCENT}
             strokeWidth="1.2"
             fill="none"
           />
@@ -332,8 +338,8 @@ function CotBlock({
         }}
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <rect x="2" y="2" width="10" height="10" rx="2" stroke="var(--aurora-accent-primary)" strokeWidth="1.3" />
-          <path d="M4.5 5H9.5M4.5 7H7.5M4.5 9H8.5" stroke="var(--aurora-accent-primary)" strokeWidth="1.1" strokeLinecap="round" />
+          <rect x="2" y="2" width="10" height="10" rx="2" stroke={AI_ACCENT} strokeWidth="1.3" />
+          <path d="M4.5 5H9.5M4.5 7H7.5M4.5 9H8.5" stroke={AI_ACCENT} strokeWidth="1.1" strokeLinecap="round" />
         </svg>
         <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
           Chain of Thought
@@ -473,7 +479,7 @@ function PlanBlock({
         }}
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M2 3H12M2 7H9M2 11H11" stroke="var(--aurora-accent-primary)" strokeWidth="1.3" strokeLinecap="round" />
+          <path d="M2 3H12M2 7H9M2 11H11" stroke={AI_ACCENT} strokeWidth="1.3" strokeLinecap="round" />
         </svg>
         <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
           Plan
@@ -521,10 +527,8 @@ function PlanBlock({
                 padding: "6px 8px",
                 borderRadius: "10px",
                 background:
-                  step.status === "inprog"
-                    ? "color-mix(in srgb, var(--aurora-accent-primary) 6%, transparent)"
-                    : step.status === "error"
-                    ? "color-mix(in srgb, var(--aurora-error) 6%, transparent)"
+                  step.status === "inprog" || step.status === "error"
+                    ? PLAN_ROW_BACKGROUND[step.status]
                     : "transparent",
               }}
             >
@@ -578,7 +582,7 @@ export function Thinking({
 }: ThinkingProps) {
   return (
     <>
-      <style>{KEYFRAMES}</style>
+      <style href="aurora-thinking-keyframes" precedence="default">{KEYFRAMES}</style>
       {type === "thinking" && (
         <ThinkingBlock
           isStreaming={isStreaming}

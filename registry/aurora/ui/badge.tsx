@@ -1,83 +1,102 @@
 "use client"
 
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import { cn, devWarn } from "@/lib/utils"
 
-const badgeVariants = cva(
-  [
-    "inline-flex items-center gap-1.5",
-    "px-2 py-0.5",
-    "uppercase leading-none",
-    "border",
-    "whitespace-nowrap",
-  ].join(" "),
-  {
-    variants: {
-      variant: {
-        default: [
-          "text-[var(--aurora-accent-primary)]",
-          "border-[color-mix(in_srgb,var(--aurora-accent-primary)_30%,transparent)]",
-        ].join(" "),
-        success: [
-          "text-[var(--aurora-success)]",
-          "border-[color-mix(in_srgb,var(--aurora-success)_30%,transparent)]",
-        ].join(" "),
-        warn: [
-          "text-[var(--aurora-warn)]",
-          "border-[color-mix(in_srgb,var(--aurora-warn)_30%,transparent)]",
-        ].join(" "),
-        error: [
-          "text-[var(--aurora-error)]",
-          "border-[color-mix(in_srgb,var(--aurora-error)_30%,transparent)]",
-        ].join(" "),
-        rose: [
-          "text-[var(--aurora-accent-pink)]",
-          "border-[color-mix(in_srgb,var(--aurora-accent-pink)_30%,transparent)]",
-        ].join(" "),
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
+export type BadgeTone = "info" | "success" | "warn" | "error" | "neutral" | "rose" | "violet"
+
+type ToneTokens = { text: string; border: string; bg: string; dot: string; dotShadow: string }
+
+const badgeToneMap: Record<BadgeTone, ToneTokens> = {
+  info: {
+    text:      "var(--aurora-info-foreground)",
+    border:    "var(--aurora-info-border)",
+    bg:        "var(--aurora-info-surface)",
+    dot:       "var(--aurora-info)",
+    dotShadow: "0 0 4px var(--aurora-info)",
+  },
+  success: {
+    text:      "var(--aurora-success-foreground)",
+    border:    "var(--aurora-success-border)",
+    bg:        "var(--aurora-success-surface)",
+    dot:       "var(--aurora-success)",
+    dotShadow: "0 0 4px var(--aurora-success)",
+  },
+  warn: {
+    text:      "var(--aurora-warn-foreground)",
+    border:    "var(--aurora-warn-border)",
+    bg:        "var(--aurora-warn-surface)",
+    dot:       "var(--aurora-warn)",
+    dotShadow: "0 0 4px var(--aurora-warn)",
+  },
+  error: {
+    text:      "var(--aurora-error-foreground)",
+    border:    "var(--aurora-error-border)",
+    bg:        "var(--aurora-error-surface)",
+    dot:       "var(--aurora-error)",
+    dotShadow: "0 0 4px var(--aurora-error)",
+  },
+  neutral: {
+    text:      "var(--aurora-neutral-foreground)",
+    border:    "var(--aurora-neutral-border)",
+    bg:        "var(--aurora-neutral-surface)",
+    dot:       "var(--aurora-neutral)",
+    dotShadow: "0 0 4px var(--aurora-neutral)",
+  },
+  rose: {
+    text:      "var(--aurora-accent-pink-strong)",
+    border:    "var(--aurora-accent-pink-border)",
+    bg:        "var(--aurora-accent-pink-surface)",
+    dot:       "var(--aurora-accent-pink)",
+    dotShadow: "0 0 4px var(--aurora-accent-pink)",
+  },
+  violet: {
+    text:      "var(--aurora-accent-violet-strong)",
+    border:    "var(--aurora-accent-violet-border)",
+    bg:        "var(--aurora-accent-violet-surface)",
+    dot:       "var(--aurora-accent-violet)",
+    dotShadow: "0 0 4px var(--aurora-accent-violet)",
+  },
+}
+
+function resolveTone(variant: BadgeTone | "default" | undefined): BadgeTone {
+  if (!variant) return "neutral"
+  if (variant === "default") {
+    devWarn('[Aurora Badge] variant="default" is deprecated. Use variant="neutral" instead.')
+    return "neutral"
   }
-)
-
-const variantBgMap: Record<string, string> = {
-  default: "color-mix(in srgb, var(--aurora-accent-primary) 10%, transparent)",
-  success: "color-mix(in srgb, var(--aurora-success) 10%, transparent)",
-  warn: "color-mix(in srgb, var(--aurora-warn) 10%, transparent)",
-  error: "color-mix(in srgb, var(--aurora-error) 10%, transparent)",
-  rose: "color-mix(in srgb, var(--aurora-accent-pink) 10%, transparent)",
+  if (!Object.hasOwn(badgeToneMap, variant)) {
+    devWarn(
+      `[Aurora Badge] Unknown variant "${variant}". Valid values: ${Object.keys(badgeToneMap).join(", ")}. Falling back to "neutral".`
+    )
+    return "neutral"
+  }
+  return variant
 }
 
-const dotColorMap: Record<string, string> = {
-  default: "var(--aurora-accent-primary)",
-  success: "var(--aurora-success)",
-  warn: "var(--aurora-warn)",
-  error: "var(--aurora-error)",
-  rose: "var(--aurora-accent-pink)",
-}
-
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {
+export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Semantic or expressive tone. "default" is a deprecated alias for "neutral". */
+  variant?: BadgeTone | "default"
   dot?: boolean
 }
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className, variant, dot = false, style, children, ...props }, ref) => {
-    const resolvedVariant = variant ?? "default"
-    const bg = variantBgMap[resolvedVariant] ?? variantBgMap["default"]
-    const dotColor = dotColorMap[resolvedVariant] ?? dotColorMap["default"]
+    const tone = resolveTone(variant)
+    const { text, border, bg, dot: dotColor, dotShadow } = badgeToneMap[tone]
 
     return (
       <span
         ref={ref}
-        className={cn(badgeVariants({ variant }), className)}
+        className={cn(
+          "inline-flex items-center gap-1.5 px-2 py-0.5 uppercase leading-none border whitespace-nowrap",
+          className
+        )}
         style={{
           borderRadius: "4px",
           background: bg,
+          borderColor: border,
+          color: text,
           fontFamily: "var(--aurora-font-mono, 'JetBrains Mono', monospace)",
           fontSize: "var(--aurora-type-micro)",
           fontWeight: 650,
@@ -96,7 +115,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
               borderRadius: "50%",
               backgroundColor: dotColor,
               flexShrink: 0,
-              boxShadow: `0 0 4px ${dotColor}`,
+              boxShadow: dotShadow,
             }}
           />
         )}
@@ -107,5 +126,5 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
 )
 Badge.displayName = "Badge"
 
-export { Badge, badgeVariants }
+export { Badge }
 export default Badge
