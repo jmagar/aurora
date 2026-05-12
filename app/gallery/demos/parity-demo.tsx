@@ -308,7 +308,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
       )
     case "status-indicator":
       return (
-        <div className="grid gap-2">
+        <div className="flex flex-col items-start gap-2">
           <StatusIndicator tone="online"     label="Gateway connected" />
           <StatusIndicator tone="syncing"    label="Syncing registry" />
           <StatusIndicator tone="queued"     label="Queued for rollout" />
