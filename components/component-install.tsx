@@ -149,6 +149,7 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
           <code
             style={{
               flex: 1,
+              minWidth: 0,
               fontSize: "12.5px",
               fontFamily: "var(--aurora-font-mono)",
               color: "var(--aurora-text-primary)",

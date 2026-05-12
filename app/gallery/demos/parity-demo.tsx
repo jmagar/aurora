@@ -87,41 +87,6 @@ import { Textarea } from "@/registry/aurora/ui/textarea"
 import { Timeline, TimelineItem } from "@/registry/aurora/ui/timeline"
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from "@/registry/aurora/ui/toolbar"
 
-const TITLES: Record<string, string> = {
-  "alert-dialog": "Alert dialog",
-  "aspect-ratio": "Aspect ratio",
-  calendar: "Calendar",
-  card: "Card",
-  carousel: "Carousel",
-  chart: "Chart",
-  collapsible: "Collapsible",
-  "date-picker": "Date picker",
-  direction: "Direction",
-  "hover-card": "Hover card",
-  "input-group": "Input group",
-  "input-otp": "Input OTP",
-  item: "Item",
-  label: "Label",
-  menubar: "Menubar",
-  "navigation-menu": "Navigation menu",
-  "scroll-area": "Scroll area",
-  table: "Table",
-  toggle: "Toggle",
-  "toggle-group": "Toggle group",
-  "number-input": "Number input",
-  combobox: "Combobox",
-  sheet: "Sheet",
-  callout: "Callout",
-  "status-indicator": "Status indicator",
-  timeline: "Timeline",
-  "description-list": "Description list",
-  "resizable-panels": "Resizable panels",
-  listbox: "Listbox",
-  "search-results": "Search results",
-  kbd: "Kbd",
-  toolbar: "Toolbar",
-}
-
 const AI_TITLES: Record<string, string> = {
   "chain-of-thought": "Chain of thought",
   checkpoint: "Checkpoint",
