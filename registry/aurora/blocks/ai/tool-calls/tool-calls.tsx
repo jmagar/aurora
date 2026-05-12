@@ -249,14 +249,16 @@ function ToolCallRow({ call }: { call: ToolCall }) {
   )
 }
 
+const TOOL_CALLS_KEYFRAMES = `
+@keyframes aurora-spin {
+  to { transform: rotate(360deg); }
+}
+`
+
 export function ToolCalls({ calls }: ToolCallsProps) {
   return (
     <>
-      <style>{`
-        @keyframes aurora-spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+      <style href="aurora-tool-calls-keyframes" precedence="default">{TOOL_CALLS_KEYFRAMES}</style>
 
       <div
         style={{

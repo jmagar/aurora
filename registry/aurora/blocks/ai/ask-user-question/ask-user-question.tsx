@@ -5,24 +5,15 @@ import { Button } from "@/registry/aurora/ui/button"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 
 // ---------------------------------------------------------------------------
-// CSS injected once
+// Keyframes (React 19 deduplication via href)
 // ---------------------------------------------------------------------------
 
-const AUQ_CSS = `
+const AUQ_KEYFRAMES = `
 @keyframes aurora-auq-fadein {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 `
-
-let auqCSSInjected = false
-function ensureAUQCSS() {
-  if (auqCSSInjected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.textContent = AUQ_CSS
-  document.head.appendChild(el)
-  auqCSSInjected = true
-}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -64,7 +55,7 @@ function OptionCodePreview({ code }: { code: string }) {
         border: "1px solid var(--aurora-border-default)",
         fontSize: 11,
         lineHeight: 1.6,
-        fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+        fontFamily: "var(--aurora-font-mono)",
         color: "var(--aurora-text-primary)",
         overflowX: "auto",
         whiteSpace: "pre-wrap",
@@ -207,7 +198,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
             fontSize: 14,
             fontWeight: 600,
             color: "var(--aurora-text-primary)",
-            fontFamily: "var(--font-sans, Inter, sans-serif)",
+            fontFamily: "var(--aurora-font-sans)",
             lineHeight: 1.4,
           }}
         >
@@ -219,7 +210,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
               margin: "3px 0 0",
               fontSize: 12,
               color: "var(--aurora-text-muted)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
               lineHeight: 1.55,
             }}
           >
@@ -280,7 +271,7 @@ function TextInput({
           background: "var(--aurora-control-surface)",
           color: "var(--aurora-text-primary)",
           fontSize: 14,
-          fontFamily: "var(--font-sans, Inter, sans-serif)",
+          fontFamily: "var(--aurora-font-sans)",
           lineHeight: 1.6,
           outline: "none",
           transition: "border-color 150ms, box-shadow 150ms",
@@ -344,10 +335,6 @@ export function AskUserQuestion({
   className,
   style,
 }: AskUserQuestionProps) {
-  React.useEffect(() => {
-    ensureAUQCSS()
-  }, [])
-
   const [selectedIds, setSelectedIds] = React.useState<string[]>([])
 
   function toggleOption(id: string) {
@@ -384,6 +371,7 @@ export function AskUserQuestion({
       }}
       role={type === "radio" ? "radiogroup" : undefined}
     >
+      <style href="aurora-auq-keyframes" precedence="default">{AUQ_KEYFRAMES}</style>
       {/* Question */}
       <p
         style={{
@@ -391,7 +379,7 @@ export function AskUserQuestion({
           fontSize: 15,
           fontWeight: 600,
           color: "var(--aurora-text-primary)",
-          fontFamily: "var(--font-sans, Inter, sans-serif)",
+          fontFamily: "var(--aurora-font-sans)",
           lineHeight: 1.5,
         }}
       >
