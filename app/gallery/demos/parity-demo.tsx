@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { usePathname } from "next/navigation"
 import { Thinking } from "@/registry/aurora/blocks/ai/thinking/thinking"
 import { ToolCalls } from "@/registry/aurora/blocks/ai/tool-calls/tool-calls"
@@ -177,19 +176,11 @@ const tasks = [
   { id: "3", title: "Publish result", status: "queued" as const },
 ]
 
-function Shell({ slug, children }: { slug: string; children: React.ReactNode }) {
-  const title = TITLES[slug] ?? AI_TITLES[slug] ?? slug
+function Shell({ children }: { slug: string; children: React.ReactNode }) {
   return (
-    <div className="grid gap-6">
-      <GalleryPageIntro
-        eyebrow={`Components / ${slug}`}
-        heading={title}
-        description="Aurora parity surface with dark-first tokens, operator typography, restrained borders, and controls that match the rest of the registry."
-      />
-      <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
-        {children}
-      </section>
-    </div>
+    <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
+      {children}
+    </section>
   )
 }
 

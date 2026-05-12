@@ -1,6 +1,8 @@
 import * as React from "react"
 import { notFound } from "next/navigation"
 import dynamic from "next/dynamic"
+import { getRegistryMeta } from "@/lib/registry-meta"
+import { ComponentInstall } from "@/components/component-install"
 
 const COMPONENT_DEMOS: Record<string, React.ComponentType> = {
   alert: dynamic(() => import("../demos/alert-demo")),
@@ -203,10 +205,30 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
   const { section } = await params
   const Demo = DEMOS[section]
   if (!Demo) notFound()
+
+  const meta = getRegistryMeta(section)
+  const title = formatSectionTitle(section)
+
   return (
-    <>
-      <h1 className="sr-only">{formatSectionTitle(section)}</h1>
+    <div className="grid gap-8">
+      <header className="grid gap-4" style={{ maxWidth: 760 }}>
+        <div>
+          <p
+            className="aurora-text-eyebrow"
+            style={{ margin: "0 0 6px", color: "var(--aurora-text-muted)" }}
+          >
+            Components
+          </p>
+          <h1
+            className="aurora-text-display-2"
+            style={{ margin: 0, color: "var(--aurora-text-primary)", textWrap: "balance" }}
+          >
+            {title}
+          </h1>
+        </div>
+        {meta && <ComponentInstall meta={meta} />}
+      </header>
       <Demo />
-    </>
+    </div>
   )
 }
