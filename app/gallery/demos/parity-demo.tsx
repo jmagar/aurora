@@ -220,7 +220,47 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "hover-card":
       return <HoverCard trigger={<Button variant="neutral">Inspect source</Button>}><div className="aurora-text-control">Source registry</div><div className="aurora-text-meta">Last synced 2 minutes ago.</div></HoverCard>
     case "input-group":
-      return <InputGroup><InputGroupAddon>https://</InputGroupAddon><Input defaultValue="aurora.tootie.tv" /></InputGroup>
+      return (
+        <div className="grid gap-5 max-w-md">
+          <div className="grid gap-1.5">
+            <Label>Site URL</Label>
+            <InputGroup>
+              <InputGroupAddon>https://</InputGroupAddon>
+              <Input defaultValue="aurora.tootie.tv" />
+            </InputGroup>
+          </div>
+          <div className="grid gap-1.5">
+            <Label>Monthly budget</Label>
+            <InputGroup>
+              <InputGroupAddon>$</InputGroupAddon>
+              <Input type="number" defaultValue="49" />
+              <InputGroupAddon>/ mo</InputGroupAddon>
+            </InputGroup>
+          </div>
+          <div className="grid gap-1.5">
+            <Label>Work email</Label>
+            <InputGroup>
+              <Input defaultValue="jacob" />
+              <InputGroupAddon>@aurora.tootie.tv</InputGroupAddon>
+            </InputGroup>
+          </div>
+          <div className="grid gap-1.5">
+            <Label>API key</Label>
+            <InputGroup>
+              <InputGroupAddon>sk-</InputGroupAddon>
+              <Input type="password" defaultValue="aur_live_k9x2mw" />
+            </InputGroup>
+          </div>
+          <div className="grid gap-1.5">
+            <Label>Registry endpoint</Label>
+            <InputGroup>
+              <InputGroupAddon>/api/v1/</InputGroupAddon>
+              <Input defaultValue="registry" />
+              <InputGroupAddon><Badge variant="success" style={{ fontSize: "10px", padding: "1px 6px" }}>live</Badge></InputGroupAddon>
+            </InputGroup>
+          </div>
+        </div>
+      )
     case "input-otp":
       return <InputOTP value="428019" />
     case "item":
