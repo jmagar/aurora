@@ -353,7 +353,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "confirmation":
       return <Confirmation title="Install plugin" description="This will update the local plugin cache." />
     case "context":
-      return <ContextPanel used={42100} limit={128000} items={sourceItems} />
+      return <ContextPanel used={42100} limit={128000} />
     case "conversation":
       return <Conversation><Message role="user"><MessageAvatar label="U" tone="rose" /><MessageContent tone="user">Show installed plugins.</MessageContent></Message><Message><MessageAvatar label="AI" /><MessageContent tone="assistant">Found 18 active plugins.</MessageContent></Message></Conversation>
     case "model-selector":

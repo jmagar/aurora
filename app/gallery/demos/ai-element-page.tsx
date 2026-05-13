@@ -94,6 +94,7 @@ const AI_TITLES: Record<string, string> = {
 }
 
 const AI_DESCRIPTIONS: Partial<Record<string, string>> = {
+  context: "Current context-window usage.",
   reasoning: "Compact reasoning stays collapsed until you need the full summary.",
   tool: "A single inline tool event with expandable input and output.",
 }
@@ -140,7 +141,7 @@ function AiExample({ slug }: { slug: string }) {
     case "confirmation":
       return <Confirmation title="Install plugin" description="This will update the local plugin cache." />
     case "context":
-      return <ContextPanel used={42100} limit={128000} items={sourceItems} />
+      return <ContextPanel used={42100} limit={128000} />
     case "conversation":
       return (
         <Conversation>
@@ -229,7 +230,7 @@ function AiExample({ slug }: { slug: string }) {
 
 export function AiElementPage({ slug }: { slug: string }) {
   const title = AI_TITLES[slug] ?? slug
-  const compactSurface = slug === "reasoning" || slug === "tool"
+  const compactSurface = slug === "context" || slug === "reasoning" || slug === "tool"
   const description = AI_DESCRIPTIONS[slug] ?? `Aurora AI Elements page for ${title.toLowerCase()}, using the real registry implementation with compact operator styling.`
 
   return (

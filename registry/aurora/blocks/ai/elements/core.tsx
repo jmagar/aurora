@@ -127,7 +127,6 @@ export interface ContextPanelProps extends React.HTMLAttributes<HTMLDivElement> 
   used?: number
   limit?: number
   label?: string
-  items?: SourceItem[]
 }
 
 export type ConversationProps = React.HTMLAttributes<HTMLDivElement>
@@ -727,46 +726,73 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
 Confirmation.displayName = "Confirmation"
 
 const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
-  ({ used = 42100, limit = 128000, label = "Context window", items = [], className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-2 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
-        <Layers3 className="size-3.5" aria-hidden />
-        {label}
-      </div>
-      <div className="grid gap-3 rounded-[8px] border p-3" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <div className="aurora-text-card-title" style={{ color: "var(--aurora-text-primary)" }}>
-              {formatTokenCount(used)} / {formatTokenCount(limit)} tokens
-            </div>
-            <p className="aurora-text-meta" style={{ margin: "4px 0 0" }}>
-              {Math.round((used / limit) * 100)}% of the active session window is in play.
-            </p>
+  ({ used = 42100, limit = 128000, label = "Context", className, style, ...props }, ref) => {
+    const percent = limit > 0 ? Math.min(Math.max((used / limit) * 100, 0), 100) : 0
+
+    return (
+      <div
+        ref={ref}
+        className={["grid gap-2 rounded-[8px] border p-3", className].filter(Boolean).join(" ")}
+        style={{
+          ...panelStyle(style),
+          width: "min(520px, 100%)",
+        }}
+        {...props}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
+            <Layers3 className="size-3.5 shrink-0" aria-hidden />
+            <span>{label}</span>
           </div>
-          <Badge variant={used / limit > 0.8 ? "warn" : "success"}>{items.length} sources</Badge>
+          <div className="shrink-0" style={{ color: "var(--aurora-text-muted)", fontSize: 10, lineHeight: "14px" }}>
+            {formatTokenCount(used)} / {formatTokenCount(limit)}
+          </div>
         </div>
         <div
-          aria-hidden="true"
+          role="meter"
+          aria-label={label}
+          aria-valuemin={0}
+          aria-valuemax={limit}
+          aria-valuenow={used}
+          aria-valuetext={`${formatTokenCount(used)} of ${formatTokenCount(limit)} tokens used`}
           style={{
-            height: 10,
+            height: 18,
             borderRadius: 999,
             background: "var(--aurora-control-surface)",
             overflow: "hidden",
+            position: "relative",
           }}
         >
           <div
             style={{
-              width: `${Math.min((used / limit) * 100, 100)}%`,
+              width: `${percent}%`,
               height: "100%",
               borderRadius: 999,
               background: "linear-gradient(90deg, var(--aurora-accent-primary), var(--aurora-accent-pink))",
             }}
           />
+          <span
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              insetInlineStart: 6,
+              top: "50%",
+              transform: "translateY(-50%)",
+              borderRadius: 999,
+              background: "rgba(3, 13, 18, 0.72)",
+              color: "var(--aurora-text-primary)",
+              fontSize: 10,
+              fontWeight: 700,
+              lineHeight: 1,
+              padding: "2px 5px",
+            }}
+          >
+            {Math.round(percent)}%
+          </span>
         </div>
-        {items.length ? <div className="grid gap-2">{items.map((item) => <Source key={item.title} source={item} />)}</div> : null}
       </div>
-    </div>
-  )
+    )
+  }
 )
 ContextPanel.displayName = "ContextPanel"
 
