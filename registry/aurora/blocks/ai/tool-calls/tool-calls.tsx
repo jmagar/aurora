@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { ChevronDown, FilePenLine, FileText, Search, Terminal, Wrench } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 export interface ToolCall {
@@ -36,27 +37,17 @@ function formatDuration(ms: number): string {
   return `${(ms / 1000).toFixed(1)}s`
 }
 
-function toolGlyph(tool: string): string {
-  const segment = tool.split(/[._]/).filter(Boolean).at(-1) ?? tool
-  return segment.slice(0, 2).toUpperCase()
-}
-
 function Chevron({ expanded }: { expanded: boolean }) {
   return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
+    <ChevronDown
+      size={12}
       aria-hidden="true"
       style={{
         color: "var(--aurora-text-muted)",
         transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
         transition: "transform 0.15s ease",
       }}
-    >
-      <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    />
   )
 }
 
@@ -97,28 +88,35 @@ function StatusDot({ status }: { status: ToolCall["status"] }) {
   )
 }
 
-function ToolBadge({ tool }: { tool: string }) {
+function ToolIcon({ tool }: { tool: string }) {
+  const normalized = tool.toLowerCase()
+  const Icon = normalized.includes("read")
+    ? FileText
+    : normalized.includes("write")
+    ? FilePenLine
+    : normalized.includes("bash") || normalized.includes("shell") || normalized.includes("terminal")
+    ? Terminal
+    : normalized.includes("grep") || normalized.includes("search") || normalized.includes("lookup")
+    ? Search
+    : Wrench
+
   return (
     <span
       aria-hidden="true"
       style={{
         display: "inline-flex",
-        minWidth: 20,
+        width: 20,
         height: 20,
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 7,
         border: "1px solid var(--aurora-border-default)",
         background: "var(--aurora-control-surface)",
-        color: "var(--aurora-text-muted)",
-        fontFamily: "var(--aurora-font-mono)",
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: "0.04em",
+        color: "var(--aurora-accent-strong)",
         flexShrink: 0,
       }}
     >
-      {toolGlyph(tool)}
+      <Icon size={13} strokeWidth={1.8} />
     </span>
   )
 }
@@ -186,13 +184,14 @@ function ToolCallRow({ call }: { call: ToolCall }) {
         size="unstyled"
         onClick={() => setExpanded((open) => !open)}
         aria-expanded={expanded}
+        aria-label={`${call.tool} tool call, ${call.status}`}
         style={{
           display: "inline-flex",
           alignItems: "center",
-          gap: 8,
+          gap: 7,
           width: expanded ? "100%" : "auto",
           maxWidth: "100%",
-          padding: "8px 12px",
+          padding: expanded ? "8px 12px" : "7px 9px",
           background: "none",
           border: "none",
           cursor: "pointer",
@@ -200,32 +199,51 @@ function ToolCallRow({ call }: { call: ToolCall }) {
         }}
       >
         <StatusDot status={call.status} />
-        <ToolBadge tool={call.tool} />
-        <span
-          style={{
-            color: "var(--aurora-text-primary)",
-            fontSize: 12,
-            fontWeight: 600,
-            lineHeight: 1.35,
-            fontFamily: "var(--aurora-font-mono)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {call.tool}
-        </span>
-        {duration !== null && (
-          <span
-            style={{
-              color: "var(--aurora-text-muted)",
-              fontSize: 11,
-              fontVariantNumeric: "tabular-nums",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {formatDuration(duration)}
-          </span>
+        <ToolIcon tool={call.tool} />
+        {expanded && (
+          <>
+            <span
+              style={{
+                color: "var(--aurora-text-primary)",
+                fontSize: 12,
+                fontWeight: 600,
+                lineHeight: 1.35,
+                fontFamily: "var(--aurora-font-mono)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {call.tool}
+            </span>
+            {duration !== null && (
+              <span
+                style={{
+                  color: "var(--aurora-text-muted)",
+                  fontSize: 11,
+                  fontVariantNumeric: "tabular-nums",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {formatDuration(duration)}
+              </span>
+            )}
+          </>
         )}
-        <Chevron expanded={expanded} />
+        <span
+          style={
+            expanded
+              ? {
+                  marginLeft: "auto",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }
+              : {
+                  display: "inline-flex",
+                  alignItems: "center",
+                }
+          }
+        >
+          <Chevron expanded={expanded} />
+        </span>
       </Button>
 
       {expanded && (

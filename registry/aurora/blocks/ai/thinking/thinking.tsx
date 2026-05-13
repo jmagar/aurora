@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Brain, ChevronDown } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // Aurora violet tokens represent AI/automation identity.
@@ -229,41 +230,34 @@ function ThinkingBlock({
           alignItems: "center",
           gap: "8px",
           width: open ? "100%" : "auto",
-          minWidth: 0,
-          padding: open ? "8px 14px" : "7px 12px",
+          justifyContent: "center",
+          padding: open ? "8px 14px" : "8px",
+          minHeight: 32,
+          minWidth: open ? 0 : 32,
           background: "none",
           border: "none",
           cursor: "pointer",
           textAlign: "left",
         }}
       >
-        {/* Brain icon */}
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path
-            d="M7 1.5C5.9 1.5 5 2.4 5 3.5C4.2 3.5 3.5 4.2 3.5 5C2.7 5 2 5.7 2 6.5C2 7.5 2.7 8.2 3.5 8.4V10C3.5 11.1 4.4 12 5.5 12H8.5C9.6 12 10.5 11.1 10.5 10V8.4C11.3 8.2 12 7.5 12 6.5C12 5.7 11.3 5 10.5 5C10.5 4.2 9.8 3.5 9 3.5C9 2.4 8.1 1.5 7 1.5Z"
-            stroke={AI_ACCENT}
-            strokeWidth="1.2"
-            fill="none"
-          />
-        </svg>
-
-        <span
-          style={{
-            fontSize: "12px",
-            fontWeight: 600,
-            color: open ? "var(--aurora-text-muted)" : "var(--aurora-text-primary)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {label}
-        </span>
+        <Brain size={14} strokeWidth={1.8} aria-hidden="true" style={{ color: AI_ACCENT, flexShrink: 0 }} />
 
         {open && (
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
+          <span
+            style={{
+              fontSize: "12px",
+              fontWeight: 600,
+              color: "var(--aurora-text-muted)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {label}
+          </span>
+        )}
+
+        {open && (
+          <ChevronDown
+            size={12}
             aria-hidden="true"
             style={{
               marginLeft: "auto",
@@ -271,15 +265,7 @@ function ThinkingBlock({
               transform: "rotate(180deg)",
               transition: "transform 0.2s",
             }}
-          >
-            <path
-              d="M2.5 4.5L6 7.5L9.5 4.5"
-              stroke="currentColor"
-              strokeWidth="1.3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          />
         )}
       </Button>
 
