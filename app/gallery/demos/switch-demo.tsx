@@ -29,21 +29,6 @@ const groupLabel: React.CSSProperties = {
   marginBottom: "4px",
 }
 
-const heading: React.CSSProperties = {
-  fontSize: "18px",
-  fontFamily: "var(--aurora-font-display)",
-  fontWeight: 600,
-  color: "var(--aurora-text-primary)",
-  marginBottom: "4px",
-}
-
-const subheading: React.CSSProperties = {
-  fontSize: "13px",
-  color: "var(--aurora-text-muted)",
-  fontFamily: "var(--aurora-font-sans)",
-  marginBottom: "24px",
-}
-
 function SwitchWithCaption({ caption, ...props }: { caption: string } & React.ComponentPropsWithoutRef<typeof Switch>) {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -114,13 +99,6 @@ function LabeledSwitch({
 export default function SwitchDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "32px", padding: 0 }}>
-      <div>
-        <h2 style={heading}>Switch</h2>
-        <p style={subheading}>
-          Toggle controls with Aurora glow when checked. Three sizes, disabled state, and labeled variants for settings panels.
-        </p>
-      </div>
-
       <div style={section}>
         <div style={groupLabel}>Default size — off / on</div>
         <div style={row}>

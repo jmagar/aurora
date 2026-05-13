@@ -1,8 +1,9 @@
 import * as React from "react"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import dynamic from "next/dynamic"
 import { getRegistryMeta } from "@/lib/registry-meta"
 import { ComponentInstall } from "@/components/component-install"
+import { GalleryAlternatives } from "@/components/gallery-alternatives"
 
 const COMPONENT_DEMOS: Record<string, React.ComponentType> = {
   alert: dynamic(() => import("../demos/alert-demo")),
@@ -183,6 +184,12 @@ const DEMOS: Record<string, React.ComponentType> = {
   lightmode:      dynamic(() => import("../demos/lightmode-demo")),
 }
 
+const SECTION_REDIRECTS: Record<string, string> = {
+  queue: "task",
+  resizable: "resizable-panels",
+  table: "tables",
+}
+
 export function generateStaticParams() {
   return Object.keys(DEMOS).map((section) => ({ section }))
 }
@@ -203,6 +210,9 @@ function formatSectionTitle(section: string) {
 
 export default async function SectionPage({ params }: { params: Promise<{ section: string }> }) {
   const { section } = await params
+  const redirectTarget = SECTION_REDIRECTS[section]
+  if (redirectTarget) redirect(`/gallery/${redirectTarget}`)
+
   const Demo = DEMOS[section]
   if (!Demo) notFound()
 
@@ -211,6 +221,20 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
 
   return (
     <div className="grid gap-8">
+      <style>{`
+        .aurora-gallery-demo-region {
+          display: grid;
+          justify-items: start;
+          width: 100%;
+          max-width: min(100%, 1120px);
+        }
+        .aurora-gallery-demo-region > * {
+          max-width: 100%;
+        }
+        .aurora-gallery-install-region {
+          max-width: min(760px, 100%);
+        }
+      `}</style>
       <header className="grid gap-4" style={{ maxWidth: 760 }}>
         <div>
           <p
@@ -226,9 +250,16 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
             {title}
           </h1>
         </div>
-        {meta && <ComponentInstall meta={meta} />}
       </header>
-      <Demo />
+      <section className="aurora-gallery-demo-region" data-section={section}>
+        <Demo />
+      </section>
+      {meta && (
+        <section className="aurora-gallery-install-region" aria-label={`${title} install`}>
+          <ComponentInstall meta={meta} />
+        </section>
+      )}
+      <GalleryAlternatives section={section} title={title} />
     </div>
   )
 }

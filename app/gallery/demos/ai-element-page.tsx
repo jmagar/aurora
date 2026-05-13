@@ -129,7 +129,7 @@ function AiExample({ slug }: { slug: string }) {
     case "task":
       return <TaskList tasks={tasks} />
     case "plan":
-      return <Thinking type="plan" steps={planSteps} defaultOpen />
+      return <Thinking type="plan" steps={planSteps} />
     case "test-results":
       return <TestResults results={[{ name: "pnpm lint", status: "passed", duration: "3.2s" }, { name: "pnpm build", status: "running" }]} />
     case "stack-trace":
@@ -166,7 +166,7 @@ function AiExample({ slug }: { slug: string }) {
     case "reasoning":
       return <Thinking type="thinking" content="Checked registry metadata, verified source paths, then selected the minimal install plan." />
     case "chain-of-thought":
-      return <Thinking type="cot" steps={planSteps} defaultOpen />
+      return <Thinking type="cot" steps={planSteps} />
     case "shimmer":
       return <div className="grid gap-3"><Shimmer /><Shimmer style={{ width: "70%" }} /></div>
     case "suggestion":
@@ -230,7 +230,7 @@ function AiExample({ slug }: { slug: string }) {
 
 export function AiElementPage({ slug }: { slug: string }) {
   const title = AI_TITLES[slug] ?? slug
-  const compactSurface = slug === "context" || slug === "reasoning" || slug === "tool"
+  const compactSurface = slug === "chain-of-thought" || slug === "context" || slug === "plan" || slug === "reasoning" || slug === "tool"
   const description = AI_DESCRIPTIONS[slug] ?? `Aurora AI Elements page for ${title.toLowerCase()}, using the real registry implementation with compact operator styling.`
 
   return (

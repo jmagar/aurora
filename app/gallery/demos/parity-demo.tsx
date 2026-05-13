@@ -340,8 +340,9 @@ function AiDemo({ slug }: { slug: string }) {
     case "sources":
       return <Sources>{sourceItems.map((source) => <Source key={source.title} source={source} />)}</Sources>
     case "task":
-    case "plan":
       return <TaskList tasks={tasks} />
+    case "plan":
+      return <Thinking type="plan" steps={[{ label: "Resolve package", status: "done" }, { label: "Build sandbox", status: "inprog" }, { label: "Publish result", status: "pending" }]} />
     case "test-results":
       return <TestResults results={[{ name: "pnpm lint", status: "passed", duration: "3.2s" }, { name: "pnpm build", status: "running" }]} />
     case "stack-trace":
@@ -363,7 +364,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "reasoning":
       return <Thinking type="thinking" content="Checked registry, compared source metadata, then selected the minimal install plan." />
     case "chain-of-thought":
-      return <Collapsible title="Reasoning summary" defaultOpen><p className="aurora-text-body" style={{ margin: 0 }}>Checked registry, compared source metadata, then selected the minimal install plan.</p></Collapsible>
+      return <Thinking type="cot" steps={[{ label: "Checked registry", status: "done" }, { label: "Compared source metadata", status: "done" }, { label: "Selected minimal install plan", status: "pending" }]} />
     case "shimmer":
       return <div className="grid gap-3"><Shimmer /><Shimmer style={{ width: "70%" }} /></div>
     case "suggestion":

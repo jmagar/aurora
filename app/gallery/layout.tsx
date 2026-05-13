@@ -71,7 +71,6 @@ const NAV = [
     { label: "Stat cards", slug: "stats" },
     { label: "Tables", slug: "tables" },
     { label: "Data table", slug: "data-table" },
-    { label: "Table", slug: "table" },
     { label: "Filter bars", slug: "filters" },
     { label: "Timeline", slug: "timeline" },
     { label: "Description list", slug: "description-list" },
@@ -106,7 +105,6 @@ const NAV = [
     { label: "Thinking", slug: "thinking" },
     { label: "Chain of thought", slug: "chain-of-thought" },
     { label: "Plan", slug: "plan" },
-    { label: "Queue", slug: "queue" },
     { label: "Task", slug: "task" },
     { label: "Suggestion", slug: "suggestion" },
     { label: "Code block", slug: "code-block" },
@@ -161,7 +159,6 @@ const NAV = [
     { label: "Image", slug: "image" },
     { label: "Item", slug: "item" },
     { label: "Resizable panels", slug: "resizable-panels" },
-    { label: "Resizable", slug: "resizable" },
     { label: "Scroll area", slug: "scroll-area" },
   ]},
   { group: "Auth & Errors", items: [
@@ -224,6 +221,10 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
     const section = pathname.split("/").pop() ?? ""
     const normalized = section.startsWith("ai-") ? section.slice(3) : section
     return NAV_SLUG_ALIASES[normalized] ?? normalized
+  }, [pathname])
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0)
   }, [pathname])
 
   // Derive the current page label for the mobile header breadcrumb

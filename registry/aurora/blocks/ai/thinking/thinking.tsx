@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Brain, ChevronDown } from "lucide-react"
+import { Brain, ChevronDown, ListChecks, ListTree } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // Aurora violet tokens represent AI/automation identity.
@@ -304,7 +304,7 @@ function CotBlock({
   isStreaming?: boolean
   defaultOpen?: boolean
 }) {
-  const [open, setOpen] = React.useState(defaultOpen ?? true)
+  const [open, setOpen] = React.useState(defaultOpen ?? false)
 
   return (
     <div>
@@ -315,37 +315,36 @@ function CotBlock({
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          padding: "8px 14px",
+          justifyContent: "center",
+          padding: open ? "8px 14px" : "8px",
+          minHeight: 32,
+          minWidth: open ? 0 : 32,
           background: "none",
           border: "none",
           cursor: "pointer",
-          width: "100%",
+          width: open ? "100%" : "auto",
           textAlign: "left",
         }}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <rect x="2" y="2" width="10" height="10" rx="2" stroke={AI_ACCENT} strokeWidth="1.3" />
-          <path d="M4.5 5H9.5M4.5 7H7.5M4.5 9H8.5" stroke={AI_ACCENT} strokeWidth="1.1" strokeLinecap="round" />
-        </svg>
-        <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
-          Chain of Thought
-          {steps.length > 0 && ` · ${steps.length} steps`}
-        </span>
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          aria-hidden="true"
-          style={{
-            marginLeft: "auto",
-            color: "var(--aurora-text-muted)",
-            transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.2s",
-          }}
-        >
-          <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ListTree size={14} strokeWidth={1.8} aria-hidden="true" style={{ color: AI_ACCENT, flexShrink: 0 }} />
+        {open && (
+          <>
+            <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
+              Chain of Thought
+              {steps.length > 0 && ` · ${steps.length} steps`}
+            </span>
+            <ChevronDown
+              size={12}
+              aria-hidden="true"
+              style={{
+                marginLeft: "auto",
+                color: "var(--aurora-text-muted)",
+                transform: "rotate(180deg)",
+                transition: "transform 0.2s",
+              }}
+            />
+          </>
+        )}
       </Button>
 
       {open && (
@@ -444,7 +443,7 @@ function PlanBlock({
   isStreaming?: boolean
   defaultOpen?: boolean
 }) {
-  const [open, setOpen] = React.useState(defaultOpen ?? true)
+  const [open, setOpen] = React.useState(defaultOpen ?? false)
   const doneCount = steps.filter((s) => s.status === "done").length
 
   return (
@@ -456,49 +455,49 @@ function PlanBlock({
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          padding: "8px 14px",
+          justifyContent: "center",
+          padding: open ? "8px 14px" : "8px",
+          minHeight: 32,
+          minWidth: open ? 0 : 32,
           background: "none",
           border: "none",
           cursor: "pointer",
-          width: "100%",
+          width: open ? "100%" : "auto",
           textAlign: "left",
         }}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M2 3H12M2 7H9M2 11H11" stroke={AI_ACCENT} strokeWidth="1.3" strokeLinecap="round" />
-        </svg>
-        <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
-          Plan
-        </span>
-        {steps.length > 0 && (
-          <span
-            style={{
-              fontSize: "11px",
-              color: "var(--aurora-text-muted)",
-              background: "var(--aurora-control-surface)",
-              padding: "1px 7px",
-              borderRadius: "20px",
-              border: "1px solid var(--aurora-border-default)",
-            }}
-          >
-            {doneCount}/{steps.length}
-          </span>
+        <ListChecks size={14} strokeWidth={1.8} aria-hidden="true" style={{ color: AI_ACCENT, flexShrink: 0 }} />
+        {open && (
+          <>
+            <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
+              Plan
+            </span>
+            {steps.length > 0 && (
+              <span
+                style={{
+                  fontSize: "11px",
+                  color: "var(--aurora-text-muted)",
+                  background: "var(--aurora-control-surface)",
+                  padding: "1px 7px",
+                  borderRadius: "20px",
+                  border: "1px solid var(--aurora-border-default)",
+                }}
+              >
+                {doneCount}/{steps.length}
+              </span>
+            )}
+            <ChevronDown
+              size={12}
+              aria-hidden="true"
+              style={{
+                marginLeft: "auto",
+                color: "var(--aurora-text-muted)",
+                transform: "rotate(180deg)",
+                transition: "transform 0.2s",
+              }}
+            />
+          </>
         )}
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          aria-hidden="true"
-          style={{
-            marginLeft: "auto",
-            color: "var(--aurora-text-muted)",
-            transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.2s",
-          }}
-        >
-          <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
       </Button>
 
       {open && (
@@ -585,6 +584,9 @@ export function Thinking({
             borderRadius: "var(--aurora-radius-2)",
             overflow: "hidden",
             boxShadow: "var(--aurora-highlight-medium)",
+            display: "inline-block",
+            width: "fit-content",
+            maxWidth: "min(100%, 560px)",
           }}
         >
           {type === "cot" && (
