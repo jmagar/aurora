@@ -1,0 +1,41 @@
+package tv.tootie.aurora.components
+
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.VerticalDivider
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import tv.tootie.aurora.theme.LocalAuroraColors
+
+enum class AuroraSeparatorOrientation { Horizontal, Vertical }
+
+/**
+ * Compose equivalent of Aurora's Separator shadcn component.
+ *
+ * Uses LocalAuroraColors.current.borderDefault — NOT MaterialTheme.colorScheme.outlineVariant.
+ * Aurora's border token can drift independently from M3's outlineVariant mapping.
+ */
+@Composable
+fun AuroraSeparator(
+    modifier: Modifier = Modifier,
+    orientation: AuroraSeparatorOrientation = AuroraSeparatorOrientation.Horizontal,
+    thickness: Dp = 1.dp,
+) {
+    val color = LocalAuroraColors.current.borderDefault
+
+    when (orientation) {
+        AuroraSeparatorOrientation.Horizontal -> HorizontalDivider(
+            modifier = modifier.fillMaxWidth(),
+            thickness = thickness,
+            color = color,
+        )
+        AuroraSeparatorOrientation.Vertical -> VerticalDivider(
+            modifier = modifier.fillMaxHeight(),
+            thickness = thickness,
+            color = color,
+        )
+    }
+}

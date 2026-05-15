@@ -1,0 +1,53 @@
+package tv.tootie.aurora.components
+
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+/**
+ * Compose equivalent of Aurora's Tabs shadcn component.
+ *
+ * Use scrollable = true for tab bars that may overflow (e.g. more than ~5 tabs).
+ * Do NOT auto-switch between TabRow and ScrollableTabRow based on tab count —
+ * switching composable types at runtime causes full subtree remount, resetting
+ * the tab indicator animation and any child composable state.
+ */
+@Composable
+fun AuroraTabs(
+    tabs: List<String>,
+    selectedIndex: Int,
+    onTabSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    scrollable: Boolean = false,
+) {
+    if (scrollable) {
+        ScrollableTabRow(
+            selectedTabIndex = selectedIndex,
+            modifier = modifier,
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedIndex == index,
+                    onClick = { onTabSelected(index) },
+                    text = { Text(title) },
+                )
+            }
+        }
+    } else {
+        TabRow(
+            selectedTabIndex = selectedIndex,
+            modifier = modifier,
+        ) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedIndex == index,
+                    onClick = { onTabSelected(index) },
+                    text = { Text(title) },
+                )
+            }
+        }
+    }
+}
