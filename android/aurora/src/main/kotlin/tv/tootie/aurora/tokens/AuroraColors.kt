@@ -4,7 +4,7 @@
 
 
 
-package tv.tootie.aurora.tokens;
+package tv.tootie.aurora.tokens
 
 import androidx.compose.ui.graphics.Color
 

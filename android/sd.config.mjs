@@ -7,7 +7,7 @@
  */
 
 import StyleDictionary from 'style-dictionary';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
@@ -37,7 +37,7 @@ const sd = new StyleDictionary({
           destination: 'AuroraColors.kt',
           format: 'compose/object',
           // Only generate color tokens — skip dimension/number tokens
-          filter: (token) => token.$type === 'color' || token.type === 'color',
+          filter: (token) => token.$type === 'color',
           options: {
             className: 'AuroraColors',
             packageName: 'tv.tootie.aurora.tokens',
@@ -54,16 +54,14 @@ await sd.buildAllPlatforms();
 
 // Post-process:
 // 1. Replace `object AuroraColors` with `internal object AuroraColors`
-//    (SD v4 compose/object does not natively support accessControl for Kotlin)
-// 2. Normalize hex literals to uppercase (e.g. 0xff29b6f6 -> 0xFF29B6F6)
-//    for consistent Kotlin style
-import { readFileSync as rfs, writeFileSync } from 'fs';
+//    (SD v4 compose/object does not natively support Kotlin accessControl)
+// 2. Normalize hex literals to uppercase: Color(0xffrrggbb) -> Color(0xFFRRGGBB)
+// 3. Strip trailing semicolon from package declaration (SD emits Java-style)
 const outFile = resolve(outputDir, 'AuroraColors.kt');
-let content = rfs(outFile, 'utf8');
-// Add internal access modifier
-content = content.replace(/^(object AuroraColors)/m, 'internal object AuroraColors');
-// Uppercase hex literals: Color(0xffrrggbb) -> Color(0xFFRRGGBB)
-content = content.replace(/Color\(0x([0-9a-f]{8})\)/gi, (_, hex) => `Color(0x${hex.toUpperCase()})`);
+let content = readFileSync(outFile, 'utf8');
+content = content.replace('object AuroraColors', 'internal object AuroraColors');
+content = content.replace(/Color\(0x([0-9a-f]{8})\)/g, (_, hex) => `Color(0x${hex.toUpperCase()})`);
+content = content.replace(/^(package [^\n;]+);$/m, '$1');
 writeFileSync(outFile, content, 'utf8');
 
 console.log('✓ AuroraColors.kt generated with internal access modifier');
