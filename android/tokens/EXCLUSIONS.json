@@ -1,5 +1,4 @@
 {
-  "generated": "2026-05-15T16:04:53.571Z",
   "source": "registry/aurora/styles/aurora.css",
   "theme": "dark",
   "note": "These tokens cannot be represented as Color/Dp/number in Kotlin Compose. Handle manually in AuroraTheme.kt or AuroraBrushes.kt.",

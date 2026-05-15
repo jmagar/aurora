@@ -34,21 +34,6 @@ const OUTPUT_DIR    = resolve(ROOT, 'android/tokens');
 const TOKENS_PATH   = resolve(OUTPUT_DIR, 'aurora.tokens.json');
 const EXCLUSIONS_PATH = resolve(OUTPUT_DIR, 'EXCLUSIONS.json');
 
-// ─── Output-path guard ────────────────────────────────────────────────────────
-// Refuse to write outside the expected locations.
-const EXPECTED_TOKENS     = resolve(ROOT, 'android/tokens/aurora.tokens.json');
-const EXPECTED_EXCLUSIONS = resolve(ROOT, 'android/tokens/EXCLUSIONS.json');
-
-if (TOKENS_PATH !== EXPECTED_TOKENS || EXCLUSIONS_PATH !== EXPECTED_EXCLUSIONS) {
-  console.error(
-    `ERROR: Resolved output paths do not match expected locations.\n` +
-    `  tokens:     ${TOKENS_PATH}\n` +
-    `  exclusions: ${EXCLUSIONS_PATH}\n` +
-    `Refusing to write.`
-  );
-  process.exit(1);
-}
-
 // ─── Color helpers ────────────────────────────────────────────────────────────
 
 /**
@@ -319,7 +304,13 @@ console.log(`Excluded: ${exclusions.length} tokens`);
 
 /**
  * Set a value at a nested path in an object.
- * If a leaf node already exists where a branch is needed, it's moved to '_default'.
+ *
+ * When a shorter prefix token conflicts with a longer one (e.g. --aurora-error vs
+ * --aurora-error-surface), the shorter one becomes the `base` key of the branch
+ * so the structure remains a valid DTCG group.
+ *
+ * The `base` sentinel is also applied at the leaf position if a branch already
+ * exists there, guarding against CSS declaration order variation.
  */
 function setNested(obj, segments, value) {
   let cur = obj;
@@ -328,14 +319,19 @@ function setNested(obj, segments, value) {
     if (cur[key] === undefined) {
       cur[key] = {};
     } else if (cur[key].$value !== undefined) {
-      // A leaf exists where we need a branch — promote it
+      // A leaf exists where we need a branch — promote it to `base`
       const leaf = cur[key];
-      cur[key] = { _default: leaf };
+      cur[key] = { base: leaf };
     }
     cur = cur[key];
   }
   const lastKey = segments[segments.length - 1];
-  cur[lastKey] = value;
+  if (cur[lastKey] !== undefined && cur[lastKey].$value === undefined) {
+    // A branch already exists — this token is the base value for the group
+    cur[lastKey].base = value;
+  } else {
+    cur[lastKey] = value;
+  }
 }
 
 const dark = {};
@@ -353,12 +349,6 @@ const outputStr = JSON.stringify(output, null, 2);
 const FORBIDDEN_PATTERNS = ['var(', 'color-mix(', 'linear-gradient(', 'radial-gradient('];
 const violations = [];
 
-for (const pattern of FORBIDDEN_PATTERNS) {
-  // Search in $value fields only by checking the raw JSON string against known patterns
-  // Use a more targeted check by inspecting emitted token values directly
-}
-
-// More reliable: check emitted values directly
 for (const [suffix, tokenData] of Object.entries(emittedFlat)) {
   const val = String(tokenData.$value);
   for (const pattern of FORBIDDEN_PATTERNS) {
@@ -386,7 +376,6 @@ writeFileSync(TOKENS_PATH, outputStr, 'utf8');
 console.log(`\nWrote: ${TOKENS_PATH}`);
 
 const exclusionsOutput = {
-  generated: new Date().toISOString(),
   source: 'registry/aurora/styles/aurora.css',
   theme: 'dark',
   note: 'These tokens cannot be represented as Color/Dp/number in Kotlin Compose. Handle manually in AuroraTheme.kt or AuroraBrushes.kt.',

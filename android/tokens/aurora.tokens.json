@@ -84,7 +84,7 @@
         "$type": "color"
       },
       "pink": {
-        "_default": {
+        "base": {
           "$value": "#f9a8c4",
           "$type": "color"
         },
@@ -110,7 +110,7 @@
         }
       },
       "violet": {
-        "_default": {
+        "base": {
           "$value": "#a78bfa",
           "$type": "color"
         },
@@ -137,7 +137,7 @@
       }
     },
     "success": {
-      "_default": {
+      "base": {
         "$value": "#7dd3c7",
         "$type": "color"
       },
@@ -155,7 +155,7 @@
       }
     },
     "warn": {
-      "_default": {
+      "base": {
         "$value": "#c6a36b",
         "$type": "color"
       },
@@ -173,7 +173,7 @@
       }
     },
     "error": {
-      "_default": {
+      "base": {
         "$value": "#c78490",
         "$type": "color"
       },
@@ -195,7 +195,7 @@
       }
     },
     "info": {
-      "_default": {
+      "base": {
         "$value": "#72c8f5",
         "$type": "color"
       },
@@ -213,7 +213,7 @@
       }
     },
     "neutral": {
-      "_default": {
+      "base": {
         "$value": "#91a8b6",
         "$type": "color"
       },
@@ -264,8 +264,14 @@
     },
     "focus": {
       "ring": {
-        "$value": "#29b6f64d",
-        "$type": "color"
+        "strong": {
+          "$value": "#29b6f685",
+          "$type": "color"
+        },
+        "base": {
+          "$value": "#29b6f64d",
+          "$type": "color"
+        }
       }
     },
     "status": {
@@ -300,7 +306,7 @@
     },
     "type": {
       "body": {
-        "_default": {
+        "base": {
           "$value": "14px",
           "$type": "dimension"
         },
