@@ -6,6 +6,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import kotlinx.collections.immutable.ImmutableList
 
 /**
  * Compose equivalent of Aurora's Tabs shadcn component.
@@ -14,10 +15,12 @@ import androidx.compose.ui.Modifier
  * Do NOT auto-switch between TabRow and ScrollableTabRow based on tab count —
  * switching composable types at runtime causes full subtree remount, resetting
  * the tab indicator animation and any child composable state.
+ *
+ * @param tabs Use ImmutableList for Compose stability — prevents composable skipping with mutable List
  */
 @Composable
 fun AuroraTabs(
-    tabs: List<String>,
+    tabs: ImmutableList<String>,
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -42,7 +45,7 @@ fun AuroraTabs(
 
 @Composable
 private fun AuroraTabItems(
-    tabs: List<String>,
+    tabs: ImmutableList<String>,
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
 ) {
