@@ -1,5 +1,6 @@
 package tv.tootie.aurora.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -31,7 +32,11 @@ fun AuroraCheckbox(
         )
         if (label != null) {
             Spacer(Modifier.width(8.dp))
-            Text(text = label, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = label,
+                modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) },
+                style = MaterialTheme.typography.bodyMedium,
+            )
         }
     }
 }

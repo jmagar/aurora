@@ -135,7 +135,15 @@ function blendColors(colorA, percentA, colorB) {
 // ─── Parsing helpers ──────────────────────────────────────────────────────────
 
 const COLOR_MIX_RE =
-  /^color-mix\(\s*in\s+srgb\s*,\s*(.+?)\s+(\d+(?:\.\d+)?)%\s*,\s*(.+?)\s*\)$/;
+  /^color-mix\(\s*in\s+srgb\s*,\s*(.+?)\s+(\d+(?:\.\d+)?)%\s*,\s*(.+?)(?:\s+(\d+(?:\.\d+)?)%)?\s*\)$/;
+
+function colorMixPercentages(firstPercent, secondPercent) {
+  const first = parseFloat(firstPercent);
+  const second = secondPercent === undefined ? 100 - first : parseFloat(secondPercent);
+  const total = first + second;
+  if (total <= 0) return null;
+  return (first / total) * 100;
+}
 
 /**
  * If value is a simple color-mix(in srgb, ...) expression (no nesting),
@@ -145,11 +153,13 @@ const COLOR_MIX_RE =
 function tryResolveColorMix(value) {
   const m = value.trim().match(COLOR_MIX_RE);
   if (!m) return null;
-  const [, rawA, pctStr, rawB] = m;
+  const [, rawA, pctStr, rawB, rawPctB] = m;
   const colorA = parseColor(rawA.trim());
   const colorB = parseColor(rawB.trim());
   if (!colorA || !colorB) return null;
-  return blendColors(colorA, parseFloat(pctStr), colorB);
+  const normalizedPercentA = colorMixPercentages(pctStr, rawPctB);
+  if (normalizedPercentA === null) return null;
+  return blendColors(colorA, normalizedPercentA, colorB);
 }
 
 /**
@@ -161,15 +171,16 @@ function resolveVars(value, vars, visited = new Set(), depth = 0) {
     console.warn(`  warn: var() depth limit reached for value: ${value.slice(0, 60)}`);
     return value;
   }
-  return value.replace(/var\(\s*(--aurora-[^)]+?)\s*\)/g, (_match, varName) => {
-    varName = varName.trim();
+  return value.replace(/var\(\s*(--aurora-[\w-]+)\s*(?:,\s*([^)]+?))?\s*\)/g, (_match, varName, fallback) => {
     if (visited.has(varName)) {
       console.warn(`  warn: circular var() reference: ${varName}`);
-      return `var(${varName})`;
+      return fallback === undefined ? `var(${varName})` : resolveVars(fallback.trim(), vars, visited, depth + 1);
     }
     const raw = vars[varName];
     if (raw === undefined) {
-      // External var (e.g., browser built-in) — leave unresolved
+      if (fallback !== undefined) {
+        return resolveVars(fallback.trim(), vars, new Set(visited), depth + 1);
+      }
       return `var(${varName})`;
     }
     return resolveVars(raw, vars, new Set([...visited, varName]), depth + 1);
@@ -250,10 +261,9 @@ const rawVars = {};
 walk(ast, function (node) {
   if (node.type !== 'Rule') return;
 
-  // We want the :root/.dark combined rule (dark default theme)
-  // Selector text should contain ':root' and optionally '.dark', but NOT '.light'
+  // We want only explicit dark theme selectors.
   const selectorText = generate(node.prelude).replace(/\s+/g, '');
-  const hasDarkSelector = selectorText.includes(':root') && !selectorText.includes('.light');
+  const hasDarkSelector = selectorText.split(',').some((selector) => selector.includes('.dark'));
   if (!hasDarkSelector) return;
 
   // Collect all --aurora-* declarations
@@ -291,7 +301,7 @@ for (const [prop, rawValue] of Object.entries(rawVars)) {
   } else {
     exclusions.push({
       name: prop,
-      rawValue: rawValue.slice(0, 120) + (rawValue.length > 120 ? '...' : ''),
+      rawValue,
       reason: exclusionReason(resolveVars(rawValue, rawVars)),
     });
   }

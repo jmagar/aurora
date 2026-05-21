@@ -5,6 +5,8 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -27,12 +29,9 @@ class AuroraToastState(internal val snackbarHostState: SnackbarHostState = Snack
         actionLabel: String? = null,
         duration: SnackbarDuration = SnackbarDuration.Short,
     ) {
-        // Store variant in actionLabel prefix to pass through SnackbarHostState
-        // (SnackbarData has no custom payload slot)
-        // NOTE: When actionLabel is null, labelWithVariant is just variant.name.
-        // AuroraToastHost reads this back and the Snackbar will render the variant
-        // name as an action button. This is a known limitation of encoding variant
-        // in actionLabel — see bead aurora-design-system-sgr.5 for follow-up.
+        // Store variant in actionLabel prefix to pass through SnackbarHostState.
+        // AuroraToastHost renders snackbar content manually so the encoded variant
+        // never appears as an action label.
         val labelWithVariant = actionLabel?.let { "${variant.name}:$it" } ?: variant.name
         snackbarHostState.showSnackbar(
             message = message,
@@ -78,12 +77,21 @@ fun AuroraToastHost(toastState: AuroraToastState) {
             AuroraToastVariant.Info    -> auroraColors.infoForeground
             AuroraToastVariant.Default -> MaterialTheme.colorScheme.onSurfaceVariant
         }
+        val actionContent: (@Composable () -> Unit)? = userLabel?.let { label ->
+            {
+                TextButton(onClick = { data.performAction() }) {
+                    Text(label)
+                }
+            }
+        }
 
         Snackbar(
-            snackbarData = data,
             containerColor = containerColor,
             contentColor = contentColor,
-            actionColor = contentColor,
-        )
+            actionContentColor = contentColor,
+            action = actionContent,
+        ) {
+            Text(data.visuals.message)
+        }
     }
 }

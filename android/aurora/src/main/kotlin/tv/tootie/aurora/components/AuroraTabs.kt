@@ -28,26 +28,29 @@ fun AuroraTabs(
             selectedTabIndex = selectedIndex,
             modifier = modifier,
         ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedIndex == index,
-                    onClick = { onTabSelected(index) },
-                    text = { Text(title) },
-                )
-            }
+            AuroraTabItems(tabs, selectedIndex, onTabSelected)
         }
     } else {
         TabRow(
             selectedTabIndex = selectedIndex,
             modifier = modifier,
         ) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedIndex == index,
-                    onClick = { onTabSelected(index) },
-                    text = { Text(title) },
-                )
-            }
+            AuroraTabItems(tabs, selectedIndex, onTabSelected)
         }
+    }
+}
+
+@Composable
+private fun AuroraTabItems(
+    tabs: List<String>,
+    selectedIndex: Int,
+    onTabSelected: (Int) -> Unit,
+) {
+    tabs.forEachIndexed { index, title ->
+        Tab(
+            selected = selectedIndex == index,
+            onClick = { onTabSelected(index) },
+            text = { Text(title) },
+        )
     }
 }

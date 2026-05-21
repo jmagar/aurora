@@ -35,7 +35,7 @@
     },
     {
       "name": "--aurora-shell-bg",
-      "rawValue": "radial-gradient(circle at 12% 0%, rgba(41, 182, 246, 0.09), transparent 28%),\n                     radial-gradient(circl...",
+      "rawValue": "radial-gradient(circle at 12% 0%, rgba(41, 182, 246, 0.09), transparent 28%),\n                     radial-gradient(circle at 88% 0%, rgba(28, 127, 172, 0.10), transparent 24%),\n                     var(--aurora-page-bg)",
       "reason": "gradient"
     },
     {
@@ -70,7 +70,7 @@
     },
     {
       "name": "--aurora-active-glow",
-      "rawValue": "0 0 0 1px color-mix(in srgb, #29b6f6 28%, transparent),\n                        0 2px 8px color-mix(in srgb, #29b6f6 18%...",
+      "rawValue": "0 0 0 1px color-mix(in srgb, #29b6f6 28%, transparent),\n                        0 2px 8px color-mix(in srgb, #29b6f6 18%, transparent)",
       "reason": "unresolvable-color-mix"
     }
   ]

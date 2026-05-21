@@ -25,11 +25,10 @@ fun AuroraTextField(
     // Explicit remember prevents focus ring flicker on parent recompose
     val interactionSource = remember { MutableInteractionSource() }
 
-    Column {
+    Column(modifier = modifier) {
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = modifier,
             label = label?.let { { Text(it) } },
             placeholder = placeholder?.let { { Text(it) } },
             isError = isError,

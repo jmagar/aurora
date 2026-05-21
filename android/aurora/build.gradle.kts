@@ -26,15 +26,21 @@ android {
     }
 }
 
-// Token generation task — checks freshness of tokens JSON before compileKotlin
+// Token generation task — tracks the source files that produce tokens JSON before compileKotlin
 val generateAuroraTokens by tasks.registering(Exec::class) {
     workingDir = rootDir.parentFile  // project root (where package.json lives)
     commandLine("pnpm", "run", "tokens:generate")
 
-    inputs.file(rootDir.parentFile.resolve("android/tokens/aurora.tokens.json"))
+    inputs.file(rootDir.parentFile.resolve("registry/aurora/styles/aurora.css"))
+    inputs.file(rootDir.parentFile.resolve("scripts/export-aurora-tokens.mjs"))
+    inputs.file(rootDir.parentFile.resolve("android/sd.config.mjs"))
+    inputs.file(rootDir.parentFile.resolve("package.json"))
+    inputs.file(rootDir.parentFile.resolve("pnpm-lock.yaml"))
+    outputs.file(rootDir.parentFile.resolve("android/tokens/aurora.tokens.json"))
+    outputs.file(rootDir.parentFile.resolve("android/tokens/EXCLUSIONS.json"))
     outputs.dir(layout.projectDirectory.dir("src/main/kotlin/tv/tootie/aurora/tokens"))
 
-    description = "Generate Kotlin token files from aurora.tokens.json via Style Dictionary"
+    description = "Generate Android token JSON and Kotlin token files from Aurora CSS"
 }
 
 tasks.matching { it.name.startsWith("compile") && it.name.contains("Kotlin") }.configureEach {
