@@ -10,7 +10,9 @@
 !.yarn/releases
 !.yarn/versions
 logs
-.beads
+.beads/
+.claire/
+.claude/worktrees/
 .lavra
 
 # testing
