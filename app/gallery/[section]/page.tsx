@@ -255,6 +255,8 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
         <Demo />
       </section>
       {meta && (
+        // ComponentInstall is a client component (clipboard support requires browser APIs).
+        // The install strip adds minimal JS — clipboard handling only activates on user interaction.
         <section className="aurora-gallery-install-region" aria-label={`${title} install`}>
           <ComponentInstall meta={meta} />
         </section>
