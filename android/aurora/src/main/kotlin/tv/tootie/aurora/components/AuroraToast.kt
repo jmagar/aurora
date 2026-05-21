@@ -5,6 +5,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -16,11 +17,27 @@ import tv.tootie.aurora.theme.LocalAuroraColors
 enum class AuroraToastVariant { Default, Success, Error, Warn, Info }
 
 /**
- * State for AuroraToast. Always construct via rememberAuroraToastState().
+ * Custom [SnackbarVisuals] that carries an [AuroraToastVariant] alongside the
+ * standard Snackbar fields.
  *
- * WARNING: Do NOT construct AuroraToastState() directly outside remember{}.
- * The pending toast queue is backed by SnackbarHostState which will be lost
- * on parent recomposition if not wrapped in remember{}.
+ * Callers may construct this directly when they need finer control, e.g. to
+ * pre-build visuals outside a composable scope. The typical path is via
+ * [AuroraToastState.showToast].
+ */
+class AuroraSnackbarVisuals(
+    override val message: String,
+    val variant: AuroraToastVariant = AuroraToastVariant.Default,
+    override val actionLabel: String? = null,
+    override val withDismissAction: Boolean = false,
+    override val duration: SnackbarDuration = SnackbarDuration.Short,
+) : SnackbarVisuals
+
+/**
+ * State for AuroraToast. Always construct via [rememberAuroraToastState].
+ *
+ * WARNING: Do NOT construct [AuroraToastState] directly outside `remember {}`.
+ * The pending toast queue is backed by [SnackbarHostState] which will be lost
+ * on parent recomposition if not wrapped in `remember {}`.
  */
 class AuroraToastState(internal val snackbarHostState: SnackbarHostState = SnackbarHostState()) {
     suspend fun showToast(
@@ -29,14 +46,13 @@ class AuroraToastState(internal val snackbarHostState: SnackbarHostState = Snack
         actionLabel: String? = null,
         duration: SnackbarDuration = SnackbarDuration.Short,
     ) {
-        // Store variant in actionLabel prefix to pass through SnackbarHostState.
-        // AuroraToastHost renders snackbar content manually so the encoded variant
-        // never appears as an action label.
-        val labelWithVariant = actionLabel?.let { "${variant.name}:$it" } ?: variant.name
         snackbarHostState.showSnackbar(
-            message = message,
-            actionLabel = labelWithVariant,
-            duration = duration,
+            AuroraSnackbarVisuals(
+                message = message,
+                variant = variant,
+                actionLabel = actionLabel,
+                duration = duration,
+            )
         )
     }
 }
@@ -57,11 +73,9 @@ fun AuroraToastHost(toastState: AuroraToastState) {
     val auroraColors = LocalAuroraColors.current
 
     SnackbarHost(hostState = toastState.snackbarHostState) { data ->
-        val rawLabel = data.visuals.actionLabel ?: AuroraToastVariant.Default.name
-        val variant = runCatching {
-            AuroraToastVariant.valueOf(rawLabel.substringBefore(':'))
-        }.getOrDefault(AuroraToastVariant.Default)
-        val userLabel = rawLabel.substringAfter(':', "").ifEmpty { null }
+        val variant = (data.visuals as? AuroraSnackbarVisuals)?.variant
+            ?: AuroraToastVariant.Default
+        val userLabel = data.visuals.actionLabel
 
         val containerColor: Color = when (variant) {
             AuroraToastVariant.Success -> auroraColors.successSurface
