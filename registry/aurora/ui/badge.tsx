@@ -1,5 +1,7 @@
 "use client"
 
+// BREAKING: badgeVariants export removed in this version. See badgeVariants deprecation shim below.
+
 import * as React from "react"
 import { cn, devWarn } from "@/lib/utils"
 
@@ -284,3 +286,6 @@ Badge.displayName = "Badge"
 
 export { Badge }
 export default Badge
+
+/** @deprecated badgeVariants has been removed. Use the Badge component directly. */
+export const badgeVariants = undefined
