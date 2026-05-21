@@ -20,10 +20,17 @@ const raw = JSON.parse(
   readFileSync(resolve(projectRoot, 'android/tokens/aurora.tokens.json'), 'utf8'),
 );
 
-const outputDir = resolve(
-  projectRoot,
-  'android/aurora/src/main/kotlin/tv/tootie/aurora/tokens',
-);
+// When invoked from Gradle, AURORA_TOKENS_OUT is set to the absolute path of the
+// package directory inside the build directory so generated files land under
+// build/generated/aurora-tokens/kotlin/tv/tootie/aurora/tokens.
+// When invoked directly via `pnpm run tokens:generate` without Gradle, fall back
+// to the conventional build directory location so the script is still runnable standalone.
+const outputDir =
+  process.env.AURORA_TOKENS_OUT ??
+  resolve(
+    projectRoot,
+    'android/aurora/build/generated/aurora-tokens/kotlin/tv/tootie/aurora/tokens',
+  );
 
 const sd = new StyleDictionary({
   // Pass the dark subtree directly — no "dark" prefix in generated names

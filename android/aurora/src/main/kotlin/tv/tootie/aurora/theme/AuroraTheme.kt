@@ -1,10 +1,10 @@
 package tv.tootie.aurora.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import tv.tootie.aurora.tokens.AuroraColors
 
@@ -152,7 +152,10 @@ private val AuroraDarkColorScheme = darkColorScheme(
  * Aurora design system theme wrapper.
  *
  * Wrap all Aurora UI in this composable to apply Aurora colors, typography, and shapes.
- * v1: dark theme only. Light theme is a follow-on bead.
+ *
+ * The [darkTheme] parameter defaults to the system setting via [isSystemInDarkTheme]. Light theme
+ * is planned; currently both `darkTheme = true` and `darkTheme = false` resolve to the dark color
+ * scheme and dark extra-colors until the Aurora light token set ships.
  *
  * Usage:
  * ```kotlin
@@ -162,21 +165,20 @@ private val AuroraDarkColorScheme = darkColorScheme(
  * ```
  */
 @Composable
-fun AuroraTheme(
+public fun AuroraTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    // Wrap in remember to avoid reallocating ColorScheme/Typography on every recomposition
-    val colorScheme = remember { AuroraDarkColorScheme }
-    val typography  = remember { AuroraTypography }
-    val shapes      = remember { AuroraShapes }
+    val colorScheme = if (darkTheme) AuroraDarkColorScheme else AuroraDarkColorScheme
+    val extraColors = if (darkTheme) DarkAuroraExtraColors else DarkAuroraExtraColors
 
     CompositionLocalProvider(
-        LocalAuroraColors provides DarkAuroraExtraColors,
+        LocalAuroraColors provides extraColors,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography  = typography,
-            shapes      = shapes,
+            typography  = AuroraTypography,
+            shapes      = AuroraShapes,
             content     = content,
         )
     }

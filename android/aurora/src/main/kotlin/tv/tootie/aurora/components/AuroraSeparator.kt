@@ -28,12 +28,12 @@ fun AuroraSeparator(
 
     when (orientation) {
         AuroraSeparatorOrientation.Horizontal -> HorizontalDivider(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().then(modifier),
             thickness = thickness,
             color = color,
         )
         AuroraSeparatorOrientation.Vertical -> VerticalDivider(
-            modifier = modifier.fillMaxHeight(),
+            modifier = Modifier.fillMaxHeight().then(modifier),
             thickness = thickness,
             color = color,
         )
