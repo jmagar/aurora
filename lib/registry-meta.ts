@@ -26,7 +26,9 @@ const BY_NAME: Record<string, RegistryItem> = Object.fromEntries(
   items.map((item) => [item.name, item])
 )
 
-// Gallery slug → registry item name. Handles plurals, aliases, and AI prefix.
+// Gallery slug → registry item name. Handles plurals and aliases.
+// NOTE: ai- prefix normalization is handled in getRegistryMeta(), not here —
+// "ai-message" strips to "message" as a fallback when the ai-* slug itself is absent.
 const SLUG_TO_REGISTRY: Record<string, string> = {
   // Foundations
   colors: "aurora-tokens",
