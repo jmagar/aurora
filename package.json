@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "eslint .",
     "audit:composition": "node scripts/audit-composition.mjs",
-    "registry:build": "shadcn build"
+    "registry:build": "shadcn build",
+    "tokens:export": "node scripts/export-aurora-tokens.mjs",
+    "tokens:generate": "node scripts/export-aurora-tokens.mjs && node android/sd.config.mjs"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",
@@ -35,6 +37,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
+    "css-tree": "3.2.1",
+    "style-dictionary": "4.0.0",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^20.19.9",
     "@types/react": "19.1.2",
