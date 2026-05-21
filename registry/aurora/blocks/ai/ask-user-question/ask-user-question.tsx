@@ -173,7 +173,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: "white",
+              background: "var(--aurora-accent-foreground)",
             }}
           />
         )}
@@ -181,7 +181,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
           <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
             <path
               d="M1.5 4L3.8 6.5L8.5 1.5"
-              stroke="white"
+              stroke="var(--aurora-accent-foreground)"
               strokeWidth="1.7"
               strokeLinecap="round"
               strokeLinejoin="round"

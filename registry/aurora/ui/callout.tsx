@@ -92,13 +92,20 @@ const Callout = React.forwardRef<HTMLDivElement, CalloutProps>(
         }}
         {...props}
       >
-        <span
-          aria-hidden="true"
-          className="mt-0.5 size-2 rounded-full"
-          style={{ background: accent, boxShadow: accentShadow }}
-        >
-          {icon}
-        </span>
+        {icon ? (
+          <span
+            className="mt-0.5 flex size-4 shrink-0 items-center justify-center"
+            style={{ color: accent }}
+          >
+            {icon}
+          </span>
+        ) : (
+          <span
+            aria-hidden="true"
+            className="mt-1.5 size-2 shrink-0 rounded-full"
+            style={{ background: accent, boxShadow: accentShadow }}
+          />
+        )}
         <div className="min-w-0">
           {title && (
             <div style={{ color: "var(--aurora-text-primary)", fontSize: "var(--aurora-type-control)", fontWeight: "var(--aurora-weight-label)", letterSpacing: "var(--aurora-letter-ui)", lineHeight: "var(--aurora-line-ui)" }}>

@@ -12,7 +12,7 @@ const Toolbar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
       style={{
         background: "var(--aurora-panel-medium)",
         borderColor: "var(--aurora-border-default)",
-        boxShadow: "var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)",
+        boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
         ...style,
       }}
       {...props}
@@ -33,6 +33,7 @@ const ToolbarSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
     <div
       ref={ref}
       role="separator"
+      aria-orientation="vertical"
       className={cn("mx-1 h-5 w-px", className)}
       style={{ background: "var(--aurora-border-default)", ...style }}
       {...props}

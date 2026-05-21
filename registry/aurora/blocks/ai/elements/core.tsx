@@ -44,7 +44,7 @@ export interface MessageProps extends React.HTMLAttributes<HTMLElement> {
 
 export interface MessageAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string
-  tone?: "cyan" | "rose" | "muted"
+  tone?: "cyan" | "rose" | "muted" | "violet"
 }
 
 export interface SourcesProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
@@ -290,7 +290,7 @@ function panelStyle(style?: React.CSSProperties): React.CSSProperties {
     background: "var(--aurora-panel-medium)",
     border: "1px solid var(--aurora-border-default)",
     borderRadius: 8,
-    boxShadow: "var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)",
+    boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
     ...style,
   }
 }
@@ -378,9 +378,9 @@ function CopyButton({ value, label = "Copy" }: { value: string; label?: string }
   }, [value])
 
   return (
-    <Button type="button" variant="ghost" size="sm" onClick={handleCopy}>
+    <Button type="button" variant="ghost" size="sm" onClick={handleCopy} aria-label={copied ? "Copied to clipboard" : label}>
       {copied ? <Check className="size-3.5" aria-hidden /> : <Copy className="size-3.5" aria-hidden />}
-      {copied ? "Copied" : label}
+      <span aria-live="polite" aria-atomic="true">{copied ? "Copied" : label}</span>
     </Button>
   )
 }
@@ -481,9 +481,15 @@ const Message = React.forwardRef<HTMLElement, MessageProps>(({ className, role =
 Message.displayName = "Message"
 
 const MessageAvatar = React.forwardRef<React.ElementRef<typeof AuroraAvatar>, MessageAvatarProps>(
-  ({ className, label, tone = "cyan", style, ...props }, ref) => {
+  ({ className, label, tone = "violet", style, ...props }, ref) => {
     const color =
-      tone === "rose" ? "var(--aurora-accent-pink)" : tone === "muted" ? "var(--aurora-text-muted)" : "var(--aurora-accent-primary)"
+      tone === "rose"
+        ? "var(--aurora-accent-pink)"
+        : tone === "muted"
+          ? "var(--aurora-text-muted)"
+          : tone === "cyan"
+            ? "var(--aurora-accent-primary)"
+            : "var(--aurora-accent-violet)"
 
     return (
       <AuroraAvatar
@@ -510,12 +516,12 @@ MessageAvatar.displayName = "MessageAvatar"
 
 const bubbleTone = {
   assistant: {
-    background: "color-mix(in srgb, var(--aurora-accent-pink) 10%, var(--aurora-panel-medium))",
-    borderColor: "color-mix(in srgb, var(--aurora-accent-pink) 28%, var(--aurora-border-default))",
+    background: "var(--aurora-accent-violet-surface)",
+    borderColor: "var(--aurora-accent-violet-border)",
   },
   user: {
-    background: "color-mix(in srgb, var(--aurora-success) 10%, var(--aurora-panel-medium))",
-    borderColor: "color-mix(in srgb, var(--aurora-success) 30%, var(--aurora-border-default))",
+    background: "color-mix(in srgb, var(--aurora-accent-primary) 10%, var(--aurora-panel-medium))",
+    borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 28%, var(--aurora-border-default))",
   },
   system: {
     background: "color-mix(in srgb, var(--aurora-text-muted) 8%, var(--aurora-panel-medium))",
@@ -545,7 +551,12 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
   ({ className, index, style, children, ...props }, ref) => (
     <a
       ref={ref}
-      className={["inline-flex items-center rounded-[4px] border px-1.5 py-0.5 align-baseline no-underline", className].filter(Boolean).join(" ")}
+      className={[
+        "inline-flex items-center rounded-[4px] border px-1.5 py-0.5 align-baseline no-underline",
+        "transition-colors hover:bg-[var(--aurora-hover-bg)]",
+        "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0",
+        className,
+      ].filter(Boolean).join(" ")}
       style={{
         borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 34%, transparent)",
         color: "var(--aurora-accent-strong)",
@@ -578,7 +589,11 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(({ className, so
   <a
     ref={ref}
     href={source.href ?? "#"}
-    className={["grid gap-1 rounded-[7px] border px-3 py-2 no-underline transition-colors hover:bg-[var(--aurora-hover-bg)]", className].filter(Boolean).join(" ")}
+    className={[
+      "grid gap-1 rounded-[7px] border px-3 py-2 no-underline transition-colors hover:bg-[var(--aurora-hover-bg)]",
+      "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0",
+      className,
+    ].filter(Boolean).join(" ")}
     style={{
       borderColor: "var(--aurora-border-default)",
       color: "var(--aurora-text-primary)",
@@ -711,7 +726,7 @@ Checkpoint.displayName = "Checkpoint"
 const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
   ({ title, description, confirmLabel = "Approve", cancelLabel = "Cancel", className, style, ...props }, ref) => (
     <div ref={ref} className={["grid gap-3 rounded-[8px] border p-4", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <div className="flex items-center gap-2 aurora-text-card-title">
+      <div className="flex items-center gap-2 aurora-text-section" style={{ color: "var(--aurora-text-primary)" }}>
         <CircleAlert className="size-4" aria-hidden style={{ color: "var(--aurora-warn)" }} />
         {title}
       </div>
@@ -779,7 +794,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
               top: "50%",
               transform: "translateY(-50%)",
               borderRadius: 999,
-              background: "rgba(3, 13, 18, 0.72)",
+              background: "var(--aurora-overlay)",
               color: "var(--aurora-text-primary)",
               fontSize: 10,
               fontWeight: 700,
@@ -800,6 +815,9 @@ const Conversation = React.forwardRef<HTMLDivElement, ConversationProps>(
   ({ className, style, ...props }, ref) => (
     <div
       ref={ref}
+      role="log"
+      aria-live="polite"
+      aria-label="Conversation"
       className={["grid gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")}
       style={{
         ...panelStyle(style),
@@ -816,9 +834,9 @@ const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
   ({ models, value, defaultValue, onValueChange, label = "Model", name, disabled, required, triggerId, triggerLabel, className, style, ...props }, ref) => (
     <div ref={ref} className={className} style={style} {...props}>
       <SelectorCard
-        icon={<Sparkles className="size-3.5" aria-hidden />}
+        icon={<Sparkles className="size-3.5" aria-hidden style={{ color: "var(--aurora-accent-violet)" }} />}
         title={label}
-        description="Use the Aurora select surface instead of a native dropdown."
+        description="Select a model for this conversation."
         values={models}
         value={value}
         defaultValue={defaultValue}
@@ -889,7 +907,7 @@ Suggestion.displayName = "Suggestion"
 const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
   ({ name, role, status = "idle", className, style, ...props }, ref) => (
     <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <Bot className="size-5" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
+      <Bot className="size-[18px]" aria-hidden style={{ color: "var(--aurora-accent-violet)" }} />
       <span className="min-w-0">
         <span className="block truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{name}</span>
         {role ? <span className="block aurora-text-meta">{role}</span> : null}
@@ -943,13 +961,13 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
     <div ref={ref} className={["grid gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Boxes className="size-3.5" aria-hidden />{title}</span>
-        <Badge variant={status === "running" ? "success" : "default"} dot={status === "running"}>{status}</Badge>
+        <Badge variant={status === "running" ? "success" : "neutral"} dot={status === "running"}>{status}</Badge>
       </div>
       <div className="grid gap-3 rounded-[8px] border p-3" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>
         <div className="flex flex-wrap items-center gap-2">
           <Badge>{command}</Badge>
-          <Badge variant="default">{runtime}</Badge>
-          <Badge variant="default">{envCount} env vars</Badge>
+          <Badge variant="neutral">{runtime}</Badge>
+          <Badge variant="neutral">{envCount} env vars</Badge>
         </div>
         <div className="grid gap-2">
           {paths.map((path) => (
@@ -1031,7 +1049,7 @@ OpenInChat.displayName = "OpenInChat"
 const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
   ({ title = "Voice response", duration = "00:42", className, style, ...props }, ref) => (
     <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <Button type="button" size="icon" variant="neutral"><Play className="size-4" aria-hidden /></Button>
+      <Button type="button" size="icon" variant="neutral" aria-label={`Play ${title}`}><Play className="size-4" aria-hidden /></Button>
       <span className="min-w-0">
         <span className="block truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{title}</span>
         <span className="block h-1.5 rounded-full" style={{ background: "linear-gradient(90deg, var(--aurora-accent-primary) 48%, var(--aurora-control-surface) 48%)" }} />
@@ -1106,7 +1124,7 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
               <span className="block aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{segment.speaker}</span>
               <span className="block aurora-text-body" style={{ marginTop: 4 }}>{segment.text}</span>
             </span>
-            <Badge variant="default">{segment.confidence ? `${segment.confidence}%` : "live"}</Badge>
+            <Badge variant="neutral">{segment.confidence ? `${segment.confidence}%` : "live"}</Badge>
           </div>
         ))}
       </div>
@@ -1119,9 +1137,9 @@ const VoiceSelector = React.forwardRef<HTMLDivElement, VoiceSelectorProps>(
   ({ voices, value, defaultValue, onValueChange, name, disabled, required, triggerId, triggerLabel, ...props }, ref) => (
     <div ref={ref} {...props}>
       <SelectorCard
-        icon={<Sparkles className="size-3.5" aria-hidden />}
+        icon={<Sparkles className="size-3.5" aria-hidden style={{ color: "var(--aurora-accent-violet)" }} />}
         title="Voice"
-        description="Preview voice styles with the Aurora dropdown treatment."
+        description="Select a voice for audio output."
         values={voices}
         value={value}
         defaultValue={defaultValue}
@@ -1184,7 +1202,7 @@ Node.displayName = "Node"
 const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
   ({ title, className, children, style, ...props }, ref) => (
     <aside ref={ref} className={["grid gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      {title ? <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Sparkles className="size-3.5" aria-hidden />{title}</div> : null}
+      {title ? <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Sparkles className="size-3.5 shrink-0" aria-hidden style={{ color: "var(--aurora-accent-violet)" }} />{title}</div> : null}
       {children}
     </aside>
   )

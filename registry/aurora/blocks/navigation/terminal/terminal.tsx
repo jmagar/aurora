@@ -34,7 +34,7 @@ function LabbyMark({ size = 10 }: { size?: number }) {
       height={s * 1.4}
       viewBox="0 0 10 14"
       fill="none"
-      aria-label="Aurora"
+      aria-hidden="true"
       style={{ flexShrink: 0 }}
     >
       {/* Four stacked diamond planes, slightly offset vertically */}
@@ -94,6 +94,7 @@ function TitlebarButton({
       size="icon"
       onClick={onClick}
       title={title}
+      aria-label={title}
       style={{
         width: "26px",
         height: "22px",
@@ -329,6 +330,9 @@ export function Terminal({
       {/* Body */}
       <div
         ref={bodyRef}
+        role="log"
+        aria-label="Terminal output"
+        aria-live="polite"
         style={{
           padding: compact ? "8px 12px" : "12px 16px",
           overflowY: "auto",

@@ -87,7 +87,7 @@ const SelectTrigger = React.forwardRef<
       className
     )}
     style={{
-      background: "var(--aurora-control-surface, #0c1a24)",
+      background: "var(--aurora-control-surface)",
       fontFamily: "var(--aurora-font-sans)",
       fontSize: "var(--aurora-type-body-sm)",
       fontWeight: "var(--aurora-weight-ui)",
@@ -173,19 +173,14 @@ const SelectContent = React.forwardRef<
         className
       )}
       style={{
-        background: "var(--aurora-panel-strong, #13293a)",
-        boxShadow: "var(--aurora-shadow-medium, 0 12px 24px rgba(0,0,0,0.18)), 0 0 0 1px rgba(41,182,246,0.08)",
+        background: "var(--aurora-panel-strong)",
+        boxShadow: "var(--aurora-shadow-medium), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 8%, transparent)",
       }}
       position={position}
       {...props}
     >
       <SelectScrollUpButton />
-      <SelectPrimitive.Viewport
-        className={cn(
-          "p-1",
-          position === "popper" && "h-[var(--radix-select-trigger-height)]"
-        )}
-      >
+      <SelectPrimitive.Viewport className="p-1">
         {children}
       </SelectPrimitive.Viewport>
       <SelectScrollDownButton />
@@ -231,7 +226,7 @@ const SelectItem = React.forwardRef<
       "relative flex w-full cursor-default select-none items-center",
       "rounded-[8px] py-1.5 pl-2 pr-8",
       "outline-none transition-colors duration-100",
-      "focus:bg-[var(--aurora-hover-bg)] focus:text-[var(--aurora-accent-strong)]",
+      "data-[highlighted]:bg-[var(--aurora-hover-bg)] data-[highlighted]:text-[var(--aurora-accent-strong)]",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-45",
       "text-[var(--aurora-text-primary)]",
       className

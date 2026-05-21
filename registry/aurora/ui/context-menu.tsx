@@ -78,7 +78,8 @@ const ContextMenuSubTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       menuItemBase,
-      "data-[state=open]:bg-[var(--aurora-hover-bg)]",
+      "outline-none",
+      "data-[state=open]:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
       inset && "pl-8",
       className
     )}
@@ -130,9 +131,10 @@ const ContextMenuItem = React.forwardRef<
     className={cn(
       menuItemBase,
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
+      "outline-none",
       danger
-        ? "hover:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)] focus:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)]"
-        : "hover:bg-[var(--aurora-hover-bg)] focus:bg-[var(--aurora-hover-bg)]",
+        ? "hover:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)] data-[highlighted]:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)]"
+        : "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
       inset && "pl-8",
       className
     )}
@@ -157,8 +159,9 @@ const ContextMenuCheckboxItem = React.forwardRef<
     className={cn(
       menuItemBase,
       "pl-8",
+      "outline-none",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
-      "hover:bg-[var(--aurora-hover-bg)] focus:bg-[var(--aurora-hover-bg)]",
+      "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
       "data-[state=checked]:font-semibold",
       className
     )}
@@ -193,8 +196,9 @@ const ContextMenuRadioItem = React.forwardRef<
     className={cn(
       menuItemBase,
       "pl-8",
+      "outline-none",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
-      "hover:bg-[var(--aurora-hover-bg)] focus:bg-[var(--aurora-hover-bg)]",
+      "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
       "data-[state=checked]:font-semibold",
       className
     )}

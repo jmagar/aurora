@@ -34,7 +34,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
           : "var(--aurora-error)";
     const toneColor =
       tone === "info"
-        ? "var(--aurora-accent-primary)"
+        ? "var(--aurora-info)"
         : tone === "success"
           ? "var(--aurora-success)"
           : tone === "warn"

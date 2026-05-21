@@ -53,7 +53,7 @@ export function Calendar({ month, selected, onSelect, className, style, ...props
         >
           <ChevronLeft className="size-4" aria-hidden />
         </Button>
-        <div className="aurora-text-card-title">{formatter.format(visibleMonth)}</div>
+        <div className="aurora-text-section" style={{ fontSize: "var(--aurora-type-control)", fontWeight: "var(--aurora-weight-label)" }}>{formatter.format(visibleMonth)}</div>
         <Button
           type="button"
           variant="neutral"
@@ -82,7 +82,7 @@ export function Calendar({ month, selected, onSelect, className, style, ...props
               style={{
                 background: isSelected ? "color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent)" : "transparent",
                 borderColor: isSelected ? "color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)" : "transparent",
-                color: isCurrentMonth ? "var(--aurora-text-primary)" : "var(--aurora-text-disabled)",
+                color: isCurrentMonth ? "var(--aurora-text-primary)" : "var(--aurora-disabled-text)",
                 boxShadow: isSelected ? "var(--aurora-active-glow)" : "none",
               }}
             >

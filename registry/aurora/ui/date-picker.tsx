@@ -4,7 +4,7 @@ import * as React from "react"
 import { CalendarDays } from "lucide-react"
 import { Input } from "@/registry/aurora/ui/input"
 
-export interface DatePickerProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
+export interface DatePickerProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "size"> {
   label?: string
 }
 

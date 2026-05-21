@@ -141,7 +141,7 @@ function ContextMenu({ x, y, node, onAction, onClose }: ContextMenuProps) {
         background: "var(--aurora-panel-strong)",
         border: "1px solid var(--aurora-border-strong)",
         borderRadius: 8,
-        boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.04)",
+        boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-medium)",
         padding: "4px",
         minWidth: "160px",
         fontFamily: "var(--aurora-font-sans)",
@@ -264,6 +264,7 @@ function TreeRow({
         aria-selected={isSelected}
         aria-expanded={isFolder ? isOpen : undefined}
         tabIndex={0}
+        className="aurora-tree-item"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={() => {
@@ -304,7 +305,6 @@ function TreeRow({
           fontSize: "13px",
           fontWeight: isSelected ? 620 : 450,
           userSelect: "none",
-          outline: "none",
           transition: "background 0.1s, border-color 0.1s, color 0.1s",
           margin: "1px 0",
         }}
@@ -352,6 +352,13 @@ function TreeRow({
 // FileTree — main export
 // ---------------------------------------------------------------------------
 
+const FILE_TREE_FOCUS_STYLE = `
+.aurora-tree-item:focus-visible {
+  outline: 2px solid var(--aurora-focus-ring-strong);
+  outline-offset: -1px;
+}
+`
+
 export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, defaultSelectedId }: FileTreeProps) {
   const [selected, setSelected] = React.useState<string | null>(defaultSelectedId ?? null)
   const [expanded, setExpanded] = React.useState<Set<string>>(
@@ -387,6 +394,8 @@ export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, 
   }
 
   return (
+    <>
+    <style>{FILE_TREE_FOCUS_STYLE}</style>
     <div
       role="tree"
       style={{
@@ -421,6 +430,7 @@ export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, 
         />
       )}
     </div>
+    </>
   )
 }
 

@@ -565,6 +565,11 @@ const KEYFRAMES_FP = `
   to   { opacity: 1; transform: translate(-50%, -50%); }
 }
 
+.aurora-file-picker-search:focus-within {
+  border-color: var(--aurora-border-strong);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent);
+}
+
 @media (max-width: 640px) {
   .aurora-file-picker-dialog {
     width: calc(100vw - 24px) !important;
@@ -729,7 +734,7 @@ export function FilePicker({
           position: "fixed",
           inset: 0,
           zIndex: 200,
-          background: "rgba(4, 10, 14, 0.72)",
+          background: "var(--aurora-overlay)",
         }}
       />
 
@@ -756,7 +761,7 @@ export function FilePicker({
           background: "var(--aurora-panel-strong)",
           border: "1px solid var(--aurora-border-strong)",
           borderRadius: "var(--aurora-radius-2)",
-          boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.055)",
+          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
           overflow: "hidden",
           animation: "aurora-fp-in 0.16s cubic-bezier(0.16, 1, 0.3, 1)",
         }}

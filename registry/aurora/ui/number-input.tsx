@@ -6,7 +6,7 @@ import { Button } from "./button"
 import { Input } from "./input"
 
 export interface NumberInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "defaultValue" | "onChange"> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "defaultValue" | "onChange" | "size"> {
   value?: number
   defaultValue?: number
   min?: number
@@ -54,6 +54,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
           max={max}
           step={step}
           onChange={(event) => commit(Number(event.target.value))}
+          className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-center"
           {...props}
         />
         <Button

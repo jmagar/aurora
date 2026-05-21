@@ -248,7 +248,7 @@ export function AttachmentGrid({ items, columns = 3, onRemove }: AttachmentGridP
             style={{
               position: "absolute",
               inset: 0,
-              background: "rgba(7, 19, 28, 0.68)",
+              background: "color-mix(in srgb, var(--aurora-page-bg) 68%, transparent)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -298,7 +298,7 @@ export function AttachmentGrid({ items, columns = 3, onRemove }: AttachmentGridP
                 position: "absolute",
                 top: "6px",
                 left: "6px",
-                background: "rgba(7, 19, 28, 0.72)",
+                background: "color-mix(in srgb, var(--aurora-page-bg) 72%, transparent)",
                 borderRadius: "6px",
                 padding: "2px 5px",
               }}

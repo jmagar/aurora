@@ -50,10 +50,10 @@ const fillStyleMap: Record<ProgressVariant, React.CSSProperties> = {
 }
 
 const shimmerColorMap: Record<ProgressVariant, string> = {
-  default: "rgba(255,255,255,0.30)",
-  warn: "rgba(255,255,255,0.20)",
-  error: "rgba(255,255,255,0.18)",
-  rose: "rgba(255,255,255,0.22)",
+  default: "color-mix(in srgb, var(--aurora-text-primary) 30%, transparent)",
+  warn:    "color-mix(in srgb, var(--aurora-warn-foreground) 20%, transparent)",
+  error:   "color-mix(in srgb, var(--aurora-error-foreground) 18%, transparent)",
+  rose:    "color-mix(in srgb, var(--aurora-accent-pink-strong) 22%, transparent)",
 }
 
 // ─── Size map ─────────────────────────────────────────────────────────────────
@@ -123,8 +123,8 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
           <div className="flex items-center justify-between">
             <span
               style={{
-                fontSize: 11,
-                fontFamily: "var(--aurora-font-mono, 'JetBrains Mono', monospace)",
+                fontSize: "var(--aurora-type-caption)",
+                fontFamily: "var(--aurora-font-mono)",
                 color: "var(--aurora-text-muted)",
                 letterSpacing: "0.05em",
               }}
@@ -145,8 +145,8 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
           style={{
             height,
             borderRadius: height,
-            background: "var(--aurora-control-surface, #0c1a24)",
-            border: "1px solid var(--aurora-border-default, #1d3d4e)",
+            background: "var(--aurora-control-surface)",
+            border: "1px solid var(--aurora-border-default)",
             overflow: "hidden",
             position: "relative",
             width: "100%",

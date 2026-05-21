@@ -18,7 +18,7 @@ export function Carousel({ title, className, children, style, ...props }: Carous
   return (
     <section className={["grid gap-3", className].filter(Boolean).join(" ")} style={style} {...props}>
       <div className="flex items-center justify-between gap-2">
-        {title ? <h3 className="aurora-text-card-title">{title}</h3> : <span />}
+        {title ? <h3 className="aurora-text-section">{title}</h3> : <span />}
         <div className="flex gap-2">
           <Button type="button" size="icon" variant="neutral" aria-label="Previous slide" onClick={() => scroll(-1)}>
             <ChevronLeft className="size-4" aria-hidden />

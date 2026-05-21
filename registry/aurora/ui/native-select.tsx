@@ -16,7 +16,7 @@ const NativeSelect = React.forwardRef<HTMLSelectElement, NativeSelectProps>(
         disabled={disabled}
         className={cn(
           "h-9 w-full appearance-none rounded-[var(--aurora-radius-1)] border px-3 py-2 pr-9",
-          "font-[var(--aurora-font-sans,_Inter,_sans-serif)]",
+          "font-[var(--aurora-font-sans)]",
           "text-[var(--aurora-text-primary)]",
           "transition-all duration-150 ease-out",
           "focus-visible:outline-none",
@@ -25,7 +25,7 @@ const NativeSelect = React.forwardRef<HTMLSelectElement, NativeSelectProps>(
           className
         )}
         style={{
-          background: "var(--aurora-control-surface, #0c1a24)",
+          background: "var(--aurora-control-surface)",
           borderColor: "var(--aurora-border-strong)",
           color: "var(--aurora-text-primary)",
           fontSize: "var(--aurora-type-body-sm)",

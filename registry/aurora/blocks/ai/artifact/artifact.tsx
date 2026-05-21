@@ -154,6 +154,7 @@ function ToolbarBtn({
       variant="ghost"
       size="icon"
       title={title}
+      aria-label={title}
       onClick={onClick}
       style={{
         width: 28,
@@ -296,8 +297,8 @@ function ArtifactPanel({
         borderRadius: "var(--aurora-radius-2)",
         overflow: "hidden",
         boxShadow: [
-          "0 2px 16px rgba(0,0,0,0.28)",
-          "0 1px 0 rgba(255,255,255,0.03) inset",
+          "var(--aurora-shadow-medium)",
+          "var(--aurora-highlight-medium)",
         ].join(", "),
         ...style,
       }}

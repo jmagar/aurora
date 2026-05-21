@@ -38,7 +38,7 @@ function SortIcon({ active, direction }: { active: boolean; direction: "asc" | "
   return (
     <span
       aria-hidden
-      style={{ color, fontSize: 11, lineHeight: 1, userSelect: "none" }}
+      style={{ color, fontSize: "var(--aurora-type-caption)", lineHeight: 1, userSelect: "none" }}
     >
       {glyph}
     </span>
@@ -105,14 +105,29 @@ export function DataTable<TRow extends Record<string, unknown>>({
             <tr>
               {columns.map((col) => {
                 const isActive = sortState !== null && sortState.column === col.key;
+                const ariaSort = !col.sortable
+                  ? undefined
+                  : !isActive
+                  ? "none"
+                  : sortState!.direction === "asc"
+                  ? "ascending"
+                  : "descending";
                 return (
                   <th
                     key={col.key}
                     scope="col"
+                    aria-sort={ariaSort}
                     onClick={() => handleSort(col)}
+                    onKeyDown={(e) => {
+                      if (col.sortable && (e.key === "Enter" || e.key === " ")) {
+                        e.preventDefault();
+                        handleSort(col);
+                      }
+                    }}
+                    tabIndex={col.sortable ? 0 : undefined}
                     className={cn(
                       "px-4 py-2.5 text-left",
-                      col.sortable && "cursor-pointer select-none",
+                      col.sortable && "cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--aurora-accent-primary)]",
                       col.numeric && "text-right tabular-nums",
                     )}
                     style={{
@@ -121,9 +136,10 @@ export function DataTable<TRow extends Record<string, unknown>>({
                       fontWeight: "var(--aurora-weight-label)",
                       letterSpacing: "var(--aurora-letter-label)",
                       lineHeight: "var(--aurora-line-dense)",
-                      color: "var(--aurora-text-muted)",
+                      color: isActive ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)",
                       borderBottom: `1px solid var(--aurora-border-default)`,
                       whiteSpace: "nowrap",
+                      transition: "color 150ms",
                     }}
                   >
                     <span className="inline-flex items-center gap-1.5">

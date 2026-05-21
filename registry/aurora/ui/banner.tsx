@@ -122,9 +122,10 @@ function BannerElevated({
           <h4
             style={{
               margin: 0,
-              fontSize: 13,
-              fontWeight: 600,
-              lineHeight: 1.3,
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "var(--aurora-type-control)",
+              fontWeight: "var(--aurora-weight-label)",
+              lineHeight: "var(--aurora-line-ui)",
               color: "var(--aurora-text-primary)",
             }}
           >
@@ -136,7 +137,9 @@ function BannerElevated({
             style={{
               margin: 0,
               marginTop: title ? 2 : 0,
-              fontSize: 12,
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "var(--aurora-type-label)",
+              fontWeight: "var(--aurora-weight-body)",
               lineHeight: 1.5,
               color: "var(--aurora-text-muted)",
             }}
@@ -153,14 +156,15 @@ function BannerElevated({
           type="button"
           aria-label="Dismiss"
           onClick={handleDismiss}
-          className="banner-elev-dismiss"
+          className="banner-elev-dismiss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:rounded-[4px]"
           style={{
             marginLeft: "auto",
             flexShrink: 0,
             background: "none",
             border: "none",
             cursor: "pointer",
-            fontSize: 18,
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "var(--aurora-type-body)",
             lineHeight: 1,
             padding: "0 2px",
             color: "var(--aurora-text-muted)",
@@ -206,7 +210,7 @@ function BannerTag({
       style={{
         background: "var(--aurora-control-surface)",
         border: "1px solid var(--aurora-border-default)",
-        borderRadius: 8,
+        borderRadius: "8px",
         padding: "10px 14px",
       }}
       {...rest}
@@ -216,10 +220,10 @@ function BannerTag({
         className="banner-c-tag"
         style={{
           flexShrink: 0,
-          borderRadius: 4,
+          borderRadius: "4px",
           fontFamily: "var(--aurora-font-mono)",
-          fontSize: 10,
-          fontWeight: 700,
+          fontSize: "var(--aurora-type-micro)",
+          fontWeight: "var(--aurora-weight-label)",
           textTransform: "uppercase",
           letterSpacing: "0.05em",
           lineHeight: 1.4,
@@ -236,9 +240,11 @@ function BannerTag({
       <p
         style={{
           margin: 0,
-          fontSize: 13,
+          fontFamily: "var(--aurora-font-sans)",
+          fontSize: "var(--aurora-type-control)",
+          fontWeight: "var(--aurora-weight-body)",
           color: "var(--aurora-text-muted)",
-          lineHeight: 1.4,
+          lineHeight: "var(--aurora-line-ui)",
         }}
       >
         {title}

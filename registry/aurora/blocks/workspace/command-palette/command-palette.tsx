@@ -225,6 +225,10 @@ const KEYFRAMES_CMD = `
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+.aurora-cmd-search-row:focus-within {
+  border-bottom-color: var(--aurora-border-strong);
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent);
+}
 `
 
 export function CommandPalette({
@@ -324,7 +328,7 @@ export function CommandPalette({
           position: "fixed",
           inset: 0,
           zIndex: 200,
-          background: "rgba(4, 10, 14, 0.72)",
+          background: "var(--aurora-overlay)",
           animation: "aurora-backdrop-in 0.12s ease-out",
         }}
       />
@@ -348,19 +352,21 @@ export function CommandPalette({
           background: "var(--aurora-panel-strong)",
           border: "1px solid var(--aurora-border-strong)",
           borderRadius: "var(--aurora-radius-2)",
-          boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.055)",
+          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
           overflow: "hidden",
           animation: "aurora-cmd-in 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
         {/* Search row */}
         <div
+          className="aurora-cmd-search-row"
           style={{
             display: "flex",
             alignItems: "center",
             gap: "10px",
             padding: "12px 16px",
             borderBottom: "1px solid var(--aurora-border-default)",
+            transition: "border-bottom-color 0.15s, box-shadow 0.15s",
           }}
         >
           <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
@@ -369,13 +375,17 @@ export function CommandPalette({
           <Input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-expanded={true}
+            aria-controls="cmd-palette-listbox"
+            aria-autocomplete="list"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value)
               setActiveIdx(0)
             }}
             placeholder="Search commands, skills, files…"
-            aria-label="Search"
+            aria-label="Search commands"
             className="h-auto border-none px-0 py-0 focus-visible:outline-none"
             style={{
               flex: 1,
@@ -394,6 +404,7 @@ export function CommandPalette({
         {/* Results */}
         <div
           ref={listRef}
+          id="cmd-palette-listbox"
           role="listbox"
           aria-label="Command results"
           style={{

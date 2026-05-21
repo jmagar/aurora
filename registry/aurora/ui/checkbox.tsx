@@ -45,7 +45,7 @@ function CheckIcon({ style }: { style?: React.CSSProperties }) {
     >
       <path
         d="M1.5 4L3.8 6.5L8.5 1.5"
-        stroke="white"
+        stroke="var(--aurora-accent-foreground)"
         strokeWidth="1.7"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -286,7 +286,7 @@ const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(
       width: 6,
       height: 6,
       borderRadius: "50%",
-      background: "white",
+      background: "var(--aurora-accent-foreground)",
       animation: "aurora-radio-pop 180ms cubic-bezier(0.4,0,0.2,1) both",
     }
 

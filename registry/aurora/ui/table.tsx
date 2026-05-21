@@ -21,7 +21,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
   ({ className, style, ...props }, ref) => (
     <tr
       ref={ref}
-      className={["border-b last:border-b-0", className].filter(Boolean).join(" ")}
+      className={["border-b last:border-b-0 transition-colors duration-100 hover:bg-[var(--aurora-hover-bg)]", className].filter(Boolean).join(" ")}
       style={{ borderColor: "var(--aurora-border-default)", ...style }}
       {...props}
     />
@@ -34,7 +34,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={["px-3 py-2 aurora-text-label", className].filter(Boolean).join(" ")}
-      style={{ background: "var(--aurora-panel-strong)", color: "var(--aurora-text-muted)", ...style }}
+      style={{ background: "var(--aurora-panel-medium)", color: "var(--aurora-text-muted)", ...style }}
       {...props}
     />
   )

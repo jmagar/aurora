@@ -287,7 +287,7 @@ function CatalogCard({
       style={{
         background: "var(--aurora-panel-medium)",
         borderColor: "var(--aurora-border-strong)",
-        boxShadow: "var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)",
+        boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
       }}
     >
       <div className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] gap-3">
@@ -345,7 +345,7 @@ function SourceCard({
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className="grid w-full min-w-0 gap-2.5 overflow-hidden rounded-[10px] border p-3.5 text-left transition-all hover:-translate-y-px focus-visible:outline-none"
+      className="grid w-full min-w-0 gap-2.5 overflow-hidden rounded-[10px] border p-3.5 text-left transition-all hover:-translate-y-px focus-visible:ring-2 focus-visible:ring-[color:var(--aurora-focus-ring-strong)] focus-visible:outline-none"
       style={{
         background: selected
           ? "color-mix(in srgb, var(--aurora-accent-primary) 8%, var(--aurora-panel-medium))"
@@ -354,8 +354,8 @@ function SourceCard({
           ? "color-mix(in srgb, var(--aurora-accent-primary) 44%, var(--aurora-border-strong))"
           : "var(--aurora-border-default)",
         boxShadow: selected
-          ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 16%, transparent)"
-          : "inset 0 1px 0 rgba(255,255,255,0.035)",
+          ? "var(--aurora-highlight-medium), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 16%, transparent)"
+          : "var(--aurora-highlight-medium)",
         whiteSpace: "normal",
       }}
     >
@@ -656,7 +656,7 @@ export function Marketplace({
                         <td className="px-4 py-3" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
                           <div className="flex items-center gap-3">
                             <IdentityMark item={item} />
-                            <Button variant="plain" size="unstyled" type="button" onClick={() => handleAction(item)} className="min-w-0 text-left focus-visible:outline-none">
+                            <Button variant="plain" size="unstyled" type="button" onClick={() => handleAction(item)} className="min-w-0 text-left focus-visible:ring-1 focus-visible:ring-[color:var(--aurora-focus-ring-strong)] focus-visible:rounded-[4px] focus-visible:outline-none">
                               <p className="truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{item.name}</p>
                               <p className="truncate aurora-text-meta">{item.description || item.subtitle}</p>
                             </Button>

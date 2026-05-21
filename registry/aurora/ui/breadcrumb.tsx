@@ -92,7 +92,8 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
     const Comp = asChild ? Slot : "a"
 
     const baseClass = cn(
-      "inline-flex min-w-0 items-center gap-1 rounded-[8px] px-2 py-1 transition-colors duration-150 focus-visible:outline-none",
+      "inline-flex min-w-0 items-center gap-1 rounded-[8px] px-2 py-1 transition-colors duration-150",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0",
       variant === "default" && "aurora-text-control",
       variant === "mono" && "aurora-text-code",
       variant === "pill-trail" &&
@@ -118,20 +119,7 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
       <Comp
         ref={ref}
         className={baseClass}
-        style={{
-          ...baseStyle,
-          boxShadow: "none",
-        }}
-        onFocus={(event: React.FocusEvent<HTMLAnchorElement>) => {
-          event.currentTarget.dataset.previousBoxShadow = event.currentTarget.style.boxShadow
-          event.currentTarget.style.boxShadow =
-            "0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 24%, transparent)"
-          props.onFocus?.(event)
-        }}
-        onBlur={(event: React.FocusEvent<HTMLAnchorElement>) => {
-          event.currentTarget.style.boxShadow = event.currentTarget.dataset.previousBoxShadow ?? ""
-          props.onBlur?.(event)
-        }}
+        style={baseStyle}
         {...props}
       />
     )

@@ -27,7 +27,7 @@ const sideClass: Record<SheetSide, string> = {
 const SheetContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.Content>, SheetContentProps>(
   ({ className, children, side = "right", style, hideClose = false, ...props }, ref) => (
     <SheetPortal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[rgba(4,10,14,0.68)]" />
+      <DialogPrimitive.Overlay className="fixed inset-0 z-50" style={{ backgroundColor: "var(--aurora-overlay)" }} />
       <DialogPrimitive.Content
         ref={ref}
         className={cn("fixed z-50 flex flex-col overflow-hidden border focus-visible:outline-none", sideClass[side], className)}
@@ -74,7 +74,28 @@ const SheetFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
 ))
 SheetFooter.displayName = "SheetFooter"
 
-const SheetTitle = DialogPrimitive.Title
-const SheetDescription = DialogPrimitive.Description
+const SheetTitle = React.forwardRef<
+  React.ComponentRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ style, ...props }, ref) => (
+  <DialogPrimitive.Title
+    ref={ref}
+    style={{ color: "var(--aurora-text-primary)", ...style }}
+    {...props}
+  />
+))
+SheetTitle.displayName = "SheetTitle"
+
+const SheetDescription = React.forwardRef<
+  React.ComponentRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ style, ...props }, ref) => (
+  <DialogPrimitive.Description
+    ref={ref}
+    style={{ color: "var(--aurora-text-muted)", ...style }}
+    {...props}
+  />
+))
+SheetDescription.displayName = "SheetDescription"
 
 export { Sheet, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetBody, SheetFooter, SheetTitle, SheetDescription }

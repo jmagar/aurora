@@ -31,7 +31,7 @@ const DialogOverlay = React.forwardRef<
       "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
     )}
-    style={{ backgroundColor: "rgba(4, 10, 14, 0.72)" }}
+    style={{ backgroundColor: "var(--aurora-overlay)" }}
     {...props}
   />
 ))
@@ -43,19 +43,30 @@ export interface DialogContentProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   /** Hide the default X close button */
   hideClose?: boolean
+  /** Controls the maximum width of the dialog */
+  size?: "sm" | "default" | "lg" | "xl" | "full"
+}
+
+const sizeClasses: Record<NonNullable<DialogContentProps["size"]>, string> = {
+  sm: "max-w-sm",
+  default: "max-w-lg",
+  lg: "max-w-2xl",
+  xl: "max-w-4xl",
+  full: "max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)]",
 }
 
 const DialogContent = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, hideClose = false, children, style, ...props }, ref) => (
+>(({ className, hideClose = false, size = "default", children, style, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
         "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
-        "w-full max-w-lg",
+        "w-full",
+        sizeClasses[size],
         "flex flex-col",
         "rounded-[var(--aurora-radius-2)]",
         "border",
@@ -84,7 +95,8 @@ const DialogContent = React.forwardRef<
             "absolute right-4 top-4 z-10",
             "rounded-[8px] p-1",
             "transition-colors duration-150",
-            "focus-visible:outline-none focus-visible:ring-2",
+            "hover:bg-[var(--aurora-hover-bg)] hover:text-[var(--aurora-text-primary)]",
+            "focus-visible:outline-none focus-visible:ring-2 [&:focus-visible]:ring-[var(--aurora-focus-ring)]",
             "disabled:pointer-events-none",
           )}
           style={{
@@ -126,7 +138,7 @@ const DialogBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex-1 overflow-y-auto px-6 py-5", className)}
+    className={cn("flex-1 overflow-y-auto px-6 py-5 max-h-[65vh]", className)}
     {...props}
   />
 ))
@@ -159,7 +171,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, style, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn("text-lg font-semibold leading-tight", className)}
+    className={cn("aurora-text-section", className)}
     style={{ color: "var(--aurora-text-primary)", ...style }}
     {...props}
   />
@@ -174,7 +186,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, style, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-sm leading-relaxed", className)}
+    className={cn("aurora-text-body-sm", className)}
     style={{ color: "var(--aurora-text-muted)", ...style }}
     {...props}
   />

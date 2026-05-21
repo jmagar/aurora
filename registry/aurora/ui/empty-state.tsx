@@ -13,6 +13,8 @@ export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: React.ReactNode;
   action?: React.ReactNode;
   className?: string;
+  /** Heading level for the title. Defaults to "p" for flexibility; set to "h2"/"h3" when inside a section. */
+  as?: "h1" | "h2" | "h3" | "h4" | "p";
 }
 
 // ---------------------------------------------------------------------------
@@ -21,7 +23,7 @@ export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
   function EmptyState(
-    { icon, title, description, action, className, ...rest },
+    { icon, title, description, action, className, as: Heading = "p", ...rest },
     ref,
   ) {
     return (
@@ -58,22 +60,26 @@ export const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
 
         <div className="flex flex-col items-center gap-2">
           {/* Title */}
-          <p
-            className="text-[15px] font-bold leading-snug"
+          <Heading
             style={{
               fontFamily: "var(--aurora-font-display)",
+              fontSize: "var(--aurora-type-section)",
+              fontWeight: "var(--aurora-weight-display)",
+              lineHeight: "var(--aurora-line-dense)",
               color: "var(--aurora-text-primary)",
             }}
           >
             {title}
-          </p>
+          </Heading>
 
           {/* Description */}
           {description && (
             <p
-              className="text-[13px] leading-relaxed"
               style={{
                 color: "var(--aurora-text-muted)",
+                fontFamily: "var(--aurora-font-sans)",
+                fontSize: "var(--aurora-type-control)",
+                lineHeight: "var(--aurora-line-relaxed)",
                 maxWidth: 320,
               }}
             >

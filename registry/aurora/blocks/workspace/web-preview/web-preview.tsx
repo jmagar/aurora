@@ -25,7 +25,7 @@ export interface WebPreviewProps {
 
 function ReloadIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
       <path
         d="M12 7A5 5 0 1 1 7 2c1.38 0 2.63.56 3.54 1.46L13 6"
         stroke="currentColor"
@@ -40,7 +40,7 @@ function ReloadIcon() {
 
 function ShareIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
       <circle cx="11" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.2" />
       <circle cx="3" cy="7" r="1.5" stroke="currentColor" strokeWidth="1.2" />
       <circle cx="11" cy="11" r="1.5" stroke="currentColor" strokeWidth="1.2" />
@@ -51,7 +51,7 @@ function ShareIcon() {
 
 function LockIcon() {
   return (
-    <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
+    <svg width="10" height="12" viewBox="0 0 10 12" fill="none" aria-hidden="true">
       <rect x="1" y="5" width="8" height="6.5" rx="1.2" stroke="currentColor" strokeWidth="1.1" />
       <path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
     </svg>
@@ -60,7 +60,7 @@ function LockIcon() {
 
 function GlobeIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" />
       <ellipse cx="8" cy="8" rx="2.8" ry="6.5" stroke="currentColor" strokeWidth="1.2" />
       <path d="M1.5 8h13M8 1.5C6 3.5 5 5.5 5 8s1 4.5 3 6.5M8 1.5c2 2 3 4 3 6.5s-1 4.5-3 6.5" stroke="currentColor" strokeWidth="1.2" />
@@ -120,6 +120,7 @@ function ChromeButton({
       size="icon"
       onClick={onClick}
       title={title}
+      aria-label={title}
       style={{
         width: "28px",
         height: "26px",

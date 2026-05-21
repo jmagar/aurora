@@ -138,8 +138,8 @@ const DropdownMenuItem = React.forwardRef<
       menuItemBase,
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
       danger
-        ? "hover:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)] focus:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)]"
-        : "hover:bg-[var(--aurora-hover-bg)] focus:bg-[var(--aurora-hover-bg)]",
+        ? "hover:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)] data-[highlighted]:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)]"
+        : "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
       inset && "pl-8",
       className
     )}
@@ -165,7 +165,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
       menuItemBase,
       "pl-8",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
-      "hover:bg-[var(--aurora-hover-bg)] focus:bg-[var(--aurora-hover-bg)]",
+      "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
       "data-[state=checked]:font-semibold",
       className
     )}
@@ -201,7 +201,7 @@ const DropdownMenuRadioItem = React.forwardRef<
       menuItemBase,
       "pl-8",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
-      "hover:bg-[var(--aurora-hover-bg)] focus:bg-[var(--aurora-hover-bg)]",
+      "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
       "data-[state=checked]:font-semibold",
       className
     )}

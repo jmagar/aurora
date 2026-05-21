@@ -17,6 +17,10 @@ export interface ToastItem {
   title?: React.ReactNode;
   description?: React.ReactNode;
   duration?: number; // ms, default 4500
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 interface ToastContextValue {
@@ -73,18 +77,41 @@ const DISMISS_COLOR: Record<ToastStatus, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Labby stacked-plane SVG mark - used for ALL toast variants
+// Status icons - communicates toast type visually
 // ---------------------------------------------------------------------------
 
-function LabbyMark() {
+function StatusIcon({ status }: { status: ToastStatus }) {
+  if (status === "success") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <circle cx="9" cy="9" r="8" stroke="var(--aurora-success)" strokeWidth="1.5" />
+        <path d="M5.5 9l2.5 2.5 4.5-4.5" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  if (status === "error") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <circle cx="9" cy="9" r="8" stroke="var(--aurora-error)" strokeWidth="1.5" />
+        <path d="M6 6l6 6M12 6l-6 6" stroke="var(--aurora-error)" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (status === "warn") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M9 2L16.5 15H1.5L9 2z" stroke="var(--aurora-warn)" strokeWidth="1.5" strokeLinejoin="round" />
+        <path d="M9 7v3.5" stroke="var(--aurora-warn)" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="9" cy="12.5" r="0.75" fill="var(--aurora-warn)" />
+      </svg>
+    );
+  }
+  // info (default)
   return (
-    <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden>
-      <g transform="translate(0,1)">
-        <path d="M 8 13 L 24 7 L 40 13 L 24 19 Z" fill="var(--aurora-border-strong)" />
-        <path d="M 8 21 L 24 15 L 40 21 L 24 27 Z" fill="var(--aurora-accent-deep)" />
-        <path d="M 8 29 L 24 23 L 40 29 L 24 35 Z" fill="var(--aurora-accent-primary)" />
-        <path d="M 8 37 L 24 31 L 40 37 L 24 43 Z" fill="var(--aurora-accent-strong)" />
-      </g>
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <circle cx="9" cy="9" r="8" stroke="var(--aurora-info)" strokeWidth="1.5" />
+      <path d="M9 8v5" stroke="var(--aurora-info)" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="9" cy="5.5" r="0.75" fill="var(--aurora-info)" />
     </svg>
   );
 }
@@ -106,8 +133,8 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
     return (
       <div
         ref={ref}
-        role="status"
-        aria-live="polite"
+        role={status === "error" || status === "warn" ? "alert" : "status"}
+        aria-live={status === "error" || status === "warn" ? "assertive" : "polite"}
         className="aurora-toast-enter pointer-events-auto flex items-start gap-3 rounded-[var(--aurora-radius-1)] px-4 py-3.5"
         style={{
           maxWidth: 400,
@@ -117,7 +144,7 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
           boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-medium)",
         }}
       >
-        {/* Labby stacked-plane mark - same for all variants */}
+        {/* Status icon */}
         <span
           aria-hidden
           style={{
@@ -129,7 +156,7 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
             height: 22,
           }}
         >
-          <LabbyMark />
+          <StatusIcon status={status} />
         </span>
 
         {/* Content */}
@@ -139,6 +166,25 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
           )}
           {item.description && (
             <ToastDescription>{item.description}</ToastDescription>
+          )}
+          {item.action && (
+            <button
+              type="button"
+              onClick={item.action.onClick}
+              style={{
+                fontSize: "var(--aurora-type-body-sm)",
+                fontFamily: "var(--aurora-font-sans)",
+                fontWeight: 650,
+                color: "var(--aurora-accent-primary)",
+                background: "none",
+                border: "none",
+                padding: "2px 0",
+                cursor: "pointer",
+                alignSelf: "flex-start",
+              }}
+            >
+              {item.action.label}
+            </button>
           )}
         </div>
 
@@ -182,8 +228,14 @@ export function ToastTitle({
 }) {
   return (
     <p
-      className={cn("text-[13px] font-semibold leading-snug", className)}
-      style={{ color: "var(--aurora-text-primary)" }}
+      className={className}
+      style={{
+        color: "var(--aurora-text-primary)",
+        fontSize: "var(--aurora-type-control)",
+        fontWeight: "var(--aurora-weight-label)",
+        lineHeight: "var(--aurora-line-ui)",
+        fontFamily: "var(--aurora-font-sans)",
+      }}
     >
       {children}
     </p>
@@ -200,8 +252,13 @@ export function ToastDescription({
 }) {
   return (
     <p
-      className={cn("text-[12px] leading-relaxed", className)}
-      style={{ color: "var(--aurora-text-muted)" }}
+      className={className}
+      style={{
+        color: "var(--aurora-text-muted)",
+        fontSize: "var(--aurora-type-label)",
+        lineHeight: "1.5",
+        fontFamily: "var(--aurora-font-sans)",
+      }}
     >
       {children}
     </p>
@@ -218,7 +275,19 @@ function nextId() {
   return String(++_toastId);
 }
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
+interface ToastProviderProps {
+  children: React.ReactNode;
+  position?: "top-right" | "top-center" | "bottom-right" | "bottom-center";
+}
+
+const POSITION_CLASS: Record<NonNullable<ToastProviderProps["position"]>, string> = {
+  "top-right":    "fixed right-5 top-5",
+  "top-center":   "fixed left-1/2 -translate-x-1/2 top-5",
+  "bottom-right": "fixed right-5 bottom-5",
+  "bottom-center":"fixed left-1/2 -translate-x-1/2 bottom-5",
+};
+
+export function ToastProvider({ children, position = "top-right" }: ToastProviderProps) {
   const [items, setItems] = React.useState<ToastItem[]>([]);
   const [exiting, setExiting] = React.useState<Set<string>>(new Set());
   const timersRef = React.useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
@@ -268,7 +337,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       ? createPortal(
           <div
             aria-label="Notifications"
-            className="pointer-events-none fixed right-5 top-5 z-[9999] flex flex-col gap-2.5"
+            className={cn("pointer-events-none z-[9999] flex flex-col gap-2.5", POSITION_CLASS[position])}
             style={{ maxWidth: 400 }}
           >
             {items.map((item) => (

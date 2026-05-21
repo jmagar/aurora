@@ -40,7 +40,7 @@ export const FilterSearch = React.forwardRef<HTMLInputElement, FilterSearchProps
 
         <input
           ref={ref}
-          type="search"
+          type="text"
           value={value}
           onChange={onChange}
           className={cn(
@@ -124,7 +124,7 @@ export const FilterTag = React.forwardRef<HTMLSpanElement, FilterTagProps>(
             type="button"
             aria-label="Remove filter"
             onClick={onRemove}
-            className="ml-0.5 rounded-full p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none"
+            className="ml-0.5 rounded-full p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-accent-primary)]"
             style={{ color: "var(--aurora-accent-strong)" }}
           >
             <svg
@@ -135,6 +135,7 @@ export const FilterTag = React.forwardRef<HTMLSpanElement, FilterTagProps>(
               stroke="currentColor"
               strokeWidth="1.6"
               strokeLinecap="round"
+              aria-hidden="true"
             >
               <path d="M1 1l7 7M8 1L1 8" />
             </svg>
@@ -178,7 +179,7 @@ export const FilterTagRose = React.forwardRef<HTMLSpanElement, FilterTagProps>(
             type="button"
             aria-label="Remove filter"
             onClick={onRemove}
-            className="ml-0.5 rounded-full p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none"
+            className="ml-0.5 rounded-full p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-accent-pink)]"
             style={{ color: "var(--aurora-accent-pink)" }}
           >
             <svg
@@ -189,6 +190,7 @@ export const FilterTagRose = React.forwardRef<HTMLSpanElement, FilterTagProps>(
               stroke="currentColor"
               strokeWidth="1.6"
               strokeLinecap="round"
+              aria-hidden="true"
             >
               <path d="M1 1l7 7M8 1L1 8" />
             </svg>
@@ -216,8 +218,6 @@ export const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
     { children, onClearAll, showClearAll = false, className, ...rest },
     ref,
   ) {
-    const [clearHovered, setClearHovered] = React.useState(false);
-
     return (
       <div
         ref={ref}
@@ -246,13 +246,9 @@ export const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
             <Button variant="plain" size="unstyled"
               type="button"
               onClick={onClearAll}
-              onMouseEnter={() => setClearHovered(true)}
-              onMouseLeave={() => setClearHovered(false)}
-              className="transition-colors focus-visible:outline-none"
+              className="transition-colors hover:text-[var(--aurora-error)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-accent-primary)]"
               style={{
-                color: clearHovered
-                  ? "var(--aurora-error)"
-                  : "var(--aurora-text-muted)",
+                color: "var(--aurora-text-muted)",
                 fontFamily: "var(--aurora-font-sans)",
                 fontSize: "var(--aurora-type-label)",
                 fontWeight: "var(--aurora-weight-ui)",

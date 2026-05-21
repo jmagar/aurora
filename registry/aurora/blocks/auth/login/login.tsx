@@ -89,8 +89,9 @@ function AuroraInput({ id, label, type = "text", value, onChange, placeholder, a
         htmlFor={id}
         style={{
           fontFamily: "var(--aurora-font-sans)",
-          fontSize: "13px",
-          fontWeight: 500,
+          fontSize: "12px",
+          fontWeight: "var(--aurora-weight-label)" as React.CSSProperties["fontWeight"],
+          letterSpacing: "var(--aurora-letter-label)",
           color: "var(--aurora-text-muted)",
         }}
       >
@@ -140,7 +141,10 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
   const [showPw, setShowPw] = React.useState(false)
 
   return (
-    <>
+    <form
+      onSubmit={(e) => { e.preventDefault(); onSubmit?.({ email, password }) }}
+      style={{ display: "contents" }}
+    >
       <AuroraInput
         id="email"
         label="Email"
@@ -195,7 +199,7 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
         </Button>
       </div>
 
-      <Button type="submit" variant="aurora" size="lg" onClick={() => onSubmit?.({ email, password })} style={{ width: "100%" }}>
+      <Button type="submit" variant="aurora" size="lg" style={{ width: "100%" }}>
         Sign in
       </Button>
 
@@ -229,7 +233,7 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
       >
         Send magic link
       </Button>
-    </>
+    </form>
   )
 }
 
@@ -297,6 +301,13 @@ function MagicLinkSentView() {
 // ---------------------------------------------------------------------------
 
 function TwoFactorView({ onSubmit }: LoginProps) {
+  const [otp, setOtp] = React.useState("")
+
+  function handleComplete(code: string) {
+    setOtp(code)
+    onSubmit?.({ otp: code })
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <div style={{ textAlign: "center" }}>
@@ -310,9 +321,18 @@ function TwoFactorView({ onSubmit }: LoginProps) {
         >
           Enter the 6-digit code from your authenticator app.
         </div>
-        <OtpInput onComplete={(otp) => onSubmit?.({ otp })} />
+        <OtpInput onComplete={handleComplete} />
       </div>
-      <Button type="button" variant="aurora" size="lg" onClick={() => {}} style={{ width: "100%" }}>Verify</Button>
+      <Button
+        type="button"
+        variant="aurora"
+        size="lg"
+        disabled={otp.length < 6}
+        onClick={() => otp.length === 6 && onSubmit?.({ otp })}
+        style={{ width: "100%" }}
+      >
+        Verify
+      </Button>
     </div>
   )
 }

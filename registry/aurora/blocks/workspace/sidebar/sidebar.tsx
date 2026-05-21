@@ -61,7 +61,7 @@ function LabbyMark({ size = 14 }: { size?: number }) {
       height={size * 1.4}
       viewBox="0 0 10 14"
       fill="none"
-      aria-label="Aurora"
+      aria-hidden="true"
       style={{ flexShrink: 0 }}
     >
       <path d="M5 0L9 2.5L5 5L1 2.5Z" fill="var(--aurora-accent-primary)" opacity="0.95" />

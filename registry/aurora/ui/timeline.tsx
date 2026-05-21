@@ -26,8 +26,8 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
     }
 
     return (
-      <li ref={ref} className={cn("relative grid grid-cols-[20px_minmax(0,1fr)] gap-3 pb-5 last:pb-0", className)} {...props}>
-        <span aria-hidden="true" className="absolute bottom-0 left-[5px] top-4 w-px bg-[var(--aurora-border-default)] last:hidden" />
+      <li ref={ref} className={cn("group/item relative grid grid-cols-[20px_minmax(0,1fr)] gap-3 pb-5 last:pb-0", className)} {...props}>
+        <span aria-hidden="true" className="absolute bottom-0 left-[5px] top-4 w-px bg-[var(--aurora-border-default)] group-last/item:hidden" />
         <span
           aria-hidden="true"
           className="relative mt-1 size-2.5 rounded-full"

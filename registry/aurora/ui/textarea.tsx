@@ -40,7 +40,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           // Layout
           "flex min-h-[112px] w-full px-3.5 py-3",
           // Typography
-          "font-[var(--aurora-font-sans,_Inter,_sans-serif)]",
+          "font-[var(--aurora-font-sans)]",
           "text-[var(--aurora-text-primary)]",
           "placeholder:text-[var(--aurora-text-muted)]",
           // Border
@@ -60,7 +60,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           className
         )}
         style={{
-          background: "var(--aurora-control-surface, #0c1a24)",
+          background: "var(--aurora-control-surface)",
           fontSize: "var(--aurora-type-body-sm)",
           fontWeight: "var(--aurora-weight-body)",
           letterSpacing: "var(--aurora-letter-ui)",

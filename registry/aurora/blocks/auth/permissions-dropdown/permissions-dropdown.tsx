@@ -124,10 +124,9 @@ function SegmentedControl({
               color: active ? cfg.color : "var(--aurora-text-muted)",
               fontSize: 11,
               fontWeight: active ? 700 : 500,
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
               cursor: "pointer",
               transition: "background 120ms, color 120ms, border-color 120ms",
-              outline: "none",
               whiteSpace: "nowrap",
             }}
           >
@@ -179,7 +178,7 @@ function MasterToggle({
           fontSize: 13,
           fontWeight: 600,
           color: "var(--aurora-text-primary)",
-          fontFamily: "var(--font-sans, Inter, sans-serif)",
+          fontFamily: "var(--aurora-font-sans)",
         }}
       >
         Tool permissions
@@ -213,10 +212,9 @@ function MasterToggle({
           color: enabled ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)",
           fontSize: 12,
           fontWeight: 600,
-          fontFamily: "var(--font-sans, Inter, sans-serif)",
+          fontFamily: "var(--aurora-font-sans)",
           cursor: "pointer",
           transition: "background 120ms, border-color 120ms, color 120ms",
-          outline: "none",
         }}
       >
         <span
@@ -267,7 +265,7 @@ function ToolRow({
             fontSize: 13,
             fontWeight: 600,
             color: "var(--aurora-text-primary)",
-            fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+            fontFamily: "var(--aurora-font-mono)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -281,7 +279,7 @@ function ToolRow({
               margin: "2px 0 0",
               fontSize: 11,
               color: "var(--aurora-text-muted)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -335,12 +333,9 @@ export function PermissionsDropdown({
       style={{
         background: "var(--aurora-panel-medium)",
         border: "1px solid var(--aurora-border-strong)",
-        borderRadius: "var(--radius-2, 18px)",
+        borderRadius: "var(--aurora-radius-2)",
         overflow: "hidden",
-        boxShadow: [
-          "0 8px 32px rgba(0,0,0,0.36)",
-          "0 1px 0 rgba(255,255,255,0.03) inset",
-        ].join(", "),
+        boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-medium)",
         animation: "aurora-pd-in 180ms cubic-bezier(0.4,0,0.2,1) both",
         ...style,
       }}
@@ -363,7 +358,7 @@ export function PermissionsDropdown({
           style={{
             fontSize: 11,
             color: "var(--aurora-text-muted)",
-            fontFamily: "var(--font-sans, Inter, sans-serif)",
+            fontFamily: "var(--aurora-font-sans)",
           }}
         >
           {tools.length} tool{tools.length !== 1 ? "s" : ""}
@@ -375,7 +370,7 @@ export function PermissionsDropdown({
               style={{
                 fontSize: 11,
                 color: "var(--aurora-error)",
-                fontFamily: "var(--font-sans, Inter, sans-serif)",
+                fontFamily: "var(--aurora-font-sans)",
               }}
             >
               {blockCount} blocked
@@ -389,7 +384,7 @@ export function PermissionsDropdown({
               style={{
                 fontSize: 11,
                 color: "var(--aurora-success)",
-                fontFamily: "var(--font-sans, Inter, sans-serif)",
+                fontFamily: "var(--aurora-font-sans)",
               }}
             >
               {allowCount} allowed
@@ -431,7 +426,7 @@ export function PermissionsDropdown({
               textAlign: "center",
               fontSize: 13,
               color: "var(--aurora-text-muted)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
             }}
           >
             No tools configured
@@ -490,7 +485,6 @@ export function PermissionChip({
           ? "color-mix(in srgb, var(--aurora-warn) 6%, var(--aurora-control-surface))"
           : "var(--aurora-control-surface)",
         cursor: onClick ? "pointer" : "default",
-        outline: "none",
         transition: "background 120ms, border-color 120ms",
         ...style,
       }}
@@ -516,7 +510,7 @@ export function PermissionChip({
           fontSize: 12,
           fontWeight: 500,
           color: "var(--aurora-text-muted)",
-          fontFamily: "var(--font-sans, Inter, sans-serif)",
+          fontFamily: "var(--aurora-font-sans)",
           whiteSpace: "nowrap",
         }}
       >
@@ -536,7 +530,7 @@ export function PermissionChip({
               fontSize: 12,
               fontWeight: 600,
               color: "var(--aurora-warn)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
               whiteSpace: "nowrap",
             }}
           >

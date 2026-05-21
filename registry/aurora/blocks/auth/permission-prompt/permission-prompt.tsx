@@ -183,7 +183,7 @@ function TargetChip({ target }: { target: string }) {
       <code
         style={{
           fontSize: 12,
-          fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+          fontFamily: "var(--aurora-font-mono)",
           color: isCommand ? "var(--aurora-accent-strong)" : "var(--aurora-text-primary)",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -220,7 +220,7 @@ function DangerStrip() {
           fontSize: 12,
           lineHeight: 1.5,
           color: "var(--aurora-error)",
-          fontFamily: "var(--font-sans, Inter, sans-serif)",
+          fontFamily: "var(--aurora-font-sans)",
           fontWeight: 500,
         }}
       >
@@ -268,7 +268,7 @@ function PromptContent({
               fontSize: compact ? 12 : 13,
               fontWeight: 600,
               color: "var(--aurora-text-primary)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
               lineHeight: 1.4,
             }}
           >
@@ -279,7 +279,7 @@ function PromptContent({
               margin: "2px 0 0",
               fontSize: compact ? 11 : 12,
               color: "var(--aurora-text-muted)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
               lineHeight: 1.5,
             }}
           >
@@ -349,7 +349,7 @@ function ModalPrompt({
         alignItems: "center",
         justifyContent: "center",
         padding: 24,
-        background: "rgba(0,0,0,0.55)",
+        background: "var(--aurora-overlay)",
         backdropFilter: "blur(4px)",
         WebkitBackdropFilter: "blur(4px)",
       }}
@@ -369,13 +369,13 @@ function ModalPrompt({
           border: isDangerous
             ? "1px solid color-mix(in srgb, var(--aurora-error) 40%, transparent)"
             : "1px solid var(--aurora-border-strong)",
-          borderRadius: "var(--radius-2, 18px)",
+          borderRadius: "var(--aurora-radius-2)",
           padding: 24,
           boxShadow: [
-            "0 24px 64px rgba(0,0,0,0.5)",
+            "var(--aurora-shadow-strong)",
             isDangerous
               ? "0 0 0 1px color-mix(in srgb, var(--aurora-error) 15%, transparent)"
-              : "0 0 0 1px rgba(41,182,246,0.06)",
+              : "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 6%, transparent)",
           ].join(", "),
         }}
       >
@@ -407,7 +407,7 @@ function ModalPrompt({
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               color: isDangerous ? "var(--aurora-error)" : "var(--aurora-accent-primary)",
-              fontFamily: "var(--font-sans, Inter, sans-serif)",
+              fontFamily: "var(--aurora-font-sans)",
             }}
           >
             {isDangerous ? "Dangerous action" : "Permission required"}
@@ -465,7 +465,7 @@ function BannerPrompt({
           : "1px solid var(--aurora-border-default)",
         boxShadow: isDangerous
           ? "0 2px 12px color-mix(in srgb, var(--aurora-error) 12%, transparent)"
-          : "0 2px 8px rgba(0,0,0,0.18)",
+          : "var(--aurora-shadow-medium)",
         ...style,
       }}
     >
@@ -477,7 +477,7 @@ function BannerPrompt({
             fontSize: 13,
             fontWeight: 600,
             color: "var(--aurora-text-primary)",
-            fontFamily: "var(--font-sans, Inter, sans-serif)",
+            fontFamily: "var(--aurora-font-sans)",
           }}
         >
           {tool}
@@ -486,7 +486,7 @@ function BannerPrompt({
           style={{
             fontSize: 13,
             color: "var(--aurora-text-muted)",
-            fontFamily: "var(--font-sans, Inter, sans-serif)",
+            fontFamily: "var(--aurora-font-sans)",
             marginLeft: 6,
           }}
         >
@@ -497,7 +497,7 @@ function BannerPrompt({
             style={{
               marginLeft: 8,
               fontSize: 11,
-              fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+              fontFamily: "var(--aurora-font-mono)",
               color: "var(--aurora-accent-strong)",
               background: "var(--aurora-control-surface)",
               borderRadius: 5,

@@ -76,8 +76,8 @@ const Switch = React.forwardRef<
         width: trackW,
         height: trackH,
         borderRadius: trackH,
-        background: "var(--aurora-control-surface, #0c1a24)",
-        border: "1.5px solid var(--aurora-border-strong, #24536c)",
+        background: "var(--aurora-control-surface)",
+        border: "1.5px solid var(--aurora-border-strong)",
         transition: "border-color 200ms, box-shadow 200ms",
         ...style,
       }}
