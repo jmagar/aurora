@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
       target: dev
     image: aurora-design-system:local
+    container_name: aurora-design-system
     ports:
       - "${AURORA_PORT:-3000}:3000"
     environment:
@@ -18,9 +19,18 @@ services:
       - .:/app
       - aurora-node-modules:/app/node_modules
       - aurora-next-cache:/app/.next
-    command: pnpm dev --hostname 0.0.0.0
+      - aurora-pnpm-store:/pnpm/store
+    command: sh -c "pnpm install --frozen-lockfile --config.confirmModulesPurge=false --store-dir /pnpm/store && pnpm dev --hostname 0.0.0.0"
     restart: unless-stopped
+    networks:
+      - jakenet
 
 volumes:
   aurora-node-modules:
   aurora-next-cache:
+  aurora-pnpm-store:
+
+networks:
+  jakenet:
+    name: jakenet
+    external: true
