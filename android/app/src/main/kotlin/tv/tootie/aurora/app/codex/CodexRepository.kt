@@ -4,17 +4,19 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
 
 private const val TAG = "CodexRepository"
 
@@ -72,7 +74,8 @@ class CodexRepository {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val pendingKinds = ConcurrentHashMap<Int, RequestKind>()
-    private val connected = AtomicBoolean(false)
+    /** Guards connect/reconnect/disconnect so concurrent calls are serialized. */
+    private val connectionMutex = Mutex()
     private var client: CodexClient? = null
 
     // --- Typed output flows ------------------------------------------------
@@ -99,36 +102,61 @@ class CodexRepository {
     /**
      * Connect to [url] with optional [token]. Safe to call multiple times;
      * subsequent calls are no-ops if already connected.
+     *
+     * Serialized by [connectionMutex] so concurrent calls from multiple ViewModels
+     * result in exactly one WebSocket connection.
      */
     fun connect(url: String, token: String?) {
-        if (connected.getAndSet(true)) return
-        Log.d(TAG, "connecting to $url")
-        val c = CodexClient(url, token)
-        client = c
-        c.connect()
-        c.messages
-            .onEach { demux(it) }
-            .launchIn(scope)
+        scope.launch {
+            connectionMutex.withLock {
+                if (client != null) return@withLock
+                Log.d(TAG, "connecting to $url")
+                val c = CodexClient(url, token)
+                client = c
+                c.connect()
+                c.messages
+                    .onEach { demux(it) }
+                    .launchIn(scope)
+            }
+        }
     }
 
     /**
      * Disconnect and immediately reconnect. Call when server URL or token changes.
      * Do NOT call this from ViewModel.onCleared().
+     *
+     * Serialized by [connectionMutex] so concurrent calls (e.g. rapid Save taps) are safe.
      */
     fun reconnect(url: String, token: String?) {
-        client?.disconnect()
-        client = null
-        connected.set(false)
-        connect(url, token)
+        scope.launch {
+            connectionMutex.withLock {
+                client?.disconnect()
+                client = null
+                pendingKinds.clear()
+                Log.d(TAG, "reconnecting to $url")
+                val c = CodexClient(url, token)
+                client = c
+                c.connect()
+                c.messages
+                    .onEach { demux(it) }
+                    .launchIn(scope)
+            }
+        }
     }
 
     /**
-     * Disconnect cleanly. Call from Application.onTerminate() only.
+     * Disconnect cleanly. Should be called when the application is done with the
+     * repository. Note: [Application.onTerminate] is only called in emulated environments;
+     * for production use consider a [ProcessLifecycleOwner] observer instead.
      */
     fun disconnect() {
-        client?.disconnect()
-        client = null
-        connected.set(false)
+        scope.launch {
+            connectionMutex.withLock {
+                client?.disconnect()
+                client = null
+                pendingKinds.clear()
+            }
+        }
     }
 
     // --- Request helpers ---------------------------------------------------
@@ -169,7 +197,7 @@ class CodexRepository {
 
     // --- Demux logic -------------------------------------------------------
 
-    private fun demux(msg: RpcMessage) {
+    private suspend fun demux(msg: RpcMessage) {
         // Extract the request id as an Int (RpcMessage.id is a JsonElement?)
         val idNum: Int? = try { msg.id?.jsonPrimitive?.content?.toIntOrNull() } catch (_: Exception) { null }
 
@@ -180,8 +208,10 @@ class CodexRepository {
                 RequestKind.Models -> routeModelsResponse(msg)
                 RequestKind.Skills -> routeSkillsResponse(msg)
                 // ThreadStart and Other both go to turnEventsFlow so ChatViewModel
-                // handles them with its existing null-method dispatch
-                else -> _turnEventsFlow.tryEmit(CodexEvent.TurnEvent(msg))
+                // handles them with its existing null-method dispatch.
+                // emit() (suspend) is used instead of tryEmit() to prevent silent
+                // drops when the buffer is full — turn/completed must never be lost.
+                else -> _turnEventsFlow.emit(CodexEvent.TurnEvent(msg))
             }
             return
         }
@@ -193,7 +223,8 @@ class CodexRepository {
         }
 
         // All server-initiated notifications (turn/*, item/*, hook/*, etc.)
-        _turnEventsFlow.tryEmit(CodexEvent.TurnEvent(msg))
+        // suspend emit() ensures critical events like turn/completed are never dropped.
+        _turnEventsFlow.emit(CodexEvent.TurnEvent(msg))
     }
 
     private fun routeThreadListResponse(msg: RpcMessage) {
