@@ -200,8 +200,9 @@ class CodexRepository {
         attachments: List<SelectedItem> = emptyList(),
         model: String?,
         effort: String?,
+        images: List<PendingAttachment> = emptyList(),
     ): Int {
-        val id = client?.startTurn(threadId, text, attachments, model, effort) ?: return -1
+        val id = client?.startTurn(threadId, text, attachments, model, effort, images) ?: return -1
         pendingKinds[id] = RequestKind.Other
         return id
     }
