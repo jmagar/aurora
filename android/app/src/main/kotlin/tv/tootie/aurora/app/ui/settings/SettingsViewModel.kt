@@ -62,10 +62,19 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         val client = CodexClient(url, tok)
         client.connect()
 
-        // Give the server 5 seconds to accept logout. If it times out or the server
-        // is unreachable, we still clear credentials locally — the user is logged out.
+        // Give the server 5 seconds for the full logout exchange. If it times out or the
+        // server is unreachable, we still clear credentials locally — the user is logged out.
         try {
             withTimeout(5_000L) {
+                // Wait for the initialize ACK (id=0) before sending any other request.
+                // connect() sends initialize immediately in onOpen, so this also implicitly
+                // waits for the WebSocket to open.
+                val initOrError = client.messages.first { msg ->
+                    (msg.method == null && msg.id?.jsonPrimitive?.contentOrNull == "0") ||
+                        msg.error != null
+                }
+                if (initOrError.error != null) return@withTimeout
+
                 val logoutId = client.logout()
                 // Wait for the response matching our logout request id, or any error.
                 client.messages.first { msg ->
