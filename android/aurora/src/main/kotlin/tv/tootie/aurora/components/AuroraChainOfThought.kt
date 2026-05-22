@@ -25,23 +25,42 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /**
  * Collapsible chain-of-thought reasoning trace.
+ *
  * Maps to web AI `chain-of-thought` element.
+ *
+ * Accessibility:
+ * - The header row is a `Role.Button` with `stateDescription` announcing
+ *   "expanded" or "collapsed" so TalkBack users know the toggle state.
+ * - The chevron icon is decorative (state is carried by `stateDescription`).
+ * - Each step carries a `contentDescription` of the form "Step N of M: …"
+ *   so screen-reader users hear the full ordinal context.
+ * - The step content column is a `Polite` live region so streaming updates
+ *   are announced without interrupting the user.
  */
 @Composable
 public fun AuroraChainOfThought(
-    steps: List<String>,
+    steps: ImmutableList<String>,
     modifier: Modifier = Modifier,
     title: String = "Chain of thought",
     initiallyExpanded: Boolean = false,
 ) {
     val aurora = LocalAuroraColors.current
     var expanded by remember { mutableStateOf(initiallyExpanded) }
+    val stepCount = steps.size
 
     Surface(
         modifier = modifier
@@ -51,27 +70,65 @@ public fun AuroraChainOfThought(
         color = aurora.accentVioletSurface,
     ) {
         Column {
+            // ── Collapse / expand trigger ──────────────────────────────────
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(role = Role.Button) { expanded = !expanded }
+                    .semantics {
+                        role = Role.Button
+                        stateDescription = if (expanded) "expanded" else "collapsed"
+                    }
+                    .clickable(
+                        onClickLabel = if (expanded) "Collapse $title" else "Expand $title",
+                    ) { expanded = !expanded }
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(title, style = MaterialTheme.typography.labelMedium, color = aurora.accentViolet)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = aurora.accentViolet,
+                )
+                // Chevron is decorative — state is announced via stateDescription above.
                 Icon(
-                    if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (expanded) "Collapse" else "Expand",
+                    imageVector = if (expanded) Icons.Default.KeyboardArrowUp
+                                  else Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
                     tint = aurora.accentViolet,
                 )
             }
-            AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
-                Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+
+            // ── Step list ──────────────────────────────────────────────────
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .semantics { liveRegion = LiveRegionMode.Polite },
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
                     steps.forEachIndexed { i, step ->
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("${i + 1}.", style = MaterialTheme.typography.labelSmall, color = aurora.accentViolet)
-                            Text(step, style = MaterialTheme.typography.bodySmall)
+                        Row(
+                            modifier = Modifier.semantics(mergeDescendants = true) {
+                                contentDescription = "Step ${i + 1} of $stepCount: $step"
+                            },
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            // Visual step number — suppressed; ordinal is in contentDescription.
+                            Text(
+                                text = "${i + 1}.",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = aurora.accentViolet,
+                                modifier = Modifier.clearAndSetSemantics { },
+                            )
+                            Text(
+                                text = step,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
                         }
                     }
                 }
