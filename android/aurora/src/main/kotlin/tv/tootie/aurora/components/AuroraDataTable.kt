@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,9 +24,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import tv.tootie.aurora.theme.LocalAuroraColors
 
+/**
+ * A single column definition for [AuroraDataTable].
+ *
+ * @param header Human-readable column label shown in the header row.
+ * @param key Key used to look up cell values in each row map.
+ * @param weight Relative flex-weight of the column. Defaults to 1.
+ * @param sortable Whether TalkBack-accessible sort controls are shown for this column.
+ */
+@Immutable
 public data class AuroraDataColumn(
     val header: String,
     val key: String,
@@ -36,15 +50,23 @@ public data class AuroraDataColumn(
 private enum class SortDir { Asc, Desc }
 
 /**
- * Sortable data table with column headers. Maps to web `data-table`.
+ * Sortable data table with sticky column headers. Maps to the web `data-table` component.
  *
- * @param columns column definitions
- * @param rows list of maps: column key → cell value
+ * **Distinction from [AuroraTable]:** this component accepts keyed maps per row and supports
+ * interactive column sorting. Use [AuroraTable] for positional, read-only tabular data.
+ *
+ * **Stability note:** [rows] is typed as [ImmutableList] so Compose can skip recomposition
+ * when the list reference is stable. Wrap caller data with `persistentListOf()` or
+ * `toPersistentList()` from `kotlinx-collections-immutable`.
+ *
+ * @param columns Column definitions. Use `@Immutable` [AuroraDataColumn].
+ * @param rows Stable list of row maps: column key → cell value string.
+ * @param modifier Modifier applied to the root [LazyColumn].
  */
 @Composable
 public fun AuroraDataTable(
-    columns: List<AuroraDataColumn>,
-    rows: List<Map<String, String>>,
+    columns: ImmutableList<AuroraDataColumn>,
+    rows: ImmutableList<Map<String, String>>,
     modifier: Modifier = Modifier,
 ) {
     val aurora = LocalAuroraColors.current
@@ -60,28 +82,40 @@ public fun AuroraDataTable(
     }
 
     LazyColumn(modifier = modifier.border(1.dp, aurora.borderDefault)) {
-        stickyHeader {
+        stickyHeader(key = "header", contentType = "header") {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .semantics(mergeDescendants = true) { heading() },
             ) {
                 columns.forEach { col ->
+                    val sortState = when {
+                        sortKey != col.key -> ""
+                        sortDir == SortDir.Asc -> "sorted ascending"
+                        else -> "sorted descending"
+                    }
                     Row(
                         modifier = Modifier
                             .weight(col.weight)
                             .then(
-                                if (col.sortable)
-                                    Modifier.clickable(role = Role.Button) {
-                                        if (sortKey == col.key) {
-                                            sortDir = if (sortDir == SortDir.Asc) SortDir.Desc else SortDir.Asc
-                                        } else {
-                                            sortKey = col.key
-                                            sortDir = SortDir.Asc
+                                if (col.sortable) {
+                                    Modifier
+                                        .clickable(role = Role.Button) {
+                                            if (sortKey == col.key) {
+                                                sortDir = if (sortDir == SortDir.Asc) SortDir.Desc else SortDir.Asc
+                                            } else {
+                                                sortKey = col.key
+                                                sortDir = SortDir.Asc
+                                            }
                                         }
-                                    }
-                                else Modifier,
+                                        .semantics {
+                                            stateDescription = sortState
+                                        }
+                                } else {
+                                    Modifier
+                                },
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -93,22 +127,27 @@ public fun AuroraDataTable(
                                     else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         if (col.sortable && sortKey == col.key) {
+                            // Decorative — sort state is announced via stateDescription on parent Row
                             Icon(
                                 imageVector = if (sortDir == SortDir.Asc) Icons.Default.ArrowUpward
                                               else Icons.Default.ArrowDownward,
                                 contentDescription = null,
-                                modifier = Modifier.padding(0.dp),
                             )
                         }
                     }
                 }
             }
         }
-        itemsIndexed(sortedRows) { _, row ->
+        itemsIndexed(
+            items = sortedRows,
+            key = { index, _ -> index },
+            contentType = { _, _ -> "row" },
+        ) { _, row ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
+                    .semantics(mergeDescendants = true) {},
             ) {
                 columns.forEach { col ->
                     Text(

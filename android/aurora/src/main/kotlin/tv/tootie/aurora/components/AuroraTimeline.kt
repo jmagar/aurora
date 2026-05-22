@@ -16,12 +16,25 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import tv.tootie.aurora.theme.LocalAuroraColors
 
+/**
+ * A single event entry in an [AuroraTimeline].
+ *
+ * @param title Short summary shown in bold.
+ * @param description Optional longer description shown below the title.
+ * @param meta Optional timestamp or metadata shown trailing on the title row.
+ * @param tone Status dot color corresponding to event state. Defaults to [AuroraStatusTone.Queued].
+ */
+@Immutable
 public data class AuroraTimelineItem(
     val title: String,
     val description: String? = null,
@@ -30,12 +43,27 @@ public data class AuroraTimelineItem(
 )
 
 /**
- * Vertical timeline with connecting line and status dots.
- * Maps to web `timeline`.
+ * Vertical timeline with a connecting line and status dots per entry.
+ * Maps to the web `timeline` component.
+ *
+ * Implemented as an eager [Column] (not [LazyColumn]) because the dot-to-connector layout
+ * relies on [IntrinsicSize.Min] + [Modifier.fillMaxHeight] to draw the line segment, which
+ * is incompatible with lazy measurement. For very long lists consider virtualising the list
+ * and drawing the connecting line as a canvas decoration instead.
+ *
+ * **Accessibility:** each timeline entry [Row] merges descendants and carries a
+ * `contentDescription` that includes the tone name, title, and description so TalkBack
+ * reads each item as a single meaningful utterance in document order.
+ *
+ * **Stability note:** [items] is typed as [ImmutableList] so Compose can skip recomposition
+ * when the list reference is stable.
+ *
+ * @param items Stable ordered list of timeline entries (oldest or newest first — caller's choice).
+ * @param modifier Modifier applied to the root [Column].
  */
 @Composable
 public fun AuroraTimeline(
-    items: List<AuroraTimelineItem>,
+    items: ImmutableList<AuroraTimelineItem>,
     modifier: Modifier = Modifier,
 ) {
     val aurora = LocalAuroraColors.current
@@ -53,14 +81,30 @@ public fun AuroraTimeline(
             }
             val isLast = index == items.lastIndex
 
+            // Build a single TalkBack utterance: "<Tone>: <title>[, description]"
+            val itemDescription = buildString {
+                append(item.tone.defaultDescription)
+                append(": ")
+                append(item.title)
+                item.description?.let {
+                    append(", ")
+                    append(it)
+                }
+            }
+
             Row(
-                modifier = Modifier.height(IntrinsicSize.Min),
+                modifier = Modifier
+                    .height(IntrinsicSize.Min)
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = itemDescription
+                    },
             ) {
                 // Left column: dot + connector line
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.width(20.dp),
                 ) {
+                    // Decorative within the merged semantic node
                     Box(
                         modifier = Modifier
                             .size(10.dp)
@@ -85,10 +129,7 @@ public fun AuroraTimeline(
                         .padding(bottom = if (isLast) 0.dp else 16.dp),
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.then(Modifier),
-                    ) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
                             text = item.title,
                             style = MaterialTheme.typography.labelMedium,

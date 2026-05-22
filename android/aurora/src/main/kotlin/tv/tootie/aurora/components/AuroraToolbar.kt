@@ -14,6 +14,8 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
@@ -21,6 +23,13 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * Horizontal inline toolbar — NOT a TopAppBar.
  * Maps to web `toolbar` (the aurora toolbar is inline, not a page header).
  * Compose dividers between groups using [AuroraToolbarSeparator].
+ *
+ * The toolbar is marked as a TalkBack traversal group so focus moves through its
+ * children as a logical unit before continuing to surrounding content.
+ *
+ * Action icons placed inside [content] must supply their own `contentDescription`
+ * via [androidx.compose.ui.semantics.contentDescription] or by using
+ * [androidx.compose.material3.Icon] with a non-null `contentDescription` parameter.
  */
 @Composable
 public fun AuroraToolbar(
@@ -31,6 +40,7 @@ public fun AuroraToolbar(
 
     Surface(
         modifier = modifier
+            .semantics { isTraversalGroup = true }
             .border(1.dp, aurora.borderDefault, RoundedCornerShape(8.dp)),
         shape = RoundedCornerShape(8.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
