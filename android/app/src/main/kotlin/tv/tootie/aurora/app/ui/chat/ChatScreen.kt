@@ -76,6 +76,8 @@ fun ChatScreen(
     // Feature 3: @mention / slash command detection
     var mentionQuery by remember { mutableStateOf("") }
     var showMentions by remember { mutableStateOf(false) }
+    // Source 3: tracks a skill selected via @mention popup — Pair(skillName, skillPath)
+    var pendingSkillInvocation by remember { mutableStateOf<Pair<String, String>?>(null) }
 
     val mentionItems = remember(s.availableCommands, s.availableSkills) {
         val commands = s.availableCommands.map { cmd ->
@@ -91,6 +93,7 @@ fun ChatScreen(
                 label = skill.name.replace("-", " ").replaceFirstChar { it.uppercase() },
                 description = skill.description.take(80),
                 kind = MentionKind.Skill,
+                path = skill.path,
             )
         }
         commands + skills
@@ -283,6 +286,24 @@ fun ChatScreen(
                 }
             }
 
+            // Source 3: pending skill indicator — shown when a skill is selected but message not sent yet
+            pendingSkillInvocation?.let { (skillName, _) ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        "Skill: @$skillName",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                    TextButton(onClick = { pendingSkillInvocation = null }) { Text("Clear") }
+                }
+            }
+
             // Feature 2: Editing indicator
             if (s.editingMessage != null) {
                 Row(
@@ -307,10 +328,19 @@ fun ChatScreen(
                     items = filteredMentions,
                     query = mentionQuery,
                     onSelect = { item ->
-                        val lastTrigger = maxOf(input.lastIndexOf('@'), input.lastIndexOf('/'))
-                        input = if (lastTrigger >= 0) input.take(lastTrigger) + item.trigger + " "
-                                else input + item.trigger + " "
-                        showMentions = false
+                        if (item.kind == MentionKind.Skill) {
+                            // Source 3: store skill as pending, clear the @mention from input
+                            val skillName = item.trigger.removePrefix("@")
+                            pendingSkillInvocation = Pair(skillName, item.path ?: "")
+                            val lastAt = input.lastIndexOf('@')
+                            input = if (lastAt >= 0) input.take(lastAt) else ""
+                            showMentions = false
+                        } else {
+                            val lastTrigger = maxOf(input.lastIndexOf('@'), input.lastIndexOf('/'))
+                            input = if (lastTrigger >= 0) input.take(lastTrigger) + item.trigger + " "
+                                    else input + item.trigger + " "
+                            showMentions = false
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -328,8 +358,18 @@ fun ChatScreen(
                 onValueChange = { input = it },
                 onSend = {
                     if (input.isNotBlank()) {
-                        if (s.editingMessage != null) vm.sendEdit(input)
-                        else vm.send(input)
+                        if (s.editingMessage != null) {
+                            vm.sendEdit(input)
+                            pendingSkillInvocation = null
+                        } else {
+                            val pending = pendingSkillInvocation
+                            if (pending != null) {
+                                vm.sendWithSkill(input, pending.first, pending.second)
+                                pendingSkillInvocation = null
+                            } else {
+                                vm.send(input)
+                            }
+                        }
                         input = ""
                     }
                 },

@@ -328,6 +328,32 @@ class CodexConnectionManager(context: Context) {
         callback
     )
 
+    fun startTurnWithSkill(
+        threadId: String,
+        text: String,
+        skillName: String,
+        skillPath: String,
+        model: String? = null,
+        effort: String? = null,
+        callback: ((RpcMessage) -> Unit)? = null
+    ): Int = send(
+        "turn/start",
+        buildJsonObject {
+            put("threadId", threadId)
+            put("input", buildJsonArray {
+                add(buildJsonObject { put("type", "text"); put("text", text) })
+                add(buildJsonObject {
+                    put("type", "skill")
+                    put("name", skillName)
+                    put("path", skillPath)
+                })
+            })
+            model?.let { put("model", it) }
+            effort?.let { put("effort", it) }
+        },
+        callback
+    )
+
     fun listModels(callback: ((RpcMessage) -> Unit)? = null): Int =
         send("model/list", JsonObject(emptyMap()), callback)
 

@@ -27,12 +27,15 @@ enum class MsgRole { User, Assistant }
 
 data class ChatMsg(val id: String, val role: MsgRole, val content: String)
 data class ToolCall(val id: String, val cmd: String, val out: StringBuilder = StringBuilder(), val done: Boolean = false, val failed: Boolean = false)
-data class SkillItem(val name: String, val description: String)
+data class SkillItem(val name: String, val description: String, val path: String? = null)
+
+enum class SkillSource { HOOK, TEXT_PARSE, EXPLICIT }
 
 data class SkillInvocation(
     val id: String,
     val skillName: String,
     val done: Boolean = false,
+    val source: SkillSource = SkillSource.HOOK,
 )
 
 data class McpToolCallItem(
@@ -166,6 +169,54 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(pendingApproval = null) }
     }
 
+    fun sendWithSkill(text: String, skillName: String, skillPath: String) {
+        val tid = _state.value.threadId
+        val invocation = SkillInvocation(
+            id = "explicit-$skillName",
+            skillName = skillName,
+            done = false,
+            source = SkillSource.EXPLICIT,
+        )
+        _state.update { s ->
+            s.copy(
+                msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text),
+                thinking = true, toolCalls = emptyList(), reasoning = emptyList(),
+                skillInvocations = listOf(invocation),
+                pendingApproval = null, mcpToolCalls = emptyList(),
+                planItems = emptyList(), webSearches = emptyList(), fileChanges = emptyList(),
+            )
+        }
+        viewModelScope.launch {
+            if (tid == null) {
+                val model = settings.model.first()
+                _pendingMsg = text
+                manager.startThread(model) { response ->
+                    val newTid = response.result?.jsonObject
+                        ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
+                    if (newTid != null) {
+                        _state.update { it.copy(threadId = newTid) }
+                        viewModelScope.launch { settings.saveThread(newTid) }
+                        val pending = _pendingMsg
+                        _pendingMsg = null
+                        if (pending != null) {
+                            manager.startTurnWithSkill(
+                                newTid, pending, skillName, skillPath,
+                                _state.value.selectedModel,
+                                _state.value.selectedEffort,
+                            )
+                        }
+                    }
+                }
+            } else {
+                manager.startTurnWithSkill(
+                    tid, text, skillName, skillPath,
+                    model = _state.value.selectedModel,
+                    effort = _state.value.selectedEffort,
+                )
+            }
+        }
+    }
+
     fun send(text: String) {
         val tid = _state.value.threadId
         _state.update { s ->
@@ -275,7 +326,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     val obj = elem.jsonObject
                     val name = obj["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val desc = obj["description"]?.jsonPrimitive?.content ?: ""
-                    SkillItem(name, desc)
+                    val path = obj["path"]?.jsonPrimitive?.contentOrNull
+                    SkillItem(name, desc, path)
                 } ?: emptyList()
                 if (skills.isNotEmpty()) {
                     _state.update { it.copy(availableSkills = skills.sortedBy { s -> s.name }) }
@@ -361,12 +413,16 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 // minimizing ChatScreen changes in this bead.
                 val deltaChannel = manager.getDeltaChannel(turnId)
                 viewModelScope.launch {
+                    var accumulated = ""
                     for (delta in deltaChannel) {
+                        accumulated += delta
                         _state.update { s ->
                             s.copy(msgs = s.msgs.map { m ->
-                                if (m.id == msgId) m.copy(content = m.content + delta) else m
+                                if (m.id == msgId) m.copy(content = accumulated) else m
                             })
                         }
+                        // Source 2: parse accumulated text for skill invocations
+                        parseSkillsFromText(accumulated)
                     }
                     // Channel closed = turn complete; final cleanup handled by turn/completed
                 }
@@ -505,8 +561,22 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (eventName != "userPromptSubmit") return
                 val hookId = run["id"]?.jsonPrimitive?.content ?: return
                 val skillName = extractSkillName(hookId) ?: return
-                val inv = SkillInvocation(id = hookId, skillName = skillName, done = false)
-                _state.update { s -> s.copy(skillInvocations = s.skillInvocations + inv) }
+                _state.update { s ->
+                    val nameLower = skillName.lowercase()
+                    val existing = s.skillInvocations.find { it.skillName.lowercase() == nameLower }
+                    if (existing != null) {
+                        // Upgrade an existing TEXT_PARSE or EXPLICIT entry to HOOK (more authoritative),
+                        // replacing its id so hook/completed can match it by hookId.
+                        s.copy(skillInvocations = s.skillInvocations.map {
+                            if (it.skillName.lowercase() == nameLower)
+                                it.copy(id = hookId, source = SkillSource.HOOK)
+                            else it
+                        })
+                    } else {
+                        s.copy(skillInvocations = s.skillInvocations +
+                            SkillInvocation(id = hookId, skillName = skillName, done = false, source = SkillSource.HOOK))
+                    }
+                }
             }
             "hook/completed" -> {
                 val run = params?.get("run")?.jsonObject ?: return
@@ -524,6 +594,29 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     ?: msg.error?.message
                 _state.update { it.copy(error = errMsg, thinking = false) }
             }
+        }
+    }
+
+    // Source 2: parse "Using `skill-name`" patterns from accumulated assistant text
+    private val skillTextRegex = Regex("Using `([a-z0-9:_-]+)`", RegexOption.IGNORE_CASE)
+
+    private fun parseSkillsFromText(text: String) {
+        val matches = skillTextRegex.findAll(text).map { it.groupValues[1] }.toSet()
+        if (matches.isEmpty()) return
+        _state.update { s ->
+            val existingNames = s.skillInvocations.map { it.skillName.lowercase() }.toSet()
+            val newSkills = matches
+                .filter { it.lowercase() !in existingNames }
+                .map { name ->
+                    SkillInvocation(
+                        id = "text-$name",
+                        skillName = name,
+                        done = false,
+                        source = SkillSource.TEXT_PARSE,
+                    )
+                }
+            if (newSkills.isEmpty()) s
+            else s.copy(skillInvocations = s.skillInvocations + newSkills)
         }
     }
 

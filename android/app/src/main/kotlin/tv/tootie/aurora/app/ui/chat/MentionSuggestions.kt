@@ -38,6 +38,7 @@ data class MentionItem(
     val label: String,
     val description: String? = null,
     val kind: MentionKind = MentionKind.Command,
+    val path: String? = null,
 )
 
 private val kindIcon: Map<MentionKind, ImageVector> = mapOf(

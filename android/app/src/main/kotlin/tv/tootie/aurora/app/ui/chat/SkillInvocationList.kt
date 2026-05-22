@@ -10,11 +10,13 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 @Composable
@@ -50,6 +52,28 @@ private fun SkillInvocationRow(inv: SkillInvocation) {
             text = "Using `${inv.skillName}`",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        // Source badge — only shown for non-HOOK sources
+        when (inv.source) {
+            SkillSource.TEXT_PARSE -> SkillSourceBadge(label = "auto", color = MaterialTheme.colorScheme.outline)
+            SkillSource.EXPLICIT -> SkillSourceBadge(label = "direct", color = aurora.accentViolet)
+            SkillSource.HOOK -> Unit
+        }
+    }
+}
+
+@Composable
+private fun SkillSourceBadge(label: String, color: androidx.compose.ui.graphics.Color) {
+    Surface(
+        shape = MaterialTheme.shapes.extraSmall,
+        color = color.copy(alpha = 0.15f),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = color,
+            fontSize = 9.sp,
+            modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp),
         )
     }
 }
