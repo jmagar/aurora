@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.FilledIconButton
@@ -22,12 +24,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /**
  * Main agent prompt input with send button. Maps to web AI `prompt-input`.
  * Dark operator-console aesthetic: deep surface, violet active indicator.
+ *
+ * Accessibility:
+ * - The text field carries `contentDescription = "Message input"` so TalkBack
+ *   announces it correctly when the placeholder is not visible.
+ * - The send button announces its disabled state explicitly.
+ * - IME send action triggers [onSend] so users can submit without touching the button.
+ *
+ * @param value              Current input text.
+ * @param onValueChange      Called on every keystroke.
+ * @param onSend             Called when the user presses the send button or the IME send action.
+ * @param modifier           Applied to the root [Surface].
+ * @param placeholder        Hint text shown when [value] is empty.
+ * @param enabled            When false the field and button are both non-interactive.
+ * @param loading            When true a spinner replaces the send icon and submission is blocked.
+ * @param leadingContent     Optional composable rendered above the input row (e.g. attachment chips).
  */
 @Composable
 public fun AuroraPromptInput(
@@ -42,6 +64,7 @@ public fun AuroraPromptInput(
 ) {
     val aurora = LocalAuroraColors.current
     val canSend = value.isNotBlank() && enabled && !loading
+    val sendButtonDescription = if (canSend) "Send message" else "Send message, disabled"
 
     Surface(
         modifier = modifier
@@ -64,13 +87,17 @@ public fun AuroraPromptInput(
                     value = value,
                     onValueChange = onValueChange,
                     enabled = enabled,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { contentDescription = "Message input" },
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface,
                     ),
                     cursorBrush = SolidColor(aurora.accentViolet),
                     minLines = 1,
                     maxLines = 6,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                    keyboardActions = KeyboardActions(onSend = { if (canSend) onSend() }),
                     decorationBox = { inner ->
                         Box {
                             if (value.isEmpty()) {
@@ -85,9 +112,11 @@ public fun AuroraPromptInput(
                     },
                 )
                 FilledIconButton(
-                    onClick = onSend,
+                    onClick = { if (canSend) onSend() },
                     enabled = canSend,
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier
+                        .size(36.dp)
+                        .semantics { contentDescription = sendButtonDescription },
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = aurora.accentViolet,
                         contentColor = MaterialTheme.colorScheme.surface,
@@ -95,7 +124,11 @@ public fun AuroraPromptInput(
                     ),
                 ) {
                     if (loading) AuroraSpinner(contentDescription = "Sending", size = 18.dp)
-                    else Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
+                    else Icon(
+                        Icons.AutoMirrored.Filled.Send,
+                        // Null here — the button-level semantics above own the description.
+                        contentDescription = null,
+                    )
                 }
             }
         }

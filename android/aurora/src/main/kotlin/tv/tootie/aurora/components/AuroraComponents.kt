@@ -113,7 +113,7 @@
  * AuroraAiPanel        — Titled panel with violet border + surface for AI-context content
  * AuroraPersona        — Avatar + name + role row (role in violet)
  * AuroraModelSelector  — Violet-accented AI model picker dropdown
- * AuroraVoiceSelector  — TTS voice picker (delegates to AuroraModelSelector)
+ * AuroraVoiceSelector  — TTS voice picker with RecordVoiceOver icon
  * AuroraMicSelector    — Microphone input device selector
  * AuroraPromptInput    — Multi-line prompt field with violet cursor + send button
  *

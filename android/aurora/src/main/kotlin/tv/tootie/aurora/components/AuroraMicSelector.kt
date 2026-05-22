@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Icon
@@ -21,16 +22,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /**
- * Microphone/audio input device selector.
+ * Microphone / audio-input device selector.
  * Maps to web AI `mic-selector` element.
+ *
+ * Accessibility:
+ * - The trigger chip announces the currently selected device:
+ *   "Microphone: <device name>. Tap to change."
+ * - Each dropdown option shows a checkmark icon for the currently selected item and
+ *   its option label is used as the menu item text, which TalkBack reads directly.
+ * - The expanded state is held with [remember] (not `rememberSaveable`) — dropdown-open
+ *   is ephemeral UI state that should not survive a configuration change.
+ *
+ * @param devices       Available audio input devices. Use [ImmutableList] for Compose stability.
+ * @param selected      [AuroraComboboxOption.value] of the currently selected device.
+ * @param onSelect      Called with the [AuroraComboboxOption.value] of the chosen device.
+ * @param modifier      Applied to the root composable.
  */
 @Composable
 public fun AuroraMicSelector(
-    devices: List<AuroraComboboxOption>,
+    devices: ImmutableList<AuroraComboboxOption>,
     selected: String,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -38,16 +55,26 @@ public fun AuroraMicSelector(
     val aurora = LocalAuroraColors.current
     var expanded by remember { mutableStateOf(false) }
     val selectedLabel = devices.find { it.value == selected }?.label ?: selected
+    val triggerDescription = "Microphone: $selectedLabel. Tap to change."
 
     AuroraDropdownMenu(
-        entries = devices.map { d -> AuroraMenuEntry.Item(label = d.label, onClick = { onSelect(d.value) }) },
+        entries = devices.map { device ->
+            AuroraMenuEntry.Item(
+                label = device.label,
+                onClick = { onSelect(device.value) },
+                leadingIcon = if (device.value == selected) {
+                    { Icon(Icons.Default.Check, contentDescription = "Selected") }
+                } else null,
+            )
+        },
         expanded = expanded,
         onDismissRequest = { expanded = false },
         anchor = {
             Surface(
                 modifier = modifier
                     .border(1.dp, aurora.borderStrong, RoundedCornerShape(8.dp))
-                    .clickable(role = Role.Button) { expanded = !expanded },
+                    .clickable(role = Role.Button) { expanded = !expanded }
+                    .semantics { contentDescription = triggerDescription },
                 shape = RoundedCornerShape(8.dp),
                 color = MaterialTheme.colorScheme.surfaceVariant,
             ) {
