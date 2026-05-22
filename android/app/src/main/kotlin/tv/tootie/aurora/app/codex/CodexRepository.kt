@@ -216,9 +216,17 @@ class CodexRepository {
             return
         }
 
-        // Connection-level errors (no method, no id — from WebSocket failure callback)
+        // Connection-level errors (no method, no id — from WebSocket failure callback).
+        // Reset client so that the next connect() call can establish a new connection
+        // rather than no-oping on the stale (dead) client reference.
         if (msg.method == null && msg.error != null) {
             _errorsFlow.tryEmit(CodexEvent.ConnectionError(msg.error.message))
+            scope.launch {
+                connectionMutex.withLock {
+                    client = null
+                    pendingKinds.clear()
+                }
+            }
             return
         }
 
