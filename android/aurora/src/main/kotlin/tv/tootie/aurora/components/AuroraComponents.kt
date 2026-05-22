@@ -91,11 +91,11 @@
  * AuroraFileTree       — Recursive expand/collapse file tree
  * AuroraCommandPalette — Searchable command palette (ModalBottomSheet)
  * AuroraMarketplace    — LazyVerticalGrid of installable item cards
- * AuroraTerminal       — Dark log viewer with auto-scroll
+ * AuroraTerminal       — Dark log viewer with auto-scroll, titlebar (title/status/actions), role="log" semantics
  *
  * Screens:
  * AuroraErrorPage      — Full-screen error state with retry action
- * AuroraLoginScreen    — Email + password login form
+ * AuroraLoginScreen    — Email + password login form with show/hide toggle + validation-gated submit
  *
  * ── Phase 3 Batch D: AI Workflow Blocks ────────────────────────────────────
  *

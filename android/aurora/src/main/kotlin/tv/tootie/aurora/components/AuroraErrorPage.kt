@@ -60,7 +60,9 @@ public fun AuroraErrorPage(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .semantics { liveRegion = LiveRegionMode.Polite },
         )
         if (description != null) {
             Text(
