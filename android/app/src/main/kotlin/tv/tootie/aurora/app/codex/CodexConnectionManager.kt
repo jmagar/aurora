@@ -267,23 +267,27 @@ class CodexConnectionManager(context: Context) {
 
     /**
      * Reply to a server-initiated request (e.g. tool approval).
-     * Assumes server uses numeric request ids.
+     * Returns true if the response was sent, false if the socket was unavailable.
      */
-    fun sendApproval(serverRequestId: String, decision: String) {
+    fun sendApproval(serverRequestId: String, decision: String): Boolean {
         val entry = serverInitiatedRequests.remove(serverRequestId)
         if (entry == null) {
             scope.launch {
                 _messages.emit(RpcMessage(error = RpcError(-1, "approval_not_found: $serverRequestId")))
             }
-            return
+            return false
         }
-        // NOTE: assumes server uses numeric request ids
         val idInt = serverRequestId.toIntOrNull()
         val responseJson = buildJsonObject {
             if (idInt != null) put("id", idInt) else put("id", serverRequestId)
             put("result", decision)
         }
-        currentWebSocket?.send(responseJson.toString())
+        val ws = currentWebSocket ?: run {
+            // Re-add the request so it can be retried after reconnect
+            serverInitiatedRequests[serverRequestId] = entry
+            return false
+        }
+        return ws.send(responseJson.toString())
     }
 
     fun getDeltaChannel(turnId: String): Channel<String> =

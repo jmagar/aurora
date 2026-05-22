@@ -251,7 +251,7 @@ private fun ToolCallRow(call: ToolCall) {
             enter = expandVertically(),
             exit = shrinkVertically(),
         ) {
-            val output = call.out.toString()
+            val output = call.out
             if (output.isNotBlank()) {
                 Box(
                     modifier = Modifier

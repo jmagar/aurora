@@ -26,7 +26,7 @@ import tv.tootie.aurora.app.data.AppSettings
 enum class MsgRole { User, Assistant }
 
 data class ChatMsg(val id: String, val role: MsgRole, val content: String)
-data class ToolCall(val id: String, val cmd: String, val out: StringBuilder = StringBuilder(), val done: Boolean = false, val failed: Boolean = false)
+data class ToolCall(val id: String, val cmd: String, val out: String = "", val done: Boolean = false, val failed: Boolean = false)
 data class SkillItem(val name: String, val description: String, val path: String? = null)
 
 enum class SkillSource { HOOK, TEXT_PARSE, EXPLICIT }
@@ -179,8 +179,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun approveToolCall(decision: String) {
         val approval = _state.value.pendingApproval ?: return
-        manager.sendApproval(approval.serverRequestId, decision)
-        _state.update { it.copy(pendingApproval = null) }
+        val sent = manager.sendApproval(approval.serverRequestId, decision)
+        if (sent) {
+            _state.update { it.copy(pendingApproval = null) }
+        } else {
+            _state.update { it.copy(error = "Could not send approval — connection lost. Reconnecting...") }
+        }
     }
 
     fun sendWithSkill(text: String, skillName: String, skillPath: String) {
@@ -214,6 +218,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                             _state.value.selectedModel,
                             _state.value.selectedEffort,
                         )
+                    } else {
+                        val errMsg = response.error?.message ?: "Failed to start session"
+                        _state.update { s -> s.copy(thinking = false, error = errMsg, msgs = s.msgs.dropLast(1)) }
                     }
                 }
             } else {
@@ -251,6 +258,13 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                             _state.value.selectedModel,
                             _state.value.selectedEffort
                         )
+                    } else {
+                        // Failed to create thread — reset UI so user can retry
+                        val errMsg = response.error?.message ?: "Failed to start session"
+                        _state.update { s ->
+                            s.copy(thinking = false, error = errMsg,
+                                msgs = s.msgs.dropLast(1))  // remove optimistic user message
+                        }
                     }
                 }
             } else {
@@ -532,7 +546,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             "item/commandExecution/outputDelta" -> {
                 val itemId = params?.get("itemId")?.jsonPrimitive?.content ?: return
                 val out = params["delta"]?.jsonPrimitive?.content ?: return
-                _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == itemId) { it.out.append(out); it } else it }) }
+                _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == itemId) it.copy(out = it.out + out) else it }) }
             }
 
             // Reasoning summary streaming
