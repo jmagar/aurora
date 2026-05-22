@@ -69,6 +69,7 @@ fun CodexNavHost() {
                 onSetGoal = { sidebarVm.setGoal(it) },
                 onClearGoal = { sidebarVm.clearGoal() },
                 onHideGoalEditor = { sidebarVm.hideGoalEditor() },
+                mcpServers = sidebarState.mcpServers,
             )
         },
     ) {

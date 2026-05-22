@@ -93,6 +93,7 @@ fun SessionsSidebar(
     onSetGoal: (String) -> Unit = {},
     onClearGoal: () -> Unit = {},
     onHideGoalEditor: () -> Unit = {},
+    mcpServers: List<McpServerInfo> = emptyList(),
 ) {
     val aurora = LocalAuroraColors.current
 
@@ -221,6 +222,9 @@ fun SessionsSidebar(
                 }
             }
         }
+
+        // MCP Servers panel — shown between session list and footer
+        McpServerPanel(servers = mcpServers)
 
         // Footer
         HorizontalDivider(color = aurora.borderDefault)

@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,6 +39,131 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tv.tootie.aurora.theme.LocalAuroraColors
+
+@Composable
+public fun McpToolCallRows(
+    calls: List<McpToolCallItem>,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        calls.forEach { call ->
+            McpToolCallRow(call = call)
+        }
+    }
+}
+
+@Composable
+private fun McpToolCallRow(call: McpToolCallItem) {
+    val aurora = LocalAuroraColors.current
+    var expanded by remember(call.id) { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(role = Role.Button) { expanded = !expanded }
+                .padding(horizontal = 10.dp, vertical = 7.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            // Violet status dot — AI tool identity
+            Box(
+                modifier = Modifier
+                    .size(7.dp)
+                    .background(aurora.accentViolet, CircleShape),
+            )
+
+            // Server + tool name
+            Text(
+                text = "${call.server}: ${call.tool}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+
+            // Status indicator
+            when (call.status) {
+                "inProgress" -> CircularProgressIndicator(
+                    modifier = Modifier.size(12.dp),
+                    strokeWidth = 1.dp,
+                    color = aurora.accentViolet,
+                )
+                "failed" -> Icon(
+                    Icons.Default.Error,
+                    contentDescription = null,
+                    modifier = Modifier.size(13.dp),
+                    tint = aurora.error,
+                )
+                else -> Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    modifier = Modifier.size(13.dp),
+                    tint = aurora.success,
+                )
+            }
+
+            Icon(
+                if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                contentDescription = if (expanded) "Collapse" else "Expand",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(14.dp),
+            )
+        }
+
+        // Expanded detail
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF0A0F14))
+                    .padding(horizontal = 10.dp, vertical = 8.dp),
+            ) {
+                if (call.arguments.isNotBlank()) {
+                    Text(
+                        text = "args: ${call.arguments.take(300)}",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 11.sp,
+                        ),
+                        color = Color(0xFF888888),
+                    )
+                }
+                if (call.output.isNotBlank()) {
+                    Text(
+                        text = call.output.take(500),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 11.sp,
+                            lineHeight = 16.sp,
+                        ),
+                        color = Color(0xFFD4D4D4),
+                    )
+                }
+                if (call.error != null) {
+                    Text(
+                        text = call.error,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 11.sp,
+                        ),
+                        color = aurora.error,
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 public fun ToolCallTimeline(

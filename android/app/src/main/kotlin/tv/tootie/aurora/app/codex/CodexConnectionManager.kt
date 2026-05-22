@@ -371,4 +371,7 @@ class CodexConnectionManager(context: Context) {
     fun clearGoal(threadId: String, callback: ((RpcMessage) -> Unit)? = null): Int =
         send("thread/goal/clear", buildJsonObject { put("threadId", threadId) }, callback)
 
+    fun listMcpServers(callback: ((RpcMessage) -> Unit)? = null): Int =
+        send("mcpServerStatus/list", buildJsonObject { put("detail", "toolsAndAuthOnly") }, callback)
+
 }

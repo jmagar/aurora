@@ -55,6 +55,7 @@ import tv.tootie.aurora.components.AuroraControls
 import tv.tootie.aurora.components.AuroraMessage
 import tv.tootie.aurora.components.AuroraMessageData
 import tv.tootie.aurora.components.AuroraMessageRole
+import tv.tootie.aurora.components.AuroraPermissionPrompt
 import tv.tootie.aurora.components.AuroraPromptInput
 import tv.tootie.aurora.components.AuroraStatusIndicator
 import tv.tootie.aurora.components.AuroraStatusTone
@@ -235,6 +236,34 @@ fun ChatScreen(
                     }
                 }
 
+                // MCP tool calls (violet identity)
+                if (s.mcpToolCalls.isNotEmpty()) {
+                    item(key = "mcptoolcalls") {
+                        McpToolCallRows(
+                            calls = s.mcpToolCalls,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+                }
+
+                // Web searches
+                s.webSearches.forEachIndexed { i, query ->
+                    item(key = "ws_${i}_$query") {
+                        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                            Text("🔍 $query", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+
+                // Plan items
+                s.planItems.forEachIndexed { i, plan ->
+                    item(key = "plan_${i}_$plan") {
+                        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                            Text("📋 $plan", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+
                 // Reasoning block
                 if (s.reasoning.isNotEmpty()) {
                     item(key = "reasoning") {
@@ -344,6 +373,26 @@ fun ChatScreen(
         SteerInputSheet(
             onSteer = { vm.steer(it) },
             onDismiss = { vm.hideSteer() },
+        )
+    }
+
+    // Security: approval overlay — wired to commandExecution and fileChange approval events
+    s.pendingApproval?.let { approval ->
+        val title = if (approval.type == "command") "Allow command?" else "Allow file changes?"
+        val descParts = mutableListOf<String>()
+        approval.reason?.let { descParts.add(it) }
+        approval.command?.let { descParts.add(it) }
+        val description = descParts.joinToString("\n\n").ifBlank {
+            if (approval.type == "command") "A command is requesting approval." else "File changes are requesting approval."
+        }
+        AuroraPermissionPrompt(
+            onDismissRequest = { /* don't dismiss without decision */ },
+            title = title,
+            description = description,
+            onAllow = { vm.approveToolCall("accept") },
+            allowLabel = "Allow",
+            denyLabel = "Deny",
+            onDeny = { vm.approveToolCall("decline") },
         )
     }
 }

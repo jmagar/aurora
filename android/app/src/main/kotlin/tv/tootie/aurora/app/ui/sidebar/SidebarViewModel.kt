@@ -1,6 +1,7 @@
 package tv.tootie.aurora.app.ui.sidebar
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -21,6 +23,11 @@ import tv.tootie.aurora.app.codex.CodexConnectionManager
 import tv.tootie.aurora.app.codex.ConnectionState
 import tv.tootie.aurora.app.codex.RpcMessage
 import tv.tootie.aurora.app.data.AppSettings
+
+private const val TAG = "SidebarViewModel"
+
+data class McpTool(val name: String, val description: String = "")
+data class McpServerInfo(val name: String, val status: String = "running", val toolCount: Int = 0, val tools: List<McpTool> = emptyList())
 
 data class ThreadGoal(
     val objective: String,
@@ -36,6 +43,7 @@ data class SidebarState(
     val currentGoal: ThreadGoal? = null,
     val showGoalEditor: Boolean = false,
     val currentThreadId: String? = null,
+    val mcpServers: List<McpServerInfo> = emptyList(),
 )
 
 class SidebarViewModel(app: Application) : AndroidViewModel(app) {
@@ -49,16 +57,19 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         // Subscribe exactly once per ViewModel lifetime.
         // StateFlow replays current value — if already Connected, loadThreads fires immediately.
         manager.connectionState.onEach { state ->
-            if (state is ConnectionState.Connected) loadThreads()
+            if (state is ConnectionState.Connected) {
+                loadThreads()
+                loadMcpServers()
+            }
         }.launchIn(viewModelScope)
 
-        // Subscribe to goal notifications from the server
+        // Subscribe to goal and server notifications from the server
         manager.messages.onEach { msg -> handleGoalNotification(msg) }.launchIn(viewModelScope)
     }
 
     fun connect() {
         val currentState = manager.connectionState.value
-        if (currentState is ConnectionState.Connected) { loadThreads(); return }
+        if (currentState is ConnectionState.Connected) { loadThreads(); loadMcpServers(); return }
         if (currentState is ConnectionState.Connecting || currentState is ConnectionState.Reconnecting) return
 
         viewModelScope.launch {
@@ -74,6 +85,7 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
 
     fun refresh() {
         loadThreads()
+        loadMcpServers()
     }
 
     private fun loadThreads() {
@@ -154,6 +166,36 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     fun showGoalEditor() = _state.update { it.copy(showGoalEditor = true) }
     fun hideGoalEditor() = _state.update { it.copy(showGoalEditor = false) }
 
+    fun loadMcpServers() {
+        manager.listMcpServers { response ->
+            if (response.error != null) {
+                Log.w(TAG, "listMcpServers error: ${response.error.message}")
+                return@listMcpServers
+            }
+            val result = response.result ?: return@listMcpServers
+            // Try result.servers array first, then treat result itself as array
+            val servers = runCatching { result.jsonObject["servers"]?.jsonArray }.getOrNull()
+                ?: runCatching { result.jsonArray }.getOrNull()?.takeIf { it.isNotEmpty() }
+                ?: run {
+                    Log.w(TAG, "unexpected mcpServerStatus shape: $result")
+                    return@listMcpServers
+                }
+            val parsed = servers.mapNotNull { elem ->
+                val obj = elem.jsonObject
+                val name = obj["name"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
+                val status = obj["status"]?.jsonPrimitive?.contentOrNull ?: "running"
+                val toolsList = obj["tools"]?.jsonArray?.mapNotNull { t ->
+                    val to = t.jsonObject
+                    val tName = to["name"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
+                    val tDesc = to["description"]?.jsonPrimitive?.contentOrNull ?: ""
+                    McpTool(tName, tDesc)
+                } ?: emptyList()
+                McpServerInfo(name, status, toolsList.size, toolsList)
+            }
+            _state.update { it.copy(mcpServers = parsed) }
+        }
+    }
+
     private fun handleGoalNotification(msg: RpcMessage) {
         val params = msg.params?.jsonObject ?: return
         when (msg.method) {
@@ -167,6 +209,10 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             }
             "thread/goal/cleared" -> {
                 _state.update { it.copy(currentGoal = null) }
+            }
+            "mcpServer/startupStatus/updated" -> {
+                // Refresh MCP server list when server status changes
+                loadMcpServers()
             }
         }
     }

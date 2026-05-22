@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -32,6 +33,31 @@ data class SkillInvocation(
     val id: String,
     val skillName: String,
     val done: Boolean = false,
+)
+
+data class McpToolCallItem(
+    val id: String,
+    val server: String,
+    val tool: String,
+    val status: String = "inProgress",
+    val arguments: String = "",
+    val output: String = "",
+    val error: String? = null,
+)
+
+data class ToolApproval(
+    val itemId: String,
+    val serverRequestId: String,  // the server's request ID for sendApproval
+    val type: String,  // "command" or "fileChange"
+    val command: String? = null,
+    val reason: String? = null,
+    val availableDecisions: List<String> = listOf("accept", "decline"),
+)
+
+data class FileChangeItem(
+    val id: String,
+    val paths: List<String>,
+    val status: String = "pending",
 )
 
 data class ChatState(
@@ -59,6 +85,16 @@ data class ChatState(
     // turn/steer: track active turn ID + sheet visibility
     val activeTurnId: String? = null,
     val showSteerSheet: Boolean = false,
+    // Security: pending tool approval from server
+    val pendingApproval: ToolApproval? = null,
+    // MCP tool calls (separate from commandExecution toolCalls)
+    val mcpToolCalls: List<McpToolCallItem> = emptyList(),
+    // Plan items
+    val planItems: List<String> = emptyList(),
+    // Web searches
+    val webSearches: List<String> = emptyList(),
+    // File changes
+    val fileChanges: List<FileChangeItem> = emptyList(),
 )
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -124,6 +160,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun approveToolCall(decision: String) {
+        val approval = _state.value.pendingApproval ?: return
+        manager.sendApproval(approval.serverRequestId, decision)
+        _state.update { it.copy(pendingApproval = null) }
+    }
+
     fun send(text: String) {
         val tid = _state.value.threadId
         _state.update { s ->
@@ -131,6 +173,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text),
                 thinking = true, toolCalls = emptyList(), reasoning = emptyList(),
                 skillInvocations = emptyList(),
+                pendingApproval = null, mcpToolCalls = emptyList(),
+                planItems = emptyList(), webSearches = emptyList(), fileChanges = emptyList(),
             )
         }
         viewModelScope.launch {
@@ -167,7 +211,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     fun interrupt() {
         val tid = _state.value.threadId ?: return
         manager.interrupt(tid)
-        _state.update { it.copy(thinking = false) }
+        _state.update { it.copy(thinking = false, pendingApproval = null) }
     }
 
     // turn/steer — append input to the in-flight turn
@@ -270,6 +314,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 thinking = true,
                 toolCalls = emptyList(),
                 reasoning = emptyList(),
+                pendingApproval = null, mcpToolCalls = emptyList(),
+                planItems = emptyList(), webSearches = emptyList(), fileChanges = emptyList(),
             )
         }
         viewModelScope.launch {
@@ -338,11 +384,28 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             "item/started" -> {
                 val item = params?.get("item")?.jsonObject ?: return
                 val type = item["type"]?.jsonPrimitive?.content
+                val id = item["id"]?.jsonPrimitive?.content ?: ""
                 if (type == "commandExecution") {
                     val cmd = item["command"]?.jsonPrimitive?.content ?: return
-                    val id = item["id"]?.jsonPrimitive?.content ?: cmd
-                    _state.update { s -> s.copy(toolCalls = s.toolCalls + ToolCall(id, cmd)) }
+                    val itemId = id.ifBlank { cmd }
+                    _state.update { s -> s.copy(toolCalls = s.toolCalls + ToolCall(itemId, cmd)) }
+                } else if (type == "mcpToolCall") {
+                    val server = item["server"]?.jsonPrimitive?.content ?: ""
+                    val tool = item["tool"]?.jsonPrimitive?.content ?: ""
+                    val args = item["arguments"]?.toString() ?: ""
+                    _state.update { s -> s.copy(mcpToolCalls = s.mcpToolCalls + McpToolCallItem(id, server, tool, "inProgress", args)) }
+                } else if (type == "plan") {
+                    val text = item["text"]?.jsonPrimitive?.content ?: return
+                    _state.update { s -> s.copy(planItems = s.planItems + text) }
+                } else if (type == "webSearch") {
+                    val query = item["query"]?.jsonPrimitive?.content ?: return
+                    _state.update { s -> s.copy(webSearches = s.webSearches + query) }
+                } else if (type == "fileChange") {
+                    val changes = item["changes"]?.jsonArray
+                    val paths = changes?.mapNotNull { it.jsonObject["path"]?.jsonPrimitive?.content } ?: emptyList()
+                    _state.update { s -> s.copy(fileChanges = s.fileChanges + FileChangeItem(id, paths)) }
                 }
+                // imageView: no UI change needed — event silently consumed
             }
             "item/completed" -> {
                 val item = params?.get("item")?.jsonObject ?: return
@@ -353,7 +416,59 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     return
                 }
                 val failed = item["status"]?.jsonPrimitive?.content == "failed"
-                _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }) }
+                if (type == "mcpToolCall") {
+                    val output = item["result"]?.toString() ?: ""
+                    val error = item["error"]?.jsonPrimitive?.contentOrNull
+                    _state.update { s ->
+                        s.copy(mcpToolCalls = s.mcpToolCalls.map {
+                            if (it.id == id) it.copy(status = if (failed) "failed" else "done", output = output, error = error)
+                            else it
+                        })
+                    }
+                } else if (type == "fileChange") {
+                    _state.update { s ->
+                        s.copy(fileChanges = s.fileChanges.map {
+                            if (it.id == id) it.copy(status = if (failed) "failed" else "done") else it
+                        })
+                    }
+                } else {
+                    _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }) }
+                }
+            }
+
+            // Approval handlers
+            "item/commandExecution/requestApproval" -> {
+                val msgId = msg.id?.jsonPrimitive?.contentOrNull ?: return
+                // Strip ANSI escape codes (ESC + [ ... letter) and Unicode Bidi override chars
+                val rawCommand = params?.get("command")?.jsonPrimitive?.content ?: ""
+                val safeCommand = rawCommand
+                    .replace(Regex("\\[[0-9;]*[a-zA-Z]"), "")
+                    .replace(Regex("[‎-‏‪-‮⁦-⁩]"), "")
+                val reason = params?.get("reason")?.jsonPrimitive?.contentOrNull
+                val decisions = params?.get("availableDecisions")?.jsonArray
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")
+                _state.update { it.copy(pendingApproval = ToolApproval(
+                    itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
+                    serverRequestId = msgId,
+                    type = "command",
+                    command = safeCommand,
+                    reason = reason,
+                    availableDecisions = decisions,
+                )) }
+            }
+
+            "item/fileChange/requestApproval" -> {
+                val msgId = msg.id?.jsonPrimitive?.contentOrNull ?: return
+                _state.update { it.copy(pendingApproval = ToolApproval(
+                    itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
+                    serverRequestId = msgId,
+                    type = "fileChange",
+                    reason = params?.get("reason")?.jsonPrimitive?.contentOrNull,
+                )) }
+            }
+
+            "serverRequest/resolved" -> {
+                _state.update { it.copy(pendingApproval = null) }
             }
 
             // Command output streaming
