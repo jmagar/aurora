@@ -1,3 +1,5 @@
+// DEPRECATED: Use CodexConnectionManager (via CodexApp.connectionManager) instead.
+// This class will be removed in a follow-up cleanup bead.
 package tv.tootie.aurora.app.codex
 
 import android.util.Log
@@ -59,6 +61,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
             override fun onFailure(ws: WebSocket, t: Throwable, r: Response?) {
                 Log.e(TAG, "failure", t)
                 _msgs.trySendBlocking(RpcMessage(error = RpcError(-1, t.message ?: "error")))
+                _msgs.close(t)
             }
             override fun onClosed(ws: WebSocket, code: Int, reason: String) { _msgs.close() }
         })

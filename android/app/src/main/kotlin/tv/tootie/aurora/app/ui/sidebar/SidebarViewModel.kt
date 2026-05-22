@@ -3,7 +3,6 @@ package tv.tootie.aurora.app.ui.sidebar
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +15,9 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
-import tv.tootie.aurora.app.codex.CodexClient
+import tv.tootie.aurora.app.CodexApp
+import tv.tootie.aurora.app.codex.CodexConnectionManager
+import tv.tootie.aurora.app.codex.ConnectionState
 import tv.tootie.aurora.app.codex.RpcMessage
 import tv.tootie.aurora.app.data.AppSettings
 
@@ -28,22 +29,38 @@ data class SidebarState(
 
 class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
-    private var client: CodexClient? = null
+    private val manager: CodexConnectionManager get() = (getApplication<CodexApp>()).connectionManager
 
     private val _state = MutableStateFlow(SidebarState())
     val state: StateFlow<SidebarState> = _state.asStateFlow()
 
     fun connect() {
-        if (client != null) return
+        // Always subscribe unconditionally — SharedFlow(replay=0) means late subscribers miss past events
+        manager.messages.onEach { handleMsg(it) }.launchIn(viewModelScope)
+        // onEach handles both initial connect and reconnects: load threads whenever Connected
+        manager.connectionState.onEach { state ->
+            if (state is ConnectionState.Connected) {
+                loadThreads()
+            }
+        }.launchIn(viewModelScope)
+
+        val currentState = manager.connectionState.value
+        if (currentState is ConnectionState.Connected) {
+            // Already connected via shared manager: onEach already fired; load threads now
+            loadThreads()
+            return
+        }
+        if (currentState is ConnectionState.Connecting || currentState is ConnectionState.Reconnecting) {
+            // Handshake in progress — onEach will fire loadThreads when Connected
+            return
+        }
+
         viewModelScope.launch {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
-            client = CodexClient(url, tok).also { c ->
-                c.connect()
-                c.messages.onEach { handleMsg(it) }.launchIn(this)
-            }
-            delay(600)
-            loadThreads()
+            // Subscribe before connecting to avoid missing the first Connected emission
+            manager.connect(url, tok)
+            // onEach will fire loadThreads() once Connected is emitted
         }
     }
 
@@ -56,8 +73,8 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun loadThreads() {
-        viewModelScope.launch {
-            client?.listThreads()
+        manager.listThreads { response ->
+            handleMsg(response)
         }
     }
 
@@ -95,7 +112,7 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
-        client?.disconnect()
+        // Do not disconnect here — manager is a shared singleton owned by CodexApp
         super.onCleared()
     }
 }
