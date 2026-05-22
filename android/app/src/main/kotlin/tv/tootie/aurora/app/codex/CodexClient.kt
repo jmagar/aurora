@@ -117,7 +117,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
         effort: String?,
     ): String {
         val id = ids.incrementAndGet()
-        return Json.encodeToString(
+        return json.encodeToString(
             buildJsonObject {
                 put("method", "turn/start")
                 put("id", id)
