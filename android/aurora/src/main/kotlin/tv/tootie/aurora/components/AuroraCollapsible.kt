@@ -7,7 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,11 +22,6 @@ import androidx.compose.ui.semantics.Role
 
 /**
  * Expand/collapse container. Maps to web `collapsible` and `accordion` components.
- *
- * No `material-icons-extended` dependency is present in this library, so the
- * chevron indicator is rendered as a plain text character ("▲"/"▼") rather than
- * an icon drawable. Callers that need a custom indicator can compose their own
- * header inside [trigger].
  *
  * @param trigger Always-visible header composable; receives the current [expanded] state
  *   so callers can adapt their own affordance visually.
@@ -48,8 +46,11 @@ public fun AuroraCollapsible(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             trigger(expanded)
-            // Text chevron — avoids a material-icons-extended dependency.
-            Text(text = if (expanded) "▲" else "▼")
+            Icon(
+                imageVector = if (expanded) Icons.Default.KeyboardArrowUp
+                              else Icons.Default.KeyboardArrowDown,
+                contentDescription = if (expanded) "Collapse" else "Expand",
+            )
         }
         AnimatedVisibility(
             visible = expanded,
