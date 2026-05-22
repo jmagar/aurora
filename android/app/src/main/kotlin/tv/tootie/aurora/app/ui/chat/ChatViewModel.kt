@@ -11,9 +11,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
 import tv.tootie.aurora.app.CodexApp
 import tv.tootie.aurora.app.codex.CodexConnectionManager
 import tv.tootie.aurora.app.codex.ConnectionState
@@ -94,6 +96,28 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             manager.connectionState.first { it is ConnectionState.Connected }
             fetchModels()
             fetchSkills()
+
+            // On fresh connect with no explicit threadId, try to resume the last saved thread.
+            // If threadId is explicit (not "new"), it was already set above via _state.update —
+            // the user navigated to a specific session, no resume needed.
+            if (threadId == "new") {
+                val saved = settings.savedThreadId.first()
+                if (saved != null) {
+                    tryResumeThread(saved)
+                }
+                // If saved == null, a new thread is created lazily on the first send()
+            }
+        }
+    }
+
+    private fun tryResumeThread(threadId: String) {
+        manager.send("thread/resume", buildJsonObject { put("threadId", threadId) }) { response ->
+            if (response.error != null) {
+                // Thread expired or is closing (e.g. -32600) — clear saved id and start fresh
+                viewModelScope.launch { settings.clearThreadId() }
+            } else {
+                _state.update { it.copy(threadId = threadId) }
+            }
         }
     }
 
@@ -115,6 +139,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
                     if (newTid != null) {
                         _state.update { it.copy(threadId = newTid) }
+                        viewModelScope.launch { settings.saveThread(newTid) }
                         val pending = _pendingMsg
                         _pendingMsg = null
                         if (pending != null) {

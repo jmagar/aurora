@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import tv.tootie.aurora.app.data.AppSettings
@@ -55,7 +56,7 @@ fun SettingsScreen(onBack: () -> Unit) {
                 AuroraTextField(value = url, onValueChange = { url = it }, placeholder = "ws://host:port", modifier = Modifier.fillMaxWidth())
             }
             AuroraField(label = "Auth Token", description = "Bearer token (leave blank if not required)") {
-                AuroraTextField(value = token, onValueChange = { token = it }, placeholder = "optional", modifier = Modifier.fillMaxWidth())
+                AuroraTextField(value = token, onValueChange = { token = it }, placeholder = "optional", modifier = Modifier.fillMaxWidth(), visualTransformation = PasswordVisualTransformation())
             }
             AuroraField(label = "Model") {
                 AuroraTextField(value = model, onValueChange = { model = it }, modifier = Modifier.fillMaxWidth())
