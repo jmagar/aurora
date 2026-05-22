@@ -1,5 +1,5 @@
 /**
- * Aurora Kotlin Component Library — Phase 1 complete
+ * Aurora Kotlin Component Library — Phase 1 complete, Phase 2 Batch B in progress
  *
  * This file documents the full public API surface of the aurora module.
  * All components live in package [tv.tootie.aurora.components].
@@ -51,12 +51,21 @@
  * AuroraTooltip           — Plain TooltipBox
  * AuroraWebView           — AndroidView { WebView } with JS-disabled default
  *
+ * ── Phase 2: Custom Composables (Batch B — Form/Input) ─────────────────────
+ *
+ * AuroraField          — Form field wrapper: label + control + description + error
+ * AuroraFilterBar      — FlowRow chip filter bar with clear-all action
+ * AuroraFilterChip     — Data class for AuroraFilterBar chip items
+ * AuroraInputOtp       — One-time passcode digit-box row
+ * AuroraListbox        — Scrollable selection list with optional descriptions
+ * AuroraListboxItem    — Data class for AuroraListbox items
+ * AuroraNumberInput    — Numeric spinner: decrement / text field / increment
+ *
  * ── Pending (Phase 2 — Custom Composables) ──────────────────────────────────
  * banner, breadcrumb, callout, carousel, data-table, description-list,
- * empty-state, field, filter-bar, input-otp, kbd, listbox, number-input,
- * pagination, resizable-panels, stat-card, status-indicator, table, timeline,
- * toolbar, code-block, code-editor, file-tree, attachment, file-picker,
- * terminal, command-palette, marketplace, error-page, login, oauth
+ * empty-state, kbd, pagination, resizable-panels, stat-card, status-indicator,
+ * table, timeline, toolbar, code-block, code-editor, file-tree, attachment,
+ * file-picker, terminal, command-palette, marketplace, error-page, login, oauth
  *
  * ── Pending (Phase 3 — AI Agent Blocks) ─────────────────────────────────────
  * agent, artifact, ask-user-question, audio-player, canvas, chain-of-thought,
