@@ -25,6 +25,12 @@ data class ChatMsg(val id: String, val role: MsgRole, val content: String)
 data class ToolCall(val id: String, val cmd: String, val out: StringBuilder = StringBuilder(), val done: Boolean = false, val failed: Boolean = false)
 data class SkillItem(val name: String, val description: String)
 
+data class SkillInvocation(
+    val id: String,
+    val skillName: String,
+    val done: Boolean = false,
+)
+
 data class ChatState(
     val threadId: String? = null,
     val msgs: List<ChatMsg> = emptyList(),
@@ -45,6 +51,8 @@ data class ChatState(
     // Feature 3: @Mention / slash commands
     val availableCommands: List<String> = emptyList(),
     val availableSkills: List<SkillItem> = emptyList(),
+    // Skill hook invocations
+    val skillInvocations: List<SkillInvocation> = emptyList(),
 )
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -79,6 +87,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             s.copy(
                 msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text),
                 thinking = true, toolCalls = emptyList(), reasoning = emptyList(),
+                skillInvocations = emptyList(),
             )
         }
         viewModelScope.launch {
@@ -285,6 +294,26 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
 
+            // Skill hook invocations
+            "hook/started" -> {
+                val run = params?.get("run")?.jsonObject ?: return
+                val eventName = run["eventName"]?.jsonPrimitive?.content ?: return
+                if (eventName != "userPromptSubmit") return
+                val hookId = run["id"]?.jsonPrimitive?.content ?: return
+                val skillName = extractSkillName(hookId) ?: return
+                val inv = SkillInvocation(id = hookId, skillName = skillName, done = false)
+                _state.update { s -> s.copy(skillInvocations = s.skillInvocations + inv) }
+            }
+            "hook/completed" -> {
+                val run = params?.get("run")?.jsonObject ?: return
+                val hookId = run["id"]?.jsonPrimitive?.content ?: return
+                _state.update { s ->
+                    s.copy(skillInvocations = s.skillInvocations.map {
+                        if (it.id == hookId) it.copy(done = true) else it
+                    })
+                }
+            }
+
             // Errors
             "error" -> {
                 val errMsg = params?.get("error")?.jsonObject?.get("message")?.jsonPrimitive?.content
@@ -292,6 +321,17 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(error = errMsg, thinking = false) }
             }
         }
+    }
+
+    private fun extractSkillName(hookId: String): String? {
+        // Paths like: .../plugins/cache/labby-marketplace/aurora-design-system/1.0.4/hooks/...
+        // or: .../plugins/cache/jmagar-lab/superpowers/5.1.0/hooks/...
+        val parts = hookId.split("/")
+        val cacheIdx = parts.indexOf("cache")
+        if (cacheIdx >= 0 && cacheIdx + 2 < parts.size) {
+            return parts[cacheIdx + 2]  // e.g. "aurora-design-system", "superpowers", "beads"
+        }
+        return null
     }
 
     override fun onCleared() { client?.disconnect(); super.onCleared() }

@@ -80,7 +80,7 @@ public fun AuroraPromptInput(
         Column(modifier = Modifier.padding(12.dp)) {
             leadingContent?.invoke()
             Row(
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 BasicTextField(

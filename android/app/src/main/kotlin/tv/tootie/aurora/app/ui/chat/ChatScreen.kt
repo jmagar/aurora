@@ -2,10 +2,11 @@ package tv.tootie.aurora.app.ui.chat
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,10 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -55,9 +58,6 @@ import tv.tootie.aurora.components.AuroraPromptInput
 import tv.tootie.aurora.components.AuroraStatusIndicator
 import tv.tootie.aurora.components.AuroraStatusTone
 import tv.tootie.aurora.components.AuroraThinking
-import tv.tootie.aurora.components.AuroraToolCall
-import tv.tootie.aurora.components.AuroraToolCallList
-import tv.tootie.aurora.components.AuroraToolCallStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -159,51 +159,50 @@ fun ChatScreen(
                 onEffortSelect = vm::selectEffort,
             )
 
-            Box(Modifier.weight(1f)) {
-                // Replace AuroraConversation with a LazyColumn supporting long-press gestures
-                val listState = rememberLazyListState()
-                LaunchedEffect(s.msgs.size) {
-                    if (s.msgs.isNotEmpty()) listState.animateScrollToItem(s.msgs.lastIndex)
-                }
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .semantics { contentDescription = "Conversation" },
-                    contentPadding = PaddingValues(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(s.msgs, key = { it.id }) { msg ->
-                        Column {
-                            AuroraMessage(
-                                data = AuroraMessageData(
-                                    id = msg.id,
-                                    role = if (msg.role == MsgRole.User) AuroraMessageRole.User else AuroraMessageRole.Assistant,
-                                    content = msg.content,
+            // Replace AuroraConversation with a LazyColumn supporting long-press gestures
+            val listState = rememberLazyListState()
+            LaunchedEffect(s.msgs.size) {
+                if (s.msgs.isNotEmpty()) listState.animateScrollToItem(s.msgs.lastIndex)
+            }
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .semantics { contentDescription = "Conversation" },
+                contentPadding = PaddingValues(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(s.msgs, key = { it.id }) { msg ->
+                    Column {
+                        AuroraMessage(
+                            data = AuroraMessageData(
+                                id = msg.id,
+                                role = if (msg.role == MsgRole.User) AuroraMessageRole.User else AuroraMessageRole.Assistant,
+                                content = msg.content,
+                            ),
+                            modifier = Modifier.pointerInput(msg.id) {
+                                detectTapGestures(onLongPress = { vm.showActions(msg) })
+                            },
+                        )
+                        // Show reactions below message
+                        val msgReactions = s.reactions[msg.id]
+                        if (!msgReactions.isNullOrEmpty()) {
+                            Row(
+                                modifier = Modifier.padding(
+                                    start = if (msg.role == MsgRole.User) 0.dp else 48.dp,
+                                    end = if (msg.role == MsgRole.User) 48.dp else 0.dp,
+                                    top = 4.dp,
                                 ),
-                                modifier = Modifier.pointerInput(msg.id) {
-                                    detectTapGestures(onLongPress = { vm.showActions(msg) })
-                                },
-                            )
-                            // Show reactions below message
-                            val msgReactions = s.reactions[msg.id]
-                            if (!msgReactions.isNullOrEmpty()) {
-                                Row(
-                                    modifier = Modifier.padding(
-                                        start = if (msg.role == MsgRole.User) 0.dp else 48.dp,
-                                        end = if (msg.role == MsgRole.User) 48.dp else 0.dp,
-                                        top = 4.dp,
-                                    ),
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                ) {
-                                    msgReactions.forEach { emoji ->
-                                        Surface(
-                                            shape = MaterialTheme.shapes.small,
-                                            color = MaterialTheme.colorScheme.primaryContainer,
-                                            modifier = Modifier.clickable { vm.toggleReaction(msg.id, emoji) },
-                                        ) {
-                                            Text(emoji, modifier = Modifier.padding(4.dp), fontSize = 14.sp)
-                                        }
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                msgReactions.forEach { emoji ->
+                                    Surface(
+                                        shape = MaterialTheme.shapes.small,
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+                                        modifier = Modifier.clickable { vm.toggleReaction(msg.id, emoji) },
+                                    ) {
+                                        Text(emoji, modifier = Modifier.padding(4.dp), fontSize = 14.sp)
                                     }
                                 }
                             }
@@ -211,34 +210,38 @@ fun ChatScreen(
                     }
                 }
 
-                if (s.thinking || s.toolCalls.isNotEmpty() || s.reasoning.isNotEmpty()) {
-                    Column(
-                        Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(12.dp),
-                    ) {
-                        if (s.reasoning.isNotEmpty()) {
-                            AuroraChainOfThought(
-                                steps = s.reasoning.toPersistentList(),
-                                title = "Reasoning",
-                                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                            )
-                        }
-                        if (s.toolCalls.isNotEmpty()) {
-                            AuroraToolCallList(
-                                calls = s.toolCalls.map { tc ->
-                                    AuroraToolCall(
-                                        id = tc.id, name = tc.cmd,
-                                        status = when {
-                                            tc.failed -> AuroraToolCallStatus.Error
-                                            tc.done -> AuroraToolCallStatus.Done
-                                            else -> AuroraToolCallStatus.Running
-                                        },
-                                        output = tc.out.toString().takeIf { it.isNotBlank() },
-                                    )
-                                }.toPersistentList(),
-                                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                            )
-                        }
-                        if (s.thinking) AuroraThinking()
+                // Skill invocations from hook events — inline after messages
+                if (s.skillInvocations.isNotEmpty()) {
+                    item(key = "skills") {
+                        SkillInvocationList(s.skillInvocations)
+                    }
+                }
+
+                // Tool calls as compact timeline — inline, not an overlay
+                if (s.toolCalls.isNotEmpty()) {
+                    item(key = "toolcalls") {
+                        ToolCallTimeline(
+                            calls = s.toolCalls,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+                }
+
+                // Reasoning block
+                if (s.reasoning.isNotEmpty()) {
+                    item(key = "reasoning") {
+                        AuroraChainOfThought(
+                            steps = s.reasoning.toPersistentList(),
+                            title = "Reasoning",
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+                }
+
+                // Thinking indicator at bottom
+                if (s.thinking) {
+                    item(key = "thinking") {
+                        AuroraThinking(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
                     }
                 }
             }
@@ -279,6 +282,10 @@ fun ChatScreen(
                 )
             }
 
+            val fileLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.GetContent()
+            ) { uri -> uri?.let { /* TODO: attach to message */ } }
+
             AuroraPromptInput(
                 value = input,
                 onValueChange = { input = it },
@@ -292,6 +299,19 @@ fun ChatScreen(
                 loading = s.thinking,
                 enabled = s.connected,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+                leadingContent = {
+                    IconButton(
+                        onClick = { fileLauncher.launch("*/*") },
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.AttachFile,
+                            contentDescription = "Attach file",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+                },
             )
         }
     }
