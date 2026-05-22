@@ -105,9 +105,12 @@ class CodexClient(private val url: String, private val token: String? = null) {
     }
 
     /**
-     * Builds the raw JSON string for a `turn/start` request.
+     * Builds the raw JSON string for a `turn/start` request and returns it paired
+     * with the request ID that was embedded in the frame.
+     *
      * Extracted as `internal` so unit tests can assert on the serialised frame
-     * without a real WebSocket connection.
+     * without a real WebSocket connection. Returns a [Pair] so the caller can
+     * echo back the exact ID that was used, avoiding a race on [ids].
      */
     internal fun buildTurnFrame(
         threadId: String,
@@ -115,9 +118,9 @@ class CodexClient(private val url: String, private val token: String? = null) {
         attachments: List<SelectedItem>,
         model: String?,
         effort: String?,
-    ): String {
+    ): Pair<String, Int> {
         val id = ids.incrementAndGet()
-        return json.encodeToString(
+        val frame = json.encodeToString(
             buildJsonObject {
                 put("method", "turn/start")
                 put("id", id)
@@ -137,6 +140,11 @@ class CodexClient(private val url: String, private val token: String? = null) {
                                     put("name", item.name)
                                     put("path", item.path)
                                 })
+                                is SelectedItem.Command -> add(buildJsonObject {
+                                    put("type", "command")
+                                    put("name", item.name)
+                                    put("path", item.path)
+                                })
                             }
                         }
                     })
@@ -145,6 +153,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 })
             }
         )
+        return Pair(frame, id)
     }
 
     fun startTurn(
@@ -154,10 +163,9 @@ class CodexClient(private val url: String, private val token: String? = null) {
         model: String? = null,
         effort: String? = null,
     ): Int {
-        val frame = buildTurnFrame(threadId, text, attachments, model, effort)
+        val (frame, id) = buildTurnFrame(threadId, text, attachments, model, effort)
         ws?.send(frame)
-        // ids was already incremented inside buildTurnFrame; return current value
-        return ids.get()
+        return id
     }
 
     fun listModels(): Int {

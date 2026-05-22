@@ -31,12 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
-/** Structured item produced when the user confirms a @mention or /skill selection. */
+/** Structured item produced when the user confirms a @mention or /command selection. */
 sealed class SelectedItem {
     /** A skill invocation — maps to UserInput {type:"skill", name, path} */
     data class Skill(val name: String, val path: String) : SelectedItem()
     /** A @mention — maps to UserInput {type:"mention", name, path} */
     data class Mention(val name: String, val path: String) : SelectedItem()
+    /** A /slash-command — maps to UserInput {type:"command", name, path} */
+    data class Command(val name: String, val path: String) : SelectedItem()
 }
 
 enum class MentionKind { Skill, Command }
@@ -135,7 +137,7 @@ private fun MentionRow(item: MentionItem, onSelect: (MentionItem, SelectedItem) 
                         name = item.trigger.removePrefix("@"),
                         path = item.trigger.removePrefix("@"),   // server resolves by name; path mirrors name until server provides canonical path
                     )
-                    MentionKind.Command -> SelectedItem.Mention(
+                    MentionKind.Command -> SelectedItem.Command(
                         name = item.trigger.removePrefix("/"),
                         path = item.trigger.removePrefix("/"),
                     )

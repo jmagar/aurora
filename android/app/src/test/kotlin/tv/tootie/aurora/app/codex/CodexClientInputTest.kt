@@ -21,7 +21,7 @@ class CodexClientInputTest {
     @Test
     fun `startTurn with no attachments emits single text item`() {
         val client = CodexClient("ws://localhost:0", null)
-        val frame = client.buildTurnFrame(
+        val (frame, id) = client.buildTurnFrame(
             threadId = "t1",
             text = "hello",
             attachments = emptyList(),
@@ -29,6 +29,7 @@ class CodexClientInputTest {
             effort = null,
         )
         val parsed = json.parseToJsonElement(frame).jsonObject
+        assertEquals(id, parsed["id"]?.jsonPrimitive?.content?.toInt())
         assertEquals("turn/start", parsed["method"]?.jsonPrimitive?.content)
         val input = parsed["params"]!!.jsonObject["input"]!!.jsonArray
         assertEquals(1, input.size)
@@ -39,7 +40,7 @@ class CodexClientInputTest {
     @Test
     fun `startTurn with skill attachment emits skill item after text`() {
         val client = CodexClient("ws://localhost:0", null)
-        val frame = client.buildTurnFrame(
+        val (frame) = client.buildTurnFrame(
             threadId = "t1",
             text = "run this",
             attachments = listOf(SelectedItem.Skill(name = "aurora-design-system", path = "aurora-design-system")),
@@ -58,7 +59,7 @@ class CodexClientInputTest {
     @Test
     fun `startTurn with mention attachment emits mention item after text`() {
         val client = CodexClient("ws://localhost:0", null)
-        val frame = client.buildTurnFrame(
+        val (frame) = client.buildTurnFrame(
             threadId = "t1",
             text = "hey @jacob",
             attachments = listOf(SelectedItem.Mention(name = "jacob", path = "jacob")),
@@ -76,7 +77,7 @@ class CodexClientInputTest {
     @Test
     fun `startTurn with mixed attachments preserves order`() {
         val client = CodexClient("ws://localhost:0", null)
-        val frame = client.buildTurnFrame(
+        val (frame) = client.buildTurnFrame(
             threadId = "t1",
             text = "multi",
             attachments = listOf(
