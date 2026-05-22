@@ -1,7 +1,6 @@
 /**
- * Aurora Kotlin Component Library — Phase 1 complete, Phase 2 Batch B in progress
+ * Aurora Kotlin Component Library — Phase 1 + Phase 2 complete
  *
- * This file documents the full public API surface of the aurora module.
  * All components live in package [tv.tootie.aurora.components].
  *
  * ── Existing (pre-Phase 1) ──────────────────────────────────────────────────
@@ -14,7 +13,7 @@
  * AuroraSelect         — Non-searchable ExposedDropdownMenuBox
  * AuroraSeparator      — Horizontal / Vertical divider
  * AuroraSpinner        — CircularProgressIndicator with Aurora primary color
- * AuroraSwitch         — Radix-style animated toggle switch
+ * AuroraSwitch         — Animated toggle switch
  * AuroraTabs           — Line tabs + ScrollableTabs
  * AuroraTextField      — OutlinedTextField with label / error / icons
  * AuroraToast          — SnackbarHost with status variants (Success/Error/Warn/Info)
@@ -51,21 +50,52 @@
  * AuroraTooltip           — Plain TooltipBox
  * AuroraWebView           — AndroidView { WebView } with JS-disabled default
  *
- * ── Phase 2: Custom Composables (Batch B — Form/Input) ─────────────────────
+ * ── Phase 2: Custom Composables ─────────────────────────────────────────────
  *
+ * Display:
+ * AuroraBanner         — Full-width status strip with icon + dismiss slots
+ * AuroraBreadcrumb     — Horizontal breadcrumb trail with separator
+ * AuroraCallout        — Tinted status block with icon + title + message
+ * AuroraDescriptionList — Labeled key-value list with optional dividers
+ * AuroraEmptyState     — Icon + title + description + action placeholder
+ * AuroraKbd            — Keyboard shortcut chip (monospace)
+ * AuroraStatCard       — Metric display: label + value + trend
+ * AuroraStatusIndicator — Status dot with optional pulse animation
+ * AuroraTimeline       — Vertical timeline with connecting line + status dots
+ *
+ * Form / Input:
  * AuroraField          — Form field wrapper: label + control + description + error
- * AuroraFilterBar      — FlowRow chip filter bar with clear-all action
- * AuroraFilterChip     — Data class for AuroraFilterBar chip items
+ * AuroraFilterBar      — FlowRow chip filter bar with clear-all
  * AuroraInputOtp       — One-time passcode digit-box row
- * AuroraListbox        — Scrollable selection list with optional descriptions
- * AuroraListboxItem    — Data class for AuroraListbox items
- * AuroraNumberInput    — Numeric spinner: decrement / text field / increment
+ * AuroraListbox        — Scrollable selection list
+ * AuroraNumberInput    — Numeric spinner: decrement / field / increment
  *
- * ── Pending (Phase 2 — Custom Composables) ──────────────────────────────────
- * banner, breadcrumb, callout, carousel, data-table, description-list,
- * empty-state, kbd, pagination, resizable-panels, stat-card, status-indicator,
- * table, timeline, toolbar, code-block, code-editor, file-tree, attachment,
- * file-picker, terminal, command-palette, marketplace, error-page, login, oauth
+ * Data:
+ * AuroraTable          — LazyColumn table with sticky header
+ * AuroraDataTable      — Sortable data table with column headers
+ *
+ * Layout / Navigation:
+ * AuroraCarousel       — HorizontalPager swipe carousel with dot indicators
+ * AuroraPagination     — Page number row with prev/next controls
+ * AuroraResizablePanels — Drag-to-resize horizontal split panels
+ * AuroraToolbar        — Inline horizontal toolbar with separator support
+ * AuroraToolbarSeparator — Thin vertical divider for AuroraToolbar
+ * AuroraMenubar        — Desktop-style horizontal menu bar
+ *
+ * Workspace / Files:
+ * AuroraAttachment     — File attachment chip with size + remove slot
+ * AuroraCodeBlock      — Read-only code block with copy button
+ * AuroraCodeEditor     — Editable monospace code editor (BasicTextField)
+ * AuroraFilePicker     — Single-file system picker button
+ * AuroraMultiFilePicker — Multi-file system picker button
+ * AuroraFileTree       — Recursive expand/collapse file tree
+ * AuroraCommandPalette — Searchable command palette (ModalBottomSheet)
+ * AuroraMarketplace    — LazyVerticalGrid of installable item cards
+ * AuroraTerminal       — Dark log viewer with auto-scroll
+ *
+ * Screens:
+ * AuroraErrorPage      — Full-screen error state with retry action
+ * AuroraLoginScreen    — Email + password login form
  *
  * ── Pending (Phase 3 — AI Agent Blocks) ─────────────────────────────────────
  * agent, artifact, ask-user-question, audio-player, canvas, chain-of-thought,
