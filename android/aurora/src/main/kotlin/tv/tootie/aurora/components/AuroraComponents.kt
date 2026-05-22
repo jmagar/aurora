@@ -107,12 +107,22 @@
  * AuroraTestResults    — Test suite results list with pass/fail counts and per-test icons
  * AuroraStackTrace     — Scrollable monospace error stack trace with optional error message header
  *
+ * ── Phase 3 Batch F: AI Visual / Utility ───────────────────────────────────
+ *
+ * AuroraAiShimmer          — Animated violet sweep shimmer placeholder (AI loading state)
+ * AuroraToolCallList       — Expandable tool call trace with status dot + code block details
+ * AuroraAiImage            — AI-generated image display with Aurora border and optional caption
+ * AuroraCanvasView         — Topology canvas: circles (nodes) + lines (edges) with text labels
+ * AuroraConnection         — Two-node connection label (from → to) with active/idle tinting
+ * AuroraEnvironmentVariables — Key-value env var list with optional value masking
+ * AuroraAiEdge             — Small edge label chip for agent topology views (violet when active)
+ *
  * ── Pending (Phase 3 — AI Agent Blocks) ─────────────────────────────────────
- * agent, artifact, ask-user-question, audio-player, canvas, chain-of-thought,
- * connection, context, controls, conversation, message,
+ * agent, artifact, ask-user-question, audio-player, chain-of-thought,
+ * context, controls, conversation, message,
  * inline-citation, mic-selector, model-selector, open-in-chat, package-info,
- * panel, persona, reasoning, sandbox, schema-display, shimmer,
+ * panel, persona, reasoning, sandbox, schema-display,
  * snippet, sources, speech-input, thinking,
- * tool-calls, transcription, voice-selector, prompt-input
+ * transcription, voice-selector, prompt-input
  */
 package tv.tootie.aurora.components
