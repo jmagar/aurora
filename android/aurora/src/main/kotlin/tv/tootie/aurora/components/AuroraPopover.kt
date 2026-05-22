@@ -48,4 +48,4 @@ public fun AuroraHoverCard(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
-) = AuroraPopover(visible = visible, onDismissRequest = onDismissRequest, modifier = modifier, content = content)
+): Unit = AuroraPopover(visible = visible, onDismissRequest = onDismissRequest, modifier = modifier, content = content)

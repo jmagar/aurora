@@ -42,7 +42,7 @@ public fun AuroraInlineCitation(
             .semantics {
                 contentDescription = "Citation $number"
             }
-            .clickable(role = Role.Link, onClick = onClick),
+            .clickable(role = Role.Button, onClick = onClick),
         shape = RoundedCornerShape(4.dp),
         color = aurora.accentVioletSurface,
     ) {

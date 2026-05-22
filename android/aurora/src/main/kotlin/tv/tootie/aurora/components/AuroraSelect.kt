@@ -1,6 +1,7 @@
 package tv.tootie.aurora.components
 
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MenuAnchorType
@@ -24,8 +25,9 @@ import androidx.compose.ui.Modifier
  * v1 limitation: [expanded] is not hoistable. Callers cannot pre-open the dropdown or observe
  * its state. A future v2 overload may expose `expanded`/`onExpandedChange` for full state hoisting.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuroraSelect(
+public fun AuroraSelect(
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
     options: List<String>,

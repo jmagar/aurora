@@ -20,7 +20,7 @@ import androidx.compose.ui.semantics.semantics
  * to give screen-readers a meaningful label for that state.
  */
 @Composable
-fun AuroraBadge(
+public fun AuroraBadge(
     modifier: Modifier = Modifier,
     count: Int? = null,
     contentDescriptionSuffix: String = "notifications",

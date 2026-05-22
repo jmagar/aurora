@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /** Visual variant for AuroraToast — maps to Aurora status-family token colors */
-enum class AuroraToastVariant { Default, Success, Error, Warn, Info }
+public enum class AuroraToastVariant { Default, Success, Error, Warn, Info }
 
 /**
  * Custom [SnackbarVisuals] that carries an [AuroraToastVariant] alongside the
@@ -24,9 +24,9 @@ enum class AuroraToastVariant { Default, Success, Error, Warn, Info }
  * pre-build visuals outside a composable scope. The typical path is via
  * [AuroraToastState.showToast].
  */
-class AuroraSnackbarVisuals(
+public class AuroraSnackbarVisuals(
     override val message: String,
-    val variant: AuroraToastVariant = AuroraToastVariant.Default,
+    public val variant: AuroraToastVariant = AuroraToastVariant.Default,
     override val actionLabel: String? = null,
     override val withDismissAction: Boolean = false,
     override val duration: SnackbarDuration = SnackbarDuration.Short,
@@ -39,8 +39,8 @@ class AuroraSnackbarVisuals(
  * The pending toast queue is backed by [SnackbarHostState] which will be lost
  * on parent recomposition if not wrapped in `remember {}`.
  */
-class AuroraToastState(internal val snackbarHostState: SnackbarHostState = SnackbarHostState()) {
-    suspend fun showToast(
+public class AuroraToastState(internal val snackbarHostState: SnackbarHostState = SnackbarHostState()) {
+    public suspend fun showToast(
         message: String,
         variant: AuroraToastVariant = AuroraToastVariant.Default,
         actionLabel: String? = null,
@@ -58,7 +58,7 @@ class AuroraToastState(internal val snackbarHostState: SnackbarHostState = Snack
 }
 
 @Composable
-fun rememberAuroraToastState(): AuroraToastState {
+public fun rememberAuroraToastState(): AuroraToastState {
     return remember { AuroraToastState() }
 }
 
@@ -69,7 +69,7 @@ fun rememberAuroraToastState(): AuroraToastState {
  * ```
  */
 @Composable
-fun AuroraToastHost(toastState: AuroraToastState) {
+public fun AuroraToastHost(toastState: AuroraToastState) {
     val auroraColors = LocalAuroraColors.current
 
     SnackbarHost(hostState = toastState.snackbarHostState) { data ->

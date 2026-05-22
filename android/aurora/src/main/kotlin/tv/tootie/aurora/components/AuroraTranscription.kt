@@ -81,7 +81,7 @@ public fun AuroraTranscription(
                 Text(
                     text = it,
                     style = MaterialTheme.typography.labelSmall,
-                    color = aurora.accentCyan,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
 

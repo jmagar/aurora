@@ -1,12 +1,13 @@
 package tv.tootie.aurora.theme
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import tv.tootie.aurora.tokens.AuroraColors
 
 @Immutable
-data class AuroraExtraColors(
+public data class AuroraExtraColors(
     val accentPink: Color,
     val accentPinkSurface: Color,
     val accentPinkBorder: Color,
@@ -52,7 +53,7 @@ data class AuroraExtraColors(
 
 // Dark theme snapshot — used as default for LocalAuroraColors
 // so Compose Previews render correctly even without AuroraTheme{}
-val DarkAuroraExtraColors = AuroraExtraColors(
+public val DarkAuroraExtraColors: AuroraExtraColors = AuroraExtraColors(
     accentPink = AuroraColors.accentPinkBase,
     accentPinkSurface = AuroraColors.accentPinkSurface,
     accentPinkBorder = AuroraColors.accentPinkBorder,
@@ -96,4 +97,4 @@ val DarkAuroraExtraColors = AuroraExtraColors(
     codeFunction = AuroraColors.codeFunction,
 )
 
-val LocalAuroraColors = staticCompositionLocalOf { DarkAuroraExtraColors }
+public val LocalAuroraColors: ProvidableCompositionLocal<AuroraExtraColors> = staticCompositionLocalOf { DarkAuroraExtraColors }

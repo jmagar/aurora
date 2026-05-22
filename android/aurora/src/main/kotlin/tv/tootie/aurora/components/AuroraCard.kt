@@ -17,14 +17,14 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * state held by children (scroll positions, focused inputs) is lost on switch.
  * Use a stable variant that doesn't change after first composition.
  */
-sealed class AuroraCardVariant {
-    object Filled : AuroraCardVariant()
-    object Elevated : AuroraCardVariant()
-    object Outlined : AuroraCardVariant()
+public sealed class AuroraCardVariant {
+    public object Filled : AuroraCardVariant()
+    public object Elevated : AuroraCardVariant()
+    public object Outlined : AuroraCardVariant()
 }
 
 @Composable
-fun AuroraCard(
+public fun AuroraCard(
     modifier: Modifier = Modifier,
     variant: AuroraCardVariant = AuroraCardVariant.Elevated,
     onClick: (() -> Unit)? = null,

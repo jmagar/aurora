@@ -23,7 +23,7 @@ import androidx.compose.ui.semantics.semantics
  * @param colors Color overrides for the switch track and thumb.
  */
 @Composable
-fun AuroraSwitch(
+public fun AuroraSwitch(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,

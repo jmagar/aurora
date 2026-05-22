@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
  * @param enabled Whether the control responds to input.
  */
 @Composable
-fun AuroraCheckbox(
+public fun AuroraCheckbox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,

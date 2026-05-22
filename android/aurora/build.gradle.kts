@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
+    implementation(libs.activity.compose)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.coil.compose)
     implementation(libs.androidx.webkit)

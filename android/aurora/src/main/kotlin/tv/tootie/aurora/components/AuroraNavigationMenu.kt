@@ -1,5 +1,6 @@
 package tv.tootie.aurora.components
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -48,7 +49,7 @@ public fun AuroraNavigationRail(
     selected: String,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
-    header: (@Composable () -> Unit)? = null,
+    header: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     NavigationRail(modifier = modifier, header = header) {
         items.forEach { item ->

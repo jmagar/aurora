@@ -14,15 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 /** Compose equivalent of Aurora's Button shadcn component */
-sealed class AuroraButtonVariant {
-    data object Filled : AuroraButtonVariant()
-    data object Outlined : AuroraButtonVariant()
-    data object Ghost : AuroraButtonVariant()
-    data object Destructive : AuroraButtonVariant()
+public sealed class AuroraButtonVariant {
+    public data object Filled : AuroraButtonVariant()
+    public data object Outlined : AuroraButtonVariant()
+    public data object Ghost : AuroraButtonVariant()
+    public data object Destructive : AuroraButtonVariant()
 }
 
 @Composable
-fun AuroraButton(
+public fun AuroraButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     variant: AuroraButtonVariant = AuroraButtonVariant.Filled,

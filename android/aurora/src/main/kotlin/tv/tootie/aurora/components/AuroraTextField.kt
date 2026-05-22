@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.VisualTransformation
  * @param trailingIcon Optional icon composable at the end of the field.
  */
 @Composable
-fun AuroraTextField(
+public fun AuroraTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,

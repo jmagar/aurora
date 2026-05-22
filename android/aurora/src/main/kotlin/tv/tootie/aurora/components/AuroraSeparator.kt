@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
-enum class AuroraSeparatorOrientation { Horizontal, Vertical }
+public enum class AuroraSeparatorOrientation { Horizontal, Vertical }
 
 /**
  * Compose equivalent of Aurora's Separator shadcn component.
@@ -19,7 +19,7 @@ enum class AuroraSeparatorOrientation { Horizontal, Vertical }
  * Aurora's border token can drift independently from M3's outlineVariant mapping.
  */
 @Composable
-fun AuroraSeparator(
+public fun AuroraSeparator(
     modifier: Modifier = Modifier,
     orientation: AuroraSeparatorOrientation = AuroraSeparatorOrientation.Horizontal,
     thickness: Dp = 1.dp,

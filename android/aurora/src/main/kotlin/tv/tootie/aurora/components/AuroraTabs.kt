@@ -19,7 +19,7 @@ import kotlinx.collections.immutable.ImmutableList
  * @param tabs Use ImmutableList for Compose stability — prevents composable skipping with mutable List
  */
 @Composable
-fun AuroraTabs(
+public fun AuroraTabs(
     tabs: ImmutableList<String>,
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,

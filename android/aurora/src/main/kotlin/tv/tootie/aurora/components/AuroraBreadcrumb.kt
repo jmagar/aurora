@@ -39,7 +39,7 @@ public fun AuroraBreadcrumb(
                 color = if (isLast) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = if (!isLast && item.onClick != null)
-                    Modifier.clickable(role = Role.Link) { item.onClick.invoke() }
+                    Modifier.clickable(role = Role.Button) { item.onClick.invoke() }
                 else Modifier,
             )
             if (!isLast) {
