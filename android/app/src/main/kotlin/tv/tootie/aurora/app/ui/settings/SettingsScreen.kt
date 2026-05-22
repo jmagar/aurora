@@ -33,12 +33,14 @@ import tv.tootie.aurora.components.AuroraTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
+fun SettingsScreen(
+    onBack: () -> Unit,
+    onReauth: () -> Unit = {},
+) {
     val ctx = LocalContext.current
     val settings = remember { AppSettings(ctx) }
     val scope = rememberCoroutineScope()
     var url by remember { mutableStateOf("ws://10.0.2.2:4500") }
-    var token by remember { mutableStateOf("") }
     var model by remember { mutableStateOf("gpt-5.5") }
 
     Scaffold(
@@ -55,9 +57,6 @@ fun SettingsScreen(onBack: () -> Unit) {
             AuroraField(label = "Server URL", description = "WebSocket URL of your Codex app-server") {
                 AuroraTextField(value = url, onValueChange = { url = it }, placeholder = "ws://host:port", modifier = Modifier.fillMaxWidth())
             }
-            AuroraField(label = "Auth Token", description = "Bearer token (leave blank if not required)") {
-                AuroraTextField(value = token, onValueChange = { token = it }, placeholder = "optional", modifier = Modifier.fillMaxWidth())
-            }
             AuroraField(label = "Model") {
                 AuroraTextField(value = model, onValueChange = { model = it }, modifier = Modifier.fillMaxWidth())
             }
@@ -65,7 +64,6 @@ fun SettingsScreen(onBack: () -> Unit) {
                 onClick = {
                     scope.launch {
                         settings.setServerUrl(url)
-                        settings.setAuthToken(token.takeIf { it.isNotBlank() })
                         settings.setModel(model)
                         val app = ctx.applicationContext as CodexApp
                         app.repository.reconnect(url, token.takeIf { it.isNotBlank() })
@@ -75,6 +73,11 @@ fun SettingsScreen(onBack: () -> Unit) {
                 variant = AuroraButtonVariant.Filled,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Save") }
+            AuroraButton(
+                onClick = onReauth,
+                variant = AuroraButtonVariant.Outlined,
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text("Re-authenticate") }
         }
     }
 }

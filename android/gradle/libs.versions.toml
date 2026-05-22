@@ -1,6 +1,8 @@
 [versions]
 kotlin = "2.1.0"
 agp = "8.7.0"
+androidx-browser = "1.8.0"
+junit = "4.13.2"
 composeBom = "2026.04.01"
 kotlinx-collections-immutable = "0.3.8"
 coil = "3.0.3"
@@ -38,3 +40,5 @@ lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-ru
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidx-browser" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }

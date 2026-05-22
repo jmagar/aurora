@@ -13,6 +13,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +25,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.ui.chat.ChatScreen
+import tv.tootie.aurora.app.ui.login.LoginScreen
 import tv.tootie.aurora.app.ui.settings.SettingsScreen
 import tv.tootie.aurora.app.ui.sidebar.SessionsSidebar
 import tv.tootie.aurora.app.ui.sidebar.SidebarViewModel
@@ -113,10 +116,13 @@ fun CodexNavHost() {
                 )
             }
             composable(Screen.Login.route) {
-                // Stub — bead aurora-design-system-nozy replaces this with the full login flow
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Login required — not yet implemented")
-                }
+                LoginScreen(
+                    onLoginSuccess = {
+                        nav.navigate(Screen.Chat.NEW) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                )
             }
             composable(Screen.Chat.route) { back ->
                 val threadId = back.arguments?.getString("threadId") ?: "new"
@@ -127,7 +133,10 @@ fun CodexNavHost() {
                 )
             }
             composable(Screen.Settings.route) {
-                SettingsScreen(onBack = { nav.popBackStack() })
+                SettingsScreen(
+                    onBack = { nav.popBackStack() },
+                    onReauth = { nav.navigate(Screen.Login.route) },
+                )
             }
         }
     }
