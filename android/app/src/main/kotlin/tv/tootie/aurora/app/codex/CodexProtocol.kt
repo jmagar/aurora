@@ -28,8 +28,10 @@ sealed class AuthStatus {
     object Unauthenticated : AuthStatus()
 }
 
-/** Raw deserialization target for the getAuthStatus result object. */
+/** Raw deserialization target for the getAuthStatus result object.
+ *  Used for structured parsing of the server response in StartupViewModel. */
+@Serializable
 data class AuthStatusResult(
     val authenticated: Boolean,
-    val method: String?,
+    val method: String? = null,
 )

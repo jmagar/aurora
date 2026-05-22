@@ -44,7 +44,8 @@ class StartupViewModel(app: Application) : AndroidViewModel(app) {
         private set
 
     fun start() {
-        if (_state.value != StartupState.Loading) return
+        // Reset to Loading so a retry from Error state works correctly.
+        _state.value = StartupState.Loading
         viewModelScope.launch {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
@@ -54,17 +55,29 @@ class StartupViewModel(app: Application) : AndroidViewModel(app) {
 
             // Drain messages until we find the initialize response (id present, no method,
             // no error) — that's the server's acknowledgement of our initialize request.
+            // Also pass through error messages so a connection failure is handled immediately.
             val msgs = c.messages
-            msgs.first { msg ->
-                msg.method == null && msg.error == null && msg.result != null
+            val initAckOrError = msgs.first { msg ->
+                (msg.method == null && msg.error == null && msg.result != null) ||
+                    msg.error != null
             }
+            if (initAckOrError.error != null) {
+                _state.update { StartupState.Error(initAckOrError.error.message) }
+                return@launch
+            }
+
             // Server has acknowledged initialize. Now request auth status.
             val authId = c.getAuthStatus()
 
-            // Wait for the response matching our request id.
+            // Wait for the response matching our request id. Also handle server errors.
             val authMsg = msgs.first { msg ->
-                msg.method == null &&
-                    msg.id?.jsonPrimitive?.contentOrNull == authId.toString()
+                (msg.method == null &&
+                    msg.id?.jsonPrimitive?.contentOrNull == authId.toString()) ||
+                    msg.error != null
+            }
+            if (authMsg.error != null && authMsg.id?.jsonPrimitive?.contentOrNull != authId.toString()) {
+                _state.update { StartupState.Error(authMsg.error.message) }
+                return@launch
             }
 
             if (authMsg.error != null) {
