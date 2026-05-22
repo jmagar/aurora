@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import tv.tootie.aurora.app.CodexApp
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.components.AuroraButton
 import tv.tootie.aurora.components.AuroraButtonVariant
@@ -66,6 +67,8 @@ fun SettingsScreen(onBack: () -> Unit) {
                         settings.setServerUrl(url)
                         settings.setAuthToken(token.takeIf { it.isNotBlank() })
                         settings.setModel(model)
+                        val app = ctx.applicationContext as CodexApp
+                        app.repository.reconnect(url, token.takeIf { it.isNotBlank() })
                         onBack()
                     }
                 },
