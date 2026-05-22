@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -43,6 +44,10 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
             repo.connect(url, tok)
+            // Wait for the initialize/initialized handshake to complete before
+            // sending thread/list — otherwise the request can arrive before the
+            // server has finished its handshake and will be silently ignored.
+            repo.isReady.filter { it }.first()
             repo.listThreads()
         }
     }

@@ -4,6 +4,9 @@ import android.util.Log
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -30,6 +33,15 @@ class CodexClient(private val url: String, private val token: String? = null) {
     private val _msgs = Channel<RpcMessage>(Channel.UNLIMITED)
     val messages: Flow<RpcMessage> = _msgs.receiveAsFlow()
 
+    /**
+     * Becomes `true` once the server responds to the `initialize` handshake with
+     * its own `initialized` notification.  Callers that need to send requests only
+     * after the handshake is complete (e.g. `listThreads()` in SidebarViewModel)
+     * should wait until this is `true` before issuing requests.
+     */
+    private val _isInitialized = MutableStateFlow(false)
+    val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+
     fun connect() {
         val req = Request.Builder().url(url)
             .apply { token?.let { header("Authorization", "Bearer $it") } }
@@ -53,14 +65,25 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 }))
             }
             override fun onMessage(ws: WebSocket, text: String) {
-                try { _msgs.trySendBlocking(json.decodeFromString(text)) }
-                catch (e: Exception) { Log.w(TAG, "parse error: $text") }
+                try {
+                    val msg: RpcMessage = json.decodeFromString(text)
+                    // The server echoes back an "initialized" notification once it
+                    // has processed the handshake — flip the ready flag at that point.
+                    if (msg.method == "initialized") {
+                        _isInitialized.value = true
+                    }
+                    _msgs.trySendBlocking(msg)
+                } catch (e: Exception) { Log.w(TAG, "parse error: $text") }
             }
             override fun onFailure(ws: WebSocket, t: Throwable, r: Response?) {
                 Log.e(TAG, "failure", t)
+                _isInitialized.value = false
                 _msgs.trySendBlocking(RpcMessage(error = RpcError(-1, t.message ?: "error")))
             }
-            override fun onClosed(ws: WebSocket, code: Int, reason: String) { _msgs.close() }
+            override fun onClosed(ws: WebSocket, code: Int, reason: String) {
+                _isInitialized.value = false
+                _msgs.close()
+            }
         })
     }
 

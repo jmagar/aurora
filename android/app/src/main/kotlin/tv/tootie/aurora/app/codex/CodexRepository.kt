@@ -6,10 +6,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.JsonObject
@@ -78,6 +84,23 @@ class CodexRepository {
     private val connectionMutex = Mutex()
     private var client: CodexClient? = null
 
+    /**
+     * Tracks the current client so [isReady] can delegate to its [CodexClient.isInitialized].
+     * Replaced atomically under [connectionMutex] whenever a new client is created.
+     */
+    private val _currentClient = MutableStateFlow<CodexClient?>(null)
+
+    /**
+     * `true` once the WebSocket handshake (`initialized`) has completed on the
+     * current connection.  Resets to `false` on reconnect or failure.
+     *
+     * Callers (e.g. [SidebarViewModel]) should `first { it }` before issuing
+     * requests that require an established connection.
+     */
+    val isReady: StateFlow<Boolean> = _currentClient
+        .flatMapLatest { c -> c?.isInitialized ?: flowOf(false) }
+        .stateIn(scope, kotlinx.coroutines.flow.SharingStarted.Eagerly, false)
+
     // --- Typed output flows ------------------------------------------------
 
     private val _threadsFlow = MutableSharedFlow<CodexEvent.ThreadList>(replay = 1)
@@ -126,6 +149,7 @@ class CodexRepository {
             connectionMutex.withLock {
                 client?.disconnect()
                 client = null
+                _currentClient.value = null
                 pendingKinds.clear()
                 startClientLocked(url, token)
             }
@@ -140,6 +164,7 @@ class CodexRepository {
         Log.d(TAG, "connecting to $url")
         val c = CodexClient(url, token)
         client = c
+        _currentClient.value = c
         c.connect()
         c.messages.onEach { demux(it) }.launchIn(scope)
     }
@@ -154,6 +179,7 @@ class CodexRepository {
             connectionMutex.withLock {
                 client?.disconnect()
                 client = null
+                _currentClient.value = null
                 pendingKinds.clear()
             }
         }
@@ -224,6 +250,7 @@ class CodexRepository {
             scope.launch {
                 connectionMutex.withLock {
                     client = null
+                    _currentClient.value = null
                     pendingKinds.clear()
                 }
             }
