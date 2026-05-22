@@ -71,7 +71,7 @@ public fun AuroraPromptInput(
             .fillMaxWidth()
             .border(
                 1.dp,
-                if (value.isNotBlank()) aurora.accentVioletBorder else aurora.borderDefault,
+                if (value.isNotBlank()) aurora.accentPinkBorder else aurora.borderDefault,
                 RoundedCornerShape(12.dp),
             ),
         shape = RoundedCornerShape(12.dp),
@@ -93,7 +93,7 @@ public fun AuroraPromptInput(
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface,
                     ),
-                    cursorBrush = SolidColor(aurora.accentViolet),
+                    cursorBrush = SolidColor(aurora.accentPink),
                     minLines = 1,
                     maxLines = 6,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
@@ -118,7 +118,7 @@ public fun AuroraPromptInput(
                         .size(36.dp)
                         .semantics { contentDescription = sendButtonDescription },
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = aurora.accentViolet,
+                        containerColor = aurora.accentPinkButton,
                         contentColor = MaterialTheme.colorScheme.surface,
                         disabledContainerColor = aurora.borderStrong,
                     ),

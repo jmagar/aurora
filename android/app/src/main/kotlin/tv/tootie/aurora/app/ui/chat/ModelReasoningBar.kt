@@ -79,18 +79,18 @@ fun ModelReasoningBar(
                     Icon(
                         Icons.Default.AutoAwesome,
                         contentDescription = null,
-                        tint = aurora.accentViolet,
+                        tint = aurora.accentPink,
                         modifier = Modifier.size(14.dp),
                     )
                     Text(
                         currentModel?.displayName ?: selectedModel,
                         style = MaterialTheme.typography.labelSmall,
-                        color = aurora.accentViolet,
+                        color = aurora.accentPink,
                     )
                     Icon(
                         Icons.Default.ExpandMore,
                         contentDescription = null,
-                        tint = aurora.accentViolet,
+                        tint = aurora.accentPink,
                         modifier = Modifier.size(12.dp),
                     )
                 }

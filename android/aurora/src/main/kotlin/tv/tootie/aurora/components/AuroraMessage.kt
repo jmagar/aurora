@@ -111,7 +111,7 @@ public fun AuroraMessage(
                     )
                     .background(
                         if (isUser) MaterialTheme.colorScheme.primary
-                        else aurora.accentVioletSurface,
+                        else aurora.infoSurface,
                     )
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 color = if (isUser) MaterialTheme.colorScheme.onPrimary

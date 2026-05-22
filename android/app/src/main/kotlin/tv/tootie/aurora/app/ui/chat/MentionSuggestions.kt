@@ -49,8 +49,8 @@ private val kindIcon: Map<MentionKind, ImageVector> = mapOf(
 private fun kindColor(kind: MentionKind): Color {
     val aurora = LocalAuroraColors.current
     return when (kind) {
-        MentionKind.Skill -> aurora.accentViolet
-        MentionKind.Command -> MaterialTheme.colorScheme.primary
+        MentionKind.Skill -> aurora.accentViolet  // skills/tools stay violet
+        MentionKind.Command -> aurora.accentPink  // slash commands use pink accent
     }
 }
 
