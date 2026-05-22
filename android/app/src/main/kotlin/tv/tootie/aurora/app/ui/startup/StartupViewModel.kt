@@ -60,6 +60,9 @@ class StartupViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun doStartup() {
         val url = settings.serverUrl.first()
         val tok = settings.authToken.first()
+        // Disconnect any previous client created by an earlier (failed) attempt
+        // before creating a new one, so retry doesn't leak WebSocket connections.
+        client?.disconnect()
         val c = CodexClient(url, tok)
         client = c
         c.connect()
