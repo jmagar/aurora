@@ -18,7 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,6 +64,7 @@ import tv.tootie.aurora.components.AuroraToolCallStatus
 fun ChatScreen(
     threadId: String,
     onBack: () -> Unit,
+    onOpenSidebar: () -> Unit = {},
     vm: ChatViewModel = viewModel(),
 ) {
     val s by vm.state.collectAsStateWithLifecycle()
@@ -121,7 +122,11 @@ fun ChatScreen(
                         label = if (s.thinking) "Thinking..." else if (s.connected) "Connected" else "Disconnected",
                     )
                 },
-                navigationIcon = { IconButton(onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
+                navigationIcon = {
+                    IconButton(onClick = onOpenSidebar) {
+                        Icon(Icons.Default.Menu, contentDescription = "Open sidebar")
+                    }
+                },
                 actions = { AuroraControls(onStop = if (s.thinking) vm::interrupt else null) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
             )

@@ -89,6 +89,14 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    fun listThreads(limit: Int = 50): Int {
+        val id = ids.incrementAndGet()
+        send("thread/list", buildJsonObject {
+            put("limit", limit)
+        }, id)
+        return id
+    }
+
     fun interrupt(threadId: String) {
         send("turn/interrupt", buildJsonObject { put("threadId", threadId) })
     }
