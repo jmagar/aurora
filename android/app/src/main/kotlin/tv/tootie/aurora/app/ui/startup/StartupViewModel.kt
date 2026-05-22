@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import tv.tootie.aurora.app.codex.AuthStatus
@@ -66,8 +67,10 @@ class StartupViewModel(app: Application) : AndroidViewModel(app) {
         val msgs = c.messages
 
         // Wait for the initialize ACK (id=0 result) or a connection error.
+        // The server always responds to initialize with id=0, so we pin to that id
+        // to avoid accidentally consuming a later response as the init ack.
         val initAckOrError = msgs.first { msg ->
-            (msg.method == null && msg.error == null && msg.result != null) ||
+            (msg.method == null && msg.id?.jsonPrimitive?.intOrNull == 0) ||
                 msg.error != null
         }
         if (initAckOrError.error != null) {
