@@ -18,9 +18,10 @@ object Keys {
 }
 
 class AppSettings(private val ctx: Context) {
-    val serverUrl: Flow<String> = ctx.store.data.map { it[Keys.SERVER_URL] ?: "ws://100.88.16.79:4500" }
+    // 10.0.2.2 = Android emulator alias for host machine's 127.0.0.1
+    val serverUrl: Flow<String> = ctx.store.data.map { it[Keys.SERVER_URL] ?: "ws://10.0.2.2:4500" }
     val authToken: Flow<String?> = ctx.store.data.map { it[Keys.AUTH_TOKEN] }
-    val model: Flow<String> = ctx.store.data.map { it[Keys.MODEL] ?: "codex-mini-latest" }
+    val model: Flow<String> = ctx.store.data.map { it[Keys.MODEL] ?: "gpt-5.5" }
 
     suspend fun setServerUrl(v: String) = ctx.store.edit { it[Keys.SERVER_URL] = v }
     suspend fun setAuthToken(v: String?) = ctx.store.edit {

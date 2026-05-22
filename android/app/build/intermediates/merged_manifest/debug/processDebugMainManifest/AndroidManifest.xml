@@ -22,6 +22,7 @@
         android:debuggable="true"
         android:extractNativeLibs="false"
         android:label="Codex"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.AuroraApp" >
         <activity

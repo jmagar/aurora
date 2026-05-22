@@ -232,6 +232,7 @@ tv.tootie.aurora.app:drawable/notification_tile_bg = 0x7f040012
 tv.tootie.aurora.app:drawable/notification_bg_low_pressed = 0x7f04000b
 tv.tootie.aurora.app:attr/fontProviderAuthority = 0x7f010016
 tv.tootie.aurora.app:dimen/compat_button_padding_vertical_material = 0x7f030003
+tv.tootie.aurora.app:xml/network_security_config = 0x7f0b0000
 tv.tootie.aurora.app:layout/notification_template_part_chronometer = 0x7f070007
 tv.tootie.aurora.app:attr/embeddingDividerType = 0x7f01000e
 tv.tootie.aurora.app:style/TextAppearance.Compat.Notification.Time = 0x7f090007

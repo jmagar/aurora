@@ -36,9 +36,9 @@ fun SettingsScreen(onBack: () -> Unit) {
     val ctx = LocalContext.current
     val settings = remember { AppSettings(ctx) }
     val scope = rememberCoroutineScope()
-    var url by remember { mutableStateOf("ws://100.88.16.79:4500") }
+    var url by remember { mutableStateOf("ws://10.0.2.2:4500") }
     var token by remember { mutableStateOf("") }
-    var model by remember { mutableStateOf("codex-mini-latest") }
+    var model by remember { mutableStateOf("gpt-5.5") }
 
     Scaffold(
         topBar = {

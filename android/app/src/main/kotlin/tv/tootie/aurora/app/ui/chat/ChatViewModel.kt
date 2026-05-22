@@ -83,10 +83,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         val params = msg.params?.jsonObject
         val result = msg.result?.jsonObject
         when (msg.method) {
+            // Null method = response to one of our requests (thread/start or turn/start)
             null -> {
-                // Response to a request
-                val tid = result?.get("threadId")?.jsonPrimitive?.content
-                    ?: result?.get("id")?.jsonPrimitive?.content
+                // thread/start response: result.thread.id
+                val tid = result
+                    ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
                 if (tid != null && _state.value.threadId == null) {
                     _state.update { it.copy(threadId = tid) }
                     pendingMsg?.let { text ->
@@ -95,38 +96,56 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
             }
-            "agentMessageDelta" -> {
+
+            // Agent text streaming — actual event name from codex app-server
+            "item/agentMessage/delta" -> {
                 val delta = params?.get("delta")?.jsonPrimitive?.content ?: return
+                val itemId = params["itemId"]?.jsonPrimitive?.content
                 val aid = _state.value.assistantId
-                if (aid != null) {
+                val resolvedId = itemId ?: aid ?: "a${System.currentTimeMillis()}"
+                if (aid != null && (itemId == null || itemId == aid)) {
                     _state.update { s -> s.copy(msgs = s.msgs.map { if (it.id == aid) it.copy(content = it.content + delta) else it }) }
                 } else {
-                    val newId = "a${System.currentTimeMillis()}"
-                    _state.update { s -> s.copy(msgs = s.msgs + ChatMsg(newId, MsgRole.Assistant, delta), assistantId = newId) }
+                    _state.update { s -> s.copy(msgs = s.msgs + ChatMsg(resolvedId, MsgRole.Assistant, delta), assistantId = resolvedId) }
                 }
             }
-            "turnStarted" -> _state.update { it.copy(thinking = true, assistantId = null) }
-            "turnCompleted" -> _state.update { it.copy(thinking = false, assistantId = null) }
-            "itemStarted" -> {
+
+            // Turn lifecycle
+            "turn/started" -> _state.update { it.copy(thinking = true, assistantId = null) }
+            "turn/completed" -> _state.update { it.copy(thinking = false, assistantId = null) }
+
+            // Item lifecycle — track command executions as tool calls
+            "item/started" -> {
                 val item = params?.get("item")?.jsonObject ?: return
-                if (item["type"]?.jsonPrimitive?.content == "commandExecution") {
+                val type = item["type"]?.jsonPrimitive?.content
+                if (type == "commandExecution") {
                     val cmd = item["command"]?.jsonPrimitive?.content ?: return
                     val id = item["id"]?.jsonPrimitive?.content ?: cmd
                     _state.update { s -> s.copy(toolCalls = s.toolCalls + ToolCall(id, cmd)) }
                 }
             }
-            "itemCompleted" -> {
+            "item/completed" -> {
                 val item = params?.get("item")?.jsonObject ?: return
                 val id = item["id"]?.jsonPrimitive?.content ?: return
+                val type = item["type"]?.jsonPrimitive?.content
+                // For agentMessage items, clear the current assistant ID so next message gets a fresh one
+                if (type == "agentMessage") {
+                    _state.update { it.copy(assistantId = null) }
+                    return
+                }
                 val failed = item["status"]?.jsonPrimitive?.content == "failed"
                 _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }) }
             }
-            "commandExecOutputDelta" -> {
+
+            // Command output streaming
+            "item/commandExecution/outputDelta" -> {
                 val itemId = params?.get("itemId")?.jsonPrimitive?.content ?: return
                 val out = params["delta"]?.jsonPrimitive?.content ?: return
                 _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == itemId) { it.out.append(out); it } else it }) }
             }
-            "reasoningSummaryTextDelta" -> {
+
+            // Reasoning summary streaming
+            "reasoningSummaryTextDelta", "item/reasoning/summaryDelta" -> {
                 val delta = params?.get("delta")?.jsonPrimitive?.content ?: return
                 _state.update { s ->
                     val lines = s.reasoning.toMutableList()
@@ -134,7 +153,13 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     s.copy(reasoning = lines)
                 }
             }
-            "error" -> _state.update { it.copy(error = msg.error?.message, thinking = false) }
+
+            // Errors
+            "error" -> {
+                val errMsg = params?.get("error")?.jsonObject?.get("message")?.jsonPrimitive?.content
+                    ?: msg.error?.message
+                _state.update { it.copy(error = errMsg, thinking = false) }
+            }
         }
     }
 
