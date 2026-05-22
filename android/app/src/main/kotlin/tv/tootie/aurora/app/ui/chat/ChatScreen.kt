@@ -2,7 +2,9 @@ package tv.tootie.aurora.app.ui.chat
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -17,8 +19,15 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import tv.tootie.aurora.app.codex.PendingAttachment
+import tv.tootie.aurora.components.AuroraAttachment
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Menu
@@ -71,6 +80,36 @@ fun ChatScreen(
     var input by remember { mutableStateOf("") }
     var selectedItems by remember { mutableStateOf<List<SelectedItem>>(emptyList()) }
     val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    // Image picker launcher — PickVisualMedia requires no READ_MEDIA_IMAGES on API 33+
+    val imageLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri ?: return@rememberLauncherForActivityResult
+        val cr = ctx.contentResolver
+        val mimeType = cr.getType(uri) ?: "image/jpeg"
+        // Unique ID per pick so selecting the same image twice creates distinct chips.
+        val attachmentId = "${uri}_${System.nanoTime()}"
+        // Move content-provider query and stream read off the main thread.
+        scope.launch(Dispatchers.IO) {
+            val displayName = cr.query(
+                uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null
+            )?.use { c -> if (c.moveToFirst()) c.getString(0) else null } ?: "Photo"
+            val bytes = cr.openInputStream(uri)?.use { it.readBytes() } ?: return@launch
+            val base64 = android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
+            withContext(Dispatchers.Main) {
+                vm.addImageAttachment(
+                    PendingAttachment(
+                        id = attachmentId,
+                        displayName = displayName,
+                        mimeType = mimeType,
+                        base64Data = base64,
+                    )
+                )
+            }
+        }
+    }
 
     // Feature 3: @mention / slash command detection
     var mentionQuery by remember { mutableStateOf("") }
@@ -287,15 +326,15 @@ fun ChatScreen(
                 )
             }
 
-            val fileLauncher = rememberLauncherForActivityResult(
-                ActivityResultContracts.GetContent()
-            ) { uri -> uri?.let { /* TODO: attach to message */ } }
-
             AuroraPromptInput(
                 value = input,
                 onValueChange = { input = it },
                 onSend = {
-                    if (input.isNotBlank()) {
+                    val hasText = input.isNotBlank()
+                    val hasAttachments = s.pendingAttachments.isNotEmpty() || selectedItems.isNotEmpty()
+                    // While editing, only text + skill attachments are forwarded; images are dropped.
+                    val canSend = if (s.editingMessage != null) hasText else (hasText || hasAttachments)
+                    if (canSend) {
                         if (s.editingMessage != null) vm.sendEdit(input, selectedItems)
                         else vm.send(input, selectedItems)
                         input = ""
@@ -306,13 +345,36 @@ fun ChatScreen(
                 enabled = s.connected,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
                 leadingContent = {
+                    // Image attachment chips — scrollable row so multiple images stay accessible
+                    val imageAttachments = s.pendingAttachments
+                    if (imageAttachments.isNotEmpty()) {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 6.dp),
+                        ) {
+                            items(imageAttachments, key = { it.id }) { att ->
+                                AuroraAttachment(
+                                    fileName = att.displayName,
+                                    fileTypeDescription = "Image attachment",
+                                    onRemove = { vm.removeAttachment(att.id) },
+                                )
+                            }
+                        }
+                    }
+                    // Attach button — opens Photo Picker (no runtime permission on API 33+)
                     IconButton(
-                        onClick = { fileLauncher.launch("*/*") },
+                        onClick = {
+                            imageLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
                         modifier = Modifier.size(32.dp),
                     ) {
                         Icon(
                             Icons.Default.AttachFile,
-                            contentDescription = "Attach file",
+                            contentDescription = "Attach image",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(18.dp),
                         )

@@ -18,6 +18,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import tv.tootie.aurora.app.CodexApp
 import tv.tootie.aurora.app.codex.CodexEvent
 import tv.tootie.aurora.app.codex.CodexRepository
+import tv.tootie.aurora.app.codex.PendingAttachment
 import tv.tootie.aurora.app.codex.RpcMessage
 import tv.tootie.aurora.app.data.AppSettings
 
@@ -52,6 +53,8 @@ data class ChatState(
     val availableCommands: List<String> = emptyList(),
     val availableSkills: List<SkillItem> = emptyList(),
     val skillInvocations: List<SkillInvocation> = emptyList(),
+    // Image attachments pending send
+    val pendingAttachments: List<PendingAttachment> = emptyList(),
 )
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -59,6 +62,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val repo: CodexRepository = (app as CodexApp).repository
     private var pendingMsg: String? = null
     private var pendingAttachments: List<SelectedItem> = emptyList()
+    // Pending image attachments for new-thread sends (stored until thread/start response arrives)
+    private var pendingImages: List<PendingAttachment> = emptyList()
 
     // Buffer for verbose reasoning text — avoids O(n²) String allocations and prevents
     // unnecessary state emissions on every textDelta. Snapshot to ChatState.rawReasoning
@@ -94,28 +99,46 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun send(text: String, attachments: List<SelectedItem> = emptyList()) {
         val tid = _state.value.threadId
+        val images = _state.value.pendingAttachments
+
+        // Display text when available; use a placeholder for image-only sends.
+        val displayContent = text.ifBlank {
+            if (images.isNotEmpty()) "[Image]" else ""
+        }
+
         rawReasoningBuffer.clear()
         _state.update { s ->
             s.copy(
-                msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text),
+                msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, displayContent),
                 thinking = true, toolCalls = emptyList(), reasoning = emptyList(),
                 rawReasoning = "",
                 skillInvocations = emptyList(),
+                pendingAttachments = emptyList(),
             )
         }
         viewModelScope.launch {
             if (tid == null) {
                 pendingMsg = text
                 pendingAttachments = attachments
+                pendingImages = images
                 val model = settings.model.first()
                 repo.startThread(model)
             } else {
                 repo.startTurn(tid, text,
                     attachments = attachments,
                     model = _state.value.selectedModel,
-                    effort = _state.value.selectedEffort)
+                    effort = _state.value.selectedEffort,
+                    images = images)
             }
         }
+    }
+
+    fun addImageAttachment(attachment: PendingAttachment) {
+        _state.update { it.copy(pendingAttachments = it.pendingAttachments + attachment) }
+    }
+
+    fun removeAttachment(id: String) {
+        _state.update { it.copy(pendingAttachments = it.pendingAttachments.filter { a -> a.id != id }) }
     }
 
     fun interrupt() {
@@ -166,6 +189,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 toolCalls = emptyList(),
                 reasoning = emptyList(),
                 rawReasoning = "",
+                // Discard pending image attachments — edits are text/skill only.
+                pendingAttachments = emptyList(),
             )
         }
         viewModelScope.launch {
@@ -227,17 +252,16 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     _state.update { it.copy(threadId = tid) }
                     pendingMsg?.let { text ->
                         val attachments = pendingAttachments
+                        val images = pendingImages
                         pendingMsg = null
                         pendingAttachments = emptyList()
+                        pendingImages = emptyList()
                         viewModelScope.launch {
-<<<<<<< HEAD
                             repo.startTurn(tid, text,
-=======
-                            client?.startTurn(tid, text,
->>>>>>> a8dcc11 (fix(chat): clear selectedItems on edit entry; preserve attachments for new threads)
                                 attachments = attachments,
                                 model = _state.value.selectedModel,
-                                effort = _state.value.selectedEffort)
+                                effort = _state.value.selectedEffort,
+                                images = images)
                         }
                     }
                 }
