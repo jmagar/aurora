@@ -358,4 +358,17 @@ class CodexConnectionManager(context: Context) {
         callback
     )
 
+    fun setGoal(threadId: String, objective: String, tokenBudget: Int? = null, callback: ((RpcMessage) -> Unit)? = null): Int =
+        send("thread/goal/set", buildJsonObject {
+            put("threadId", threadId)
+            put("objective", objective)
+            tokenBudget?.let { put("tokenBudget", it) }
+        }, callback)
+
+    fun getGoal(threadId: String, callback: ((RpcMessage) -> Unit)? = null): Int =
+        send("thread/goal/get", buildJsonObject { put("threadId", threadId) }, callback)
+
+    fun clearGoal(threadId: String, callback: ((RpcMessage) -> Unit)? = null): Int =
+        send("thread/goal/clear", buildJsonObject { put("threadId", threadId) }, callback)
+
 }
