@@ -49,3 +49,4 @@ next-env.d.ts
 .dolt/
 *.db
 .beads-credential-key
+android/aurora/build/
