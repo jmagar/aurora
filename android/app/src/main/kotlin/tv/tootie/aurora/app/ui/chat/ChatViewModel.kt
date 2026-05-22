@@ -230,7 +230,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         pendingMsg = null
                         pendingAttachments = emptyList()
                         viewModelScope.launch {
+<<<<<<< HEAD
                             repo.startTurn(tid, text,
+=======
+                            client?.startTurn(tid, text,
+>>>>>>> a8dcc11 (fix(chat): clear selectedItems on edit entry; preserve attachments for new threads)
                                 attachments = attachments,
                                 model = _state.value.selectedModel,
                                 effort = _state.value.selectedEffort)
