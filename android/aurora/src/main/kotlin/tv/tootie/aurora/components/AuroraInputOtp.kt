@@ -31,8 +31,26 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * One-time passcode input: [length] single-character digit boxes.
  * Maps to web `input-otp`.
  *
- * @param value current OTP string (length 0..[length])
- * @param onValueChange called with the new full OTP string on each keystroke
+ * Accessibility notes:
+ * - Each cell has a `contentDescription` of "Digit N of M" so TalkBack announces position.
+ * - When [isError] is true the description includes "Error" so TalkBack communicates the state
+ *   even without a sibling error text node.
+ * - Focus is tracked per-cell via [onFocusChanged] rather than the fragile `value.length == index`
+ *   heuristic, which misled focus visuals when the user tapped an already-filled cell.
+ *
+ * Paste handling:
+ * - If the user pastes a multi-digit string into any cell the component fills from that cell
+ *   rightward, discarding non-digit characters. Excess digits are truncated to [length].
+ *
+ * Backspace handling:
+ * - Clearing the digit in a cell automatically moves focus to the previous cell so users can
+ *   step backward through the OTP without manually navigating.
+ *
+ * @param value Current OTP string; length 0..[length]. Characters beyond [length] are ignored.
+ * @param onValueChange Called with the full updated OTP string on every keystroke or paste.
+ * @param modifier Applied to the root [Row].
+ * @param length Number of digit cells. Defaults to 6.
+ * @param isError When true cells render with an error-colour border.
  */
 @Composable
 public fun AuroraInputOtp(
@@ -44,6 +62,8 @@ public fun AuroraInputOtp(
 ) {
     val aurora = LocalAuroraColors.current
     val focusRequesters = remember(length) { List(length) { FocusRequester() } }
+    // Per-cell focus tracking via onFocusChanged — avoids the value.length == index heuristic.
+    val focusedIndex = remember { mutableStateOf(-1) }
 
     Row(
         modifier = modifier,
@@ -52,16 +72,42 @@ public fun AuroraInputOtp(
     ) {
         repeat(length) { index ->
             val char = value.getOrNull(index)?.toString() ?: ""
-            val isFocused = value.length == index
+            val isFocused = focusedIndex.value == index
 
             BasicTextField(
                 value = TextFieldValue(char, selection = TextRange(char.length)),
                 onValueChange = { newVal ->
-                    val digit = newVal.text.filter { it.isDigit() }.take(1)
-                    val newOtp = value.take(index) + digit + value.drop(index + 1)
-                    onValueChange(newOtp.take(length))
-                    if (digit.isNotEmpty() && index < length - 1) {
-                        focusRequesters.getOrNull(index + 1)?.requestFocus()
+                    val incoming = newVal.text.filter { it.isDigit() }
+
+                    when {
+                        // Paste: more than one digit arrived — distribute rightward from this cell.
+                        incoming.length > 1 -> {
+                            val prefix = value.take(index)
+                            val fill = incoming.take(length - index)
+                            val suffix = value.drop(index + fill.length)
+                            val newOtp = (prefix + fill + suffix).take(length)
+                            onValueChange(newOtp)
+                            val nextFocus = (index + fill.length).coerceAtMost(length - 1)
+                            focusRequesters.getOrNull(nextFocus)?.requestFocus()
+                        }
+
+                        // Normal single digit typed.
+                        incoming.length == 1 -> {
+                            val newOtp = value.take(index) + incoming + value.drop(index + 1)
+                            onValueChange(newOtp.take(length))
+                            if (index < length - 1) {
+                                focusRequesters.getOrNull(index + 1)?.requestFocus()
+                            }
+                        }
+
+                        // Empty input: user deleted the digit in this cell (backspace).
+                        else -> {
+                            val newOtp = value.take(index) + value.drop(index + 1)
+                            onValueChange(newOtp.take(length))
+                            if (index > 0) {
+                                focusRequesters.getOrNull(index - 1)?.requestFocus()
+                            }
+                        }
                     }
                 },
                 modifier = Modifier
@@ -75,7 +121,18 @@ public fun AuroraInputOtp(
                         },
                         shape = RoundedCornerShape(8.dp),
                     )
-                    .focusRequester(focusRequesters.getOrElse(index) { FocusRequester() }),
+                    .focusRequester(focusRequesters.getOrElse(index) { FocusRequester() })
+                    .onFocusChanged { state ->
+                        if (state.isFocused) focusedIndex.value = index
+                        else if (focusedIndex.value == index) focusedIndex.value = -1
+                    }
+                    .semantics {
+                        contentDescription = buildString {
+                            append("Digit ${index + 1} of $length")
+                            if (char.isNotEmpty()) append(", entered")
+                            if (isError) append(", error")
+                        }
+                    },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                 singleLine = true,
                 decorationBox = { _ ->
