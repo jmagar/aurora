@@ -57,6 +57,10 @@ class CodexClient(private val url: String, private val token: String? = null) {
                             put("name", "aurora-app")
                             put("version", "1.0")
                         })
+                        put("capabilities", buildJsonObject {
+                            put("experimentalApi", true)
+                            put("requestAttestation", false)
+                        })
                     })
                 }))
                 ws.send(json.encodeToString(buildJsonObject {
