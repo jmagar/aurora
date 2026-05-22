@@ -103,6 +103,12 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    fun getAuthStatus(): Int {
+        val id = ids.incrementAndGet()
+        send("getAuthStatus", JsonObject(emptyMap()), id)
+        return id
+    }
+
     fun interrupt(threadId: String) {
         send("turn/interrupt", buildJsonObject { put("threadId", threadId) })
     }
