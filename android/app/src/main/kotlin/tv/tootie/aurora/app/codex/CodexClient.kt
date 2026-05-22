@@ -250,6 +250,29 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    /**
+     * Logs out the current account. After the response is received the caller should
+     * disconnect the WebSocket and clear cached credentials.
+     * Returns the request id for correlation in the messages flow.
+     */
+    fun logout(): Int {
+        val id = ids.incrementAndGet()
+        send("account/logout", JsonObject(emptyMap()), id)
+        return id
+    }
+
+    /**
+     * Cancels an in-progress login flow.
+     * [loginId] is the value returned in the account/login/start response (field "loginId").
+     * Safe to call after login/completed — the server will ignore or return a benign error.
+     * Returns the request id for correlation in the messages flow.
+     */
+    fun cancelLogin(loginId: String): Int {
+        val id = ids.incrementAndGet()
+        send("account/login/cancel", buildJsonObject { put("loginId", loginId) }, id)
+        return id
+    }
+
     fun interrupt(threadId: String) {
         send("turn/interrupt", buildJsonObject { put("threadId", threadId) })
     }
