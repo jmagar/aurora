@@ -60,11 +60,15 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         val url = settings.serverUrl.first()
         val tok = settings.authToken.first()
         val client = CodexClient(url, tok)
-        client.connect()
 
-        // Give the server 5 seconds for the full logout exchange. If it times out or the
-        // server is unreachable, we still clear credentials locally — the user is logged out.
+        // Always disconnect and clear credentials regardless of whether the remote
+        // logout RPC succeeds, times out, or throws (e.g. invalid URL, network error).
+        // CancellationException is never caught here so coroutine cancellation is honoured.
         try {
+            client.connect()
+
+            // Give the server 5 seconds for the full logout exchange. If it times out or the
+            // server is unreachable, we still clear credentials locally — the user is logged out.
             withTimeout(5_000L) {
                 // Wait for the initialize ACK (id=0) before sending any other request.
                 // connect() sends initialize immediately in onOpen, so this also implicitly
@@ -83,12 +87,15 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
                         msg.error != null
                 }
             }
-        } catch (_: TimeoutCancellationException) {
-            // Server unreachable or slow — proceed to local cleanup anyway
+        } catch (t: Throwable) {
+            // Swallow TimeoutCancellationException and any I/O failure from connect()/RPC.
+            // Re-throw only true coroutine cancellation so the job is still cancellable.
+            if (t is CancellationException && t !is TimeoutCancellationException) throw t
+            // Otherwise: server unreachable, slow, or RPC failed — fall through to finally
+        } finally {
+            client.disconnect()
+            authRepo.clearCredentials()
         }
-
-        client.disconnect()
-        authRepo.clearCredentials()
 
         _state.update {
             it.copy(
