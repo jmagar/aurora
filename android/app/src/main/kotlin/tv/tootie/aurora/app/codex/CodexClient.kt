@@ -111,14 +111,6 @@ class CodexClient(private val url: String, private val token: String? = null) {
      * Extracted as `internal` so unit tests can assert on the serialised frame
      * without a real WebSocket connection. Returns a [Pair] so the caller can
      * echo back the exact ID that was used, avoiding a race on [ids].
-     */
-    /**
-     * Builds the raw JSON string for a `turn/start` request and returns it paired
-     * with the request ID that was embedded in the frame.
-     *
-     * Extracted as `internal` so unit tests can assert on the serialised frame
-     * without a real WebSocket connection. Returns a [Pair] so the caller can
-     * echo back the exact ID that was used, avoiding a race on [ids].
      *
      * [images] are serialised before [attachments] so image context appears first
      * in the input array.
@@ -130,6 +122,9 @@ class CodexClient(private val url: String, private val token: String? = null) {
         model: String?,
         effort: String?,
         images: List<PendingAttachment> = emptyList(),
+        approvalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
+        granularPolicy: GranularPolicy? = null,
+        approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
     ): Pair<String, Int> {
         val id = ids.incrementAndGet()
         val frame = json.encodeToString(
@@ -174,6 +169,16 @@ class CodexClient(private val url: String, private val token: String? = null) {
                     })
                     model?.let { put("model", it) }
                     effort?.let { put("effort", it) }
+                    put("approvalPolicy", approvalPolicy.wire)
+                    put("approvalsReviewer", approvalsReviewer.wire)
+                    if (approvalPolicy == ApprovalPolicy.Granular && granularPolicy != null) {
+                        put("approvalPolicyGranular", buildJsonObject {
+                            put("mcp_elicitations", granularPolicy.mcpElicitations)
+                            put("sandbox_approval", granularPolicy.sandboxApproval)
+                            put("rules", granularPolicy.rules)
+                            put("skill_approval", granularPolicy.skillApproval)
+                        })
+                    }
                 })
             }
         )
@@ -187,8 +192,14 @@ class CodexClient(private val url: String, private val token: String? = null) {
         model: String? = null,
         effort: String? = null,
         images: List<PendingAttachment> = emptyList(),
+        approvalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
+        granularPolicy: GranularPolicy? = null,
+        approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
     ): Int {
-        val (frame, id) = buildTurnFrame(threadId, text, attachments, model, effort, images)
+        val (frame, id) = buildTurnFrame(
+            threadId, text, attachments, model, effort, images,
+            approvalPolicy, granularPolicy, approvalsReviewer,
+        )
         ws?.send(frame)
         return id
     }

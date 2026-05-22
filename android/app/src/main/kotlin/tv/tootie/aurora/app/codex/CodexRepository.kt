@@ -201,8 +201,14 @@ class CodexRepository {
         model: String?,
         effort: String?,
         images: List<PendingAttachment> = emptyList(),
+        approvalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
+        granularPolicy: GranularPolicy? = null,
+        approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
     ): Int {
-        val id = client?.startTurn(threadId, text, attachments, model, effort, images) ?: return -1
+        val id = client?.startTurn(
+            threadId, text, attachments, model, effort, images,
+            approvalPolicy, granularPolicy, approvalsReviewer,
+        ) ?: return -1
         pendingKinds[id] = RequestKind.Other
         return id
     }
