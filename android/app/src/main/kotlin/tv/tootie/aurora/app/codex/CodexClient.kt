@@ -20,6 +20,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import tv.tootie.aurora.app.ui.chat.SelectedItem
 import java.util.concurrent.atomic.AtomicInteger
 
 private const val TAG = "CodexClient"
@@ -103,14 +104,67 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
-    fun startTurn(threadId: String, text: String, model: String? = null, effort: String? = null): Int {
+    /**
+     * Builds the raw JSON string for a `turn/start` request and returns it paired
+     * with the request ID that was embedded in the frame.
+     *
+     * Extracted as `internal` so unit tests can assert on the serialised frame
+     * without a real WebSocket connection. Returns a [Pair] so the caller can
+     * echo back the exact ID that was used, avoiding a race on [ids].
+     */
+    internal fun buildTurnFrame(
+        threadId: String,
+        text: String,
+        attachments: List<SelectedItem>,
+        model: String?,
+        effort: String?,
+    ): Pair<String, Int> {
         val id = ids.incrementAndGet()
-        send("turn/start", buildJsonObject {
-            put("threadId", threadId)
-            put("input", buildJsonArray { add(buildJsonObject { put("type", "text"); put("text", text) }) })
-            model?.let { put("model", it) }
-            effort?.let { put("effort", it) }
-        }, id)
+        val frame = json.encodeToString(
+            buildJsonObject {
+                put("method", "turn/start")
+                put("id", id)
+                put("params", buildJsonObject {
+                    put("threadId", threadId)
+                    put("input", buildJsonArray {
+                        add(buildJsonObject { put("type", "text"); put("text", text) })
+                        attachments.forEach { item ->
+                            when (item) {
+                                is SelectedItem.Skill -> add(buildJsonObject {
+                                    put("type", "skill")
+                                    put("name", item.name)
+                                    put("path", item.path)
+                                })
+                                is SelectedItem.Mention -> add(buildJsonObject {
+                                    put("type", "mention")
+                                    put("name", item.name)
+                                    put("path", item.path)
+                                })
+                                is SelectedItem.Command -> add(buildJsonObject {
+                                    put("type", "command")
+                                    put("name", item.name)
+                                    put("path", item.path)
+                                })
+                            }
+                        }
+                    })
+                    model?.let { put("model", it) }
+                    effort?.let { put("effort", it) }
+                })
+            }
+        )
+        return Pair(frame, id)
+    }
+
+    fun startTurn(
+        threadId: String,
+        text: String,
+        attachments: List<SelectedItem> = emptyList(),
+        model: String? = null,
+        effort: String? = null,
+    ): Int {
+        val (frame, id) = buildTurnFrame(threadId, text, attachments, model, effort)
+        ws?.send(frame)
         return id
     }
 

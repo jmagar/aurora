@@ -23,6 +23,7 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ConcurrentHashMap
+import tv.tootie.aurora.app.ui.chat.SelectedItem
 
 private const val TAG = "CodexRepository"
 
@@ -193,8 +194,14 @@ class CodexRepository {
         return id
     }
 
-    fun startTurn(threadId: String, text: String, model: String?, effort: String?): Int {
-        val id = client?.startTurn(threadId, text, model, effort) ?: return -1
+    fun startTurn(
+        threadId: String,
+        text: String,
+        attachments: List<SelectedItem> = emptyList(),
+        model: String?,
+        effort: String?,
+    ): Int {
+        val id = client?.startTurn(threadId, text, attachments, model, effort) ?: return -1
         pendingKinds[id] = RequestKind.Other
         return id
     }

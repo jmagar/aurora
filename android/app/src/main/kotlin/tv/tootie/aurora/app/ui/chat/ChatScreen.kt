@@ -69,6 +69,7 @@ fun ChatScreen(
 ) {
     val s by vm.state.collectAsStateWithLifecycle()
     var input by remember { mutableStateOf("") }
+    var selectedItems by remember { mutableStateOf<List<SelectedItem>>(emptyList()) }
     val ctx = LocalContext.current
 
     // Feature 3: @mention / slash command detection
@@ -96,10 +97,13 @@ fun ChatScreen(
 
     LaunchedEffect(threadId) { vm.connect(threadId) }
 
-    // Feature 2: Pre-fill input when entering edit mode
+    // Feature 2: Pre-fill input when entering edit mode; clear prior selections
     LaunchedEffect(s.editingMessage) {
         val editing = s.editingMessage
-        if (editing != null) input = editing.content
+        if (editing != null) {
+            input = editing.content
+            selectedItems = emptyList()  // stale @mentions / /commands from a previous message must not carry over
+        }
     }
 
     // Feature 3: Monitor input for @ and / triggers
@@ -260,7 +264,7 @@ fun ChatScreen(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary,
                     )
-                    TextButton(onClick = { vm.cancelEdit(); input = "" }) { Text("Cancel") }
+                    TextButton(onClick = { vm.cancelEdit(); input = ""; selectedItems = emptyList() }) { Text("Cancel") }
                 }
             }
 
@@ -269,10 +273,11 @@ fun ChatScreen(
                 MentionSuggestionList(
                     items = filteredMentions,
                     query = mentionQuery,
-                    onSelect = { item ->
+                    onSelect = { item, structured ->
                         val lastTrigger = maxOf(input.lastIndexOf('@'), input.lastIndexOf('/'))
                         input = if (lastTrigger >= 0) input.take(lastTrigger) + item.trigger + " "
                                 else input + item.trigger + " "
+                        selectedItems = selectedItems + structured
                         showMentions = false
                     },
                     modifier = Modifier
@@ -291,9 +296,10 @@ fun ChatScreen(
                 onValueChange = { input = it },
                 onSend = {
                     if (input.isNotBlank()) {
-                        if (s.editingMessage != null) vm.sendEdit(input)
-                        else vm.send(input)
+                        if (s.editingMessage != null) vm.sendEdit(input, selectedItems)
+                        else vm.send(input, selectedItems)
                         input = ""
+                        selectedItems = emptyList()
                     }
                 },
                 loading = s.thinking,
