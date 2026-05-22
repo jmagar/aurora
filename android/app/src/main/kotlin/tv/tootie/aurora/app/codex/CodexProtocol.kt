@@ -35,3 +35,21 @@ data class AuthStatusResult(
     val authenticated: Boolean,
     val method: String? = null,
 )
+
+/**
+ * Client capabilities sent in the `initialize` request params.
+ *
+ * Protocol reference (server-side Rust struct, camelCase over the wire):
+ * ```
+ * InitializeCapabilities {
+ *   experimentalApi: bool,          // enables experimental methods/fields
+ *   requestAttestation: bool,       // enables attestation/generate flow
+ *   optOutNotificationMethods: String[] | null,  // suppress specific notifications
+ * }
+ * ```
+ */
+data class InitializeCapabilities(
+    val experimentalApi: Boolean = false,
+    val requestAttestation: Boolean = false,
+    val optOutNotificationMethods: List<String>? = null,
+)
