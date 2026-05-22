@@ -312,15 +312,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 rawReasoningBuffer.append(delta)
             }
 
-            // Feature 3: Available commands from server
-            "session/update" -> {
-                val commands = params?.get("availableCommands")?.jsonArray
-                if (commands != null) {
-                    _state.update { it.copy(availableCommands = commands.mapNotNull { c ->
-                        c.jsonObject["name"]?.jsonPrimitive?.content
-                    }) }
-                }
-            }
 
             // Skill hook invocations
             "hook/started" -> {
