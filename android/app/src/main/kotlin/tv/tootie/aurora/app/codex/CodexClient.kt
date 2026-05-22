@@ -89,6 +89,12 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    fun listSkills(): Int {
+        val id = ids.incrementAndGet()
+        send("skills/list", JsonObject(emptyMap()), id)
+        return id
+    }
+
     fun listThreads(limit: Int = 50): Int {
         val id = ids.incrementAndGet()
         send("thread/list", buildJsonObject {

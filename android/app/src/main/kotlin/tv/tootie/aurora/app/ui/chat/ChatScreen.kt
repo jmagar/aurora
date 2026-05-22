@@ -75,13 +75,23 @@ fun ChatScreen(
     var mentionQuery by remember { mutableStateOf("") }
     var showMentions by remember { mutableStateOf(false) }
 
-    val mentionItems = remember(s.availableCommands) {
-        s.availableCommands.map { cmd ->
+    val mentionItems = remember(s.availableCommands, s.availableSkills) {
+        val commands = s.availableCommands.map { cmd ->
             MentionItem(
                 trigger = cmd,
                 label = cmd.removePrefix("/").replaceFirstChar { it.uppercase() },
+                kind = MentionKind.Command,
             )
         }
+        val skills = s.availableSkills.map { skill ->
+            MentionItem(
+                trigger = "@${skill.name}",
+                label = skill.name.replace("-", " ").replaceFirstChar { it.uppercase() },
+                description = skill.description.take(80),
+                kind = MentionKind.Skill,
+            )
+        }
+        commands + skills
     }
 
     LaunchedEffect(threadId) { vm.connect(threadId) }
@@ -97,10 +107,7 @@ fun ChatScreen(
         val lastAt = input.lastIndexOf('@')
         val lastSlash = input.lastIndexOf('/')
         val triggerIdx = maxOf(lastAt, lastSlash)
-        if (triggerIdx >= 0 && triggerIdx == input.length - 1) {
-            showMentions = true
-            mentionQuery = ""
-        } else if (triggerIdx >= 0 && triggerIdx < input.length) {
+        if (triggerIdx >= 0) {
             val afterTrigger = input.substring(triggerIdx + 1)
             if (!afterTrigger.contains(' ')) {
                 mentionQuery = afterTrigger
@@ -110,6 +117,16 @@ fun ChatScreen(
             }
         } else {
             showMentions = false
+        }
+    }
+
+    val filteredMentions = remember(mentionItems, mentionQuery, input) {
+        val lastAt = input.lastIndexOf('@')
+        val lastSlash = input.lastIndexOf('/')
+        when {
+            lastAt > lastSlash -> mentionItems.filter { it.kind == MentionKind.Skill }
+            lastSlash > lastAt -> mentionItems.filter { it.kind == MentionKind.Command }
+            else -> mentionItems
         }
     }
 
@@ -247,7 +264,7 @@ fun ChatScreen(
             // Feature 3: @mention / slash command suggestions above input
             if (showMentions) {
                 MentionSuggestionList(
-                    items = mentionItems,
+                    items = filteredMentions,
                     query = mentionQuery,
                     onSelect = { item ->
                         val lastTrigger = maxOf(input.lastIndexOf('@'), input.lastIndexOf('/'))

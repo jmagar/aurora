@@ -23,6 +23,7 @@ enum class MsgRole { User, Assistant }
 
 data class ChatMsg(val id: String, val role: MsgRole, val content: String)
 data class ToolCall(val id: String, val cmd: String, val out: StringBuilder = StringBuilder(), val done: Boolean = false, val failed: Boolean = false)
+data class SkillItem(val name: String, val description: String)
 
 data class ChatState(
     val threadId: String? = null,
@@ -43,6 +44,7 @@ data class ChatState(
     val actionsTarget: ChatMsg? = null,
     // Feature 3: @Mention / slash commands
     val availableCommands: List<String> = emptyList(),
+    val availableSkills: List<SkillItem> = emptyList(),
 )
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -65,6 +67,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             // Fetch available models after handshake completes
             delay(500)
             fetchModels()
+            delay(100)
+            fetchSkills()
         }
     }
 
@@ -108,6 +112,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun fetchModels() {
         client?.listModels()
+    }
+
+    private fun fetchSkills() {
+        client?.listSkills()
     }
 
     // Feature 2: Message reactions + edit
@@ -155,6 +163,21 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         when (msg.method) {
             // Null method = response to one of our requests
             null -> {
+                // Check if this is a skills/list response (data[0] has "skills" array, not model fields)
+                val firstItem = result?.get("data")?.jsonArray?.firstOrNull()?.jsonObject
+                if (firstItem?.containsKey("skills") == true) {
+                    val skills = firstItem["skills"]?.jsonArray?.mapNotNull { elem ->
+                        val obj = elem.jsonObject
+                        val name = obj["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
+                        val desc = obj["description"]?.jsonPrimitive?.content ?: ""
+                        SkillItem(name, desc)
+                    } ?: emptyList()
+                    if (skills.isNotEmpty()) {
+                        _state.update { it.copy(availableSkills = skills.sortedBy { s -> s.name }) }
+                    }
+                    return
+                }
+
                 // Check if this is a model/list response: result has "data" array
                 val modelData = result?.get("data")?.jsonArray
                 if (modelData != null) {
