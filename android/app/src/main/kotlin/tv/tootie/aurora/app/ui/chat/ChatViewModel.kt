@@ -66,18 +66,20 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(ChatState())
     val state: StateFlow<ChatState> = _state.asStateFlow()
 
-    fun connect(threadId: String) {
-        // Always subscribe unconditionally — SharedFlow(replay=0) means late subscribers miss past events
+    init {
+        // Subscribe exactly once per ViewModel lifetime — never inside connect()
+        // SharedFlow(replay=0): subscribe before connecting so no events are missed
         manager.messages.onEach { handle(it) }.launchIn(viewModelScope)
         manager.connectionState.onEach { state ->
             _state.update { it.copy(connected = state is ConnectionState.Connected) }
         }.launchIn(viewModelScope)
+    }
 
+    fun connect(threadId: String) {
         _state.update { it.copy(threadId = if (threadId != "new") threadId else null) }
 
         val currentState = manager.connectionState.value
         if (currentState is ConnectionState.Connected || currentState is ConnectionState.Connecting) {
-            // Already connected via shared manager; fetch models/skills if not yet loaded
             if (_state.value.models.isEmpty()) {
                 fetchModels()
                 fetchSkills()
@@ -89,7 +91,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
             manager.connect(url, tok)
-            // Wait for connected state before fetching models
             manager.connectionState.first { it is ConnectionState.Connected }
             fetchModels()
             fetchSkills()

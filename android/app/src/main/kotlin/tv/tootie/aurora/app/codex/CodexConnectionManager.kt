@@ -80,9 +80,9 @@ class CodexConnectionManager(context: Context) {
 
     private val _handshakeComplete = MutableStateFlow(false)
 
-    private var retryCount = 0
+    private val retryCount = AtomicInteger(0)
     private val isReconnecting = AtomicBoolean(false)
-    private var userInitiatedDisconnect = false
+    private val userInitiatedDisconnect = AtomicBoolean(false)
 
     private var savedUrl: String? = null
     private var savedToken: String? = null
@@ -94,7 +94,7 @@ class CodexConnectionManager(context: Context) {
 
     fun connect(url: String, token: String?) {
         if (currentWebSocket != null) return  // already connected or connecting
-        userInitiatedDisconnect = false
+        userInitiatedDisconnect.set(false)
         savedUrl = url
         savedToken = token
         _connectionState.value = ConnectionState.Connecting
@@ -119,7 +119,7 @@ class CodexConnectionManager(context: Context) {
                 }.toString())
                 _handshakeComplete.value = true
                 _connectionState.value = ConnectionState.Connected
-                retryCount = 0
+                retryCount.set(0)
                 scope.launch { drainOutboundQueue(ws) }
             }
             ws.send(buildJsonObject {
@@ -198,7 +198,7 @@ class CodexConnectionManager(context: Context) {
             }
 
             _connectionState.value = ConnectionState.Error(t)
-            if (!userInitiatedDisconnect) {
+            if (!userInitiatedDisconnect.get()) {
                 scheduleReconnect()
             }
         }
@@ -210,7 +210,7 @@ class CodexConnectionManager(context: Context) {
         override fun onClosed(ws: WebSocket, code: Int, reason: String) {
             Log.d(TAG, "onClosed code=$code reason=$reason")
             currentWebSocket = null
-            if (!userInitiatedDisconnect) {
+            if (!userInitiatedDisconnect.get()) {
                 scheduleReconnect()
             }
         }
@@ -218,9 +218,10 @@ class CodexConnectionManager(context: Context) {
 
     private fun scheduleReconnect() {
         if (isReconnecting.getAndSet(true)) return
-        val delay = minOf(1000L shl retryCount, 60_000L) + Random.nextLong(0, 500)
-        retryCount++
-        _connectionState.value = ConnectionState.Reconnecting(retryCount, delay)
+        closeAllDeltaChannels()  // close stale channels so mid-turn coroutines exit cleanly
+        val count = retryCount.getAndIncrement()
+        val delay = minOf(1000L shl count, 60_000L) + Random.nextLong(0, 500)
+        _connectionState.value = ConnectionState.Reconnecting(retryCount.get(), delay)
         scope.launch {
             delay(delay)
             connect(savedUrl ?: run { isReconnecting.set(false); return@launch }, savedToken)
@@ -289,8 +290,15 @@ class CodexConnectionManager(context: Context) {
         activeTurnDeltaChannels.remove(turnId)?.close()
     }
 
+    fun closeAllDeltaChannels() {
+        activeTurnDeltaChannels.keys().toList().forEach { closeDeltaChannel(it) }
+    }
+
     fun disconnect() {
-        userInitiatedDisconnect = true
+        userInitiatedDisconnect.set(true)
+        closeAllDeltaChannels()
+        pendingRequests.clear()
+        serverInitiatedRequests.clear()
         currentWebSocket?.close(1000, "bye")
         currentWebSocket = null
         _connectionState.value = ConnectionState.Disconnected

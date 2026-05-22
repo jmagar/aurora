@@ -34,33 +34,23 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(SidebarState())
     val state: StateFlow<SidebarState> = _state.asStateFlow()
 
-    fun connect() {
-        // Always subscribe unconditionally — SharedFlow(replay=0) means late subscribers miss past events
-        manager.messages.onEach { handleMsg(it) }.launchIn(viewModelScope)
-        // onEach handles both initial connect and reconnects: load threads whenever Connected
+    init {
+        // Subscribe exactly once per ViewModel lifetime.
+        // StateFlow replays current value — if already Connected, loadThreads fires immediately.
         manager.connectionState.onEach { state ->
-            if (state is ConnectionState.Connected) {
-                loadThreads()
-            }
+            if (state is ConnectionState.Connected) loadThreads()
         }.launchIn(viewModelScope)
+    }
 
+    fun connect() {
         val currentState = manager.connectionState.value
-        if (currentState is ConnectionState.Connected) {
-            // Already connected via shared manager: onEach already fired; load threads now
-            loadThreads()
-            return
-        }
-        if (currentState is ConnectionState.Connecting || currentState is ConnectionState.Reconnecting) {
-            // Handshake in progress — onEach will fire loadThreads when Connected
-            return
-        }
+        if (currentState is ConnectionState.Connected) { loadThreads(); return }
+        if (currentState is ConnectionState.Connecting || currentState is ConnectionState.Reconnecting) return
 
         viewModelScope.launch {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
-            // Subscribe before connecting to avoid missing the first Connected emission
             manager.connect(url, tok)
-            // onEach will fire loadThreads() once Connected is emitted
         }
     }
 
