@@ -135,7 +135,15 @@ fun CodexNavHost() {
             composable(Screen.Settings.route) {
                 SettingsScreen(
                     onBack = { nav.popBackStack() },
-                    onReauth = { nav.navigate(Screen.Login.route) },
+                    onLogout = {
+                        // Navigate to chat root, clearing the entire back-stack.
+                        // When bead aurora-design-system-10op (startup screen) is merged,
+                        // replace Screen.Chat.NEW with Screen.Startup.route here.
+                        nav.navigate(Screen.Chat.NEW) {
+                            popUpTo(0) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    },
                 )
             }
         }
