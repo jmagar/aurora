@@ -61,6 +61,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private var client: CodexClient? = null
     private var pendingMsg: String? = null
 
+    // Buffer for verbose reasoning text — avoids O(n²) String allocations and prevents
+    // unnecessary state emissions on every textDelta. Snapshot to ChatState.rawReasoning
+    // only on turn/completed or when the UI opts in to display it.
+    private val rawReasoningBuffer = StringBuilder()
+
     private val _state = MutableStateFlow(ChatState())
     val state: StateFlow<ChatState> = _state.asStateFlow()
 
@@ -84,6 +89,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     fun send(text: String) {
         val c = client ?: return
         val tid = _state.value.threadId
+        rawReasoningBuffer.clear()
         _state.update { s ->
             s.copy(
                 msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text),
@@ -152,6 +158,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         val tid = _state.value.threadId ?: return
         val idx = _state.value.msgs.indexOfFirst { it.id == editing.id }
         val trimmed = if (idx >= 0) _state.value.msgs.take(idx) else _state.value.msgs
+        rawReasoningBuffer.clear()
         _state.update { s ->
             s.copy(
                 msgs = trimmed,
@@ -246,7 +253,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
             // Turn lifecycle
             "turn/started" -> _state.update { it.copy(thinking = true, assistantId = null) }
-            "turn/completed" -> _state.update { it.copy(thinking = false, assistantId = null) }
+            "turn/completed" -> {
+                // Snapshot buffered raw reasoning to state once at turn end (avoids per-delta emissions)
+                val raw = rawReasoningBuffer.toString()
+                _state.update { it.copy(thinking = false, assistantId = null, rawReasoning = raw) }
+            }
 
             // Item lifecycle — track command executions as tool calls
             "item/started" -> {
@@ -294,10 +305,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
 
-            // Raw verbose reasoning text — accumulate but do not display in summary UI
+            // Raw verbose reasoning text — buffer without emitting state (not rendered in UI).
+            // Snapshot to ChatState.rawReasoning when the turn completes.
             "item/reasoning/textDelta" -> {
                 val delta = params?.get("delta")?.jsonPrimitive?.content ?: return
-                _state.update { s -> s.copy(rawReasoning = s.rawReasoning + delta) }
+                rawReasoningBuffer.append(delta)
             }
 
             // Feature 3: Available commands from server
