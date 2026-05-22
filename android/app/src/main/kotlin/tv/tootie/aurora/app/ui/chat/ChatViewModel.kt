@@ -3,6 +3,7 @@ package tv.tootie.aurora.app.ui.chat
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import tv.tootie.aurora.app.codex.CodexClient
@@ -31,6 +33,16 @@ data class ChatState(
     val connected: Boolean = false,
     val error: String? = null,
     val assistantId: String? = null,
+    // Feature 1: Model + Reasoning selectors
+    val models: List<ModelOption> = emptyList(),
+    val selectedModel: String = "gpt-5.5",
+    val selectedEffort: String = "medium",
+    // Feature 2: Reactions + Edit
+    val reactions: Map<String, Set<String>> = emptyMap(),
+    val editingMessage: ChatMsg? = null,
+    val actionsTarget: ChatMsg? = null,
+    // Feature 3: @Mention / slash commands
+    val availableCommands: List<String> = emptyList(),
 )
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -50,6 +62,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 c.messages.onEach { handle(it) }.launchIn(this)
             }
             _state.update { it.copy(connected = true, threadId = if (threadId != "new") threadId else null) }
+            // Fetch available models after handshake completes
+            delay(500)
+            fetchModels()
         }
     }
 
@@ -68,7 +83,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val model = settings.model.first()
                 c.startThread(model)
             } else {
-                c.startTurn(tid, text)
+                c.startTurn(tid, text,
+                    model = _state.value.selectedModel,
+                    effort = _state.value.selectedEffort)
             }
         }
     }
@@ -79,12 +96,90 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(thinking = false) }
     }
 
+    // Feature 1: Model + Reasoning selectors
+    fun selectModel(id: String) {
+        val effort = _state.value.models.find { it.id == id }?.defaultEffort ?: "medium"
+        _state.update { it.copy(selectedModel = id, selectedEffort = effort) }
+    }
+
+    fun selectEffort(effort: String) {
+        _state.update { it.copy(selectedEffort = effort) }
+    }
+
+    private fun fetchModels() {
+        client?.listModels()
+    }
+
+    // Feature 2: Message reactions + edit
+    fun showActions(msg: ChatMsg) = _state.update { it.copy(actionsTarget = msg) }
+    fun dismissActions() = _state.update { it.copy(actionsTarget = null) }
+
+    fun toggleReaction(msgId: String, emoji: String) {
+        _state.update { s ->
+            val current = s.reactions[msgId] ?: emptySet()
+            val updated = if (emoji in current) current - emoji else current + emoji
+            s.copy(reactions = s.reactions + (msgId to updated))
+        }
+    }
+
+    fun startEdit(msg: ChatMsg) {
+        _state.update { it.copy(editingMessage = msg, actionsTarget = null) }
+    }
+
+    fun cancelEdit() = _state.update { it.copy(editingMessage = null) }
+
+    fun sendEdit(newText: String) {
+        val editing = _state.value.editingMessage ?: return
+        val tid = _state.value.threadId ?: return
+        val idx = _state.value.msgs.indexOfFirst { it.id == editing.id }
+        val trimmed = if (idx >= 0) _state.value.msgs.take(idx) else _state.value.msgs
+        _state.update { s ->
+            s.copy(
+                msgs = trimmed,
+                editingMessage = null,
+                thinking = true,
+                toolCalls = emptyList(),
+                reasoning = emptyList(),
+            )
+        }
+        viewModelScope.launch {
+            client?.startTurn(tid, newText,
+                model = _state.value.selectedModel,
+                effort = _state.value.selectedEffort)
+        }
+    }
+
     private fun handle(msg: RpcMessage) {
         val params = msg.params?.jsonObject
         val result = msg.result?.jsonObject
         when (msg.method) {
-            // Null method = response to one of our requests (thread/start or turn/start)
+            // Null method = response to one of our requests
             null -> {
+                // Check if this is a model/list response: result has "data" array
+                val modelData = result?.get("data")?.jsonArray
+                if (modelData != null) {
+                    val options = modelData.mapNotNull { elem ->
+                        val obj = elem.jsonObject
+                        val id = obj["id"]?.jsonPrimitive?.content ?: return@mapNotNull null
+                        val displayName = obj["displayName"]?.jsonPrimitive?.content ?: id
+                        val defaultEffort = obj["defaultReasoningEffort"]?.jsonPrimitive?.content ?: "medium"
+                        val efforts = obj["supportedReasoningEfforts"]?.jsonArray?.mapNotNull { e ->
+                            val ev = e.jsonObject
+                            val v = ev["reasoningEffort"]?.jsonPrimitive?.content ?: return@mapNotNull null
+                            val d = ev["description"]?.jsonPrimitive?.content ?: ""
+                            ReasoningEffortOption(v, d)
+                        } ?: emptyList()
+                        ModelOption(id, displayName, efforts, defaultEffort)
+                    }
+                    if (options.isNotEmpty()) {
+                        _state.update { s ->
+                            val defaultEffort = options.find { it.id == s.selectedModel }?.defaultEffort ?: "medium"
+                            s.copy(models = options, selectedEffort = defaultEffort)
+                        }
+                    }
+                    return
+                }
+
                 // thread/start response: result.thread.id
                 val tid = result
                     ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
@@ -92,12 +187,16 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     _state.update { it.copy(threadId = tid) }
                     pendingMsg?.let { text ->
                         pendingMsg = null
-                        viewModelScope.launch { client?.startTurn(tid, text) }
+                        viewModelScope.launch {
+                            client?.startTurn(tid, text,
+                                model = _state.value.selectedModel,
+                                effort = _state.value.selectedEffort)
+                        }
                     }
                 }
             }
 
-            // Agent text streaming — actual event name from codex app-server
+            // Agent text streaming
             "item/agentMessage/delta" -> {
                 val delta = params?.get("delta")?.jsonPrimitive?.content ?: return
                 val itemId = params["itemId"]?.jsonPrimitive?.content
@@ -128,7 +227,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val item = params?.get("item")?.jsonObject ?: return
                 val id = item["id"]?.jsonPrimitive?.content ?: return
                 val type = item["type"]?.jsonPrimitive?.content
-                // For agentMessage items, clear the current assistant ID so next message gets a fresh one
                 if (type == "agentMessage") {
                     _state.update { it.copy(assistantId = null) }
                     return
@@ -151,6 +249,16 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     val lines = s.reasoning.toMutableList()
                     if (lines.isEmpty()) lines.add(delta) else lines[lines.lastIndex] += delta
                     s.copy(reasoning = lines)
+                }
+            }
+
+            // Feature 3: Available commands from server
+            "session/update" -> {
+                val commands = params?.get("availableCommands")?.jsonArray
+                if (commands != null) {
+                    _state.update { it.copy(availableCommands = commands.mapNotNull { c ->
+                        c.jsonObject["name"]?.jsonPrimitive?.content
+                    }) }
                 }
             }
 

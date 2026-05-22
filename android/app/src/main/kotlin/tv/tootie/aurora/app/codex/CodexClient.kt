@@ -72,13 +72,20 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
-    fun startTurn(threadId: String, text: String, model: String? = null): Int {
+    fun startTurn(threadId: String, text: String, model: String? = null, effort: String? = null): Int {
         val id = ids.incrementAndGet()
         send("turn/start", buildJsonObject {
             put("threadId", threadId)
             put("input", buildJsonArray { add(buildJsonObject { put("type", "text"); put("text", text) }) })
             model?.let { put("model", it) }
+            effort?.let { put("effort", it) }
         }, id)
+        return id
+    }
+
+    fun listModels(): Int {
+        val id = ids.incrementAndGet()
+        send("model/list", JsonObject(emptyMap()), id)
         return id
     }
 
