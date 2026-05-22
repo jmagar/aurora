@@ -128,9 +128,11 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setCurrentThread(threadId: String?) {
-        _state.update { it.copy(currentThreadId = threadId) }
+        _state.update { it.copy(currentThreadId = threadId, currentGoal = null) }
         if (threadId != null) {
             manager.getGoal(threadId) { response ->
+                // Guard: ignore stale callbacks if the user switched threads
+                if (_state.value.currentThreadId != threadId) return@getGoal
                 val goalObj = response.result?.jsonObject ?: return@getGoal
                 val objective = goalObj["objective"]?.jsonPrimitive?.contentOrNull ?: return@getGoal
                 val status = goalObj["status"]?.jsonPrimitive?.contentOrNull ?: "active"
@@ -138,8 +140,6 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
                 val tokensUsed = goalObj["tokensUsed"]?.jsonPrimitive?.intOrNull ?: 0
                 _state.update { it.copy(currentGoal = ThreadGoal(objective, status, tokenBudget, tokensUsed)) }
             }
-        } else {
-            _state.update { it.copy(currentGoal = null) }
         }
     }
 
@@ -175,11 +175,13 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             val result = response.result ?: return@listMcpServers
             // Try result.servers array first, then treat result itself as array
             val servers = runCatching { result.jsonObject["servers"]?.jsonArray }.getOrNull()
-                ?: runCatching { result.jsonArray }.getOrNull()?.takeIf { it.isNotEmpty() }
+                ?: runCatching { result.jsonArray }.getOrNull()
                 ?: run {
                     Log.w(TAG, "unexpected mcpServerStatus shape: $result")
                     return@listMcpServers
                 }
+            // Empty array = no servers configured — update state to reflect that
+            if (servers.isEmpty()) { _state.update { it.copy(mcpServers = emptyList()) }; return@listMcpServers }
             val parsed = servers.mapNotNull { elem ->
                 val obj = elem.jsonObject
                 val name = obj["name"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null

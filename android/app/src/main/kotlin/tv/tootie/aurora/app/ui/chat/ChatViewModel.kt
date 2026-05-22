@@ -67,7 +67,7 @@ data class FileChangeItem(
  * Strips terminal escape sequences, control characters, and Unicode Bidi overrides
  * from server-supplied strings before storing in UI state.
  */
-private fun String.sanitizeForDisplay(): String {
+internal fun String.sanitizeForDisplay(): String {
     val ESC = "\u001B"
     return this
         .replace(Regex("$ESC\\[[0-?]*[ -/]*[@-~]"), "")  // CSI sequences
@@ -136,6 +136,14 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     fun connect(threadId: String) {
         _state.update { it.copy(threadId = if (threadId != "new") threadId else null) }
 
+        // Always run session-restore logic regardless of connection state
+        if (threadId == "new") {
+            viewModelScope.launch {
+                val saved = settings.savedThreadId.first()
+                if (saved != null) tryResumeThread(saved)
+            }
+        }
+
         val currentState = manager.connectionState.value
         if (currentState is ConnectionState.Connected || currentState is ConnectionState.Connecting) {
             if (_state.value.models.isEmpty()) {
@@ -149,28 +157,27 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
             manager.connect(url, tok)
-            manager.connectionState.first { it is ConnectionState.Connected }
+            // Escape on Error or Disconnected — don't hang forever if the server is unreachable
+            val reached = manager.connectionState.first {
+                it is ConnectionState.Connected || it is ConnectionState.Error ||
+                it is ConnectionState.Disconnected
+            }
+            if (reached !is ConnectionState.Connected) return@launch
             fetchModels()
             fetchSkills()
-
-            // On fresh connect with no explicit threadId, try to resume the last saved thread.
-            // If threadId is explicit (not "new"), it was already set above via _state.update —
-            // the user navigated to a specific session, no resume needed.
-            if (threadId == "new") {
-                val saved = settings.savedThreadId.first()
-                if (saved != null) {
-                    tryResumeThread(saved)
-                }
-                // If saved == null, a new thread is created lazily on the first send()
-            }
         }
     }
 
     private fun tryResumeThread(threadId: String) {
         manager.send("thread/resume", buildJsonObject { put("threadId", threadId) }) { response ->
-            if (response.error != null) {
-                // Thread expired or is closing (e.g. -32600) — clear saved id and start fresh
-                viewModelScope.launch { settings.clearThreadId() }
+            val errCode = response.error?.code
+            if (errCode != null) {
+                // -32600 = thread expired/invalid — clear saved id and start fresh.
+                // Any other error (transient timeout, overload) is left so the user
+                // can resume once reconnected.
+                if (errCode == -32600) {
+                    viewModelScope.launch { settings.clearThreadId() }
+                }
             } else {
                 _state.update { it.copy(threadId = threadId) }
             }
@@ -287,12 +294,14 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     fun steer(text: String) {
         val turnId = _state.value.activeTurnId ?: return
         val threadId = _state.value.threadId ?: return
-        val userMsg = ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer] $text")
-        _state.update { it.copy(msgs = it.msgs + userMsg, showSteerSheet = false) }
+        _state.update { it.copy(showSteerSheet = false) }
         manager.steerTurn(threadId, text, turnId) { response ->
             if (response.error != null) {
-                // -32600 "no active turn to steer" — dismiss silently
-                _state.update { it.copy(showSteerSheet = false) }
+                // Steer rejected (turn may have completed) — no message appended
+            } else {
+                // Server accepted the steer: add user message to transcript
+                val userMsg = ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer] $text")
+                _state.update { s -> s.copy(msgs = s.msgs + userMsg) }
             }
         }
     }
@@ -431,9 +440,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 // minimizing ChatScreen changes in this bead.
                 val deltaChannel = manager.getDeltaChannel(turnId)
                 viewModelScope.launch {
-                    var accumulated = ""
+                    val sb = StringBuilder()
                     for (delta in deltaChannel) {
-                        accumulated += delta
+                        sb.append(delta)
+                        val accumulated = sb.toString()
                         _state.update { s ->
                             s.copy(msgs = s.msgs.map { m ->
                                 if (m.id == msgId) m.copy(content = accumulated) else m

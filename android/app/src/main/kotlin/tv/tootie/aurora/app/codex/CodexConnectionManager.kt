@@ -306,6 +306,8 @@ class CodexConnectionManager(context: Context) {
         closeAllDeltaChannels()
         pendingRequests.clear()
         serverInitiatedRequests.clear()
+        // Drain and discard the offline queue so stale messages don't replay on next connect
+        while (outboundQueue.tryReceive().isSuccess) { /* discard */ }
         currentWebSocket?.close(1000, "bye")
         currentWebSocket = null
         _connectionState.value = ConnectionState.Disconnected
@@ -379,17 +381,29 @@ class CodexConnectionManager(context: Context) {
         text: String,
         expectedTurnId: String,
         callback: ((RpcMessage) -> Unit)? = null
-    ): Int = send(
-        "turn/steer",
-        buildJsonObject {
-            put("threadId", threadId)
-            put("input", buildJsonArray {
-                add(buildJsonObject { put("type", "text"); put("text", text) })
+    ): Int {
+        val id = clientIdCounter.incrementAndGet()
+        if (callback != null) pendingRequests["c-$id"] = callback
+        val jsonStr = buildJsonObject {
+            put("method", "turn/steer")
+            put("id", id)
+            put("params", buildJsonObject {
+                put("threadId", threadId)
+                put("input", buildJsonArray {
+                    add(buildJsonObject { put("type", "text"); put("text", text) })
+                })
+                put("expectedTurnId", expectedTurnId)
             })
-            put("expectedTurnId", expectedTurnId)
-        },
-        callback
-    )
+        }.toString()
+        val ws = currentWebSocket
+        if (ws != null && _connectionState.value is ConnectionState.Connected) {
+            ws.send(jsonStr)
+        } else {
+            // expectedTurnId is stale after reconnect — discard rather than replay
+            outboundQueue.trySend(QueuedMessage(QueuedMessageType.DISCARD_ON_RECONNECT, jsonStr, ""))
+        }
+        return id
+    }
 
     fun setGoal(threadId: String, objective: String, tokenBudget: Int? = null, callback: ((RpcMessage) -> Unit)? = null): Int =
         send("thread/goal/set", buildJsonObject {

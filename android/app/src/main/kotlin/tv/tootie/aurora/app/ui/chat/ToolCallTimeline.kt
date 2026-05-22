@@ -90,10 +90,11 @@ private fun McpToolCallRow(call: McpToolCallItem) {
 
             // Status indicator
             when (call.status) {
-                "inProgress" -> CircularProgressIndicator(
-                    modifier = Modifier.size(12.dp),
-                    strokeWidth = 1.dp,
-                    color = aurora.accentViolet,
+                "done" -> Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    modifier = Modifier.size(13.dp),
+                    tint = aurora.success,
                 )
                 "failed" -> Icon(
                     Icons.Default.Error,
@@ -101,11 +102,11 @@ private fun McpToolCallRow(call: McpToolCallItem) {
                     modifier = Modifier.size(13.dp),
                     tint = aurora.error,
                 )
-                else -> Icon(
-                    Icons.Default.CheckCircle,
-                    contentDescription = null,
-                    modifier = Modifier.size(13.dp),
-                    tint = aurora.success,
+                else -> CircularProgressIndicator(
+                    // "inProgress" or any unknown status — show as in-progress
+                    modifier = Modifier.size(12.dp),
+                    strokeWidth = 1.dp,
+                    color = aurora.accentViolet,
                 )
             }
 
@@ -131,7 +132,7 @@ private fun McpToolCallRow(call: McpToolCallItem) {
             ) {
                 if (call.arguments.isNotBlank()) {
                     Text(
-                        text = "args: ${call.arguments.take(300)}",
+                        text = "args: ${call.arguments.sanitizeForDisplay().take(300)}",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,
@@ -141,7 +142,7 @@ private fun McpToolCallRow(call: McpToolCallItem) {
                 }
                 if (call.output.isNotBlank()) {
                     Text(
-                        text = call.output.take(500),
+                        text = call.output.sanitizeForDisplay().take(500),
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,
@@ -152,7 +153,7 @@ private fun McpToolCallRow(call: McpToolCallItem) {
                 }
                 if (call.error != null) {
                     Text(
-                        text = call.error,
+                        text = call.error.sanitizeForDisplay(),
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,

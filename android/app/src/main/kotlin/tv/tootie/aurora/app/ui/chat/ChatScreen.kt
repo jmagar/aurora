@@ -425,14 +425,17 @@ fun ChatScreen(
         val description = descParts.joinToString("\n\n").ifBlank {
             if (approval.type == "command") "A command is requesting approval." else "File changes are requesting approval."
         }
+        // Use server-provided decision values (first = allow, second = deny)
+        val allowDecision = approval.availableDecisions.getOrElse(0) { "accept" }
+        val denyDecision = approval.availableDecisions.getOrElse(1) { "decline" }
         AuroraPermissionPrompt(
             onDismissRequest = { /* don't dismiss without decision */ },
             title = title,
             description = description,
-            onAllow = { vm.approveToolCall("accept") },
-            allowLabel = "Allow",
-            denyLabel = "Deny",
-            onDeny = { vm.approveToolCall("decline") },
+            onAllow = { vm.approveToolCall(allowDecision) },
+            allowLabel = allowDecision.replaceFirstChar { it.uppercase() },
+            denyLabel = denyDecision.replaceFirstChar { it.uppercase() },
+            onDeny = { vm.approveToolCall(denyDecision) },
         )
     }
 }

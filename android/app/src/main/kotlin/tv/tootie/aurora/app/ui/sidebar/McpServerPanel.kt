@@ -128,12 +128,11 @@ private fun McpServerRow(server: McpServerInfo) {
             }
         }
 
-        if (expanded && server.tools.isNotEmpty()) {
-            AnimatedVisibility(
-                visible = expanded,
-                enter = expandVertically(),
-                exit = shrinkVertically(),
-            ) {
+        AnimatedVisibility(
+            visible = expanded && server.tools.isNotEmpty(),
+            enter = expandVertically(),
+            exit = shrinkVertically(),
+        ) {
                 Column(modifier = Modifier.padding(start = 14.dp, top = 4.dp)) {
                     server.tools.take(10).forEach { tool ->
                         Text(
