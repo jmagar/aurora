@@ -20,6 +20,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import tv.tootie.aurora.app.ui.chat.SelectedItem
 import java.util.concurrent.atomic.AtomicInteger
 
 private const val TAG = "CodexClient"
@@ -103,15 +104,60 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
-    fun startTurn(threadId: String, text: String, model: String? = null, effort: String? = null): Int {
+    /**
+     * Builds the raw JSON string for a `turn/start` request.
+     * Extracted as `internal` so unit tests can assert on the serialised frame
+     * without a real WebSocket connection.
+     */
+    internal fun buildTurnFrame(
+        threadId: String,
+        text: String,
+        attachments: List<SelectedItem>,
+        model: String?,
+        effort: String?,
+    ): String {
         val id = ids.incrementAndGet()
-        send("turn/start", buildJsonObject {
-            put("threadId", threadId)
-            put("input", buildJsonArray { add(buildJsonObject { put("type", "text"); put("text", text) }) })
-            model?.let { put("model", it) }
-            effort?.let { put("effort", it) }
-        }, id)
-        return id
+        return Json.encodeToString(
+            buildJsonObject {
+                put("method", "turn/start")
+                put("id", id)
+                put("params", buildJsonObject {
+                    put("threadId", threadId)
+                    put("input", buildJsonArray {
+                        add(buildJsonObject { put("type", "text"); put("text", text) })
+                        attachments.forEach { item ->
+                            when (item) {
+                                is SelectedItem.Skill -> add(buildJsonObject {
+                                    put("type", "skill")
+                                    put("name", item.name)
+                                    put("path", item.path)
+                                })
+                                is SelectedItem.Mention -> add(buildJsonObject {
+                                    put("type", "mention")
+                                    put("name", item.name)
+                                    put("path", item.path)
+                                })
+                            }
+                        }
+                    })
+                    model?.let { put("model", it) }
+                    effort?.let { put("effort", it) }
+                })
+            }
+        )
+    }
+
+    fun startTurn(
+        threadId: String,
+        text: String,
+        attachments: List<SelectedItem> = emptyList(),
+        model: String? = null,
+        effort: String? = null,
+    ): Int {
+        val frame = buildTurnFrame(threadId, text, attachments, model, effort)
+        ws?.send(frame)
+        // ids was already incremented inside buildTurnFrame; return current value
+        return ids.get()
     }
 
     fun listModels(): Int {

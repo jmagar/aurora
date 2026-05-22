@@ -31,6 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
+/** Structured item produced when the user confirms a @mention or /skill selection. */
+sealed class SelectedItem {
+    /** A skill invocation — maps to UserInput {type:"skill", name, path} */
+    data class Skill(val name: String, val path: String) : SelectedItem()
+    /** A @mention — maps to UserInput {type:"mention", name, path} */
+    data class Mention(val name: String, val path: String) : SelectedItem()
+}
+
 enum class MentionKind { Skill, Command }
 
 data class MentionItem(
@@ -58,7 +66,7 @@ private fun kindColor(kind: MentionKind): Color {
 fun MentionSuggestionList(
     items: List<MentionItem>,
     query: String,
-    onSelect: (MentionItem) -> Unit,
+    onSelect: (MentionItem, SelectedItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val aurora = LocalAuroraColors.current
@@ -117,11 +125,23 @@ fun MentionSuggestionList(
 }
 
 @Composable
-private fun MentionRow(item: MentionItem, onSelect: (MentionItem) -> Unit) {
+private fun MentionRow(item: MentionItem, onSelect: (MentionItem, SelectedItem) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(role = Role.Button) { onSelect(item) }
+            .clickable(role = Role.Button) {
+                val structured: SelectedItem = when (item.kind) {
+                    MentionKind.Skill -> SelectedItem.Skill(
+                        name = item.trigger.removePrefix("@"),
+                        path = item.trigger.removePrefix("@"),   // server resolves by name; path mirrors name until server provides canonical path
+                    )
+                    MentionKind.Command -> SelectedItem.Mention(
+                        name = item.trigger.removePrefix("/"),
+                        path = item.trigger.removePrefix("/"),
+                    )
+                }
+                onSelect(item, structured)
+            }
             .padding(horizontal = 12.dp, vertical = 9.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),

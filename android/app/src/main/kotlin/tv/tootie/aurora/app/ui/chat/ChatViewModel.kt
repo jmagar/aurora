@@ -58,6 +58,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
     private val repo: CodexRepository = (app as CodexApp).repository
     private var pendingMsg: String? = null
+    private var pendingAttachments: List<SelectedItem> = emptyList()
 
     // Buffer for verbose reasoning text — avoids O(n²) String allocations and prevents
     // unnecessary state emissions on every textDelta. Snapshot to ChatState.rawReasoning
@@ -91,7 +92,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun send(text: String) {
+    fun send(text: String, attachments: List<SelectedItem> = emptyList()) {
         val tid = _state.value.threadId
         rawReasoningBuffer.clear()
         _state.update { s ->
@@ -105,10 +106,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             if (tid == null) {
                 pendingMsg = text
+                pendingAttachments = attachments
                 val model = settings.model.first()
                 repo.startThread(model)
             } else {
                 repo.startTurn(tid, text,
+                    attachments = attachments,
                     model = _state.value.selectedModel,
                     effort = _state.value.selectedEffort)
             }
@@ -149,7 +152,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun cancelEdit() = _state.update { it.copy(editingMessage = null) }
 
-    fun sendEdit(newText: String) {
+    fun sendEdit(newText: String, attachments: List<SelectedItem> = emptyList()) {
         val editing = _state.value.editingMessage ?: return
         val tid = _state.value.threadId ?: return
         val idx = _state.value.msgs.indexOfFirst { it.id == editing.id }
@@ -167,6 +170,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
         viewModelScope.launch {
             repo.startTurn(tid, newText,
+                attachments = attachments,
                 model = _state.value.selectedModel,
                 effort = _state.value.selectedEffort)
         }
@@ -222,9 +226,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (tid != null && _state.value.threadId == null) {
                     _state.update { it.copy(threadId = tid) }
                     pendingMsg?.let { text ->
+                        val attachments = pendingAttachments
                         pendingMsg = null
+                        pendingAttachments = emptyList()
                         viewModelScope.launch {
                             repo.startTurn(tid, text,
+                                attachments = attachments,
                                 model = _state.value.selectedModel,
                                 effort = _state.value.selectedEffort)
                         }
