@@ -1,5 +1,5 @@
 /**
- * Aurora Kotlin Component Library — Phase 1 + Phase 2 complete
+ * Aurora Kotlin Component Library — All 3 Phases Complete (107 files)
  *
  * All components live in package [tv.tootie.aurora.components].
  *
@@ -107,22 +107,62 @@
  * AuroraTestResults    — Test suite results list with pass/fail counts and per-test icons
  * AuroraStackTrace     — Scrollable monospace error stack trace with optional error message header
  *
- * ── Phase 3 Batch F: AI Visual / Utility ───────────────────────────────────
+ * ── Phase 3 Batch A: AI Identity ──────────────────────────────────────────
  *
- * AuroraAiShimmer          — Animated violet sweep shimmer placeholder (AI loading state)
- * AuroraToolCallList       — Expandable tool call trace with status dot + code block details
- * AuroraAiImage            — AI-generated image display with Aurora border and optional caption
- * AuroraCanvasView         — Topology canvas: circles (nodes) + lines (edges) with text labels
- * AuroraConnection         — Two-node connection label (from → to) with active/idle tinting
+ * AuroraAgentRow       — Agent status row with pulsing violet dot (Idle/Running/Waiting/Error/Done)
+ * AuroraAiPanel        — Titled panel with violet border + surface for AI-context content
+ * AuroraPersona        — Avatar + name + role row (role in violet)
+ * AuroraModelSelector  — Violet-accented AI model picker dropdown
+ * AuroraVoiceSelector  — TTS voice picker (delegates to AuroraModelSelector)
+ * AuroraMicSelector    — Microphone input device selector
+ * AuroraPromptInput    — Multi-line prompt field with violet cursor + send button
+ *
+ * ── Phase 3 Batch B: Conversation ─────────────────────────────────────────
+ *
+ * AuroraConversation   — LazyColumn message list with auto-scroll + screen-reader semantics
+ * AuroraMessage        — Chat bubble: user=cyan right, assistant=violet left
+ * AuroraInlineCitation — Superscript citation link in violet surface
+ * AuroraSnippet        — Inline monospace code chip
+ * AuroraSources        — Horizontal scrollable source/citation pill row
+ * AuroraOpenInChat     — Icon button to open artifact in full chat view
+ *
+ * ── Phase 3 Batch C: Reasoning / Output ───────────────────────────────────
+ *
+ * AuroraThinking       — Animated pulsing-dots thinking indicator (violet)
+ * AuroraChainOfThought — Expandable step-by-step reasoning trace (violet surface)
+ * AuroraReasoning      — Thin wrapper over AuroraChainOfThought
+ * AuroraArtifact       — Artifact panel with toolbar (copy, expand, language label)
+ * AuroraAskUserQuestion — Multiple-choice agent question prompt with radio + submit
+ * AuroraControls       — Agent control buttons (stop/pause/retry)
+ *
+ * ── Phase 3 Batch D: Workflow ──────────────────────────────────────────────
+ *
+ * AuroraTaskItem       — Single task row: checkbox + status pill (Pending/InProgress/Done/Blocked)
+ * AuroraPlanList       — Bordered plan container wrapping AuroraTaskItems
+ * AuroraQueueList      — Vertical queue with Syncing/Queued status indicators
+ * AuroraCheckpoint     — Step/milestone row with Pending/Done/Failed icon
+ * AuroraCommitRow      — Git commit: hash snippet + message + author + timestamp
+ * AuroraTestResults    — Test suite results with pass/fail count + per-test icons
+ * AuroraStackTrace     — Scrollable monospace error stack trace
+ *
+ * ── Phase 3 Batch E: AI Elements ──────────────────────────────────────────
+ *
+ * AuroraAudioPlayer    — Play/pause + scrubber + time display
+ * AuroraTranscription  — Live transcription display with confidence bar
+ * AuroraSpeechInput    — Mic toggle button with pulse animation when recording
+ * AuroraSchemaDisplay  — JSON schema property table (name / type / description)
+ * AuroraPackageInfo    — Package name + version + description + license
+ * AuroraSandbox        — Sandbox runtime/env-var info with status indicator
+ * AuroraContextPanel   — Token usage progress bar with warn/error thresholds
+ *
+ * ── Phase 3 Batch F: Visual / Utility ─────────────────────────────────────
+ *
+ * AuroraAiShimmer          — Animated violet shimmer placeholder (AI loading state)
+ * AuroraToolCallList       — Expandable tool call trace with status + code block details
+ * AuroraAiImage            — AI-generated image with Aurora border + optional caption
+ * AuroraCanvasView         — Topology canvas: nodes (circles) + edges (lines) with labels
+ * AuroraConnection         — Two-node connection label (from → to) with active/idle tint
  * AuroraEnvironmentVariables — Key-value env var list with optional value masking
- * AuroraAiEdge             — Small edge label chip for agent topology views (violet when active)
- *
- * ── Pending (Phase 3 — AI Agent Blocks) ─────────────────────────────────────
- * agent, artifact, ask-user-question, audio-player, chain-of-thought,
- * context, controls, conversation, message,
- * inline-citation, mic-selector, model-selector, open-in-chat, package-info,
- * panel, persona, reasoning, sandbox, schema-display,
- * snippet, sources, speech-input, thinking,
- * transcription, voice-selector, prompt-input
+ * AuroraAiEdge             — Edge label chip for topology views (violet when active)
  */
 package tv.tootie.aurora.components

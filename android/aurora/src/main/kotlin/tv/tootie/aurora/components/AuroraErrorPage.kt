@@ -13,6 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
@@ -21,9 +24,15 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * Full-screen error page with icon, title, and optional retry action.
  * Maps to web `error-page`.
  *
- * @param title     Primary headline shown beneath the error icon.
+ * The [title] text carries `semantics { liveRegion = LiveRegionMode.Polite }` so
+ * TalkBack announces it when the error page appears. The icon is decorative
+ * (`contentDescription = null`); the title string carries the announcement.
+ * All user-visible strings are caller-supplied parameters.
+ *
+ * @param title       Primary headline shown beneath the error icon.
+ * @param modifier    Applied to the root [Column].
  * @param description Optional supporting text.
- * @param action    Optional composable slot for a retry button or other CTA.
+ * @param action      Optional composable slot for a retry button or other CTA.
  */
 @Composable
 public fun AuroraErrorPage(
