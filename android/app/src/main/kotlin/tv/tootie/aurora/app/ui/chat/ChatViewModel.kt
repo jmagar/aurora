@@ -63,6 +63,23 @@ data class FileChangeItem(
     val status: String = "pending",
 )
 
+/**
+ * Strips terminal escape sequences, control characters, and Unicode Bidi overrides
+ * from server-supplied strings before storing in UI state.
+ */
+private fun String.sanitizeForDisplay(): String {
+    val ESC = "\u001B"
+    return this
+        .replace(Regex("$ESC\\[[0-?]*[ -/]*[@-~]"), "")  // CSI sequences
+        .replace(Regex("$ESC[\\]PX^_][^$ESC]*(?:$ESC\\\\)?"), "") // OSC/DCS
+        .replace(Regex("$ESC[@-_]"), "")                     // 2-byte ESC sequences
+        .replace(ESC, "")                                    // stray ESC
+        .replace(Regex("[\u0000-\u0008\u000B\u000C\u000E-\u001F]"), "") // C0 (keep \t\n\r)
+        .replace(Regex("[\u0080-\u009F]"), "")            // C1
+        .replace(Regex("[\u200E\u200F\u202A-\u202E\u2066-\u2069]"), "") // Bidi
+        .replace(Regex("[\u200B-\u200D\uFEFF]"), "")     // zero-width + BOM
+}
+
 data class ChatState(
     val threadId: String? = null,
     val msgs: List<ChatMsg> = emptyList(),
@@ -103,9 +120,6 @@ data class ChatState(
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
     private val manager: CodexConnectionManager get() = (getApplication<CodexApp>()).connectionManager
-
-    // Stores pending user message when thread has not been created yet
-    private var _pendingMsg: String? = null
 
     private val _state = MutableStateFlow(ChatState())
     val state: StateFlow<ChatState> = _state.asStateFlow()
@@ -189,22 +203,17 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             if (tid == null) {
                 val model = settings.model.first()
-                _pendingMsg = text
                 manager.startThread(model) { response ->
                     val newTid = response.result?.jsonObject
                         ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
                     if (newTid != null) {
                         _state.update { it.copy(threadId = newTid) }
                         viewModelScope.launch { settings.saveThread(newTid) }
-                        val pending = _pendingMsg
-                        _pendingMsg = null
-                        if (pending != null) {
-                            manager.startTurnWithSkill(
-                                newTid, pending, skillName, skillPath,
-                                _state.value.selectedModel,
-                                _state.value.selectedEffort,
-                            )
-                        }
+                        manager.startTurnWithSkill(
+                            newTid, text, skillName, skillPath,
+                            _state.value.selectedModel,
+                            _state.value.selectedEffort,
+                        )
                     }
                 }
             } else {
@@ -231,22 +240,17 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             if (tid == null) {
                 val model = settings.model.first()
-                _pendingMsg = text
                 manager.startThread(model) { response ->
                     val newTid = response.result?.jsonObject
                         ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
                     if (newTid != null) {
                         _state.update { it.copy(threadId = newTid) }
                         viewModelScope.launch { settings.saveThread(newTid) }
-                        val pending = _pendingMsg
-                        _pendingMsg = null
-                        if (pending != null) {
-                            manager.startTurn(
-                                newTid, pending,
-                                _state.value.selectedModel,
-                                _state.value.selectedEffort
-                            )
-                        }
+                        manager.startTurn(
+                            newTid, text,
+                            _state.value.selectedModel,
+                            _state.value.selectedEffort
+                        )
                     }
                 }
             } else {
@@ -495,11 +499,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             // Approval handlers
             "item/commandExecution/requestApproval" -> {
                 val msgId = msg.id?.jsonPrimitive?.contentOrNull ?: return
-                // Strip ANSI escape codes (ESC + [ ... letter) and Unicode Bidi override chars
                 val rawCommand = params?.get("command")?.jsonPrimitive?.content ?: ""
-                val safeCommand = rawCommand
-                    .replace(Regex("\\[[0-9;]*[a-zA-Z]"), "")
-                    .replace(Regex("[‎-‏‪-‮⁦-⁩]"), "")
+                val safeCommand = rawCommand.sanitizeForDisplay()
                 val reason = params?.get("reason")?.jsonPrimitive?.contentOrNull
                 val decisions = params?.get("availableDecisions")?.jsonArray
                     ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")

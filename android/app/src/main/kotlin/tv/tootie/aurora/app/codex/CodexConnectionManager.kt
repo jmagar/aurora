@@ -219,6 +219,9 @@ class CodexConnectionManager(context: Context) {
     private fun scheduleReconnect() {
         if (isReconnecting.getAndSet(true)) return
         closeAllDeltaChannels()  // close stale channels so mid-turn coroutines exit cleanly
+        // Clear pending callbacks — stale IDs won't match the new connection's response IDs
+        pendingRequests.clear()
+        serverInitiatedRequests.clear()
         val count = retryCount.getAndIncrement()
         val delay = minOf(1000L shl count, 60_000L) + Random.nextLong(0, 500)
         _connectionState.value = ConnectionState.Reconnecting(retryCount.get(), delay)
