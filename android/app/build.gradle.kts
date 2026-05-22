@@ -42,4 +42,6 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.okhttp)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.browser)
+    testImplementation(libs.junit)
 }

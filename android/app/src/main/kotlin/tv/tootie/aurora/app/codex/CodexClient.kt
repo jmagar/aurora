@@ -13,6 +13,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.put
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -27,7 +28,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
     private val http = OkHttpClient()
-    private val ids = AtomicInteger(0)
+    internal val ids = AtomicInteger(0)
     private var ws: WebSocket? = null
 
     private val _msgs = Channel<RpcMessage>(Channel.UNLIMITED)
@@ -69,6 +70,9 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 }))
             }
             override fun onMessage(ws: WebSocket, text: String) {
+                // All server notifications (including "account/login/completed",
+                // "account/login/deviceCode", "turn/started", etc.) flow through
+                // the `messages` Flow as-is. Callers filter by RpcMessage.method.
                 try {
                     val msg: RpcMessage = json.decodeFromString(text)
                     // The server echoes back an "initialized" notification once it
@@ -120,6 +124,62 @@ class CodexClient(private val url: String, private val token: String? = null) {
         val id = ids.incrementAndGet()
         send("skills/list", JsonObject(emptyMap()), id)
         return id
+    }
+
+    /** Send account/login/start with apiKey method. */
+    fun loginWithApiKey(apiKey: String): Int {
+        val id = ids.incrementAndGet()
+        val params = json.encodeToJsonElement(ApiKeyLoginParams(apiKey = apiKey))
+        send("account/login/start", params, id)
+        return id
+    }
+
+    /** Send account/login/start with chatgpt browser-OAuth method. */
+    fun loginWithChatGpt(streamlined: Boolean = false): Int {
+        val id = ids.incrementAndGet()
+        val params = json.encodeToJsonElement(ChatGptLoginParams(codexStreamlinedLogin = streamlined))
+        send("account/login/start", params, id)
+        return id
+    }
+
+    /** Send account/login/start with chatgptDeviceCode method (headless). */
+    fun loginWithDeviceCode(): Int {
+        val id = ids.incrementAndGet()
+        val params = json.encodeToJsonElement(ChatGptDeviceCodeLoginParams())
+        send("account/login/start", params, id)
+        return id
+    }
+
+    /** Send account/login/start with chatgptAuthTokens method (token injection). */
+    fun loginWithAuthTokens(accessToken: String, chatgptAccountId: String): Int {
+        val id = ids.incrementAndGet()
+        val params = json.encodeToJsonElement(
+            ChatGptAuthTokensLoginParams(
+                accessToken = accessToken,
+                chatgptAccountId = chatgptAccountId,
+            )
+        )
+        send("account/login/start", params, id)
+        return id
+    }
+
+    /**
+     * Builds the raw JSON string for an `account/login/start` request.
+     * Extracted as `internal` so unit tests can assert on the serialised frame
+     * without a real WebSocket connection.
+     */
+    internal fun buildLoginFrame(method: LoginMethodType, vararg extras: Pair<String, String>): String {
+        val id = ids.incrementAndGet()
+        return json.encodeToString(
+            buildJsonObject {
+                put("method", "account/login/start")
+                put("id", id)
+                put("params", buildJsonObject {
+                    put("type", method.name)
+                    extras.forEach { (k, v) -> put(k, v) }
+                })
+            }
+        )
     }
 
     fun listThreads(limit: Int = 50): Int {
