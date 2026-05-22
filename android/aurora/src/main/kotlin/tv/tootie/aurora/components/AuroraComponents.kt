@@ -71,8 +71,8 @@
  * AuroraNumberInput    — Numeric spinner: decrement / field / increment
  *
  * Data:
- * AuroraTable          — LazyColumn table with sticky header
- * AuroraDataTable      — Sortable data table with column headers
+ * AuroraTable          — LazyColumn table with sticky header (positional rows, read-only)
+ * AuroraDataTable      — Sortable data table with column headers (keyed-map rows, interactive sort)
  *
  * Layout / Navigation:
  * AuroraCarousel       — HorizontalPager swipe carousel with dot indicators
@@ -97,12 +97,22 @@
  * AuroraErrorPage      — Full-screen error state with retry action
  * AuroraLoginScreen    — Email + password login form
  *
+ * ── Phase 3 Batch D: AI Workflow Blocks ────────────────────────────────────
+ *
+ * AuroraTaskItem       — Single task row: checkbox + status pill (Pending/InProgress/Done/Blocked)
+ * AuroraPlanList       — Bordered plan container wrapping a list of AuroraTaskItems
+ * AuroraQueueList      — Vertical queue of items with running/queued status indicators
+ * AuroraCheckpoint     — Step/milestone row with completion status icon (Pending/Done/Failed)
+ * AuroraCommitRow      — Git commit row: hash snippet + message + optional author + timestamp
+ * AuroraTestResults    — Test suite results list with pass/fail counts and per-test icons
+ * AuroraStackTrace     — Scrollable monospace error stack trace with optional error message header
+ *
  * ── Pending (Phase 3 — AI Agent Blocks) ─────────────────────────────────────
  * agent, artifact, ask-user-question, audio-player, canvas, chain-of-thought,
- * checkpoint, commit, connection, context, controls, conversation, message,
+ * connection, context, controls, conversation, message,
  * inline-citation, mic-selector, model-selector, open-in-chat, package-info,
- * panel, persona, plan, queue, reasoning, sandbox, schema-display, shimmer,
- * snippet, sources, speech-input, stack-trace, task, test-results, thinking,
+ * panel, persona, reasoning, sandbox, schema-display, shimmer,
+ * snippet, sources, speech-input, thinking,
  * tool-calls, transcription, voice-selector, prompt-input
  */
 package tv.tootie.aurora.components
