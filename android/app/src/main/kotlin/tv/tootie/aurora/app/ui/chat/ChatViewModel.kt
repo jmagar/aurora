@@ -36,6 +36,7 @@ data class ChatState(
     val msgs: List<ChatMsg> = emptyList(),
     val toolCalls: List<ToolCall> = emptyList(),
     val reasoning: List<String> = emptyList(),
+    val rawReasoning: String = "",          // verbose reasoning text, accumulated but not shown in summary UI
     val thinking: Boolean = false,
     val connected: Boolean = false,
     val error: String? = null,
@@ -87,6 +88,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             s.copy(
                 msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text),
                 thinking = true, toolCalls = emptyList(), reasoning = emptyList(),
+                rawReasoning = "",
                 skillInvocations = emptyList(),
             )
         }
@@ -157,6 +159,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 thinking = true,
                 toolCalls = emptyList(),
                 reasoning = emptyList(),
+                rawReasoning = "",
             )
         }
         viewModelScope.launch {
@@ -274,14 +277,27 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == itemId) { it.out.append(out); it } else it }) }
             }
 
-            // Reasoning summary streaming
-            "reasoningSummaryTextDelta", "item/reasoning/summaryDelta" -> {
+            // Reasoning summary — extends the current (last) step with streamed characters
+            "item/reasoning/summaryTextDelta" -> {
                 val delta = params?.get("delta")?.jsonPrimitive?.content ?: return
                 _state.update { s ->
                     val lines = s.reasoning.toMutableList()
                     if (lines.isEmpty()) lines.add(delta) else lines[lines.lastIndex] += delta
                     s.copy(reasoning = lines)
                 }
+            }
+
+            // Reasoning summary — a new summary part begins; append a fresh step
+            "item/reasoning/summaryPartAdded" -> {
+                _state.update { s ->
+                    s.copy(reasoning = s.reasoning + "")
+                }
+            }
+
+            // Raw verbose reasoning text — accumulate but do not display in summary UI
+            "item/reasoning/textDelta" -> {
+                val delta = params?.get("delta")?.jsonPrimitive?.content ?: return
+                _state.update { s -> s.copy(rawReasoning = s.rawReasoning + delta) }
             }
 
             // Feature 3: Available commands from server
