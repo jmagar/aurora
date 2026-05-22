@@ -1,0 +1,6 @@
+
+# Build outputs
+app/build/
+audit/build/
+*.apk
+*.aab
