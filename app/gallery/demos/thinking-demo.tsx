@@ -13,6 +13,9 @@ export default function ThinkingDemo() {
         padding: 0,
       }}
     >
+      <p style={{ fontSize: "12px", color: "var(--aurora-text-muted)", marginBottom: "8px", fontWeight: 500 }}>
+        AI reasoning surface — violet marks automation and generated output. Semantic colors (success, error) remain reserved for step outcomes.
+      </p>
       <Thinking
         type="thinking"
         defaultOpen={false}

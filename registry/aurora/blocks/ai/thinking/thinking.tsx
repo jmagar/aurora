@@ -6,7 +6,8 @@ import { Button } from "@/registry/aurora/ui/button"
 
 // Aurora violet tokens represent AI/automation identity.
 // Do not use for semantic state (success/warn/error) — use the semantic token layer for that.
-const AI_ACCENT = "var(--aurora-accent-violet)"
+const AI_ACCENT        = "var(--aurora-accent-violet)"
+const AI_ACCENT_STRONG = "var(--aurora-accent-violet-strong)"
 const PLAN_ROW_BACKGROUND = {
   inprog: "var(--aurora-accent-violet-surface)",
   error: "var(--aurora-error-surface)",
