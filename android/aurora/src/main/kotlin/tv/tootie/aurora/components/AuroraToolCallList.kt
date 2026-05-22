@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,13 +27,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /** Execution state of a single tool invocation. */
 public enum class AuroraToolCallStatus { Running, Done, Error }
 
 /** Data model for one tool call in an agent trace. */
+@Immutable
 public data class AuroraToolCall(
     val id: String,
     val name: String,
@@ -44,16 +50,25 @@ public data class AuroraToolCall(
 /**
  * Expandable tool call trace list. Maps to web AI `tool-calls` block.
  *
- * Each row shows a [AuroraStatusIndicator] dot, an inline [AuroraSnippet] with
+ * Each row shows an [AuroraStatusIndicator] dot, an inline [AuroraSnippet] with
  * the tool name, and a chevron. Tapping expands an [AuroraCodeBlock] for input
  * and output when available.
+ *
+ * **Accessibility:** each row's `contentDescription` is the tool name so TalkBack
+ * focuses on identity. The `stateDescription` carries the execution status
+ * ("Running", "Done", or "Error") per the spec — expansion state is conveyed by
+ * `Role.Button` and the chevron icon.
+ *
+ * **Stability:** [calls] is typed as [ImmutableList] so Compose can skip
+ * recomposition when the list reference is unchanged. Callers should wrap with
+ * `toPersistentList()` from `kotlinx-collections-immutable`.
  *
  * @param calls Ordered list of tool call records to display.
  * @param modifier Modifier applied to the outer [Column].
  */
 @Composable
 public fun AuroraToolCallList(
-    calls: List<AuroraToolCall>,
+    calls: ImmutableList<AuroraToolCall>,
     modifier: Modifier = Modifier,
 ) {
     val aurora = LocalAuroraColors.current
@@ -65,6 +80,11 @@ public fun AuroraToolCallList(
                 AuroraToolCallStatus.Running -> AuroraStatusTone.Syncing
                 AuroraToolCallStatus.Done    -> AuroraStatusTone.Online
                 AuroraToolCallStatus.Error   -> AuroraStatusTone.Error
+            }
+            val statusLabel = when (call.status) {
+                AuroraToolCallStatus.Running -> "Running"
+                AuroraToolCallStatus.Done    -> "Done"
+                AuroraToolCallStatus.Error   -> "Error"
             }
 
             Surface(
@@ -79,11 +99,19 @@ public fun AuroraToolCallList(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(role = Role.Button) { expanded = !expanded }
+                            .semantics {
+                                contentDescription = call.name
+                                stateDescription = statusLabel
+                            }
                             .padding(horizontal = 12.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        AuroraStatusIndicator(tone = statusTone, dotSize = 8.dp)
+                        // Merged into the row's semantics node above — dot is decorative
+                        AuroraStatusIndicator(
+                            tone = statusTone,
+                            dotSize = 8.dp,
+                        )
                         AuroraSnippet(
                             code = call.name,
                             modifier = Modifier.weight(1f),
@@ -91,7 +119,7 @@ public fun AuroraToolCallList(
                         Icon(
                             imageVector = if (expanded) Icons.Default.KeyboardArrowUp
                                           else Icons.Default.KeyboardArrowDown,
-                            contentDescription = if (expanded) "Collapse" else "Expand",
+                            contentDescription = null, // announced via row stateDescription
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }

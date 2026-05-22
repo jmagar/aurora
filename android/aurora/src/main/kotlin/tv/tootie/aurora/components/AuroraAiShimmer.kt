@@ -16,6 +16,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
@@ -26,6 +30,9 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  *
  * An animated sweep runs from [aurora.accentVioletSurface] through a brighter
  * [aurora.accentVioletBorder] highlight and back, giving the AI loading feel.
+ *
+ * The composable announces "Loading" to accessibility services via a polite
+ * live region so screen readers are notified when content is ready.
  */
 @Composable
 public fun AuroraAiShimmer(
@@ -35,6 +42,8 @@ public fun AuroraAiShimmer(
 ) {
     val aurora = LocalAuroraColors.current
 
+    // rememberInfiniteTransition is stable across recompositions — the animation
+    // is NOT restarted when the parent recomposes, because remember caches it.
     val transition = rememberInfiniteTransition(label = "ai-shimmer")
     val progress by transition.animateFloat(
         initialValue = 0f,
@@ -61,6 +70,10 @@ public fun AuroraAiShimmer(
             .fillMaxWidth()
             .height(height)
             .clip(RoundedCornerShape(cornerRadius))
-            .background(shimmerBrush),
+            .background(shimmerBrush)
+            .semantics {
+                contentDescription = "Loading"
+                liveRegion = LiveRegionMode.Polite
+            },
     )
 }

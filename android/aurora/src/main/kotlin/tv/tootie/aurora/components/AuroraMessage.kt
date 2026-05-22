@@ -11,14 +11,29 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 public enum class AuroraMessageRole { User, Assistant, System }
 
+/**
+ * Immutable value type representing a single message in a conversation.
+ *
+ * Annotated [@Immutable] so Compose can skip recomposition of [AuroraMessage] when
+ * the instance is referentially stable — critical for smooth list scrolling.
+ *
+ * @param id        Stable, unique identifier used as the [LazyColumn] item key.
+ * @param role      Sender role; drives alignment, bubble color, and TalkBack prefix.
+ * @param content   Text body of the message.
+ * @param timestamp Optional human-readable timestamp shown below the bubble.
+ */
+@Immutable
 public data class AuroraMessageData(
     val id: String,
     val role: AuroraMessageRole,
@@ -28,8 +43,17 @@ public data class AuroraMessageData(
 
 /**
  * Single conversation message bubble.
- * User: right-aligned cyan bubble. Assistant: left-aligned violet surface.
- * Maps to web AI `message` element.
+ *
+ * Layout:
+ * - User messages: right-aligned, cyan ([MaterialTheme.colorScheme.primary]) bubble.
+ * - Assistant messages: left-aligned, violet surface bubble with avatar.
+ * - System messages: left-aligned, violet surface bubble with "S" avatar.
+ *
+ * Accessibility: the row merges descendants and announces as "You: [content]",
+ * "Assistant: [content]", or "System: [content]" for TalkBack.
+ *
+ * @param data      Message data to display.
+ * @param modifier  Caller-supplied modifier applied to the root [Row].
  */
 @Composable
 public fun AuroraMessage(
@@ -39,15 +63,33 @@ public fun AuroraMessage(
     val aurora = LocalAuroraColors.current
     val isUser = data.role == AuroraMessageRole.User
 
+    val rolePrefix = when (data.role) {
+        AuroraMessageRole.User      -> "You"
+        AuroraMessageRole.Assistant -> "Assistant"
+        AuroraMessageRole.System    -> "System"
+    }
+    val avatarLabel = when (data.role) {
+        AuroraMessageRole.Assistant -> "Assistant"
+        AuroraMessageRole.System    -> "System"
+        AuroraMessageRole.User      -> "You"
+    }
+
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics(mergeDescendants = true) {
+                contentDescription = "$rolePrefix: ${data.content}"
+            },
         horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start,
         verticalAlignment = Alignment.Bottom,
     ) {
         if (!isUser) {
             AuroraAvatar(
-                name = if (data.role == AuroraMessageRole.System) "S" else "A",
+                name = avatarLabel,
                 size = AuroraAvatarSize.Sm,
+                // Avatar label is redundant with the merged row contentDescription —
+                // suppress so TalkBack does not double-announce the sender name.
+                modifier = Modifier.semantics { contentDescription = "" },
             )
         }
 
@@ -69,16 +111,16 @@ public fun AuroraMessage(
                     )
                     .background(
                         if (isUser) MaterialTheme.colorScheme.primary
-                        else aurora.accentVioletSurface
+                        else aurora.accentVioletSurface,
                     )
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 color = if (isUser) MaterialTheme.colorScheme.onPrimary
                         else MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
-            data.timestamp?.let {
+            if (data.timestamp != null) {
                 Text(
-                    text = it,
+                    text = data.timestamp,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 2.dp),
@@ -87,7 +129,11 @@ public fun AuroraMessage(
         }
 
         if (isUser) {
-            AuroraAvatar(name = "U", size = AuroraAvatarSize.Sm)
+            AuroraAvatar(
+                name = "You",
+                size = AuroraAvatarSize.Sm,
+                modifier = Modifier.semantics { contentDescription = "" },
+            )
         }
     }
 }

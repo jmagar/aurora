@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -39,14 +41,21 @@ public data class AuroraCanvasEdge(val fromId: String, val toId: String)
  * Coordinates are in raw canvas pixels (the [Canvas] composable coordinate
  * space). Use [fillMaxSize] or a fixed size modifier to constrain the canvas.
  *
+ * Accessibility: [contentDescription] describes the graph to screen readers.
+ * Because the canvas is a custom drawing surface, TalkBack cannot introspect
+ * its contents — a meaningful description is the only affordance available.
+ *
  * @param nodes List of positioned nodes to render.
  * @param edges Directed edges between node ids.
+ * @param contentDescription Human-readable description of the graph shown,
+ *   e.g. "Agent topology: 3 nodes — Planner → Executor → Reporter".
  * @param modifier Modifier applied to the [Canvas]. Typically includes a size constraint.
  */
 @Composable
 public fun AuroraCanvasView(
     nodes: List<AuroraCanvasNode>,
     edges: List<AuroraCanvasEdge>,
+    contentDescription: String,
     modifier: Modifier = Modifier,
 ) {
     val aurora = LocalAuroraColors.current
@@ -59,7 +68,8 @@ public fun AuroraCanvasView(
 
     Canvas(
         modifier = modifier
-            .border(1.dp, aurora.borderDefault, RoundedCornerShape(8.dp)),
+            .border(1.dp, aurora.borderDefault, RoundedCornerShape(8.dp))
+            .semantics { this.contentDescription = contentDescription },
     ) {
         // Draw edges first so they sit beneath the nodes
         edges.forEach { edge ->

@@ -14,11 +14,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /**
  * Context window usage display. Maps to web AI `context` element.
+ *
+ * Accessibility:
+ * - Root surface is marked [isTraversalGroup] so TalkBack treats it as a unit.
+ * - [label] is marked as a heading so screen readers can jump between panels.
+ * - The progress bar inherits its own built-in semantics from [LinearProgressIndicator].
  */
 @Composable
 public fun AuroraContextPanel(
@@ -38,7 +46,8 @@ public fun AuroraContextPanel(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .border(1.dp, aurora.borderDefault, RoundedCornerShape(8.dp)),
+            .border(1.dp, aurora.borderDefault, RoundedCornerShape(8.dp))
+            .semantics { isTraversalGroup = true },
         shape = RoundedCornerShape(8.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
@@ -48,9 +57,16 @@ public fun AuroraContextPanel(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(label, style = MaterialTheme.typography.labelSmall)
-                Text("$usedTokens / $maxTokens", style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    label,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.semantics { heading() },
+                )
+                Text(
+                    "$usedTokens / $maxTokens",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             LinearProgressIndicator(
                 progress = { fraction },

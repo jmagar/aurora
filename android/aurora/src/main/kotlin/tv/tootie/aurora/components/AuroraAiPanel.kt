@@ -14,12 +14,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /**
  * Titled panel with violet AI identity accent on the header.
  * Maps to web AI `panel` element.
+ *
+ * Accessibility:
+ * - Root surface is marked as a traversal group so TalkBack navigates inside it as a unit.
+ * - The title [Text] is marked as a heading so screen readers can jump between panels.
+ * - [headerTrailing] should contain a close/collapse button with its own [contentDescription].
  */
 @Composable
 public fun AuroraAiPanel(
@@ -34,7 +42,8 @@ public fun AuroraAiPanel(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .border(1.dp, aurora.accentVioletBorder, RoundedCornerShape(10.dp)),
+            .border(1.dp, aurora.accentVioletBorder, RoundedCornerShape(10.dp))
+            .semantics { isTraversalGroup = true },
         shape = RoundedCornerShape(10.dp),
         color = aurora.accentVioletSurface,
     ) {
@@ -51,7 +60,9 @@ public fun AuroraAiPanel(
                     title,
                     style = MaterialTheme.typography.labelMedium,
                     color = aurora.accentViolet,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { heading() },
                 )
                 headerTrailing?.invoke()
             }
