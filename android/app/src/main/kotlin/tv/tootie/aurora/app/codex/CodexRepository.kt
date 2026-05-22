@@ -110,13 +110,7 @@ class CodexRepository {
         scope.launch {
             connectionMutex.withLock {
                 if (client != null) return@withLock
-                Log.d(TAG, "connecting to $url")
-                val c = CodexClient(url, token)
-                client = c
-                c.connect()
-                c.messages
-                    .onEach { demux(it) }
-                    .launchIn(scope)
+                startClientLocked(url, token)
             }
         }
     }
@@ -133,15 +127,21 @@ class CodexRepository {
                 client?.disconnect()
                 client = null
                 pendingKinds.clear()
-                Log.d(TAG, "reconnecting to $url")
-                val c = CodexClient(url, token)
-                client = c
-                c.connect()
-                c.messages
-                    .onEach { demux(it) }
-                    .launchIn(scope)
+                startClientLocked(url, token)
             }
         }
+    }
+
+    /**
+     * Creates, connects, and wires a new [CodexClient]. Must only be called while
+     * holding [connectionMutex] and with [client] already null.
+     */
+    private fun startClientLocked(url: String, token: String?) {
+        Log.d(TAG, "connecting to $url")
+        val c = CodexClient(url, token)
+        client = c
+        c.connect()
+        c.messages.onEach { demux(it) }.launchIn(scope)
     }
 
     /**
