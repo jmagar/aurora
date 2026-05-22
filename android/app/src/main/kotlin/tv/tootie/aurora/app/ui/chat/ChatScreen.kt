@@ -202,6 +202,16 @@ fun ChatScreen(
                 onEffortSelect = vm::selectEffort,
             )
 
+            // Approval policy + reviewer selector bar
+            ApprovalPolicyBar(
+                selectedPolicy = s.selectedApprovalPolicy,
+                granularPolicy = s.granularPolicy,
+                selectedReviewer = s.selectedReviewer,
+                onPolicySelect = vm::selectApprovalPolicy,
+                onGranularUpdate = vm::updateGranularPolicy,
+                onReviewerSelect = vm::selectReviewer,
+            )
+
             // Replace AuroraConversation with a LazyColumn supporting long-press gestures
             val listState = rememberLazyListState()
             LaunchedEffect(s.msgs.size) {

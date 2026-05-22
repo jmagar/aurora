@@ -28,12 +28,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import tv.tootie.aurora.app.CodexApp
+import tv.tootie.aurora.app.codex.ApprovalPolicy
+import tv.tootie.aurora.app.codex.ApprovalsReviewer
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.components.AuroraButton
 import tv.tootie.aurora.components.AuroraButtonVariant
+import tv.tootie.aurora.components.AuroraDropdownMenu
 import tv.tootie.aurora.components.AuroraField
+import tv.tootie.aurora.components.AuroraMenuEntry
 import tv.tootie.aurora.components.AuroraTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,9 +53,21 @@ fun SettingsScreen(
     var url by remember { mutableStateOf("ws://10.0.2.2:4500") }
     var token by remember { mutableStateOf("") }
     var model by remember { mutableStateOf("gpt-5.5") }
+    var approvalPolicyMenuOpen by remember { mutableStateOf(false) }
+    var reviewerMenuOpen by remember { mutableStateOf(false) }
+    var selectedApprovalPolicy by remember { mutableStateOf(ApprovalPolicy.OnRequest) }
+    var selectedReviewer by remember { mutableStateOf(ApprovalsReviewer.User) }
 
     val vm: SettingsViewModel = viewModel()
     val state by vm.state.collectAsStateWithLifecycle()
+
+    // Load saved settings on first render
+    LaunchedEffect(Unit) {
+        url = settings.serverUrl.first()
+        model = settings.model.first()
+        selectedApprovalPolicy = ApprovalPolicy.fromWire(settings.approvalPolicy.first())
+        selectedReviewer = ApprovalsReviewer.fromWire(settings.approvalsReviewer.first())
+    }
 
     // Navigate away when logout completes
     LaunchedEffect(state.pendingEvent) {
@@ -113,11 +130,59 @@ fun SettingsScreen(
                 )
             }
 
+            AuroraField(
+                label = "Approval Policy",
+                description = "Controls when Codex pauses for approval",
+            ) {
+                AuroraDropdownMenu(
+                    entries = ApprovalPolicy.entries.map { policy ->
+                        AuroraMenuEntry.Item(
+                            label = policy.displayName,
+                            onClick = { selectedApprovalPolicy = policy; approvalPolicyMenuOpen = false },
+                        )
+                    },
+                    expanded = approvalPolicyMenuOpen,
+                    onDismissRequest = { approvalPolicyMenuOpen = false },
+                    anchor = {
+                        AuroraButton(
+                            onClick = { approvalPolicyMenuOpen = true },
+                            variant = AuroraButtonVariant.Outlined,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) { Text(selectedApprovalPolicy.displayName) }
+                    },
+                )
+            }
+
+            AuroraField(
+                label = "Approvals Reviewer",
+                description = "Who reviews approval requests",
+            ) {
+                AuroraDropdownMenu(
+                    entries = ApprovalsReviewer.entries.map { reviewer ->
+                        AuroraMenuEntry.Item(
+                            label = reviewer.displayName,
+                            onClick = { selectedReviewer = reviewer; reviewerMenuOpen = false },
+                        )
+                    },
+                    expanded = reviewerMenuOpen,
+                    onDismissRequest = { reviewerMenuOpen = false },
+                    anchor = {
+                        AuroraButton(
+                            onClick = { reviewerMenuOpen = true },
+                            variant = AuroraButtonVariant.Outlined,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) { Text(selectedReviewer.displayName) }
+                    },
+                )
+            }
+
             AuroraButton(
                 onClick = {
                     scope.launch {
                         settings.setServerUrl(url)
                         settings.setModel(model)
+                        settings.setApprovalPolicy(selectedApprovalPolicy.wire)
+                        settings.setApprovalsReviewer(selectedReviewer.wire)
                         val app = ctx.applicationContext as CodexApp
                         app.repository.reconnect(url, token.takeIf { it.isNotBlank() })
                         onBack()

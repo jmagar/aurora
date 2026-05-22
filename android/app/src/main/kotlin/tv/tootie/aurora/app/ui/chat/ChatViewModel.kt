@@ -16,8 +16,11 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import tv.tootie.aurora.app.CodexApp
+import tv.tootie.aurora.app.codex.ApprovalPolicy
+import tv.tootie.aurora.app.codex.ApprovalsReviewer
 import tv.tootie.aurora.app.codex.CodexEvent
 import tv.tootie.aurora.app.codex.CodexRepository
+import tv.tootie.aurora.app.codex.GranularPolicy
 import tv.tootie.aurora.app.codex.PendingAttachment
 import tv.tootie.aurora.app.codex.RpcMessage
 import tv.tootie.aurora.app.data.AppSettings
@@ -55,6 +58,10 @@ data class ChatState(
     val skillInvocations: List<SkillInvocation> = emptyList(),
     // Image attachments pending send
     val pendingAttachments: List<PendingAttachment> = emptyList(),
+    // Approval policy controls
+    val selectedApprovalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
+    val granularPolicy: GranularPolicy = GranularPolicy(),
+    val selectedReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
 )
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -89,12 +96,32 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             val tok = settings.authToken.first()
             repo.connect(url, tok)
             _state.update { it.copy(connected = true, threadId = if (threadId != "new") threadId else null) }
+            // Load global approval defaults from settings
+            val policyWire = settings.approvalPolicy.first()
+            val reviewerWire = settings.approvalsReviewer.first()
+            _state.update { it.copy(
+                selectedApprovalPolicy = ApprovalPolicy.fromWire(policyWire),
+                selectedReviewer = ApprovalsReviewer.fromWire(reviewerWire),
+            ) }
             // Fetch models and skills after handshake completes
             delay(500)
             repo.listModels()
             delay(100)
             repo.listSkills()
         }
+    }
+
+    // Approval policy selectors
+    fun selectApprovalPolicy(policy: ApprovalPolicy) {
+        _state.update { it.copy(selectedApprovalPolicy = policy) }
+    }
+
+    fun updateGranularPolicy(update: GranularPolicy.() -> GranularPolicy) {
+        _state.update { it.copy(granularPolicy = it.granularPolicy.update()) }
+    }
+
+    fun selectReviewer(reviewer: ApprovalsReviewer) {
+        _state.update { it.copy(selectedReviewer = reviewer) }
     }
 
     fun send(text: String, attachments: List<SelectedItem> = emptyList()) {
@@ -128,7 +155,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     attachments = attachments,
                     model = _state.value.selectedModel,
                     effort = _state.value.selectedEffort,
-                    images = images)
+                    images = images,
+                    approvalPolicy = _state.value.selectedApprovalPolicy,
+                    granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
+                        _state.value.granularPolicy else null,
+                    approvalsReviewer = _state.value.selectedReviewer)
             }
         }
     }
@@ -197,7 +228,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             repo.startTurn(tid, newText,
                 attachments = attachments,
                 model = _state.value.selectedModel,
-                effort = _state.value.selectedEffort)
+                effort = _state.value.selectedEffort,
+                approvalPolicy = _state.value.selectedApprovalPolicy,
+                granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
+                    _state.value.granularPolicy else null,
+                approvalsReviewer = _state.value.selectedReviewer)
         }
     }
 
@@ -261,7 +296,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                                 attachments = attachments,
                                 model = _state.value.selectedModel,
                                 effort = _state.value.selectedEffort,
-                                images = images)
+                                images = images,
+                                approvalPolicy = _state.value.selectedApprovalPolicy,
+                                granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
+                                    _state.value.granularPolicy else null,
+                                approvalsReviewer = _state.value.selectedReviewer)
                         }
                     }
                 }

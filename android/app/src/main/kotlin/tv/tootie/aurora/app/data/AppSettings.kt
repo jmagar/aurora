@@ -21,6 +21,9 @@ object Keys {
     val ACCESS_TOKEN = stringPreferencesKey("access_token")
     val CHATGPT_ACCOUNT_ID = stringPreferencesKey("chatgpt_account_id")
     val DEVICE_CODE = stringPreferencesKey("device_code")         // ephemeral; cleared after exchange
+    // Approval policy
+    val APPROVAL_POLICY = stringPreferencesKey("approval_policy")       // wire value; default "on-request"
+    val APPROVALS_REVIEWER = stringPreferencesKey("approvals_reviewer") // wire value; default "user"
 }
 
 class AppSettings(private val ctx: Context) {
@@ -34,6 +37,10 @@ class AppSettings(private val ctx: Context) {
     val apiKey: Flow<String?> = ctx.store.data.map { it[Keys.API_KEY] }
     val accessToken: Flow<String?> = ctx.store.data.map { it[Keys.ACCESS_TOKEN] }
     val chatgptAccountId: Flow<String?> = ctx.store.data.map { it[Keys.CHATGPT_ACCOUNT_ID] }
+
+    // Approval policy flows
+    val approvalPolicy: Flow<String> = ctx.store.data.map { it[Keys.APPROVAL_POLICY] ?: "on-request" }
+    val approvalsReviewer: Flow<String> = ctx.store.data.map { it[Keys.APPROVALS_REVIEWER] ?: "user" }
 
     /** Returns true if enough credentials are stored to attempt connection. */
     val isAuthenticated: Flow<Boolean> = ctx.store.data.map { prefs ->
@@ -58,6 +65,9 @@ class AppSettings(private val ctx: Context) {
     suspend fun setChatgptAccountId(v: String?) = ctx.store.edit {
         if (v != null) it[Keys.CHATGPT_ACCOUNT_ID] = v else it.remove(Keys.CHATGPT_ACCOUNT_ID)
     }
+
+    suspend fun setApprovalPolicy(v: String) = ctx.store.edit { it[Keys.APPROVAL_POLICY] = v }
+    suspend fun setApprovalsReviewer(v: String) = ctx.store.edit { it[Keys.APPROVALS_REVIEWER] = v }
 
     /** Convenience: clears all auth credentials so the app re-shows LoginScreen on next launch. */
     suspend fun clearAuth() = ctx.store.edit {
