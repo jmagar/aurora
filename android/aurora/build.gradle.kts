@@ -37,12 +37,14 @@ val generateAuroraTokens by tasks.registering(Exec::class) {
     workingDir = rootDir.parentFile  // project root (where package.json lives)
     commandLine("pnpm", "run", "tokens:generate")
 
-    // Tell sd.config.mjs where to write AuroraColors.kt — the package subpath must
-    // be included because Style Dictionary writes the file directly at buildPath.
-    environment(
-        "AURORA_TOKENS_OUT",
-        generatedTokensDir.map { it.asFile.resolve("tv/tootie/aurora/tokens").absolutePath },
-    )
+    // Resolve the Provider at execution time (not configuration time) so Gradle
+    // doesn't stringify the Provider object as the env-var value.
+    doFirst {
+        environment(
+            "AURORA_TOKENS_OUT",
+            generatedTokensDir.get().asFile.resolve("tv/tootie/aurora/tokens").absolutePath,
+        )
+    }
 
     inputs.file(rootDir.parentFile.resolve("registry/aurora/styles/aurora.css"))
     inputs.file(rootDir.parentFile.resolve("scripts/export-aurora-tokens.mjs"))
