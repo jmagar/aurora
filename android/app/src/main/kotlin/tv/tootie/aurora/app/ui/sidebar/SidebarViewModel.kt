@@ -73,9 +73,9 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             val obj = elem.jsonObject
             val id = obj["id"]?.jsonPrimitive?.content ?: return@mapNotNull null
             val cwd = obj["cwd"]?.jsonPrimitive?.content ?: ""
-            val name = obj["name"]?.jsonPrimitive?.content
-            val preview = obj["preview"]?.jsonPrimitive?.content ?: "New session"
-            val title = if (!name.isNullOrBlank()) name else preview.take(60)
+            val name = obj["name"]?.jsonPrimitive?.content?.takeIf { it != "null" && it.isNotBlank() }
+            val preview = obj["preview"]?.jsonPrimitive?.content?.takeIf { it != "null" && it.isNotBlank() } ?: "New session"
+            val title = name ?: preview.take(60)
             val updatedAt = obj["updatedAt"]?.jsonPrimitive?.longOrNull ?: 0L
             val isLive = obj["status"]?.jsonObject?.get("type")?.jsonPrimitive?.content == "active"
             SessionItem(id = id, title = title, cwd = cwd, updatedAt = updatedAt, isLive = isLive)
