@@ -15,7 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import tv.tootie.aurora.app.codex.CodexClient
+import tv.tootie.aurora.app.CodexApp
+import tv.tootie.aurora.app.codex.CodexEvent
+import tv.tootie.aurora.app.codex.CodexRepository
 import tv.tootie.aurora.app.codex.RpcMessage
 import tv.tootie.aurora.app.data.AppSettings
 
@@ -41,24 +43,20 @@ data class ChatState(
     val connected: Boolean = false,
     val error: String? = null,
     val assistantId: String? = null,
-    // Feature 1: Model + Reasoning selectors
     val models: List<ModelOption> = emptyList(),
     val selectedModel: String = "gpt-5.5",
     val selectedEffort: String = "medium",
-    // Feature 2: Reactions + Edit
     val reactions: Map<String, Set<String>> = emptyMap(),
     val editingMessage: ChatMsg? = null,
     val actionsTarget: ChatMsg? = null,
-    // Feature 3: @Mention / slash commands
     val availableCommands: List<String> = emptyList(),
     val availableSkills: List<SkillItem> = emptyList(),
-    // Skill hook invocations
     val skillInvocations: List<SkillInvocation> = emptyList(),
 )
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
-    private var client: CodexClient? = null
+    private val repo: CodexRepository = (app as CodexApp).repository
     private var pendingMsg: String? = null
 
     // Buffer for verbose reasoning text — avoids O(n²) String allocations and prevents
@@ -69,25 +67,31 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(ChatState())
     val state: StateFlow<ChatState> = _state.asStateFlow()
 
+    init {
+        // Subscribe to typed flows from the shared repository
+        repo.modelsFlow.onEach { handleModels(it) }.launchIn(viewModelScope)
+        repo.skillsFlow.onEach { handleSkills(it) }.launchIn(viewModelScope)
+        repo.turnEventsFlow.onEach { handle(it.msg) }.launchIn(viewModelScope)
+        repo.errorsFlow.onEach { e ->
+            _state.update { it.copy(error = e.message, thinking = false) }
+        }.launchIn(viewModelScope)
+    }
+
     fun connect(threadId: String) {
         viewModelScope.launch {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
-            client = CodexClient(url, tok).also { c ->
-                c.connect()
-                c.messages.onEach { handle(it) }.launchIn(this)
-            }
+            repo.connect(url, tok)
             _state.update { it.copy(connected = true, threadId = if (threadId != "new") threadId else null) }
-            // Fetch available models after handshake completes
+            // Fetch models and skills after handshake completes
             delay(500)
-            fetchModels()
+            repo.listModels()
             delay(100)
-            fetchSkills()
+            repo.listSkills()
         }
     }
 
     fun send(text: String) {
-        val c = client ?: return
         val tid = _state.value.threadId
         rawReasoningBuffer.clear()
         _state.update { s ->
@@ -102,9 +106,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             if (tid == null) {
                 pendingMsg = text
                 val model = settings.model.first()
-                c.startThread(model)
+                repo.startThread(model)
             } else {
-                c.startTurn(tid, text,
+                repo.startTurn(tid, text,
                     model = _state.value.selectedModel,
                     effort = _state.value.selectedEffort)
             }
@@ -113,7 +117,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun interrupt() {
         val tid = _state.value.threadId ?: return
-        client?.interrupt(tid)
+        repo.interrupt(tid)
         _state.update { it.copy(thinking = false) }
     }
 
@@ -125,14 +129,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun selectEffort(effort: String) {
         _state.update { it.copy(selectedEffort = effort) }
-    }
-
-    private fun fetchModels() {
-        client?.listModels()
-    }
-
-    private fun fetchSkills() {
-        client?.listSkills()
     }
 
     // Feature 2: Message reactions + edit
@@ -170,58 +166,56 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             )
         }
         viewModelScope.launch {
-            client?.startTurn(tid, newText,
+            repo.startTurn(tid, newText,
                 model = _state.value.selectedModel,
                 effort = _state.value.selectedEffort)
         }
     }
 
+    // --- Flow handlers for typed repository events ---
+
+    private fun handleModels(event: CodexEvent.ModelList) {
+        val options = event.models.mapNotNull { obj ->
+            val id = obj["id"]?.jsonPrimitive?.content ?: return@mapNotNull null
+            val displayName = obj["displayName"]?.jsonPrimitive?.content ?: id
+            val defaultEffort = obj["defaultReasoningEffort"]?.jsonPrimitive?.content ?: "medium"
+            val efforts = obj["supportedReasoningEfforts"]?.jsonArray?.mapNotNull { e ->
+                val ev = e.jsonObject
+                val v = ev["reasoningEffort"]?.jsonPrimitive?.content ?: return@mapNotNull null
+                val d = ev["description"]?.jsonPrimitive?.content ?: ""
+                ReasoningEffortOption(v, d)
+            } ?: emptyList()
+            ModelOption(id, displayName, efforts, defaultEffort)
+        }
+        if (options.isNotEmpty()) {
+            _state.update { s ->
+                val defaultEffort = options.find { it.id == s.selectedModel }?.defaultEffort ?: "medium"
+                s.copy(models = options, selectedEffort = defaultEffort)
+            }
+        }
+    }
+
+    private fun handleSkills(event: CodexEvent.SkillList) {
+        val skills = event.skills.mapNotNull { obj ->
+            val name = obj["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
+            val desc = obj["description"]?.jsonPrimitive?.content ?: ""
+            SkillItem(name, desc)
+        }
+        if (skills.isNotEmpty()) {
+            _state.update { it.copy(availableSkills = skills.sortedBy { s -> s.name }) }
+        }
+    }
+
+    // --- Turn event dispatch (unchanged from original, minus model/skill branches) ---
+
     private fun handle(msg: RpcMessage) {
         val params = msg.params?.jsonObject
         val result = msg.result?.jsonObject
         when (msg.method) {
-            // Null method = response to one of our requests
+            // Null method = response to one of our requests that the repository
+            // forwarded to turnEventsFlow. After this refactor the only response
+            // that arrives here (not intercepted by the repository) is thread/start.
             null -> {
-                // Check if this is a skills/list response (data[0] has "skills" array, not model fields)
-                val firstItem = result?.get("data")?.jsonArray?.firstOrNull()?.jsonObject
-                if (firstItem?.containsKey("skills") == true) {
-                    val skills = firstItem["skills"]?.jsonArray?.mapNotNull { elem ->
-                        val obj = elem.jsonObject
-                        val name = obj["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
-                        val desc = obj["description"]?.jsonPrimitive?.content ?: ""
-                        SkillItem(name, desc)
-                    } ?: emptyList()
-                    if (skills.isNotEmpty()) {
-                        _state.update { it.copy(availableSkills = skills.sortedBy { s -> s.name }) }
-                    }
-                    return
-                }
-
-                // Check if this is a model/list response: result has "data" array
-                val modelData = result?.get("data")?.jsonArray
-                if (modelData != null) {
-                    val options = modelData.mapNotNull { elem ->
-                        val obj = elem.jsonObject
-                        val id = obj["id"]?.jsonPrimitive?.content ?: return@mapNotNull null
-                        val displayName = obj["displayName"]?.jsonPrimitive?.content ?: id
-                        val defaultEffort = obj["defaultReasoningEffort"]?.jsonPrimitive?.content ?: "medium"
-                        val efforts = obj["supportedReasoningEfforts"]?.jsonArray?.mapNotNull { e ->
-                            val ev = e.jsonObject
-                            val v = ev["reasoningEffort"]?.jsonPrimitive?.content ?: return@mapNotNull null
-                            val d = ev["description"]?.jsonPrimitive?.content ?: ""
-                            ReasoningEffortOption(v, d)
-                        } ?: emptyList()
-                        ModelOption(id, displayName, efforts, defaultEffort)
-                    }
-                    if (options.isNotEmpty()) {
-                        _state.update { s ->
-                            val defaultEffort = options.find { it.id == s.selectedModel }?.defaultEffort ?: "medium"
-                            s.copy(models = options, selectedEffort = defaultEffort)
-                        }
-                    }
-                    return
-                }
-
                 // thread/start response: result.thread.id
                 val tid = result
                     ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
@@ -230,7 +224,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     pendingMsg?.let { text ->
                         pendingMsg = null
                         viewModelScope.launch {
-                            client?.startTurn(tid, text,
+                            repo.startTurn(tid, text,
                                 model = _state.value.selectedModel,
                                 effort = _state.value.selectedEffort)
                         }
@@ -305,6 +299,16 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
 
+            // Available commands from server
+            "session/update" -> {
+                val commands = params?.get("availableCommands")?.jsonArray
+                if (commands != null) {
+                    _state.update { it.copy(availableCommands = commands.mapNotNull { c ->
+                        c.jsonObject["name"]?.jsonPrimitive?.content
+                    }) }
+                }
+            }
+
             // Raw verbose reasoning text — buffer without emitting state (not rendered in UI).
             // Snapshot to ChatState.rawReasoning when the turn completes.
             "item/reasoning/textDelta" -> {
@@ -343,15 +347,14 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun extractSkillName(hookId: String): String? {
-        // Paths like: .../plugins/cache/labby-marketplace/aurora-design-system/1.0.4/hooks/...
-        // or: .../plugins/cache/jmagar-lab/superpowers/5.1.0/hooks/...
         val parts = hookId.split("/")
         val cacheIdx = parts.indexOf("cache")
         if (cacheIdx >= 0 && cacheIdx + 2 < parts.size) {
-            return parts[cacheIdx + 2]  // e.g. "aurora-design-system", "superpowers", "beads"
+            return parts[cacheIdx + 2]
         }
         return null
     }
 
-    override fun onCleared() { client?.disconnect(); super.onCleared() }
+    // Do NOT disconnect here — the repository owns the connection lifetime.
+    override fun onCleared() { super.onCleared() }
 }
