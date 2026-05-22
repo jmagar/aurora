@@ -3,21 +3,21 @@ package tv.tootie.aurora.app.ui.sidebar
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
-import tv.tootie.aurora.app.codex.CodexClient
-import tv.tootie.aurora.app.codex.RpcMessage
+import tv.tootie.aurora.app.CodexApp
+import tv.tootie.aurora.app.codex.CodexEvent
+import tv.tootie.aurora.app.codex.CodexRepository
 import tv.tootie.aurora.app.data.AppSettings
 
 data class SidebarState(
@@ -28,22 +28,27 @@ data class SidebarState(
 
 class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
-    private var client: CodexClient? = null
+    private val repo: CodexRepository = (app as CodexApp).repository
 
     private val _state = MutableStateFlow(SidebarState())
     val state: StateFlow<SidebarState> = _state.asStateFlow()
 
+    init {
+        repo.threadsFlow
+            .onEach { event -> handleThreadList(event) }
+            .launchIn(viewModelScope)
+    }
+
     fun connect() {
-        if (client != null) return
         viewModelScope.launch {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
-            client = CodexClient(url, tok).also { c ->
-                c.connect()
-                c.messages.onEach { handleMsg(it) }.launchIn(this)
-            }
-            delay(600)
-            loadThreads()
+            repo.connect(url, tok)
+            // Wait for the initialize/initialized handshake to complete before
+            // sending thread/list — otherwise the request can arrive before the
+            // server has finished its handshake and will be silently ignored.
+            repo.isReady.filter { it }.first()
+            repo.listThreads()
         }
     }
 
@@ -52,25 +57,17 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun refresh() {
-        loadThreads()
+        viewModelScope.launch { repo.listThreads() }
     }
 
-    private fun loadThreads() {
-        viewModelScope.launch {
-            client?.listThreads()
-        }
-    }
-
-    private fun handleMsg(msg: RpcMessage) {
-        val result = msg.result?.jsonObject ?: return
-        val threads = result["data"]?.jsonArray ?: return
+    private fun handleThreadList(event: CodexEvent.ThreadList) {
+        val threads = event.threads
         if (threads.isEmpty()) {
             _state.update { it.copy(isLoading = false) }
             return
         }
 
-        val sessions = threads.mapNotNull { elem ->
-            val obj = elem.jsonObject
+        val sessions = threads.mapNotNull { obj ->
             val id = obj["id"]?.jsonPrimitive?.content ?: return@mapNotNull null
             val cwd = obj["cwd"]?.jsonPrimitive?.content ?: ""
             val name = obj["name"]?.jsonPrimitive?.content?.takeIf { it != "null" && it.isNotBlank() }
@@ -94,8 +91,6 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(projects = groups, isLoading = false) }
     }
 
-    override fun onCleared() {
-        client?.disconnect()
-        super.onCleared()
-    }
+    // Do NOT disconnect here — the repository owns the connection lifetime.
+    override fun onCleared() { super.onCleared() }
 }
