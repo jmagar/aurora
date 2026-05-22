@@ -1,12 +1,23 @@
 package tv.tootie.aurora.app
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -17,9 +28,13 @@ import tv.tootie.aurora.app.ui.chat.ChatScreen
 import tv.tootie.aurora.app.ui.settings.SettingsScreen
 import tv.tootie.aurora.app.ui.sidebar.SessionsSidebar
 import tv.tootie.aurora.app.ui.sidebar.SidebarViewModel
+import tv.tootie.aurora.app.ui.startup.StartupState
+import tv.tootie.aurora.app.ui.startup.StartupViewModel
 
 sealed class Screen(val route: String) {
-    object Chat : Screen("chat/{threadId}") {
+    object Startup : Screen("startup")
+    object Login   : Screen("login")
+    object Chat    : Screen("chat/{threadId}") {
         fun go(id: String) = "chat/$id"
         const val NEW = "chat/new"
     }
@@ -31,10 +46,34 @@ fun CodexNavHost() {
     val nav = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    val startupVm: StartupViewModel = viewModel()
+    val startupState by startupVm.state.collectAsStateWithLifecycle()
+
     val sidebarVm: SidebarViewModel = viewModel()
     val sidebarState by sidebarVm.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { sidebarVm.connect() }
+    // Trigger startup on first composition
+    LaunchedEffect(Unit) { startupVm.start() }
+
+    // Route based on auth result
+    LaunchedEffect(startupState) {
+        when (startupState) {
+            is StartupState.Authenticated -> {
+                nav.navigate(Screen.Chat.NEW) {
+                    popUpTo(Screen.Startup.route) { inclusive = true }
+                }
+                // Now that we know we're authenticated, load sidebar threads
+                sidebarVm.connect()
+            }
+            is StartupState.NeedsLogin -> {
+                nav.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Startup.route) { inclusive = true }
+                }
+            }
+            else -> Unit
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -64,7 +103,21 @@ fun CodexNavHost() {
             )
         },
     ) {
-        NavHost(nav, startDestination = Screen.Chat.NEW) {
+        NavHost(nav, startDestination = Screen.Startup.route) {
+            composable(Screen.Startup.route) {
+                StartupScreen(
+                    state = startupState,
+                    onRetry = {
+                        startupVm.start()
+                    },
+                )
+            }
+            composable(Screen.Login.route) {
+                // Stub — bead aurora-design-system-nozy replaces this with the full login flow
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Login required — not yet implemented")
+                }
+            }
             composable(Screen.Chat.route) { back ->
                 val threadId = back.arguments?.getString("threadId") ?: "new"
                 ChatScreen(
@@ -76,6 +129,29 @@ fun CodexNavHost() {
             composable(Screen.Settings.route) {
                 SettingsScreen(onBack = { nav.popBackStack() })
             }
+        }
+    }
+}
+
+@Composable
+private fun StartupScreen(
+    state: StartupState,
+    onRetry: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        when (state) {
+            is StartupState.Loading -> CircularProgressIndicator()
+            is StartupState.Error   -> Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text("Connection failed: ${state.message}", textAlign = TextAlign.Center)
+                Button(onClick = onRetry) { Text("Retry") }
+            }
+            else -> { /* navigation happens in LaunchedEffect — nothing to render */ }
         }
     }
 }
