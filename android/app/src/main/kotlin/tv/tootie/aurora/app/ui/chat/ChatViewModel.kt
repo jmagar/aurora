@@ -56,6 +56,9 @@ data class ChatState(
     val availableSkills: List<SkillItem> = emptyList(),
     // Skill hook invocations
     val skillInvocations: List<SkillInvocation> = emptyList(),
+    // turn/steer: track active turn ID + sheet visibility
+    val activeTurnId: String? = null,
+    val showSteerSheet: Boolean = false,
 )
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -166,6 +169,23 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         manager.interrupt(tid)
         _state.update { it.copy(thinking = false) }
     }
+
+    // turn/steer — append input to the in-flight turn
+    fun steer(text: String) {
+        val turnId = _state.value.activeTurnId ?: return
+        val threadId = _state.value.threadId ?: return
+        val userMsg = ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer] $text")
+        _state.update { it.copy(msgs = it.msgs + userMsg, showSteerSheet = false) }
+        manager.steerTurn(threadId, text, turnId) { response ->
+            if (response.error != null) {
+                // -32600 "no active turn to steer" — dismiss silently
+                _state.update { it.copy(showSteerSheet = false) }
+            }
+        }
+    }
+
+    fun showSteer() = _state.update { it.copy(showSteerSheet = true) }
+    fun hideSteer() = _state.update { it.copy(showSteerSheet = false) }
 
     // Feature 1: Model + Reasoning selectors
     fun selectModel(id: String) {
@@ -286,7 +306,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             "turn/started" -> {
                 val turnId = params?.get("turn")?.jsonObject?.get("id")?.jsonPrimitive?.content ?: return
                 val msgId = "a${System.currentTimeMillis()}"
-                _state.update { it.copy(thinking = true, assistantId = msgId,
+                _state.update { it.copy(thinking = true, activeTurnId = turnId, assistantId = msgId,
                     msgs = it.msgs + ChatMsg(msgId, MsgRole.Assistant, "")) }
 
                 // Drain the per-turn delta channel and update message in-place
@@ -311,7 +331,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (turnId != null) {
                     manager.closeDeltaChannel(turnId)
                 }
-                _state.update { it.copy(thinking = false, assistantId = null) }
+                _state.update { it.copy(thinking = false, assistantId = null, activeTurnId = null) }
             }
 
             // Item lifecycle — track command executions as tool calls

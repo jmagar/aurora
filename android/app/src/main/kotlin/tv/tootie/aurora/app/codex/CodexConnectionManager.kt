@@ -341,4 +341,21 @@ class CodexConnectionManager(context: Context) {
         send("turn/interrupt", buildJsonObject { put("threadId", threadId) })
     }
 
+    fun steerTurn(
+        threadId: String,
+        text: String,
+        expectedTurnId: String,
+        callback: ((RpcMessage) -> Unit)? = null
+    ): Int = send(
+        "turn/steer",
+        buildJsonObject {
+            put("threadId", threadId)
+            put("input", buildJsonArray {
+                add(buildJsonObject { put("type", "text"); put("text", text) })
+            })
+            put("expectedTurnId", expectedTurnId)
+        },
+        callback
+    )
+
 }
