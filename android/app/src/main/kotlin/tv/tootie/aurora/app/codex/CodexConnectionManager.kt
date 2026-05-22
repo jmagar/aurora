@@ -19,6 +19,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
@@ -72,8 +73,10 @@ class CodexConnectionManager(context: Context) {
     // Client-initiated request callbacks: key = "c-N"
     private val pendingRequests = ConcurrentHashMap<String, (RpcMessage) -> Unit>()
 
-    // Server-initiated requests waiting for approval: server request id -> params
-    private val serverInitiatedRequests = ConcurrentHashMap<String, JsonElement>()
+    // Server-initiated requests: string key (for lookup) → Pair(rawId JsonElement, params)
+    // rawId is stored verbatim so sendApproval can echo it back without type coercion
+    private data class ServerRequest(val rawId: JsonElement, val params: JsonElement)
+    private val serverInitiatedRequests = ConcurrentHashMap<String, ServerRequest>()
 
     // Offline outbound queue
     private val outboundQueue = Channel<QueuedMessage>(Channel.UNLIMITED)
@@ -146,7 +149,9 @@ class CodexConnectionManager(context: Context) {
 
             // Server-initiated request (has both id and method)
             if (msgId != null && msg.method != null) {
-                serverInitiatedRequests[msgId] = msg.params ?: JsonObject(emptyMap())
+                // Store raw id JsonElement so sendApproval can echo it verbatim
+                val rawId = msg.id ?: JsonObject(emptyMap())
+                serverInitiatedRequests[msgId] = ServerRequest(rawId, msg.params ?: JsonObject(emptyMap()))
                 scope.launch { _messages.emit(msg) }
                 return
             }
@@ -277,9 +282,8 @@ class CodexConnectionManager(context: Context) {
             }
             return false
         }
-        val idInt = serverRequestId.toIntOrNull()
         val responseJson = buildJsonObject {
-            if (idInt != null) put("id", idInt) else put("id", serverRequestId)
+            put("id", entry.rawId)  // echo original id verbatim, preserving type
             put("result", decision)
         }
         val ws = currentWebSocket ?: run {
