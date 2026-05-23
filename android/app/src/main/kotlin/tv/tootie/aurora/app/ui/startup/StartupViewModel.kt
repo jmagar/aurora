@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
@@ -81,23 +83,28 @@ class StartupViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
 
-        // Server has acknowledged initialize. Now request auth status.
+        // Server has acknowledged initialize. Try the experimental `getAuthStatus`
+        // RPC; it is not in the public Codex app-server protocol (developers.openai.com
+        // /codex/app-server lists no such method), so the call may time out or return
+        // a JSON-RPC method-not-found error. In either case, fall back to the local
+        // AUTH_METHOD record — if the user has previously stored credentials we treat
+        // them as authenticated; otherwise we route to login.
         val authId = c.getAuthStatus()
-
-        // Wait for the response matching our request id. Also handle server errors.
-        val authMsg = msgs.first { msg ->
-            (msg.method == null &&
-                msg.id?.jsonPrimitive?.contentOrNull == authId.toString()) ||
-                msg.error != null
-        }
-        if (authMsg.error != null) {
-            _state.update { StartupState.Error(authMsg.error.message) }
-            return
+        val authMsg = withTimeoutOrNull(3_000) {
+            msgs.first { msg ->
+                (msg.method == null &&
+                    msg.id?.jsonPrimitive?.contentOrNull == authId.toString()) ||
+                    msg.error != null
+            }
         }
 
-        val result = authMsg.result?.jsonObject
-        val authenticated = result?.get("authenticated")?.jsonPrimitive?.booleanOrNull ?: false
-        val method = result?.get("method")?.jsonPrimitive?.contentOrNull
+        // Trust local DataStore: if a credential is stored, we're authenticated.
+        // Server response is informational only because (a) `getAuthStatus` is not in
+        // the public Codex protocol and (b) it returns `authenticated:false` for
+        // unauthenticated servers even when no auth is needed on loopback.
+        val localMethod = settings.authMethod.first()
+        val authenticated: Boolean = localMethod != null
+        val method: String? = localMethod
 
         if (!authenticated) {
             _state.update { StartupState.NeedsLogin }
