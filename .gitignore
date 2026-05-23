@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.*
+.gradle/
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
@@ -13,6 +14,7 @@ logs
 .beads/
 .claire/
 .claude/worktrees/
+.worktrees/
 .lavra
 
 # testing
