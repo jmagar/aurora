@@ -90,6 +90,9 @@ class StartupViewModel(app: Application) : AndroidViewModel(app) {
                 if (has(accessToken) || has(authToken)) AuthStatus.ChatGpt else null
             LoginMethodType.chatgptAuthTokens.name ->
                 if ((has(accessToken) || has(authToken)) && has(accountId)) AuthStatus.ChatGpt else null
+            // Sentinel value written by LoginScreen's "Skip — localhost server" button.
+            // No credentials are stored; the chat connection runs without a Bearer token.
+            "none" -> AuthStatus.ApiKey
             else -> null
         }
     }
