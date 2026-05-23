@@ -108,6 +108,16 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     // On success: thread/goal/updated notification updates state via handleSidebarNotification
                 }
+                RequestKind.ThreadResume -> {
+                    // When ChatViewModel successfully resumes a thread on cold start, sync the
+                    // sidebar's current thread so the goal panel populates automatically.
+                    // This avoids sharing ChatViewModel at NavHost level (which breaks per-destination VMs).
+                    if (event.msg.error == null) {
+                        val tid = event.msg.result?.jsonObject
+                            ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull
+                        if (tid != null) setCurrentThread(tid)
+                    }
+                }
                 else -> { /* other response kinds not handled here */ }
             }
         }.launchIn(viewModelScope)

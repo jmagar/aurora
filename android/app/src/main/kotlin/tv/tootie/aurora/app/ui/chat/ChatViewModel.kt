@@ -180,8 +180,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             repo.isReady.filter { it }.first()
             repo.listModels()
             repo.listSkills()
-            // Try to resume the last saved thread on fresh connect
-            if (threadId == "new") {
+            // Only try to resume on cold start (msgs empty = no prior session in this ViewModel).
+            // If msgs is non-empty the user navigated to chat/new intentionally — don't hijack
+            // their new session by resuming the old one.
+            if (threadId == "new" && _state.value.msgs.isEmpty()) {
                 val saved = settings.savedThreadId.first()
                 if (saved != null) {
                     tryResumeThread(saved)
