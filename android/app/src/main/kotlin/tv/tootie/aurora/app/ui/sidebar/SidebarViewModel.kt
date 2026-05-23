@@ -14,8 +14,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.longOrNull
 import tv.tootie.aurora.app.CodexApp
 import tv.tootie.aurora.app.codex.CodexEvent
@@ -23,6 +25,16 @@ import tv.tootie.aurora.app.codex.CodexRepository
 import tv.tootie.aurora.app.codex.RequestKind
 import tv.tootie.aurora.app.codex.RpcMessage
 import tv.tootie.aurora.app.data.AppSettings
+import tv.tootie.aurora.app.ui.chat.sanitizeForDisplay
+
+data class McpTool(val name: String, val description: String = "")
+data class McpServerInfo(
+    val name: String,
+    val status: String = "running",
+    val tools: List<McpTool> = emptyList(),
+) {
+    val toolCount: Int get() = tools.size
+}
 
 data class ThreadGoal(
     val objective: String,
@@ -38,6 +50,7 @@ data class SidebarState(
     val currentGoal: ThreadGoal? = null,
     val showGoalEditor: Boolean = false,
     val currentThreadId: String? = null,
+    val mcpServers: List<McpServerInfo> = emptyList(),
 )
 
 class SidebarViewModel(app: Application) : AndroidViewModel(app) {
@@ -51,6 +64,10 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         repo.threadsFlow
             .onEach { event -> handleThreadList(event) }
             .launchIn(viewModelScope)
+
+        repo.mcpServersFlow.onEach { event ->
+            parseMcpServers(event.servers)
+        }.launchIn(viewModelScope)
 
         // Subscribe to goal and MCP notifications from sidebar flow
         repo.sidebarNotificationsFlow.onEach { msg ->
@@ -85,6 +102,7 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             // server has finished its handshake and will be silently ignored.
             repo.isReady.filter { it }.first()
             repo.listThreads()
+            loadMcpServers()
         }
     }
 
@@ -93,7 +111,11 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun refresh() {
-        viewModelScope.launch { repo.listThreads() }
+        viewModelScope.launch {
+            repo.isReady.filter { it }.first()
+            repo.listThreads()
+        }
+        loadMcpServers()
     }
 
     fun setCurrentThread(threadId: String?) {
@@ -135,7 +157,22 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private fun loadMcpServers() { }
+    fun loadMcpServers() { repo.listMcpServers() }
+
+    private fun parseMcpServers(servers: List<JsonObject>) {
+        val parsed = servers.mapNotNull { obj ->
+            val name = obj["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return@mapNotNull null
+            val status = obj["status"]?.jsonPrimitive?.contentOrNull ?: "running"
+            val tools = obj["tools"]?.jsonArray?.mapNotNull { t ->
+                val to = t.jsonObject
+                val tName = to["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return@mapNotNull null
+                val tDesc = to["description"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: ""
+                McpTool(tName, tDesc)
+            } ?: emptyList()
+            McpServerInfo(name, status, tools)
+        }
+        _state.update { it.copy(mcpServers = parsed) }
+    }
 
     private fun handleThreadList(event: CodexEvent.ThreadList) {
         val threads = event.threads
