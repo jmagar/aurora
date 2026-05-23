@@ -91,7 +91,16 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 _msgs.trySendBlocking(RpcMessage(error = RpcError(-1, t.message ?: "error")))
             }
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
+                val wasReady = _isInitialized.value
                 _isInitialized.value = false
+                // Emit a synthetic error for unexpected server-side closes (code != 1000)
+                // so demux() receives a termination signal and ChatViewModel can clear thinking=true.
+                // Code 1000 = normal user-initiated close via disconnect(); no error needed.
+                if (wasReady && code != 1000) {
+                    _msgs.trySendBlocking(
+                        RpcMessage(error = RpcError(code, reason.ifBlank { "server closed connection (code $code)" }))
+                    )
+                }
                 _msgs.close()
             }
         })
