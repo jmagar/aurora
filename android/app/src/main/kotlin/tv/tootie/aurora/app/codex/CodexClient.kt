@@ -83,7 +83,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
                         _isInitialized.value = true
                     }
                     _msgs.trySendBlocking(msg)
-                } catch (e: Exception) { Log.w(TAG, "parse error: len=${text.length}") }
+                } catch (e: Exception) { Log.w(TAG, "parse error len=${text.length}: ${e.javaClass.simpleName}: ${e.message}") }
             }
             override fun onFailure(ws: WebSocket, t: Throwable, r: Response?) {
                 Log.e(TAG, "failure", t)

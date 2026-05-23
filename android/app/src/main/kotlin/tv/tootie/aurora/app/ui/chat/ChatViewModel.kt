@@ -143,10 +143,22 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         repo.skillsFlow.onEach { handleSkills(it) }.launchIn(viewModelScope)
         repo.turnEventsFlow.onEach { handle(it) }.launchIn(viewModelScope)
         repo.errorsFlow.onEach { e ->
-            _state.update { it.copy(error = e.message, thinking = false) }
+            // Clear steerText on connection drop so it doesn't reference a lost turn
+            val lostSteer = steerText.getAndSet(null)
+            _state.update { s ->
+                s.copy(
+                    error = e.message,
+                    thinking = false,
+                    showSteerSheet = false,
+                    msgs = if (lostSteer != null)
+                        s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer not sent — connection lost]")
+                    else s.msgs,
+                )
+            }
         }.launchIn(viewModelScope)
         repo.sessionInvalidated.onEach {
-            _state.update { it.copy(threadId = null, msgs = emptyList()) }
+            // Clear all transient state on reconnect — pendingApprovals prevents stuck modal
+            _state.update { it.copy(threadId = null, msgs = emptyList(), pendingApprovals = emptyList()) }
             viewModelScope.launch { settings.clearThreadId() }
         }.launchIn(viewModelScope)
     }
@@ -691,7 +703,13 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             "serverRequest/resolved" -> {
-                _state.update { it.copy(pendingApprovals = emptyList()) }
+                // Extract the resolved request ID if the server provides it; otherwise clear all
+                val resolvedId = params?.get("id")
+                _state.update { s ->
+                    s.copy(pendingApprovals = if (resolvedId != null)
+                        s.pendingApprovals.filter { it.rawServerId != resolvedId }
+                    else emptyList())
+                }
             }
         }
     }
