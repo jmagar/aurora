@@ -9,11 +9,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -31,7 +36,10 @@ import tv.tootie.aurora.components.AuroraAttachment
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assistant
 import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -61,6 +69,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.collections.immutable.toPersistentList
 import tv.tootie.aurora.components.AuroraChainOfThought
 import tv.tootie.aurora.components.AuroraControls
+import tv.tootie.aurora.components.AuroraEmptyState
 import tv.tootie.aurora.components.AuroraMessage
 import tv.tootie.aurora.components.AuroraMessageData
 import tv.tootie.aurora.components.AuroraMessageRole
@@ -236,7 +245,28 @@ fun ChatScreen(
             LaunchedEffect(s.msgs.size) {
                 if (s.msgs.isNotEmpty()) listState.animateScrollToItem(s.msgs.lastIndex)
             }
-            LazyColumn(
+            // Welcome / empty state for a fresh chat — shown when there are no messages
+            // and the agent isn't already thinking on the user's behalf. The prompt input
+            // bar below still renders so the user can immediately start typing.
+            val showWelcome = s.msgs.isEmpty() && !s.thinking &&
+                s.skillInvocations.isEmpty() && s.toolCalls.isEmpty() &&
+                s.mcpToolCalls.isEmpty() && s.reasoning.isEmpty() &&
+                s.webSearches.isEmpty() && s.planItems.isEmpty()
+            if (showWelcome) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    ChatWelcome(
+                        onSuggestion = { suggestion -> input = suggestion },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 24.dp),
+                    )
+                }
+            } else LazyColumn(
                 state = listState,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -528,5 +558,68 @@ fun ChatScreen(
             onSteer = { vm.steer(it) },
             onDismiss = { vm.hideSteer() },
         )
+    }
+}
+
+/**
+ * Welcome / empty-state shown in a fresh ChatScreen before the user sends anything.
+ * Renders the AuroraEmptyState shell plus a FlowRow of tappable starter prompts; each
+ * tap calls [onSuggestion] with the suggestion text, which the parent uses to populate
+ * the prompt input. A 200dp bottom spacer keeps content above the input bar / IME.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ChatWelcome(
+    onSuggestion: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val suggestions = listOf(
+        "Explain this repo's architecture",
+        "Find a bug in src/",
+        "Generate unit tests",
+        "Review my latest commit",
+        "Refactor to use coroutines",
+    )
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        AuroraEmptyState(
+            title = "Start a conversation with Codex",
+            description = "Ask anything — coding help, code review, or a one-shot command. " +
+                "Use @ to mention skills and / for slash commands.",
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.AutoAwesome,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(28.dp),
+                )
+            },
+            action = {
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    suggestions.forEach { suggestion ->
+                        AssistChip(
+                            onClick = { onSuggestion(suggestion) },
+                            label = { Text(suggestion) },
+                            colors = AssistChipDefaults.assistChipColors(
+                                labelColor = MaterialTheme.colorScheme.primary,
+                            ),
+                            border = AssistChipDefaults.assistChipBorder(
+                                enabled = true,
+                                borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            ),
+                        )
+                    }
+                }
+            },
+        )
+        // Keep welcome content clear of the input bar / IME so suggestions remain tappable.
+        Spacer(modifier = Modifier.height(200.dp))
     }
 }
