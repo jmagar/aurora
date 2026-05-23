@@ -64,6 +64,7 @@ fun SettingsScreen(
     // Load saved settings on first render
     LaunchedEffect(Unit) {
         url = settings.serverUrl.first()
+        token = settings.authToken.first().orEmpty()
         model = settings.model.first()
         selectedApprovalPolicy = ApprovalPolicy.fromWire(settings.approvalPolicy.first())
         selectedReviewer = ApprovalsReviewer.fromWire(settings.approvalsReviewer.first())
@@ -180,6 +181,7 @@ fun SettingsScreen(
                 onClick = {
                     scope.launch {
                         settings.setServerUrl(url)
+                        settings.setAuthToken(token.takeIf { it.isNotBlank() })
                         settings.setModel(model)
                         settings.setApprovalPolicy(selectedApprovalPolicy.wire)
                         settings.setApprovalsReviewer(selectedReviewer.wire)

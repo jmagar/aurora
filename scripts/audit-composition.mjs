@@ -15,7 +15,13 @@ const allowNativeInput = new Set([
 
 const allowNativeTextarea = new Set(["registry/aurora/ui/textarea.tsx"])
 const allowNativeSelect = new Set(["registry/aurora/ui/native-select.tsx"])
-const allowNativeButton = new Set(["registry/aurora/ui/button.tsx"])
+const allowNativeButton = new Set([
+  "registry/aurora/ui/button.tsx",
+  // Primitive internals: clear/icon/link-style controls that intentionally avoid
+  // full Button chrome while still using Aurora tokens.
+  "registry/aurora/ui/input.tsx",
+  "registry/aurora/ui/toast.tsx",
+])
 
 const allowedHiddenFileInputFiles = new Set([
   "registry/aurora/blocks/files/attachment/attachment.tsx",

@@ -5,6 +5,9 @@ const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypescript,
   {
+    ignores: [".worktrees/**", ".next/**", "out/**", "public/r/**", "android/**/build/**"],
+  },
+  {
     rules: {
       "@next/next/no-img-element": "off",
     },

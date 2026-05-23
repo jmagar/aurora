@@ -16,7 +16,7 @@ data class RpcMessage(
 @Serializable
 data class RpcError(val code: Int, val message: String)
 
-/** Auth state returned by the server for the `getAuthStatus` request. */
+/** Auth state inferred from locally stored credentials during startup. */
 sealed class AuthStatus {
     /** Server is authenticated via a static API key configured in the server config. */
     object ApiKey : AuthStatus()
@@ -27,14 +27,6 @@ sealed class AuthStatus {
     /** Server has no auth — user must run account/login/start. */
     object Unauthenticated : AuthStatus()
 }
-
-/** Raw deserialization target for the getAuthStatus result object.
- *  Used for structured parsing of the server response in StartupViewModel. */
-@Serializable
-data class AuthStatusResult(
-    val authenticated: Boolean,
-    val method: String? = null,
-)
 
 /**
  * Client capabilities sent in the `initialize` request params.

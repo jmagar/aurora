@@ -68,6 +68,7 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
      * must open in a Custom Tab.
      */
     private var oauthRequestId: Int = -1
+    private var pendingLoginMethod: LoginMethodType? = null
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
@@ -150,6 +151,10 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
                         if (accountId != null) {
                             settings.setChatgptAccountId(accountId)
                         }
+                        if (apiKey == null && (accessToken != null || accountId != null)) {
+                            val completedMethod = pendingLoginMethod ?: LoginMethodType.chatgpt
+                            settings.setAuthMethod(completedMethod.name)
+                        }
                         _state.update { it.copy(step = LoginStep.Success) }
                     }
                     "account/login/deviceCode" -> {
@@ -189,8 +194,7 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
         if (key.isBlank()) return
         _state.update { it.copy(step = LoginStep.LoggingIn) }
         viewModelScope.launch {
-            settings.setApiKey(key)
-            settings.setAuthMethod(LoginMethodType.apiKey.name)
+            pendingLoginMethod = LoginMethodType.apiKey
             client?.loginWithApiKey(key)
             // account/login/completed will arrive via the messages flow above
         }
@@ -214,7 +218,7 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
     fun startChatGptOAuth(context: android.content.Context, streamlined: Boolean = false) {
         _state.update { it.copy(step = LoginStep.LoggingIn) }
         viewModelScope.launch {
-            settings.setAuthMethod(LoginMethodType.chatgpt.name)
+            pendingLoginMethod = LoginMethodType.chatgpt
             val id = client?.loginWithChatGpt(streamlined)
             if (id != null) oauthRequestId = id
             // The server's response to account/login/start carries the authUrl.
@@ -241,7 +245,7 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
     fun selectDeviceCode() {
         _state.update { it.copy(step = LoginStep.LoggingIn) }
         viewModelScope.launch {
-            settings.setAuthMethod(LoginMethodType.chatgptDeviceCode.name)
+            pendingLoginMethod = LoginMethodType.chatgptDeviceCode
             // Capture the request id so the message handler can route the server's
             // response (which carries verificationUrl/userCode) to the right branch.
             val id = client?.loginWithDeviceCode()
@@ -259,7 +263,7 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
         if (accessToken.isBlank() || accountId.isBlank()) return
         _state.update { it.copy(step = LoginStep.LoggingIn) }
         viewModelScope.launch {
-            settings.setAuthMethod(LoginMethodType.chatgptAuthTokens.name)
+            pendingLoginMethod = LoginMethodType.chatgptAuthTokens
             client?.loginWithAuthTokens(accessToken, accountId)
         }
     }

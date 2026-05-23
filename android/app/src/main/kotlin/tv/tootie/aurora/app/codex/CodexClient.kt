@@ -351,12 +351,6 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return ws?.send(json) ?: false
     }
 
-    fun getAuthStatus(): Int {
-        val id = ids.incrementAndGet()
-        send("getAuthStatus", JsonObject(emptyMap()), id)
-        return id
-    }
-
     /**
      * Logs out the current account. After the response is received the caller should
      * disconnect the WebSocket and clear cached credentials.
