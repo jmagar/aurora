@@ -181,10 +181,17 @@ fun ChatScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    AuroraStatusIndicator(
-                        tone = if (s.thinking) AuroraStatusTone.Syncing else if (s.connected) AuroraStatusTone.Online else AuroraStatusTone.Offline,
-                        label = if (s.thinking) "Thinking..." else if (s.connected) "Connected" else "Disconnected",
-                    )
+                    val statusTone = when {
+                        s.thinking -> AuroraStatusTone.Syncing
+                        s.connected -> AuroraStatusTone.Online
+                        else -> AuroraStatusTone.Offline
+                    }
+                    val statusLabel = when {
+                        s.thinking -> "Thinking..."
+                        s.connected -> "Connected"
+                        else -> "Disconnected"
+                    }
+                    AuroraStatusIndicator(tone = statusTone, label = statusLabel)
                 },
                 navigationIcon = {
                     IconButton(onClick = onOpenSidebar) {

@@ -33,7 +33,6 @@ import tv.tootie.aurora.theme.LocalAuroraColors
 @Composable
 fun McpServerPanel(servers: List<McpServerInfo>, modifier: Modifier = Modifier) {
     if (servers.isEmpty()) return
-    val aurora = LocalAuroraColors.current
     var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp)) {

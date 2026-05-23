@@ -63,6 +63,7 @@ private fun ToolCallRow(call: ToolCall) {
         call.done -> aurora.success
         else -> aurora.info
     }
+    val displayCmd = call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"')
 
     Column(
         modifier = Modifier
@@ -96,7 +97,7 @@ private fun ToolCallRow(call: ToolCall) {
 
             // Command — truncated, monospace
             Text(
-                text = call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"').take(60),
+                text = displayCmd.take(60),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace),
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
@@ -136,7 +137,7 @@ private fun ToolCallRow(call: ToolCall) {
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "$ ${call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"')}\n$output",
+                        text = "$ $displayCmd\n$output",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,
@@ -153,7 +154,7 @@ private fun ToolCallRow(call: ToolCall) {
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        "$ ${call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"')}",
+                        "$ $displayCmd",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,

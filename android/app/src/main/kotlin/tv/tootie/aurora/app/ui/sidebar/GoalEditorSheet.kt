@@ -48,12 +48,10 @@ fun GoalEditorSheet(
                 style = MaterialTheme.typography.labelSmall,
             )
             Spacer(modifier = Modifier.height(12.dp))
+            val trimmed = text.trim()
             Button(
-                onClick = {
-                    val t = text.trim()
-                    if (t.isNotEmpty()) onSetGoal(t)
-                },
-                enabled = text.trim().isNotEmpty(),
+                onClick = { if (trimmed.isNotEmpty()) onSetGoal(trimmed) },
+                enabled = trimmed.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Set goal") }
             if (currentGoal != null) {

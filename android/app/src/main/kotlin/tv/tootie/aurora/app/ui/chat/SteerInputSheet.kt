@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -33,7 +34,7 @@ fun SteerInputSheet(onSteer: (String) -> Unit, onDismiss: () -> Unit) {
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp),
         ) {
-            Text("Steer the agent", style = androidx.compose.material3.MaterialTheme.typography.titleMedium)
+            Text("Steer the agent", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedTextField(
                 value = text,
@@ -45,9 +46,10 @@ fun SteerInputSheet(onSteer: (String) -> Unit, onDismiss: () -> Unit) {
                 minLines = 3,
             )
             Spacer(modifier = Modifier.height(12.dp))
+            val trimmed = text.trim()
             Button(
-                onClick = { val t = text.trim(); if (t.isNotEmpty()) onSteer(t) },
-                enabled = text.trim().isNotEmpty(),
+                onClick = { if (trimmed.isNotEmpty()) onSteer(trimmed) },
+                enabled = trimmed.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Send steer") }
             Spacer(modifier = Modifier.height(8.dp))
