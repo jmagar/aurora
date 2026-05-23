@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-toast",
-  "type": "registry:ui",
   "title": "Aurora Toast",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Floating toast notifications with Aurora panel surface, status icons, and auto-dismiss.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "feedback"
-  ]
+  ],
+  "type": "registry:ui"
 }

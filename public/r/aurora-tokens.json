@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-tokens",
-  "type": "registry:style",
   "title": "Aurora Design System Tokens",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora CSS custom property token definitions for the full Aurora color, typography, shadow, and radius system.",
@@ -202,5 +201,6 @@
     "aurora",
     "style",
     "theme"
-  ]
+  ],
+  "type": "registry:style"
 }

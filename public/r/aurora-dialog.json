@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-dialog",
-  "type": "registry:ui",
   "title": "Aurora Dialog",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Modal dialog with Aurora panel-strong background, strong shadow, and backdrop blur.",
@@ -33,5 +32,6 @@
     "aurora",
     "ui",
     "overlay"
-  ]
+  ],
+  "type": "registry:ui"
 }

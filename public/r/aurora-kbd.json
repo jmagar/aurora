@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-kbd",
-  "type": "registry:ui",
   "title": "Aurora Kbd",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Keyboard shortcut keycap for command labels, menus, and dense workbench controls.",
@@ -29,5 +28,6 @@
   "categories": [
     "aurora",
     "ui"
-  ]
+  ],
+  "type": "registry:ui"
 }

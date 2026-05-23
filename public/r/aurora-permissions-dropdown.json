@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-permissions-dropdown",
-  "type": "registry:block",
   "title": "Aurora Permissions Dropdown",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "LLM runtime permission config panel with master toggle, per-tool Allow/Ask/Block segmented controls, state badges, and scrollable tool list. Also exports PermissionChip for compact summary display.",
@@ -32,5 +31,6 @@
     "aurora",
     "block",
     "application"
-  ]
+  ],
+  "type": "registry:block"
 }

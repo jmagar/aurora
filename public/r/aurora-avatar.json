@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-avatar",
-  "type": "registry:ui",
   "title": "Aurora Avatar",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Circular avatar with gradient fallback initials and Aurora border styling.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "data-display"
-  ]
+  ],
+  "type": "registry:ui"
 }

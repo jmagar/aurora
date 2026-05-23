@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-description-list",
-  "type": "registry:ui",
   "title": "Aurora Description List",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Dense key-value metadata layout for operational detail panels.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "data-display"
-  ]
+  ],
+  "type": "registry:ui"
 }

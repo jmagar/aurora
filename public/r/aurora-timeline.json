@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-timeline",
-  "type": "registry:ui",
   "title": "Aurora Timeline",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Activity feed for agent runs, tool calls, deployments, and audit trails.",
@@ -31,5 +30,6 @@
     "aurora",
     "ui",
     "data-display"
-  ]
+  ],
+  "type": "registry:ui"
 }

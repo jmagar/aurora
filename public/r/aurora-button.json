@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-button",
-  "type": "registry:ui",
   "title": "Aurora Button",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Multi-variant button with aurora glow, rose, neutral, ghost, and destructive styles. Inline-style gradients and box-shadow glows.",
@@ -33,5 +32,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

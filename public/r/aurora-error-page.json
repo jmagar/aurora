@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-error-page",
-  "type": "registry:block",
   "title": "Aurora Error Page",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Operator-first error pages for 404 (Not found + mono path + Go home button), 403 (Access denied + contact link), and 500 (Something went wrong + mono incident ID + animated countdown ring with auto-retry). No consumer-app illustrations — uses ghost numeric backdrop instead.",
@@ -32,5 +31,6 @@
     "aurora",
     "block",
     "feedback"
-  ]
+  ],
+  "type": "registry:block"
 }

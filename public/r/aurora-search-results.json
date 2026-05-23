@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-search-results",
-  "type": "registry:ui",
   "title": "Aurora Search Results",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Reusable grouped result list with active, empty, metadata, and keyboard-friendly option semantics.",
@@ -31,5 +30,6 @@
     "aurora",
     "ui",
     "data-display"
-  ]
+  ],
+  "type": "registry:ui"
 }

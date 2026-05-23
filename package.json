@@ -30,28 +30,40 @@
     "next": "16.2.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "shadcn": "^3.0.0",
+    "shadcn": "^4.8.0",
     "tailwind-merge": "^3.3.1",
     "tw-animate-css": "^1.3.6",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "css-tree": "3.2.1",
-    "style-dictionary": "4.0.0",
-    "@tailwindcss/postcss": "^4.1.11",
+    "@eslint/eslintrc": "^3.3.5",
+    "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^20.19.9",
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
+    "css-tree": "3.2.1",
     "eslint": "^9.32.0",
     "eslint-config-next": "16.2.6",
-    "tailwindcss": "^4.1.11",
+    "style-dictionary": "4.0.0",
+    "tailwindcss": "^4.3.0",
     "typescript": "^5.9.2"
   },
   "pnpm": {
     "overrides": {
       "@types/react": "19.1.2",
-      "@types/react-dom": "19.1.2"
+      "@types/react-dom": "19.1.2",
+      "minimatch@<3.1.4": "3.1.5",
+      "picomatch@<3": "2.3.2",
+      "picomatch@>=4.0.0 <4.0.4": "4.0.4",
+      "path-to-regexp@>=8.0.0 <8.4.0": "8.4.0",
+      "postcss@<8.5.10": "8.5.15",
+      "flatted@<=3.4.1": "3.4.2",
+      "js-yaml@>=4.0.0 <4.1.1": "4.1.1",
+      "diff@>=6.0.0 <8.0.3": "8.0.3",
+      "qs@<=6.15.1": "6.15.2",
+      "brace-expansion@<1.1.13": "1.1.13",
+      "brace-expansion@>=5.0.0 <5.0.6": "5.0.6",
+      "ajv@<6.14.0": "6.15.0"
     },
     "onlyBuiltDependencies": [
       "@tailwindcss/oxide",

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-direction",
-  "type": "registry:ui",
   "title": "Aurora Direction",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Minimal direction wrapper for LTR and RTL layout previews.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

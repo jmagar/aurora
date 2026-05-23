@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-ask-user-question",
-  "type": "registry:block",
   "title": "Aurora Ask User Question",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Assistant question block with radio, multi-select, or free-text input. Option cards feature hover accent-border glow and active-glow on selection. Supports optional code preview panel per option.",
@@ -33,5 +32,6 @@
     "aurora",
     "block",
     "application"
-  ]
+  ],
+  "type": "registry:block"
 }

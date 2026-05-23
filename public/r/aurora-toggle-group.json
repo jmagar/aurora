@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-toggle-group",
-  "type": "registry:ui",
   "title": "Aurora Toggle Group",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Grouped toggle container for segmented command choices.",
@@ -31,5 +30,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

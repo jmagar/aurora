@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-label",
-  "type": "registry:ui",
   "title": "Aurora Label",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Accessible form label matching Aurora control typography.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

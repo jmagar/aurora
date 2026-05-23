@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-web-preview",
-  "type": "registry:block",
   "title": "Aurora Web Preview",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Browser chrome component with Aurora panel titlebar, three neutral square window dots, address bar with lock icon, reload and share icon buttons. Four variants: browser (full chrome), unfurl-card (link preview with favicon, title, description, domain chip), skeleton (shimmer loading), and error (failed to load).",
@@ -32,5 +31,6 @@
     "aurora",
     "block",
     "data-display"
-  ]
+  ],
+  "type": "registry:block"
 }

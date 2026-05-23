@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-carousel",
-  "type": "registry:ui",
   "title": "Aurora Carousel",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Horizontal scroll carousel with Aurora neutral controls for cards and media strips.",
@@ -33,5 +32,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

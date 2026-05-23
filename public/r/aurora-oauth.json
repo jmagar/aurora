@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-oauth",
-  "type": "registry:block",
   "title": "Aurora OAuth",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "OAuth consent screen with app icon, scope checklist (sensitive scopes highlighted in warn color), and Allow/Deny buttons. Success/callback state with animated SVG check and close-window message. Token management table with token name, scopes chips, created date, last used, and Revoke button.",
@@ -32,5 +31,6 @@
     "aurora",
     "block",
     "application"
-  ]
+  ],
+  "type": "registry:block"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-empty-state",
-  "type": "registry:ui",
   "title": "Aurora Empty State",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Centered empty state with icon slot, heading, description, and optional CTA button.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "feedback"
-  ]
+  ],
+  "type": "registry:ui"
 }

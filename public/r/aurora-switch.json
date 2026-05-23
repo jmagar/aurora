@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-switch",
-  "type": "registry:ui",
   "title": "Aurora Switch",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Toggle switch with Aurora glow active state and smooth transition.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

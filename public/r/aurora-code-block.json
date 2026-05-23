@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-code-block",
-  "type": "registry:block",
   "title": "Aurora Code Block",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Syntax-highlighted code display with Aurora titlebar, copy button, optional line numbers, diff variant, and inline CodeChip export. Supports TypeScript, Rust, Bash, JSON, TOML, diff.",
@@ -33,5 +32,6 @@
     "aurora",
     "block",
     "data-display"
-  ]
+  ],
+  "type": "registry:block"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-tooltip",
-  "type": "registry:ui",
   "title": "Aurora Tooltip",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Lightweight tooltip with Aurora panel-strong background and text-primary label.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "overlay"
-  ]
+  ],
+  "type": "registry:ui"
 }

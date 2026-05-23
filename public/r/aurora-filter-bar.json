@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-filter-bar",
-  "type": "registry:ui",
   "title": "Aurora Filter Bar",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Horizontal filter toolbar with search input, select dropdowns, and Aurora button actions.",
@@ -32,5 +31,6 @@
   "categories": [
     "aurora",
     "ui"
-  ]
+  ],
+  "type": "registry:ui"
 }

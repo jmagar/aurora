@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-badge",
-  "type": "registry:ui",
   "title": "Aurora Badge",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Small status and label badge component with Aurora tint variants.",
@@ -31,5 +30,6 @@
   "categories": [
     "aurora",
     "ui"
-  ]
+  ],
+  "type": "registry:ui"
 }

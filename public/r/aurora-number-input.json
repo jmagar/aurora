@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-number-input",
-  "type": "registry:ui",
   "title": "Aurora Number Input",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Numeric stepper input with decrement and increment controls for tuning settings.",
@@ -34,5 +33,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

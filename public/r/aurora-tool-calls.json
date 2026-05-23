@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-tool-calls",
-  "type": "registry:block",
   "title": "Aurora Tool Calls",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Condensed, grouped tool call display for AI sessions. Supports running shimmer, completed, and error states with collapsible arg/result panels.",
@@ -33,5 +32,6 @@
     "aurora",
     "block",
     "application"
-  ]
+  ],
+  "type": "registry:block"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-progress",
-  "type": "registry:ui",
   "title": "Aurora Progress",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Animated progress bar with Aurora accent-primary fill and panel track.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "feedback"
-  ]
+  ],
+  "type": "registry:ui"
 }

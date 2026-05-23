@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-navigation-menu",
-  "type": "registry:ui",
   "title": "Aurora Navigation Menu",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Top-level navigation menu with active border and glow states.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "navigation"
-  ]
+  ],
+  "type": "registry:ui"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-spinner",
-  "type": "registry:ui",
   "title": "Aurora Spinner",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Compact loading spinner with cyan, rose, and muted tones for asynchronous agent and registry work.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "feedback"
-  ]
+  ],
+  "type": "registry:ui"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-item",
-  "type": "registry:ui",
   "title": "Aurora Item",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Reusable list item with icon, title, description, and action slot.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

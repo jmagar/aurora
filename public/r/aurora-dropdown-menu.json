@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-dropdown-menu",
-  "type": "registry:ui",
   "title": "Aurora Dropdown Menu",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Floating dropdown menu with Aurora panel-strong surface, hover-bg items, and keyboard navigation.",
@@ -33,5 +32,6 @@
     "aurora",
     "ui",
     "overlay"
-  ]
+  ],
+  "type": "registry:ui"
 }

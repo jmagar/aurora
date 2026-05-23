@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-chart",
-  "type": "registry:ui",
   "title": "Aurora Chart",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Small tokenized SVG chart surface for operational metrics and registry summaries.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "data-display"
-  ]
+  ],
+  "type": "registry:ui"
 }

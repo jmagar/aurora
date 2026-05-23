@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-slider",
-  "type": "registry:ui",
   "title": "Aurora Slider",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Range slider with Aurora accent track, glow thumb, and controlled or uncontrolled value support.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

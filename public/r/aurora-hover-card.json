@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-hover-card",
-  "type": "registry:ui",
   "title": "Aurora Hover Card",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Hover-triggered detail panel for source metadata and compact previews.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "overlay"
-  ]
+  ],
+  "type": "registry:ui"
 }

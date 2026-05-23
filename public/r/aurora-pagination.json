@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-pagination",
-  "type": "registry:ui",
   "title": "Aurora Pagination",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Page navigation controls with Aurora neutral button style and active accent page indicator.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "navigation"
-  ]
+  ],
+  "type": "registry:ui"
 }

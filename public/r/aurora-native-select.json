@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-native-select",
-  "type": "registry:ui",
   "title": "Aurora Native Select",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Browser-native select with Aurora control styling, chevron affordance, and native select ref/event semantics.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-combobox",
-  "type": "registry:ui",
   "title": "Aurora Combobox",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Searchable selection control for large option sets like gateways, models, branches, and files.",
@@ -34,5 +33,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

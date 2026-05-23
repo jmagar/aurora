@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-calendar",
-  "type": "registry:ui",
   "title": "Aurora Calendar",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Compact month calendar with Aurora focus, selected-day, and operator-friendly density.",
@@ -33,5 +32,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-separator",
-  "type": "registry:ui",
   "title": "Aurora Separator",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Horizontal or vertical separator using Aurora border tokens for grouped controls, menus, and dense metadata panels.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

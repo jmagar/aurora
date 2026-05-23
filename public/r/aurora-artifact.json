@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-artifact",
-  "type": "registry:block",
   "title": "Aurora Artifact",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Artifact panel with preview/code tab switcher, copy/download/expand toolbar, language badge, and streaming cursor. Three variants: panel (full-featured), card (compact collapsible in-chat), inline (bare code strip).",
@@ -32,5 +31,6 @@
     "aurora",
     "block",
     "data-display"
-  ]
+  ],
+  "type": "registry:block"
 }

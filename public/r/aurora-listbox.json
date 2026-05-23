@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-listbox",
-  "type": "registry:ui",
   "title": "Aurora Listbox",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Shared Aurora listbox, group, and option row primitives for command palettes, search results, and combobox menus.",
@@ -30,5 +29,6 @@
   "categories": [
     "aurora",
     "ui"
-  ]
+  ],
+  "type": "registry:ui"
 }

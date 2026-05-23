@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-sheet",
-  "type": "registry:ui",
   "title": "Aurora Sheet",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Side and edge drawer built on Radix Dialog for inspectors, details panels, and mobile navigation.",
@@ -33,5 +32,6 @@
     "aurora",
     "ui",
     "overlay"
-  ]
+  ],
+  "type": "registry:ui"
 }

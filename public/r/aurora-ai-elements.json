@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-ai-elements",
-  "type": "registry:block",
   "title": "Aurora AI Elements",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora-native AI Elements parity block covering chat, code, voice, workflow, media, and utility surfaces.",
@@ -46,5 +45,6 @@
     "aurora",
     "block",
     "ai"
-  ]
+  ],
+  "type": "registry:block"
 }

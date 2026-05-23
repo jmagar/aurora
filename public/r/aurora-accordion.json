@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-accordion",
-  "type": "registry:ui",
   "title": "Aurora Accordion",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Tokenized disclosure list for compact details, command output, and configuration sections.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-skeleton",
-  "type": "registry:ui",
   "title": "Aurora Skeleton",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Shimmer skeleton loader with Aurora panel-medium base and hover-bg highlight.",
@@ -34,5 +33,6 @@
     "aurora",
     "ui",
     "feedback"
-  ]
+  ],
+  "type": "registry:ui"
 }

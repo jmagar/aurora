@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-marketplace",
-  "type": "registry:block",
   "title": "Aurora Marketplace",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Labby marketplace catalog surface with source cards, lens stats, search filters, card and table views, install/update actions, and a detail inspector.",
@@ -40,5 +39,6 @@
     "aurora",
     "block",
     "data-display"
-  ]
+  ],
+  "type": "registry:block"
 }

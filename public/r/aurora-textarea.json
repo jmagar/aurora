@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-textarea",
-  "type": "registry:ui",
   "title": "Aurora Textarea",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Auto-resizing textarea with Aurora focus glow and control-surface background.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

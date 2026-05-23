@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-aspect-ratio",
-  "type": "registry:ui",
   "title": "Aurora Aspect Ratio",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Fixed-ratio media wrapper for previews, charts, and embedded surfaces.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

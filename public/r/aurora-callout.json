@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-callout",
-  "type": "registry:ui",
   "title": "Aurora Callout",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Inline contextual notice for forms, panels, docs, and permission flows.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "feedback"
-  ]
+  ],
+  "type": "registry:ui"
 }

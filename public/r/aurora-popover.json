@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-popover",
-  "type": "registry:ui",
   "title": "Aurora Popover",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Lightweight anchored disclosure surface for inline details, previews, and quick editors.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "overlay"
-  ]
+  ],
+  "type": "registry:ui"
 }

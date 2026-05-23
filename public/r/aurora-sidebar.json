@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-sidebar",
-  "type": "registry:block",
   "title": "Aurora Sidebar",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Zed-like project sidebar with collapsible project groups, session items with relative time, live beacon pulse, active accent border, search input, avatar bottom bar, and icon-only collapsed variant.",
@@ -34,5 +33,6 @@
     "aurora",
     "block",
     "navigation"
-  ]
+  ],
+  "type": "registry:block"
 }

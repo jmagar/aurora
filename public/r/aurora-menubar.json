@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-menubar",
-  "type": "registry:ui",
   "title": "Aurora Menubar",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Horizontal application menu bar with compact Aurora menu items.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "navigation"
-  ]
+  ],
+  "type": "registry:ui"
 }

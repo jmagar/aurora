@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-radio-group",
-  "type": "registry:ui",
   "title": "Aurora Radio Group",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Single-choice radio group extracted as an independently installable Aurora primitive.",
@@ -31,5 +30,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

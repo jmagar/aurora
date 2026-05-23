@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-collapsible",
-  "type": "registry:ui",
   "title": "Aurora Collapsible",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Disclosure container for compact diagnostics and configuration details.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

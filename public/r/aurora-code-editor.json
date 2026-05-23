@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-code-editor",
-  "type": "registry:block",
   "title": "Aurora Code Editor",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Display-only code editor panel with title bar (filename, language badge, close button), line numbers, syntax highlighting, minimap column, diff mode (add/remove line backgrounds), error diagnostics (squiggly underlines, gutter icons, error panel), status bar, and a compact variant.",
@@ -32,5 +31,6 @@
     "aurora",
     "block",
     "data-display"
-  ]
+  ],
+  "type": "registry:block"
 }

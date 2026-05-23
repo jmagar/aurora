@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-ai-edge",
-  "type": "registry:block",
   "title": "Aurora AI Edge",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora-native edge parity surface from AI Elements.",
@@ -34,5 +33,6 @@
     "aurora",
     "block",
     "ai"
-  ]
+  ],
+  "type": "registry:block"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-status-indicator",
-  "type": "registry:ui",
   "title": "Aurora Status Indicator",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Live status label with muted Aurora tones for connected, syncing, degraded, offline, and error states.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "feedback"
-  ]
+  ],
+  "type": "registry:ui"
 }

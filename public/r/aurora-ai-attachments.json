@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-ai-attachments",
-  "type": "registry:block",
   "title": "Aurora AI Attachments",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora-native attachments parity surface from AI Elements.",
@@ -35,5 +34,6 @@
     "aurora",
     "block",
     "ai"
-  ]
+  ],
+  "type": "registry:block"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-prompt-input",
-  "type": "registry:block",
   "title": "Aurora Prompt Input",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Full-featured AI prompt input with attach, slash commands, @mentions, model selector, send/stop buttons, attachment chips, and streaming state.",
@@ -33,5 +32,6 @@
     "aurora",
     "block",
     "application"
-  ]
+  ],
+  "type": "registry:block"
 }

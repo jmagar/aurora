@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-data-table",
-  "type": "registry:ui",
   "title": "Aurora Data Table",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Sortable, paginated data table with Aurora panel headers, row hover states, and border-default separators.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "data-display"
-  ]
+  ],
+  "type": "registry:ui"
 }

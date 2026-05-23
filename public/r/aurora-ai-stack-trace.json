@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-ai-stack-trace",
-  "type": "registry:block",
   "title": "Aurora AI Stack Trace",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora-native stack trace parity surface from AI Elements.",
@@ -34,5 +33,6 @@
     "aurora",
     "block",
     "ai"
-  ]
+  ],
+  "type": "registry:block"
 }

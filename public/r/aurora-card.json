@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-card",
-  "type": "registry:ui",
   "title": "Aurora Card",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Composed Aurora card shell with header, content, footer, title, and description slots.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-input-otp",
-  "type": "registry:ui",
   "title": "Aurora Input OTP",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Segmented one-time-code input slots with Aurora control styling.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

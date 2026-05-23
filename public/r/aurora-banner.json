@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-banner",
-  "type": "registry:ui",
   "title": "Aurora Banner",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Full-width status banners with info, success, warn, and error Aurora tint variants.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "feedback"
-  ]
+  ],
+  "type": "registry:ui"
 }

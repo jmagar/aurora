@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-breadcrumb",
-  "type": "registry:ui",
   "title": "Aurora Breadcrumb",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Breadcrumb navigation with separator chevrons and Aurora muted text styling.",
@@ -33,5 +32,6 @@
     "aurora",
     "ui",
     "navigation"
-  ]
+  ],
+  "type": "registry:ui"
 }

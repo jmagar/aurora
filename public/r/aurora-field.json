@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-field",
-  "type": "registry:ui",
   "title": "Aurora Field",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Field wrapper for labels, descriptions, required markers, disabled state, and validation errors.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

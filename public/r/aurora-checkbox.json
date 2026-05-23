@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-checkbox",
-  "type": "registry:ui",
   "title": "Aurora Checkbox & Radio",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora-styled checkbox and radio group built on button[role=checkbox/radio] patterns. 16px control with accent-primary fill, animated check/dot, focus ring glow, and full keyboard support. Includes RadioGroup + RadioGroupItem exports.",
@@ -34,5 +33,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-command-palette",
-  "type": "registry:block",
   "title": "Aurora Command Palette",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Full-screen command palette with 72% alpha backdrop, centered 560px panel, magnifier search input with ⌘K shortcut hint, sectioned results (Recent, Actions, Skills, Navigate), keyboard shortcut kbd badges, arrow-key navigation, Enter to select, Escape to close, and a useCommandPalette hook that binds ⌘K globally.",
@@ -33,5 +32,6 @@
     "aurora",
     "block",
     "navigation"
-  ]
+  ],
+  "type": "registry:block"
 }

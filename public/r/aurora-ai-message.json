@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-ai-message",
-  "type": "registry:block",
   "title": "Aurora AI Message",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora-native message parity surface from AI Elements.",
@@ -34,5 +33,6 @@
     "aurora",
     "block",
     "ai"
-  ]
+  ],
+  "type": "registry:block"
 }

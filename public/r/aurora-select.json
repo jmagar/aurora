@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-select",
-  "type": "registry:ui",
   "title": "Aurora Select",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Radix select with Aurora panel dropdown, grouped options, separators, and keyboard navigation.",
@@ -32,5 +31,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-button-group",
-  "type": "registry:ui",
   "title": "Aurora Button Group",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Grouped action container for segmented command clusters and compact toolbar controls.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

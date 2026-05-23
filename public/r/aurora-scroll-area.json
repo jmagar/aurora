@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-scroll-area",
-  "type": "registry:ui",
   "title": "Aurora Scroll Area",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Tokenized scroll viewport with Aurora border and scrollbar behavior.",
@@ -30,5 +29,6 @@
     "aurora",
     "ui",
     "layout"
-  ]
+  ],
+  "type": "registry:ui"
 }

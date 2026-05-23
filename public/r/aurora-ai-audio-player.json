@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-ai-audio-player",
-  "type": "registry:block",
   "title": "Aurora AI Audio Player",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora-native audio player parity surface from AI Elements.",
@@ -34,5 +33,6 @@
     "aurora",
     "block",
     "ai"
-  ]
+  ],
+  "type": "registry:block"
 }

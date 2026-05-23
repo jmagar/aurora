@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-date-picker",
-  "type": "registry:ui",
   "title": "Aurora Date Picker",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Native date input with Aurora label and calendar affordance.",
@@ -33,5 +32,6 @@
     "aurora",
     "ui",
     "forms"
-  ]
+  ],
+  "type": "registry:ui"
 }

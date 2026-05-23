@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-login",
-  "type": "registry:block",
   "title": "Aurora Login",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Full-page login card centered on Aurora radial page wash. Features Labby stacked-plane mark + wordmark, email/password fields with show/hide toggle, Style D glow-border sign-in button, forgot password link, magic-link sent state with envelope icon, and 6-box OTP input that auto-advances on keystroke for 2FA.",
@@ -34,5 +33,6 @@
     "aurora",
     "block",
     "application"
-  ]
+  ],
+  "type": "registry:block"
 }
