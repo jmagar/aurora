@@ -162,7 +162,7 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun loadMcpServers() { repo.listMcpServers() }
+    private fun loadMcpServers() { repo.listMcpServers() }
 
     private fun parseMcpServers(servers: List<JsonObject>) {
         val parsed = servers.mapNotNull { obj ->
@@ -210,6 +210,6 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(projects = groups, isLoading = false) }
     }
 
-    // Do NOT disconnect here — the repository owns the connection lifetime.
-    override fun onCleared() { super.onCleared() }
+    // Note: onCleared() is intentionally not overridden — the repository owns
+    // the connection lifetime, so there's nothing to dispose here.
 }
