@@ -48,6 +48,7 @@ data class MentionItem(
     val label: String,
     val description: String? = null,
     val kind: MentionKind = MentionKind.Command,
+    val path: String? = null,
 )
 
 private val kindIcon: Map<MentionKind, ImageVector> = mapOf(
@@ -135,7 +136,7 @@ private fun MentionRow(item: MentionItem, onSelect: (MentionItem, SelectedItem) 
                 val structured: SelectedItem = when (item.kind) {
                     MentionKind.Skill -> SelectedItem.Skill(
                         name = item.trigger.removePrefix("@"),
-                        path = item.trigger.removePrefix("@"),   // server resolves by name; path mirrors name until server provides canonical path
+                        path = item.path ?: item.trigger.removePrefix("@"),
                     )
                     MentionKind.Command -> SelectedItem.Command(
                         name = item.trigger.removePrefix("/"),

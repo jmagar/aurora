@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
@@ -82,7 +83,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
                         _isInitialized.value = true
                     }
                     _msgs.trySendBlocking(msg)
-                } catch (e: Exception) { Log.w(TAG, "parse error: $text") }
+                } catch (e: Exception) { Log.w(TAG, "parse error len=${text.length}: ${e.javaClass.simpleName}: ${e.message}") }
             }
             override fun onFailure(ws: WebSocket, t: Throwable, r: Response?) {
                 Log.e(TAG, "failure", t)
@@ -90,7 +91,16 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 _msgs.trySendBlocking(RpcMessage(error = RpcError(-1, t.message ?: "error")))
             }
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
+                val wasReady = _isInitialized.value
                 _isInitialized.value = false
+                // Emit a synthetic error for unexpected server-side closes (code != 1000)
+                // so demux() receives a termination signal and ChatViewModel can clear thinking=true.
+                // Code 1000 = normal user-initiated close via disconnect(); no error needed.
+                if (wasReady && code != 1000) {
+                    _msgs.trySendBlocking(
+                        RpcMessage(error = RpcError(code, reason.ifBlank { "server closed connection (code $code)" }))
+                    )
+                }
                 _msgs.close()
             }
         })
@@ -182,7 +192,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 })
             }
         )
-        return Pair(frame, id)
+        return frame to id
     }
 
     fun startTurn(
@@ -280,6 +290,67 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    fun resumeThread(threadId: String, history: List<JsonObject>? = null): Int {
+        val id = ids.incrementAndGet()
+        send("thread/resume", buildJsonObject {
+            put("threadId", threadId)
+            history?.let { h ->
+                put("history", buildJsonArray { h.forEach { add(it) } })
+            }
+        }, id)
+        return id
+    }
+
+    fun steerTurn(threadId: String, text: String, expectedTurnId: String): Int {
+        val id = ids.incrementAndGet()
+        send("turn/steer", buildJsonObject {
+            put("threadId", threadId)
+            put("input", buildJsonArray {
+                add(buildJsonObject { put("type", "text"); put("text", text) })
+            })
+            put("expectedTurnId", expectedTurnId)
+        }, id)
+        return id
+    }
+
+    fun setGoal(threadId: String, objective: String, tokenBudget: Int? = null): Int {
+        val id = ids.incrementAndGet()
+        send("thread/goal/set", buildJsonObject {
+            put("threadId", threadId)
+            put("objective", objective)
+            tokenBudget?.let { put("tokenBudget", it) }
+        }, id)
+        return id
+    }
+
+    fun getGoal(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/goal/get", buildJsonObject { put("threadId", threadId) }, id)
+        return id
+    }
+
+    fun clearGoal(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/goal/clear", buildJsonObject { put("threadId", threadId) }, id)
+        return id
+    }
+
+    fun listMcpServers(): Int {
+        val id = ids.incrementAndGet()
+        send("mcpServerStatus/list", buildJsonObject {
+            put("detail", "toolsAndAuthOnly")
+        }, id)
+        return id
+    }
+
+    fun sendApproval(rawServerId: JsonElement, decision: String): Boolean {
+        val json = buildJsonObject {
+            put("id", rawServerId)
+            put("result", decision)
+        }.toString()
+        return ws?.send(json) ?: false
+    }
+
     fun getAuthStatus(): Int {
         val id = ids.incrementAndGet()
         send("getAuthStatus", JsonObject(emptyMap()), id)
@@ -313,7 +384,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
         send("turn/interrupt", buildJsonObject { put("threadId", threadId) })
     }
 
-    private fun send(method: String, params: kotlinx.serialization.json.JsonElement, id: Int? = null) {
+    private fun send(method: String, params: JsonElement, id: Int? = null) {
         val msg = buildJsonObject {
             put("method", method)
             if (id != null) put("id", id)

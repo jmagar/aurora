@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import tv.tootie.aurora.app.codex.PendingAttachment
 import tv.tootie.aurora.components.AuroraAttachment
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Assistant
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,6 +64,7 @@ import tv.tootie.aurora.components.AuroraControls
 import tv.tootie.aurora.components.AuroraMessage
 import tv.tootie.aurora.components.AuroraMessageData
 import tv.tootie.aurora.components.AuroraMessageRole
+import tv.tootie.aurora.components.AuroraPermissionPrompt
 import tv.tootie.aurora.components.AuroraPromptInput
 import tv.tootie.aurora.components.AuroraStatusIndicator
 import tv.tootie.aurora.components.AuroraStatusTone
@@ -79,6 +81,7 @@ fun ChatScreen(
     val s by vm.state.collectAsStateWithLifecycle()
     var input by remember { mutableStateOf("") }
     var selectedItems by remember { mutableStateOf<List<SelectedItem>>(emptyList()) }
+    var pendingSkillInvocation by remember { mutableStateOf<Pair<String, String>?>(null) }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -129,6 +132,7 @@ fun ChatScreen(
                 label = skill.name.replace("-", " ").replaceFirstChar { it.uppercase() },
                 description = skill.description.take(80),
                 kind = MentionKind.Skill,
+                path = skill.path,
             )
         }
         commands + skills
@@ -177,17 +181,31 @@ fun ChatScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    AuroraStatusIndicator(
-                        tone = if (s.thinking) AuroraStatusTone.Syncing else if (s.connected) AuroraStatusTone.Online else AuroraStatusTone.Offline,
-                        label = if (s.thinking) "Thinking..." else if (s.connected) "Connected" else "Disconnected",
-                    )
+                    val statusTone = when {
+                        s.thinking -> AuroraStatusTone.Syncing
+                        s.connected -> AuroraStatusTone.Online
+                        else -> AuroraStatusTone.Offline
+                    }
+                    val statusLabel = when {
+                        s.thinking -> "Thinking..."
+                        s.connected -> "Connected"
+                        else -> "Disconnected"
+                    }
+                    AuroraStatusIndicator(tone = statusTone, label = statusLabel)
                 },
                 navigationIcon = {
                     IconButton(onClick = onOpenSidebar) {
                         Icon(Icons.Default.Menu, contentDescription = "Open sidebar")
                     }
                 },
-                actions = { AuroraControls(onStop = if (s.thinking) vm::interrupt else null) },
+                actions = {
+                    if (s.thinking && s.activeTurnId != null) {
+                        IconButton(onClick = { vm.showSteer() }) {
+                            Icon(Icons.Default.Assistant, contentDescription = "Steer agent")
+                        }
+                    }
+                    AuroraControls(onStop = if (s.thinking) vm::interrupt else null)
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
             )
         },
@@ -280,6 +298,34 @@ fun ChatScreen(
                     }
                 }
 
+                // MCP tool calls (violet identity dots)
+                if (s.mcpToolCalls.isNotEmpty()) {
+                    item(key = "mcptoolcalls") {
+                        McpToolCallRows(
+                            calls = s.mcpToolCalls,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+                }
+
+                // Web searches inline
+                s.webSearches.forEachIndexed { i, query ->
+                    item(key = "ws_$i") {
+                        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                            Text("🔍 $query", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+
+                // Plan items inline
+                s.planItems.forEachIndexed { i, plan ->
+                    item(key = "plan_$i") {
+                        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                            Text("📋 $plan", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+
                 // Reasoning block
                 if (s.reasoning.isNotEmpty()) {
                     item(key = "reasoning") {
@@ -323,11 +369,24 @@ fun ChatScreen(
                     items = filteredMentions,
                     query = mentionQuery,
                     onSelect = { item, structured ->
-                        val lastTrigger = maxOf(input.lastIndexOf('@'), input.lastIndexOf('/'))
-                        input = if (lastTrigger >= 0) input.take(lastTrigger) + item.trigger + " "
-                                else input + item.trigger + " "
-                        selectedItems = selectedItems + structured
-                        showMentions = false
+                        if (item.kind == MentionKind.Skill) {
+                            val skillName = item.trigger.removePrefix("@")
+                            // Fall back to skill name as path when no canonical path is provided
+                            // so the server can still locate the skill via its name identifier
+                            pendingSkillInvocation = Pair(
+                                skillName,
+                                item.path ?: skillName,
+                            )
+                            val lastAt = input.lastIndexOf('@')
+                            input = if (lastAt >= 0) input.take(lastAt) else ""
+                            showMentions = false
+                        } else {
+                            val lastTrigger = maxOf(input.lastIndexOf('@'), input.lastIndexOf('/'))
+                            input = if (lastTrigger >= 0) input.take(lastTrigger) + item.trigger + " "
+                                    else input + item.trigger + " "
+                            selectedItems = selectedItems + structured
+                            showMentions = false
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -336,19 +395,49 @@ fun ChatScreen(
                 )
             }
 
+            // Pending skill indicator — shown when user selected a skill via @mention
+            pendingSkillInvocation?.let { (skillName, _) ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        "Skill: @$skillName",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                    TextButton(onClick = { pendingSkillInvocation = null }) { Text("Clear") }
+                }
+            }
+
             AuroraPromptInput(
                 value = input,
                 onValueChange = { input = it },
                 onSend = {
-                    val hasText = input.isNotBlank()
-                    val hasAttachments = s.pendingAttachments.isNotEmpty() || selectedItems.isNotEmpty()
-                    // While editing, only text + skill attachments are forwarded; images are dropped.
-                    val canSend = if (s.editingMessage != null) hasText else (hasText || hasAttachments)
-                    if (canSend) {
-                        if (s.editingMessage != null) vm.sendEdit(input, selectedItems)
-                        else vm.send(input, selectedItems)
+                    val pending = pendingSkillInvocation
+                    if (s.editingMessage != null) {
+                        if (input.isNotBlank()) {
+                            vm.sendEdit(input, selectedItems)
+                            pendingSkillInvocation = null
+                            input = ""
+                            selectedItems = emptyList()
+                        }
+                    } else if (pending != null && input.isNotBlank()) {
+                        vm.sendWithSkill(input, pending.first, pending.second)
+                        pendingSkillInvocation = null
                         input = ""
                         selectedItems = emptyList()
+                    } else {
+                        val hasText = input.isNotBlank()
+                        val hasAttachments = s.pendingAttachments.isNotEmpty() || selectedItems.isNotEmpty()
+                        if (hasText || hasAttachments) {
+                            vm.send(input, selectedItems)
+                            input = ""
+                            selectedItems = emptyList()
+                        }
                     }
                 },
                 loading = s.thinking,
@@ -394,6 +483,27 @@ fun ChatScreen(
         }
     }
 
+    // Approval intercept overlay — shown as a non-dismissible dialog, FIFO queue
+    s.pendingApprovals.firstOrNull()?.let { approval ->
+        val allowDecision = approval.availableDecisions.getOrElse(0) { "accept" }
+        val denyDecision = approval.availableDecisions.getOrElse(1) { "decline" }
+        val allowLabel = allowDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
+        val denyLabel = denyDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
+        val descParts = listOfNotNull(approval.reason, approval.command)
+        val description = descParts.joinToString("\n\n").ifBlank {
+            if (approval.type == "command") "A command is requesting approval." else "File changes are requesting approval."
+        }
+        AuroraPermissionPrompt(
+            onDismissRequest = { },
+            title = if (approval.type == "command") "Allow command?" else "Allow file changes?",
+            description = description,
+            onAllow = { vm.approveToolCall(allowDecision) },
+            allowLabel = allowLabel,
+            onDeny = { vm.approveToolCall(denyDecision) },
+            denyLabel = denyLabel,
+        )
+    }
+
     // Feature 2: Message actions bottom sheet
     s.actionsTarget?.let { target ->
         MessageActionsSheet(
@@ -406,6 +516,13 @@ fun ChatScreen(
                 cm?.setPrimaryClip(ClipData.newPlainText("message", target.content))
             },
             onDismiss = vm::dismissActions,
+        )
+    }
+
+    if (s.showSteerSheet) {
+        SteerInputSheet(
+            onSteer = { vm.steer(it) },
+            onDismiss = { vm.hideSteer() },
         )
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Folder
@@ -28,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -85,6 +87,13 @@ fun SessionsSidebar(
     onNewSession: () -> Unit,
     onSettings: () -> Unit,
     modifier: Modifier = Modifier,
+    currentGoal: ThreadGoal? = null,
+    showGoalEditor: Boolean = false,
+    onShowGoalEditor: () -> Unit = {},
+    onSetGoal: (String) -> Unit = {},
+    onClearGoal: () -> Unit = {},
+    onHideGoalEditor: () -> Unit = {},
+    mcpServers: List<McpServerInfo> = emptyList(),
 ) {
     val aurora = LocalAuroraColors.current
 
@@ -124,6 +133,38 @@ fun SessionsSidebar(
         }
 
         HorizontalDivider(color = aurora.borderDefault)
+
+        // Goal strip
+        if (currentGoal != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = currentGoal.objective,
+                    style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = onShowGoalEditor, modifier = Modifier.size(20.dp)) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit goal", modifier = Modifier.size(14.dp))
+                }
+            }
+        } else {
+            TextButton(onClick = onShowGoalEditor, modifier = Modifier.padding(horizontal = 8.dp)) {
+                Text("+ Set goal", style = MaterialTheme.typography.labelMedium)
+            }
+        }
+
+        if (showGoalEditor) {
+            GoalEditorSheet(
+                currentGoal = currentGoal,
+                onSetGoal = onSetGoal,
+                onClearGoal = onClearGoal,
+                onDismiss = onHideGoalEditor,
+            )
+        }
 
         // Session list
         if (isLoading) {
@@ -169,6 +210,8 @@ fun SessionsSidebar(
                 }
             }
         }
+
+        McpServerPanel(servers = mcpServers)
 
         // Footer
         HorizontalDivider(color = aurora.borderDefault)

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,9 @@ object Keys {
     // Approval policy
     val APPROVAL_POLICY = stringPreferencesKey("approval_policy")       // wire value; default "on-request"
     val APPROVALS_REVIEWER = stringPreferencesKey("approvals_reviewer") // wire value; default "user"
+    // Thread persistence
+    val THREAD_ID = stringPreferencesKey("thread_id")
+    val THREAD_UPDATED_AT = longPreferencesKey("thread_updated_at")
 }
 
 class AppSettings(private val ctx: Context) {
@@ -76,5 +80,19 @@ class AppSettings(private val ctx: Context) {
         it.remove(Keys.AUTH_TOKEN)
         it.remove(Keys.ACCESS_TOKEN)
         it.remove(Keys.CHATGPT_ACCOUNT_ID)
+    }
+
+    val savedThreadId: Flow<String?> = ctx.store.data.map {
+        it[Keys.THREAD_ID]?.takeIf { id -> id.isNotBlank() }
+    }
+
+    suspend fun saveThread(id: String) = ctx.store.edit {
+        it[Keys.THREAD_ID] = id
+        it[Keys.THREAD_UPDATED_AT] = System.currentTimeMillis() / 1000L
+    }
+
+    suspend fun clearThreadId() = ctx.store.edit {
+        it.remove(Keys.THREAD_ID)
+        it.remove(Keys.THREAD_UPDATED_AT)
     }
 }

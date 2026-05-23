@@ -19,7 +19,9 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -61,6 +63,7 @@ private fun ToolCallRow(call: ToolCall) {
         call.done -> aurora.success
         else -> aurora.info
     }
+    val displayCmd = call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"')
 
     Column(
         modifier = Modifier
@@ -94,7 +97,7 @@ private fun ToolCallRow(call: ToolCall) {
 
             // Command — truncated, monospace
             Text(
-                text = call.cmd.substringAfterLast(" -lc ").trim().trim('\'', '"').take(60),
+                text = displayCmd.take(60),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace),
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
@@ -125,7 +128,7 @@ private fun ToolCallRow(call: ToolCall) {
             enter = expandVertically(),
             exit = shrinkVertically(),
         ) {
-            val output = call.out.toString()
+            val output = call.out.toString().sanitizeForDisplay()
             if (output.isNotBlank()) {
                 Box(
                     modifier = Modifier
@@ -134,7 +137,7 @@ private fun ToolCallRow(call: ToolCall) {
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "$ ${call.cmd.substringAfterLast(" -lc ").trim().trim('\'', '"')}\n$output",
+                        text = "$ $displayCmd\n$output",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,
@@ -151,13 +154,104 @@ private fun ToolCallRow(call: ToolCall) {
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        "$ ${call.cmd.substringAfterLast(" -lc ").trim().trim('\'', '"')}",
+                        "$ $displayCmd",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,
                         ),
                         color = Color(0xFF888888),
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun McpToolCallRows(calls: List<McpToolCallItem>, modifier: Modifier = Modifier) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        calls.forEach { call -> McpToolCallRow(call) }
+    }
+}
+
+@Composable
+private fun McpToolCallRow(call: McpToolCallItem) {
+    val aurora = LocalAuroraColors.current
+    var expanded by remember(call.id) { mutableStateOf(false) }
+    val dotColor = when (call.status) {
+        "done" -> aurora.success
+        "failed" -> aurora.error
+        else -> aurora.accentViolet
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(role = Role.Button) { expanded = !expanded }
+                .padding(horizontal = 10.dp, vertical = 7.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Box(modifier = Modifier.size(7.dp).background(dotColor, CircleShape))
+            Icon(
+                Icons.Default.Extension,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(13.dp),
+            )
+            Text(
+                text = "${call.server}: ${call.tool}",
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace),
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            when (call.status) {
+                "done" -> Icon(Icons.Default.CheckCircle, null,
+                    tint = aurora.success, modifier = Modifier.size(13.dp))
+                "failed" -> Icon(Icons.Default.Error, null,
+                    tint = aurora.error, modifier = Modifier.size(13.dp))
+                else -> CircularProgressIndicator(
+                    modifier = Modifier.size(12.dp), strokeWidth = 1.dp, color = aurora.accentViolet)
+            }
+            Icon(
+                if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                contentDescription = if (expanded) "Collapse" else "Expand",
+                modifier = Modifier.size(14.dp),
+            )
+        }
+
+        AnimatedVisibility(visible = expanded, enter = expandVertically(), exit = shrinkVertically()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF0A0F14))
+                    .padding(horizontal = 10.dp, vertical = 8.dp),
+            ) {
+                if (call.arguments.isNotBlank()) {
+                    Text(
+                        "args: ${call.arguments.take(300)}",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace, fontSize = 11.sp),
+                        color = Color(0xFF888888),
+                    )
+                }
+                if (call.output.isNotBlank()) {
+                    Text(
+                        call.output.take(500),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace, fontSize = 11.sp, lineHeight = 16.sp),
+                        color = Color(0xFFD4D4D4),
+                    )
+                }
+                call.error?.let {
+                    Text(it, style = MaterialTheme.typography.labelSmall, color = aurora.error)
                 }
             }
         }
