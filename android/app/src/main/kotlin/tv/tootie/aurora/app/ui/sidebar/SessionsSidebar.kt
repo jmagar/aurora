@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -37,9 +38,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.components.AuroraButton
 import tv.tootie.aurora.components.AuroraButtonVariant
 import tv.tootie.aurora.components.AuroraStatusIndicator
@@ -167,49 +171,56 @@ fun SessionsSidebar(
             )
         }
 
-        // Session list
-        if (isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-            }
-        } else if (projects.isEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Text(
-                    "No sessions yet",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                AuroraButton(
-                    onClick = onNewSession,
-                    variant = AuroraButtonVariant.Filled,
-                ) { Text("Start one") }
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(vertical = 4.dp),
-            ) {
-                projects.forEach { project ->
-                    item(key = "hdr_${project.cwd}") {
-                        ProjectHeader(project = project)
-                    }
-                    items(project.sessions, key = { it.id }) { session ->
-                        SessionRow(
-                            session = session,
-                            isActive = session.id == activeSessionId,
-                            onClick = { onSessionClick(session.id) },
-                        )
+        // Session list — wrapped in a Box(weight 1f) so the footer below always pins to bottom
+        // regardless of loading / empty / populated state.
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+        ) {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                }
+            } else if (projects.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        "No sessions yet",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    AuroraButton(
+                        onClick = onNewSession,
+                        variant = AuroraButtonVariant.Filled,
+                    ) { Text("Start one") }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(vertical = 4.dp),
+                ) {
+                    projects.forEach { project ->
+                        item(key = "hdr_${project.cwd}") {
+                            ProjectHeader(project = project)
+                        }
+                        items(project.sessions, key = { it.id }) { session ->
+                            SessionRow(
+                                session = session,
+                                isActive = session.id == activeSessionId,
+                                onClick = { onSessionClick(session.id) },
+                            )
+                        }
                     }
                 }
             }
@@ -217,20 +228,55 @@ fun SessionsSidebar(
 
         McpServerPanel(servers = mcpServers)
 
-        // Footer
+        // Footer — always anchored at bottom of drawer.
         HorizontalDivider(color = aurora.borderDefault)
+        val ctx = LocalContext.current
+        val settings = remember(ctx) { AppSettings(ctx) }
+        val authMethod by settings.authMethod.collectAsStateWithLifecycle(initialValue = null)
+        val authLabel = when (authMethod) {
+            "apiKey" -> "API Key"
+            "chatgpt" -> "ChatGPT"
+            "chatgptDeviceCode" -> "ChatGPT (device)"
+            "chatgptAuthTokens" -> "ChatGPT (tokens)"
+            null -> "Not signed in"
+            else -> authMethod ?: "Not signed in"
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.End,
+                .padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            IconButton(onClick = onSettings) {
-                Icon(
-                    Icons.Default.Settings,
-                    contentDescription = "Settings",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            Text(
+                text = authLabel,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(0.dp),
+            ) {
+                IconButton(onClick = onSettings) {
+                    Icon(
+                        Icons.Default.Settings,
+                        contentDescription = "Settings",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                // TODO(aurora-design-system-vyjr): Wire a real logout callback through
+                // SessionsSidebar's signature (and NavHost) instead of routing to Settings.
+                // Kept minimal here to avoid expanding the component API in this change.
+                IconButton(onClick = onSettings) {
+                    Icon(
+                        Icons.Default.Logout,
+                        contentDescription = "Log out",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }
