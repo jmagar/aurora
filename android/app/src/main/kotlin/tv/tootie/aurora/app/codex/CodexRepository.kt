@@ -317,7 +317,8 @@ class CodexRepository {
                 RequestKind.McpServers -> routeMcpServersResponse(msg)
                 // ThreadStart, ThreadResume, Steer, Goal*, Other, null — go to turnEventsFlow
                 // so ChatViewModel handles them with its existing null-method dispatch.
-                else -> scope.launch { _turnEventsFlow.emit(CodexEvent.TurnEvent(msg, originKind = kind)) }
+                // Direct emit (demux is already suspend) — no scope.launch to preserve ordering
+                else -> _turnEventsFlow.emit(CodexEvent.TurnEvent(msg, originKind = kind))
             }
             return
         }

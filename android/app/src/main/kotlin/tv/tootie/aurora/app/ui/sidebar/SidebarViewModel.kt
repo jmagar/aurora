@@ -69,6 +69,11 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             parseMcpServers(event.servers)
         }.launchIn(viewModelScope)
 
+        // Clear sidebar state when server URL/token changes (mirrors ChatViewModel pattern)
+        repo.sessionInvalidated.onEach {
+            _state.update { it.copy(currentThreadId = null, currentGoal = null, mcpServers = emptyList()) }
+        }.launchIn(viewModelScope)
+
         // Subscribe to goal and MCP notifications from sidebar flow
         repo.sidebarNotificationsFlow.onEach { msg ->
             handleSidebarNotification(msg)
@@ -78,7 +83,7 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         repo.turnEventsFlow.onEach { event ->
             if (event.originKind == RequestKind.GoalGet && event.msg.error == null) {
                 val goalObj = event.msg.result?.jsonObject ?: return@onEach
-                val objective = goalObj["objective"]?.jsonPrimitive?.contentOrNull ?: return@onEach
+                val objective = goalObj["objective"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return@onEach
                 val expectedId = _state.value.currentThreadId ?: return@onEach
                 val status = goalObj["status"]?.jsonPrimitive?.contentOrNull ?: "active"
                 val tokenBudget = goalObj["tokenBudget"]?.jsonPrimitive?.intOrNull
@@ -146,7 +151,7 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         when (msg.method) {
             "thread/goal/updated" -> {
                 val goalObj = params["goal"]?.jsonObject ?: return
-                val objective = goalObj["objective"]?.jsonPrimitive?.contentOrNull ?: return
+                val objective = goalObj["objective"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
                 val status = goalObj["status"]?.jsonPrimitive?.contentOrNull ?: "active"
                 val tokenBudget = goalObj["tokenBudget"]?.jsonPrimitive?.intOrNull
                 val tokensUsed = goalObj["tokensUsed"]?.jsonPrimitive?.intOrNull ?: 0

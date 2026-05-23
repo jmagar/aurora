@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -369,7 +370,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         val approval = _state.value.pendingApprovals.firstOrNull() ?: return
         val sent = repo.sendApproval(approval.rawServerId, decision)
         if (sent) {
-            _state.update { it.copy(pendingApprovals = it.pendingApprovals.drop(1)) }
+            // Use identity-based removal to handle concurrent serverRequest/resolved races
+            _state.update { it.copy(pendingApprovals = it.pendingApprovals.filter { a -> a.rawServerId != approval.rawServerId }) }
         } else {
             _state.update { it.copy(error = "Could not send approval — connection lost. Reconnecting...") }
         }
@@ -529,8 +531,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     "mcpToolCall" -> {
                         if (id == null) return
-                        val server = item["server"]?.jsonPrimitive?.contentOrNull ?: ""
-                        val tool = item["tool"]?.jsonPrimitive?.contentOrNull ?: ""
+                        val server = item["server"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: ""
+                        val tool = item["tool"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: ""
                         val args = try { item["arguments"]?.jsonPrimitive?.content }
                                    catch (_: Exception) { item["arguments"]?.toString() }
                                    ?.take(8000)?.sanitizeForDisplay() ?: ""
