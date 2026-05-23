@@ -37,6 +37,22 @@ data class SkillInvocation(
     val done: Boolean = false,
 )
 
+data class McpToolCallItem(
+    val id: String,
+    val server: String,
+    val tool: String,
+    val status: String = "inProgress",
+    val arguments: String = "",
+    val output: String = "",
+    val error: String? = null,
+)
+
+data class FileChangeItem(
+    val id: String,
+    val paths: List<String>,
+    val status: String = "pending",
+)
+
 data class ChatState(
     val threadId: String? = null,
     val msgs: List<ChatMsg> = emptyList(),
@@ -56,6 +72,10 @@ data class ChatState(
     val availableCommands: List<String> = emptyList(),
     val availableSkills: List<SkillItem> = emptyList(),
     val skillInvocations: List<SkillInvocation> = emptyList(),
+    val mcpToolCalls: List<McpToolCallItem> = emptyList(),
+    val planItems: List<String> = emptyList(),
+    val webSearches: List<String> = emptyList(),
+    val fileChanges: List<FileChangeItem> = emptyList(),
     // Image attachments pending send
     val pendingAttachments: List<PendingAttachment> = emptyList(),
     // Approval policy controls
@@ -176,6 +196,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 thinking = true, toolCalls = emptyList(), reasoning = emptyList(),
                 rawReasoning = "",
                 skillInvocations = emptyList(),
+                mcpToolCalls = emptyList(),
+                planItems = emptyList(),
+                webSearches = emptyList(),
+                fileChanges = emptyList(),
                 pendingAttachments = emptyList(),
             )
         }
@@ -256,6 +280,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 toolCalls = emptyList(),
                 reasoning = emptyList(),
                 rawReasoning = "",
+                mcpToolCalls = emptyList(),
+                planItems = emptyList(),
+                webSearches = emptyList(),
+                fileChanges = emptyList(),
                 // Discard pending image attachments — edits are text/skill only.
                 pendingAttachments = emptyList(),
             )
@@ -383,14 +411,43 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(thinking = false, assistantId = null, rawReasoning = raw) }
             }
 
-            // Item lifecycle — track command executions as tool calls
+            // Item lifecycle — track command executions and other items as tool calls
             "item/started" -> {
                 val item = params?.get("item")?.jsonObject ?: return
                 val type = item["type"]?.jsonPrimitive?.content
-                if (type == "commandExecution") {
-                    val cmd = item["command"]?.jsonPrimitive?.content ?: return
-                    val id = item["id"]?.jsonPrimitive?.content ?: cmd
-                    _state.update { s -> s.copy(toolCalls = s.toolCalls + ToolCall(id, cmd)) }
+                val id = item["id"]?.jsonPrimitive?.content
+                when (type) {
+                    "commandExecution" -> {
+                        val cmd = item["command"]?.jsonPrimitive?.content ?: return
+                        val resolvedId = id ?: cmd
+                        _state.update { s -> s.copy(toolCalls = s.toolCalls + ToolCall(resolvedId, cmd)) }
+                    }
+                    "mcpToolCall" -> {
+                        if (id == null) return
+                        val server = item["server"]?.jsonPrimitive?.contentOrNull ?: ""
+                        val tool = item["tool"]?.jsonPrimitive?.contentOrNull ?: ""
+                        val args = try { item["arguments"]?.jsonPrimitive?.content }
+                                   catch (_: Exception) { item["arguments"]?.toString() }
+                                   ?.take(8000)?.sanitizeForDisplay() ?: ""
+                        _state.update { s ->
+                            s.copy(mcpToolCalls = s.mcpToolCalls + McpToolCallItem(id, server, tool, "inProgress", args))
+                        }
+                    }
+                    "plan" -> {
+                        val text = item["text"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
+                        _state.update { s -> s.copy(planItems = s.planItems + text) }
+                    }
+                    "webSearch" -> {
+                        val query = item["query"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
+                        _state.update { s -> s.copy(webSearches = s.webSearches + query) }
+                    }
+                    "fileChange" -> {
+                        if (id == null) return
+                        val changes = item["changes"]?.jsonArray
+                        val paths = changes?.mapNotNull { it.jsonObject["path"]?.jsonPrimitive?.contentOrNull } ?: emptyList()
+                        _state.update { s -> s.copy(fileChanges = s.fileChanges + FileChangeItem(id, paths)) }
+                    }
+                    "imageView" -> { /* informational only — no state needed */ }
                 }
             }
             "item/completed" -> {
@@ -402,7 +459,31 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     return
                 }
                 val failed = item["status"]?.jsonPrimitive?.content == "failed"
-                _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }) }
+                when (type) {
+                    "commandExecution" -> {
+                        _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }) }
+                    }
+                    "mcpToolCall" -> {
+                        val output = try { item["result"]?.toString() } catch (_: Exception) { null }
+                            ?.take(8000)?.sanitizeForDisplay() ?: ""
+                        val err = item["error"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                        _state.update { s ->
+                            s.copy(mcpToolCalls = s.mcpToolCalls.map { call ->
+                                if (call.id == id) call.copy(
+                                    status = if (failed) "failed" else "done",
+                                    output = output, error = err
+                                ) else call
+                            })
+                        }
+                    }
+                    "fileChange" -> {
+                        _state.update { s ->
+                            s.copy(fileChanges = s.fileChanges.map { fc ->
+                                if (fc.id == id) fc.copy(status = if (failed) "failed" else "done") else fc
+                            })
+                        }
+                    }
+                }
             }
 
             // Command output streaming

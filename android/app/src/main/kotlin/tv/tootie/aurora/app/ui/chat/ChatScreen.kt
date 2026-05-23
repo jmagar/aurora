@@ -280,6 +280,34 @@ fun ChatScreen(
                     }
                 }
 
+                // MCP tool calls (violet identity dots)
+                if (s.mcpToolCalls.isNotEmpty()) {
+                    item(key = "mcptoolcalls") {
+                        McpToolCallRows(
+                            calls = s.mcpToolCalls,
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+                }
+
+                // Web searches inline
+                s.webSearches.forEachIndexed { i, query ->
+                    item(key = "ws_$i") {
+                        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                            Text("🔍 $query", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+
+                // Plan items inline
+                s.planItems.forEachIndexed { i, plan ->
+                    item(key = "plan_$i") {
+                        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                            Text("📋 $plan", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+
                 // Reasoning block
                 if (s.reasoning.isNotEmpty()) {
                     item(key = "reasoning") {
