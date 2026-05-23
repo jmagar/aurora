@@ -63,6 +63,7 @@ import tv.tootie.aurora.components.AuroraControls
 import tv.tootie.aurora.components.AuroraMessage
 import tv.tootie.aurora.components.AuroraMessageData
 import tv.tootie.aurora.components.AuroraMessageRole
+import tv.tootie.aurora.components.AuroraPermissionPrompt
 import tv.tootie.aurora.components.AuroraPromptInput
 import tv.tootie.aurora.components.AuroraStatusIndicator
 import tv.tootie.aurora.components.AuroraStatusTone
@@ -420,6 +421,27 @@ fun ChatScreen(
                 },
             )
         }
+    }
+
+    // Approval intercept overlay — shown as a non-dismissible dialog, FIFO queue
+    s.pendingApprovals.firstOrNull()?.let { approval ->
+        val allowDecision = approval.availableDecisions.getOrElse(0) { "accept" }
+        val denyDecision = approval.availableDecisions.getOrElse(1) { "decline" }
+        val allowLabel = allowDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
+        val denyLabel = denyDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
+        val descParts = listOfNotNull(approval.reason, approval.command)
+        val description = descParts.joinToString("\n\n").ifBlank {
+            if (approval.type == "command") "A command is requesting approval." else "File changes are requesting approval."
+        }
+        AuroraPermissionPrompt(
+            onDismissRequest = { },
+            title = if (approval.type == "command") "Allow command?" else "Allow file changes?",
+            description = description,
+            onAllow = { vm.approveToolCall(allowDecision) },
+            allowLabel = allowLabel,
+            onDeny = { vm.approveToolCall(denyDecision) },
+            denyLabel = denyLabel,
+        )
     }
 
     // Feature 2: Message actions bottom sheet

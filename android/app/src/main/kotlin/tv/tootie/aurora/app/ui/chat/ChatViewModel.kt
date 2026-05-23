@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -53,6 +54,15 @@ data class FileChangeItem(
     val status: String = "pending",
 )
 
+data class ToolApproval(
+    val itemId: String,
+    val rawServerId: JsonElement,
+    val type: String,              // "command" or "fileChange"
+    val command: String? = null,   // already sanitized
+    val reason: String? = null,    // already sanitized
+    val availableDecisions: List<String> = listOf("accept", "decline"),
+)
+
 data class ChatState(
     val threadId: String? = null,
     val msgs: List<ChatMsg> = emptyList(),
@@ -82,6 +92,7 @@ data class ChatState(
     val selectedApprovalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
     val granularPolicy: GranularPolicy = GranularPolicy(),
     val selectedReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
+    val pendingApprovals: List<ToolApproval> = emptyList(),
 )
 
 /**
@@ -201,6 +212,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 webSearches = emptyList(),
                 fileChanges = emptyList(),
                 pendingAttachments = emptyList(),
+                pendingApprovals = emptyList(),
             )
         }
         viewModelScope.launch {
@@ -286,6 +298,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 fileChanges = emptyList(),
                 // Discard pending image attachments — edits are text/skill only.
                 pendingAttachments = emptyList(),
+                pendingApprovals = emptyList(),
             )
         }
         viewModelScope.launch {
@@ -297,6 +310,16 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
                     _state.value.granularPolicy else null,
                 approvalsReviewer = _state.value.selectedReviewer)
+        }
+    }
+
+    fun approveToolCall(decision: String) {
+        val approval = _state.value.pendingApprovals.firstOrNull() ?: return
+        val sent = repo.sendApproval(approval.rawServerId, decision)
+        if (sent) {
+            _state.update { it.copy(pendingApprovals = it.pendingApprovals.drop(1)) }
+        } else {
+            _state.update { it.copy(error = "Could not send approval — connection lost. Reconnecting...") }
         }
     }
 
@@ -553,6 +576,39 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val errMsg = params?.get("error")?.jsonObject?.get("message")?.jsonPrimitive?.content
                     ?: msg.error?.message
                 _state.update { it.copy(error = errMsg, thinking = false) }
+            }
+
+            "item/commandExecution/requestApproval" -> {
+                val rawId = event.msg.id ?: return
+                val rawCommand = params?.get("command")?.jsonPrimitive?.contentOrNull ?: ""
+                val safeCommand = rawCommand.sanitizeForDisplay()
+                val reason = params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                val decisions = params?.get("availableDecisions")?.jsonArray
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")
+                _state.update { s ->
+                    s.copy(pendingApprovals = s.pendingApprovals + ToolApproval(
+                        itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
+                        rawServerId = rawId,
+                        type = "command",
+                        command = safeCommand,
+                        reason = reason,
+                        availableDecisions = decisions,
+                    ))
+                }
+            }
+            "item/fileChange/requestApproval" -> {
+                val rawId = event.msg.id ?: return
+                _state.update { s ->
+                    s.copy(pendingApprovals = s.pendingApprovals + ToolApproval(
+                        itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
+                        rawServerId = rawId,
+                        type = "fileChange",
+                        reason = params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay(),
+                    ))
+                }
+            }
+            "serverRequest/resolved" -> {
+                _state.update { it.copy(pendingApprovals = emptyList()) }
             }
         }
     }
