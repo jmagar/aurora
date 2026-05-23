@@ -154,6 +154,89 @@ Required Kotlin alignment work:
 - Preserve loading state width and spinner tone by variant. The web implementation keeps layout stable during loading and maps spinner tone to cyan, rose, or muted.
 - Align disabled and pressed states with web behavior: disabled opacity around 45%, active press scale/tint feedback, and focus/selection as border plus glow rather than filled-state changes.
 
+### `aurora-input` / `aurora-textarea` → `AuroraTextField.kt`
+
+Viewed web `aurora-input` at `/gallery/input` and Android text fields in the settings screen. The web input is a compact tokenized control surface with explicit state variants in the gallery alternatives; Android currently wraps `OutlinedTextField`, which gives correct editing behavior but keeps Material default density, shape, and focus treatment.
+
+Required Kotlin alignment work:
+
+- Add Aurora-owned colors and shape to `AuroraTextField`: control-surface fill, strong border, muted placeholder, focus as cyan border/glow, and error as muted Aurora error rather than default M3 styling.
+- Add density/size options so settings fields do not default to oversized Material text-field height when the web input is a compact operator control.
+- Treat `textarea` as the same primitive with explicit multiline sizing and min/max line presets, rather than relying only on `singleLine = false`.
+- Preserve the good existing accessibility/error semantics while moving visual styling off Material defaults.
+
+### `aurora-field` → `AuroraField.kt`
+
+Viewed web field usage through input/select pages and Android settings field labels/descriptions. Kotlin already has label, description, required, disabled, and error semantics; the gap is visual density and spacing.
+
+Required Kotlin alignment work:
+
+- Match the web field rhythm: tighter label/description spacing, Aurora label typography, muted description tone, and predictable control spacing.
+- Add optional `hint`, `success`, or state slot parity if web field variants expose non-error helper states.
+- Keep the current TalkBack required/error behavior; it is ahead of the web visual parity needs.
+
+### `aurora-select` / `aurora-native-select` → `AuroraSelect.kt`
+
+Viewed web `aurora-select` at `/gallery/select` and Android select-like controls in settings/chat (`Approval Policy`, `Approvals Reviewer`, model/reasoning selectors). Web select appears as a compact combobox trigger; Kotlin uses `ExposedDropdownMenuBox` and `OutlinedTextField`, while several app call sites hand-roll clickable rows plus dropdown menus.
+
+Required Kotlin alignment work:
+
+- Style the closed trigger like Aurora controls: control-surface background, rounded 8-10px equivalent radius, token border, muted trailing chevron, and active border/glow.
+- Hoist `expanded` / `onExpandedChange` or add a second overload so app screens can use the shared primitive instead of custom clickable rows.
+- Add option row styling for selected, disabled, danger, helper text, and sectioned entries so `ApprovalPolicyBar` can stop maintaining a local descriptive menu item.
+- Split searchable combobox behavior from simple select behavior so `AuroraSelect`, `AuroraCombobox`, and web `native-select` mappings are explicit.
+
+### `aurora-dropdown-menu` → `AuroraDropdownMenu.kt`
+
+Compared web dropdown/select behavior via gallery snapshots and Android menus in model/approval controls. Kotlin supports groups, separators, danger items, leading icons, trailing text, and enabled state, but it still uses default Material menu chrome.
+
+Required Kotlin alignment work:
+
+- Apply Aurora menu surface, border, radius, shadow, and item hover/pressed equivalents instead of default Material popup styling.
+- Add selected item treatment as first-class API, not just ad hoc trailing text checks.
+- Add two-line item support to the component so descriptive approval-policy rows can be shared instead of implemented locally.
+
+### `aurora-prompt-input` → `AuroraPromptInput.kt`
+
+Viewed web `aurora-prompt-input` at `/gallery/prompt-input` and Android chat composer. The web prompt has attach, slash-command, mention, model selector, and send controls in a dense composer. Android has the message field, attachment affordance in the app layer, and a send button, while `AuroraPromptInput.kt` itself only exposes `leadingContent` plus the text/send row.
+
+Required Kotlin alignment work:
+
+- Promote attach, slash-command, mention, and model/action slots into the Kotlin component API so the app does not assemble composer chrome around the primitive.
+- Match web composer shape and density: larger rounded container, token border, active rose/violet accent, and stable bottom toolbar layout.
+- Add explicit disabled/loading/sendable visual states matching web, including spinner placement and disabled send tone.
+- Keep the current haptic and IME-send behavior; those are Android-native parity wins.
+
+### `aurora-sidebar` → `AuroraSidebar.kt`
+
+Viewed web `aurora-sidebar` at `/gallery/sidebar` and Android drawer/sidebar in the running app. The web sidebar has workspace chrome, new-session action, search, grouped session sections, collapsible/compact modes, footer/settings, and selected-row treatment. Kotlin `AuroraSidebar.kt` is currently a thin `ModalNavigationDrawer` wrapper, while the app implements much of the richer sidebar separately.
+
+Required Kotlin alignment work:
+
+- Expand `AuroraSidebar` data model for header/workspace, primary action, search, grouped sections, session rows, footer actions, and compact/icon-only mode.
+- Move app-specific drawer visuals toward the shared component so the current Android sidebar does not drift from the registry block.
+- Add selected, active, empty, and collapsed states with Aurora token styling instead of Material `NavigationDrawerItem` defaults.
+
+### `aurora-status-indicator` → `AuroraStatusIndicator.kt`
+
+Viewed Android status usage in the chat header (`Connected`) and compared against the web status-indicator surface from the registry map. Kotlin has a good tone model and pulse behavior, but app usage currently mixes custom status rows and icons around it.
+
+Required Kotlin alignment work:
+
+- Add size and label-density variants matching web dot-only, dot-label, and compact status use cases.
+- Ensure app headers use `AuroraStatusIndicator` directly instead of rebuilding dot + label rows.
+- Audit tone names against web status token names so `Online`, `Syncing`, `Queued`, `Degraded`, `Offline`, `Error`, and `Automating` stay aligned with registry semantics.
+
+### `aurora-toast` → `AuroraToast.kt`
+
+Checked Kotlin source for the Snackbar-backed counterpart. Web toast supports Aurora status styling and action flows; Kotlin has status variants and action labels through `SnackbarHostState`, but still inherits Material snackbar layout.
+
+Required Kotlin alignment work:
+
+- Apply Aurora toast chrome: status border, muted status surface, compact radius, and stronger title/body/action layout if the web toast exposes title or description slots.
+- Add dismiss action parity where web toasts expose close affordances.
+- Keep the Snackbar queue/state model; the main gap is visual and slot parity.
+
 **Conventions used:**
 - `M3` = `androidx.compose.material3.*`
 - `Foundation` = `androidx.compose.foundation.*`
