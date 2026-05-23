@@ -3,10 +3,10 @@ package tv.tootie.aurora.app.ui.chat
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -22,7 +22,7 @@ import tv.tootie.aurora.app.codex.CodexEvent
 import tv.tootie.aurora.app.codex.CodexRepository
 import tv.tootie.aurora.app.codex.GranularPolicy
 import tv.tootie.aurora.app.codex.PendingAttachment
-import tv.tootie.aurora.app.codex.RpcMessage
+import tv.tootie.aurora.app.codex.RequestKind
 import tv.tootie.aurora.app.data.AppSettings
 
 enum class MsgRole { User, Assistant }
@@ -103,9 +103,13 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         // Subscribe to typed flows from the shared repository
         repo.modelsFlow.onEach { handleModels(it) }.launchIn(viewModelScope)
         repo.skillsFlow.onEach { handleSkills(it) }.launchIn(viewModelScope)
-        repo.turnEventsFlow.onEach { handle(it.msg) }.launchIn(viewModelScope)
+        repo.turnEventsFlow.onEach { handle(it) }.launchIn(viewModelScope)
         repo.errorsFlow.onEach { e ->
             _state.update { it.copy(error = e.message, thinking = false) }
+        }.launchIn(viewModelScope)
+        repo.sessionInvalidated.onEach {
+            _state.update { it.copy(threadId = null, msgs = emptyList()) }
+            viewModelScope.launch { settings.clearThreadId() }
         }.launchIn(viewModelScope)
     }
 
@@ -122,12 +126,25 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 selectedApprovalPolicy = ApprovalPolicy.fromWire(policyWire),
                 selectedReviewer = ApprovalsReviewer.fromWire(reviewerWire),
             ) }
-            // Fetch models and skills after handshake completes
-            delay(500)
+            // Wait for handshake to complete before issuing requests
+            repo.isReady.filter { it }.first()
             repo.listModels()
-            delay(100)
             repo.listSkills()
+            // Try to resume the last saved thread on fresh connect
+            if (threadId == "new") {
+                val saved = settings.savedThreadId.first()
+                if (saved != null) {
+                    tryResumeThread(saved)
+                }
+                // saved == null -> new thread created lazily on first send()
+            }
         }
+    }
+
+    private fun tryResumeThread(threadId: String) {
+        repo.resumeThread(threadId)
+        // Response arrives as TurnEvent with originKind=RequestKind.ThreadResume
+        // Handled in handle() — see ThreadResume branch in the null-method dispatch
     }
 
     // Approval policy selectors
@@ -291,19 +308,39 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Turn event dispatch (unchanged from original, minus model/skill branches) ---
 
-    private fun handle(msg: RpcMessage) {
+    private fun handle(event: CodexEvent.TurnEvent) {
+        val msg = event.msg
         val params = msg.params?.jsonObject
         val result = msg.result?.jsonObject
         when (msg.method) {
             // Null method = response to one of our requests that the repository
-            // forwarded to turnEventsFlow. After this refactor the only response
-            // that arrives here (not intercepted by the repository) is thread/start.
+            // forwarded to turnEventsFlow.
             null -> {
+                // Handle ThreadResume responses first
+                if (event.originKind == RequestKind.ThreadResume) {
+                    if (msg.error != null) {
+                        if (msg.error.code == -32600) {
+                            // Thread expired — clear saved ID
+                            viewModelScope.launch { settings.clearThreadId() }
+                        }
+                        // Any other error: leave savedThreadId intact (transient failure)
+                        return
+                    }
+                    // Success — extract threadId from result
+                    val tid = result
+                        ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
+                    if (tid != null) {
+                        _state.update { it.copy(threadId = tid, msgs = emptyList()) }
+                    }
+                    return
+                }
+
                 // thread/start response: result.thread.id
                 val tid = result
                     ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
                 if (tid != null && _state.value.threadId == null) {
                     _state.update { it.copy(threadId = tid) }
+                    viewModelScope.launch { settings.saveThread(tid) }
                     pendingMsg?.let { text ->
                         val attachments = pendingAttachments
                         val images = pendingImages
