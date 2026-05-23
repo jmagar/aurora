@@ -57,10 +57,6 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
     private val repo: CodexRepository = (app as CodexApp).repository
 
-    // Captured at setCurrentThread() call time so the async GoalGet response
-    // can guard against stale results if the user switches threads mid-flight
-    private var pendingGoalThreadId: String? = null
-
     private val _state = MutableStateFlow(SidebarState())
     val state: StateFlow<SidebarState> = _state.asStateFlow()
 
@@ -90,9 +86,10 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
                     if (event.msg.error == null) {
                         val goalObj = event.msg.result?.jsonObject ?: return@onEach
                         val objective = goalObj["objective"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return@onEach
-                        // Use pendingGoalThreadId (captured at call time) to guard against
-                        // stale responses when the user switches threads before the response arrives
-                        val expected = pendingGoalThreadId ?: return@onEach
+                        // Read expected BEFORE _state.update so we capture the thread the user
+                        // was on when this response arrived. The update lambda then verifies the
+                        // thread hasn't changed in the meantime.
+                        val expected = _state.value.currentThreadId ?: return@onEach
                         val status = goalObj["status"]?.jsonPrimitive?.contentOrNull ?: "active"
                         val tokenBudget = goalObj["tokenBudget"]?.jsonPrimitive?.intOrNull
                         val tokensUsed = goalObj["tokensUsed"]?.jsonPrimitive?.intOrNull ?: 0
@@ -144,7 +141,6 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setCurrentThread(threadId: String?) {
         _state.update { it.copy(currentThreadId = threadId, currentGoal = null) }
-        pendingGoalThreadId = threadId  // capture before the async call so response handler sees the right value
         if (threadId != null) {
             repo.getGoal(threadId)
         }
@@ -206,7 +202,10 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         val sessions = threads.mapNotNull { obj ->
-            val id = obj["id"]?.jsonPrimitive?.content ?: return@mapNotNull null
+            // Sanitize id before use in navigation routes (Screen.Chat.go uses raw string interpolation)
+            val id = obj["id"]?.jsonPrimitive?.content
+                ?.filter { it.isLetterOrDigit() || it == '-' || it == '_' }
+                ?: return@mapNotNull null
             val cwd = obj["cwd"]?.jsonPrimitive?.content?.sanitizeForDisplay() ?: ""
             val name = obj["name"]?.jsonPrimitive?.content
                 ?.sanitizeForDisplay()?.takeIf { it != "null" && it.isNotBlank() }
