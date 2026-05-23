@@ -237,6 +237,140 @@ Required Kotlin alignment work:
 - Add dismiss action parity where web toasts expose close affordances.
 - Keep the Snackbar queue/state model; the main gap is visual and slot parity.
 
+## Full Pair Parity Matrix
+
+This matrix is the working Kotlin parity backlog. It covers every non-token shadcn registry item from `registry.json`, including direct Kotlin counterparts, shared counterparts, umbrella entries, and intentional native/primitive delegates.
+
+| Shadcn registry item | Kotlin target | Kotlin parity note |
+|---|---|---|
+| `aurora-button` | `AuroraButton.kt` | Match shadcn variants, sizes, icon-only, rose/violet, loading width, and border/glow styling instead of Material filled defaults. |
+| `aurora-badge` | `AuroraBadge.kt` | Verify tone names, compact density, rounded radius, icon/overflow behavior, and status-token colors against web badge variants. |
+| `aurora-input` | `AuroraTextField.kt` | Replace Material default shape/colors with Aurora control surface, compact density, focus glow, placeholder tone, and explicit state styling. |
+| `aurora-select` | `AuroraSelect.kt` | Style trigger/menu with Aurora tokens, hoist expanded state, add selected/disabled/helper/danger rows, and share with app dropdown use. |
+| `aurora-native-select` | `AuroraSelect.kt` | Decide whether native-select is only a simple select alias on Android or needs a separate non-searchable compact API. |
+| `aurora-textarea` | `AuroraTextField.kt` | Add multiline presets, min/max row sizing, resize-equivalent behavior, and textarea-specific density around the shared text field. |
+| `aurora-avatar` | `AuroraAvatar.kt` | Align sizes, fallback initials, image loading states, border/ring treatment, and grouped/avatar-stack behavior if present on web. |
+| `aurora-progress` | `AuroraProgress.kt` | Match web determinate/indeterminate variants, track height, status tones, rose/violet support, and label/value semantics. |
+| `aurora-switch` | `AuroraSwitch.kt` | Check thumb/track token colors, icon/thumb content, disabled opacity, focus ring, and animation timing against web switch. |
+| `aurora-tabs` | `AuroraTabs.kt` | Align line/pill variants, active indicator style, scroll behavior, density, disabled tabs, and keyboard/focus semantics. |
+| `aurora-breadcrumb` | `AuroraBreadcrumb.kt` | Match separators, truncation/collapse behavior, current-page treatment, icon slots, and muted link typography. |
+| `aurora-pagination` | `AuroraPagination.kt` | Align page item sizes, ellipsis handling, prev/next icons, disabled/current states, and compact mobile wrapping. |
+| `aurora-dialog` | `AuroraDialog.kt` | Match web dialog shell: panel radius, overlay opacity, header/body/footer slots, close affordance, and alert-vs-custom distinction. |
+| `aurora-dropdown-menu` | `AuroraDropdownMenu.kt` | Apply Aurora popup chrome, selected item API, two-line items, shortcuts, danger styling, and section heading parity. |
+| `aurora-tooltip` | `AuroraTooltip.kt` | Match plain/rich tooltip surfaces, delay behavior, arrow/placement options, compact typography, and disabled-trigger handling. |
+| `aurora-context-menu` | `AuroraContextMenu.kt` | Align item model with dropdown menu, long-press behavior, disabled/danger/shortcut rows, and touch target sizing. |
+| `aurora-banner` | `AuroraBanner.kt` | Match status variants, optional icon/action/dismiss slots, full-width spacing, and sticky or inline presentation options. |
+| `aurora-toast` | `AuroraToast.kt` | Replace Material snackbar chrome with Aurora toast surface, status border, title/description/action slots, and dismiss parity. |
+| `aurora-empty-state` | `AuroraEmptyState.kt` | Align icon sizing, title/body/action slots, compact/full-page variants, and muted visual hierarchy. |
+| `aurora-skeleton` | `AuroraAiShimmer.kt` | Add non-AI skeleton aliases/variants for text/avatar/button/card shapes so web skeleton does not map only to AI shimmer. |
+| `aurora-stat-card` | `AuroraStatCard.kt` | Match metric layout, trend/status slot, compact widths, border/glow treatment, and optional icon/action areas. |
+| `aurora-data-table` | `AuroraDataTable.kt` | Align sorting, empty/loading states, row selection, sticky headers, density, column metadata, and action cells. |
+| `aurora-filter-bar` | `AuroraFilterBar.kt` | Match chip variants, clear-all affordance, overflow/wrap behavior, selected count, and search/filter composition slots. |
+| `aurora-prompt-input` | `AuroraPromptInput.kt` | Add attach/slash/mention/model slots, toolbar layout, loading/send states, and web composer density while preserving Android haptics. |
+| `aurora-tool-calls` | `AuroraToolCallList.kt` | Match collapsed/expanded states, status tones, argument/result code blocks, timing metadata, and error display. |
+| `aurora-thinking` | `AuroraThinking.kt` | Align animation, violet AI accent, text/compact variants, reduced-motion behavior, and placement within chat flows. |
+| `aurora-code-block` | `AuroraCodeBlock.kt` | Match header, language badge, copy action, line wrapping, selection, syntax/highlight strategy, and terminal-vs-code distinction. |
+| `aurora-terminal` | `AuroraTerminal.kt` | Align title/status/actions, line types, auto-scroll, monospace density, copy/clear affordances, and role/log semantics. |
+| `aurora-sidebar` | `AuroraSidebar.kt` | Expand from drawer wrapper to registry block: search, groups, session rows, primary action, footer, selected/collapsed states. |
+| `aurora-checkbox` | `AuroraCheckbox.kt` | Match checked/indeterminate styling, label/description composition, disabled tone, focus ring, and row vs standalone forms. |
+| `aurora-artifact` | `AuroraArtifact.kt` | Align toolbar actions, language/type labels, expand/copy states, preview surfaces, loading/error states, and WebView handoff. |
+| `aurora-permission-prompt` | `AuroraPermissionPrompt.kt` | Match permission severity variants, detail rows, allow/deny button hierarchy, command preview, and reviewer metadata. |
+| `aurora-ask-user-question` | `AuroraAskUserQuestion.kt` | Align single/multi-choice options, submit/skip actions, validation, prompt typography, and selected-option treatment. |
+| `aurora-permissions-dropdown` | `AuroraPermissionPrompt.kt` | Needs a real dropdown/sheet counterpart or an expanded prompt mode for granular permission toggles. |
+| `aurora-file-tree` | `AuroraFileTree.kt` | Match folder/file icons, depth indentation, active/selected states, rename/actions, truncation, and keyboard navigation where feasible. |
+| `aurora-code-editor` | `AuroraCodeEditor.kt` | Align editable/read-only modes, diagnostics, diff/line numbers, syntax highlighting, focus ring, and copy/save actions. |
+| `aurora-web-preview` | `AuroraWebView.kt` | Match preview chrome, URL/status bar, reload/open actions, error/loading states, and JS/security defaults. |
+| `aurora-login` | `AuroraLoginScreen.kt` | Align auth layout, provider buttons, validation/error surfaces, OAuth/device-code flows, and loading/disabled states. |
+| `aurora-oauth` | Custom Tabs/AppAuth flow | Create a documented Compose OAuth flow component for scope/token rows, progress states, callback errors, and browser handoff. |
+| `aurora-error-page` | `AuroraErrorPage.kt` | Match error code/status variants, retry/home actions, iconography, copy density, and full-screen vs embedded modes. |
+| `aurora-attachment` | `AuroraAttachment.kt` | Align file icon/thumbnail, size metadata, remove/download actions, progress/error states, and compact chip/card variants. |
+| `aurora-command-palette` | `AuroraCommandPalette.kt` | Match searchable modal, grouped results, keyboard shortcuts, active row, empty/loading states, and command metadata. |
+| `aurora-share-dialog` | `AuroraShareSheet.kt` | Decide native sheet vs custom dialog parity; add preview/copy/link options if web share dialog exposes them. |
+| `aurora-file-picker` | `AuroraFilePicker.kt` | Match button/dropzone modes, single/multiple selection, accepted types, selected file list, and error/progress display. |
+| `aurora-field` | `AuroraField.kt` | Align field spacing, label/description/error/success states, required marker, disabled opacity, and control slot rhythm. |
+| `aurora-radio-group` | `AuroraRadioGroup.kt` | Match option cards/rows, helper descriptions, selected border/glow, disabled/error states, and group semantics. |
+| `aurora-slider` | `AuroraSlider.kt` | Align track/thumb color, tick/step labels, range slider parity, disabled state, value label, and touch target sizing. |
+| `aurora-number-input` | `AuroraNumberInput.kt` | Match decrement/input/increment layout, min/max/step validation, disabled buttons, compact size, and keyboard behavior. |
+| `aurora-combobox` | `AuroraCombobox.kt` | Align searchable trigger/input, filtering, empty state, selected chip/value display, keyboard navigation, and hoisted state. |
+| `aurora-popover` | `AuroraPopover.kt` | Match anchor positioning, panel chrome, arrow/offset options, dismiss behavior, focus trapping, and rich content slots. |
+| `aurora-sheet` | `AuroraSheet.kt` | Match side/bottom variants, header/body/footer slots, overlay, close affordance, drag handle, and responsive breakpoints. |
+| `aurora-callout` | `AuroraCallout.kt` | Align tone variants, icon/title/body/action slots, border-left or full-border treatment, and compact density. |
+| `aurora-status-indicator` | `AuroraStatusIndicator.kt` | Align tone names, dot-label sizes, pulsing behavior, compact variants, and ensure app headers use the shared primitive. |
+| `aurora-timeline` | `AuroraTimeline.kt` | Match connector line, status dots/icons, timestamps, expanded detail rows, density, and loading/empty states. |
+| `aurora-description-list` | `AuroraDescriptionList.kt` | Align label/value layout, columns/responsiveness, dividers, copyable values, muted labels, and compact mode. |
+| `aurora-resizable-panels` | `AuroraResizablePanels.kt` | Match drag handle styling, min/max constraints, persistence hooks, orientation variants, and accessibility fallback. |
+| `aurora-listbox` | `AuroraListbox.kt` | Align active/selected rows, multi-select, icons/descriptions/meta, keyboard navigation, empty state, and density. |
+| `aurora-search-results` | `AuroraListbox.kt` / LazyColumn pattern | Add a named `AuroraSearchResults` wrapper with grouped headings, active rows, description/meta slots, and empty state. |
+| `aurora-kbd` | `AuroraKbd.kt` | Match mono typography, border/fill, key grouping, size variants, and high-contrast/readability states. |
+| `aurora-toolbar` | `AuroraToolbar.kt` | Align grouped actions, separators, icon button sizes, overflow behavior, sticky/inline variants, and disabled/active states. |
+| `aurora-separator` | `AuroraSeparator.kt` | Match horizontal/vertical thickness, spacing presets, decorative semantics, and muted/strong token variants. |
+| `aurora-spinner` | `AuroraSpinner.kt` | Align size/tone variants, aria/content descriptions, loading placement conventions, and rose/violet/muted tones. |
+| `aurora-button-group` | `AuroraButtonGroup.kt` | Match single/multi-select, variant sizing, active border/glow, disabled options, icon options, and segmented density. |
+| `aurora-accordion` | `AuroraCollapsible.kt` | Add an accordion wrapper supporting multiple items, single/multiple open modes, trigger/content styling, and chevron states. |
+| `aurora-ai-elements` | Child components | Keep as umbrella docs/exports only; ensure every child item below has a Kotlin counterpart or explicit delegate note. |
+| `aurora-marketplace` | `AuroraMarketplace.kt` | Align card/list variants, install/status actions, filters, search, badges, loading/empty states, and responsive grid. |
+| `aurora-alert-dialog` | `AuroraAlertDialog.kt` | Match destructive/default variants, title/description/body/action slots, focus/escape behavior, and button hierarchy. |
+| `aurora-aspect-ratio` | `Modifier.aspectRatio` | Document as modifier-only helper; add sample wrapper if consumers need a named Aurora API. |
+| `aurora-calendar` | `AuroraCalendar.kt` | Align selected/range states, navigation header, disabled dates, density, token colors, and date-picker dialog split. |
+| `aurora-card` | `AuroraCard.kt` | Match elevated/accent/interactive variants, header/content/footer slots, radius/shadow tiers, and selected/focus states. |
+| `aurora-carousel` | `AuroraCarousel.kt` | Align controls, dots, keyboard/swipe behavior, item sizing, autoplay if present, and reduced-motion handling. |
+| `aurora-chart` | Vico or chart library | Decide supported chart library and wrap tokens/legend/tooltip/empty states in a named Aurora chart API. |
+| `aurora-collapsible` | `AuroraCollapsible.kt` | Match trigger slot, content animation, chevron, disabled state, and controlled/uncontrolled state API. |
+| `aurora-date-picker` | `AuroraCalendar.kt` | Add explicit date-picker wrapper/dialog API covering trigger field, selected text, calendar popover, and range mode. |
+| `aurora-direction` | `LocalLayoutDirection` | Document as composition helper; add a small named wrapper only if gallery parity needs an installable component. |
+| `aurora-hover-card` | `AuroraPopover.kt` | Add hover-card alias/behavior for desktop and click fallback for Android, with rich content styling and delay config. |
+| `aurora-input-group` | `AuroraInputGroup.kt` | Align leading/trailing addons, segmented controls, button slots, validation state, disabled state, and compact density. |
+| `aurora-input-otp` | `AuroraInputOtp.kt` | Match digit boxes, focus advance/backspace, paste handling, error state, disabled state, and accessibility labels. |
+| `aurora-item` | `AuroraItem.kt` | Align icon/avatar/content/meta/action slots, selected/active/danger states, density, and clickable row semantics. |
+| `aurora-label` | `Text` with label typography | Decide if a named `AuroraLabel` wrapper is needed for required/disabled/error association parity with web label. |
+| `aurora-menubar` | `AuroraMenubar.kt` | Align top-level menu interactions, keyboard navigation, nested submenus, checked/radio items, shortcuts, and disabled states. |
+| `aurora-navigation-menu` | `AuroraNavigationMenu.kt` | Match nav bar/rail/drawer variants, active indicator, icons/badges, grouped items, and responsive layout. |
+| `aurora-scroll-area` | Compose scroll modifiers / `LazyColumn` | Document modifier usage or add named scroll wrapper with fade/scrollbar parity for desktop/mobile. |
+| `aurora-table` | `AuroraTable.kt` | Align static table density, sticky headers, column alignment, row hover/selected states, empty/loading rows, and horizontal scroll. |
+| `aurora-toggle` | `AuroraToggle.kt` | Match pressed/selected styling, icon/text variants, size variants, disabled state, and toolbar integration. |
+| `aurora-toggle-group` | `AuroraButtonGroup.kt` | Add toggle-group wrapper or mode for multi/single pressed state, roving focus, and item-level aria semantics. |
+| `aurora-ai-attachments` | `AuroraAttachment.kt` | Add collection wrapper for multiple attachments, upload progress, remove/retry actions, and AI composer placement. |
+| `aurora-ai-chain-of-thought` | `AuroraChainOfThought.kt` | Align collapsible reasoning steps, disclosure header, caution copy, streaming state, and violet AI styling. |
+| `aurora-ai-checkpoint` | `AuroraCheckpoint.kt` | Match status icons/tone names, timestamp/detail slots, pending/running/done/failed states, and timeline integration. |
+| `aurora-ai-confirmation` | `AuroraAlertDialog.kt` | Add confirmation-specific API for prompt, risk level, confirm/cancel labels, command preview, and blocking state. |
+| `aurora-ai-context` | `AuroraContextPanel.kt` | Align token usage meter, included files/resources, threshold coloring, empty state, and compact panel layout. |
+| `aurora-ai-conversation` | `AuroraConversation.kt` | Match message list spacing, streaming scroll behavior, empty/loading states, role semantics, and virtualization strategy. |
+| `aurora-ai-inline-citation` | `AuroraInlineCitation.kt` | Align superscript/pill variants, source popover, active/visited state, and accessible link labels. |
+| `aurora-ai-message` | `AuroraMessage.kt` | Match user/assistant/system variants, markdown/code slots, tool-call embeds, streaming state, actions, and avatar placement. |
+| `aurora-ai-model-selector` | `AuroraModelSelector.kt` | Align grouped model options, provider/meta text, selected checkmark, violet trigger, disabled/loading states, and reasoning pairing. |
+| `aurora-ai-plan` | `AuroraPlanList.kt` | Match task hierarchy, checkbox/status pills, progress summary, edit/expand states, and empty/running states. |
+| `aurora-ai-queue` | `AuroraQueueList.kt` | Align queued/running/done/error tones, position metadata, actions, progress/spinner state, and compact row density. |
+| `aurora-ai-reasoning` | `AuroraReasoning.kt` | Match disclosure surface, streamed text, step grouping, violet accent, collapsed summary, and reduced-motion behavior. |
+| `aurora-ai-shimmer` | `AuroraAiShimmer.kt` | Align shimmer colors, animation timing, shape variants, reduced-motion fallback, and skeleton aliasing. |
+| `aurora-ai-sources` | `AuroraSources.kt` | Match source pill/card variants, titles/domains/snippets, overflow behavior, active citation link, and horizontal scrolling. |
+| `aurora-ai-suggestion` | `AuroraSuggestionChip.kt` | Align suggestion list/chip variants, icon/action slots, selected/disabled state, and wrapping behavior. |
+| `aurora-ai-task` | `AuroraTaskItem.kt` | Match task statuses, checkbox behavior, assignee/meta slots, nested subtasks, disabled state, and status colors. |
+| `aurora-ai-tool` | `AuroraToolCallList.kt` | Add single-tool wrapper/API for one tool call while sharing the list row styling and expand/collapse behavior. |
+| `aurora-ai-agent` | `AuroraAgentRow.kt` | Align avatar/status/name/role/action slots, running/waiting/error states, pulse treatment, and compact row density. |
+| `aurora-ai-commit` | `AuroraCommitRow.kt` | Match hash/message/author/time layout, status/diff metadata, copy/open actions, and monospace hash styling. |
+| `aurora-ai-environment-variables` | `AuroraEnvironmentVariables.kt` | Align key/value masking, copy/reveal actions, required/missing states, grouping, and monospace/token colors. |
+| `aurora-ai-jsx-preview` | `AuroraWebView.kt` | Add preview-specific wrapper for render errors, reload/open actions, sandbox notes, and size/chrome parity. |
+| `aurora-ai-package-info` | `AuroraPackageInfo.kt` | Match package name/version/license/status, install/update actions, description wrapping, and registry/source metadata. |
+| `aurora-ai-sandbox` | `AuroraSandbox.kt` | Align runtime/status/env rows, permissions, actions, warning/error states, and compact panel layout. |
+| `aurora-ai-schema-display` | `AuroraSchemaDisplay.kt` | Match nested schema tree/table, required badges, type chips, descriptions, expand/collapse, and monospace values. |
+| `aurora-ai-snippet` | `AuroraSnippet.kt` | Align inline/block variants, copy action, language label, mono typography, truncation, and selected/focus state. |
+| `aurora-ai-stack-trace` | `AuroraStackTrace.kt` | Match frame rows, file/line styling, collapsed/expanded frames, copy/open actions, and error header. |
+| `aurora-ai-test-results` | `AuroraTestResults.kt` | Align pass/fail/skipped summary, suite grouping, duration, failure details, rerun action, and status tones. |
+| `aurora-ai-audio-player` | `AuroraAudioPlayer.kt` | Match controls, timeline, time labels, loading/error states, volume/playback speed if present, and accessibility labels. |
+| `aurora-ai-mic-selector` | `AuroraMicSelector.kt` | Align device list, selected indicator, permission/error state, muted/unavailable devices, and trigger styling. |
+| `aurora-ai-persona` | `AuroraPersona.kt` | Match avatar/name/role/status layout, selected/active states, description/meta slots, and compact variants. |
+| `aurora-ai-speech-input` | `AuroraSpeechInput.kt` | Align recording/listening states, pulse animation, permission denial, disabled/loading states, and haptic feedback. |
+| `aurora-ai-transcription` | `AuroraTranscription.kt` | Match live partial/final text, confidence/progress, error/empty state, scrolling, and highlight animation. |
+| `aurora-ai-voice-selector` | `AuroraVoiceSelector.kt` | Align voice option metadata, preview action, selected state, disabled/loading, and violet AI trigger styling. |
+| `aurora-ai-canvas` | `AuroraCanvasView.kt` | Align pan/zoom, node/edge slots, selection, minimap/controls if present, empty state, and touch gestures. |
+| `aurora-ai-connection` | `AuroraConnection.kt` | Match connection status, direction labels, active/idle/error styling, animation, and node relationship metadata. |
+| `aurora-ai-controls` | `AuroraControls.kt` | Align stop/pause/retry/etc. buttons, danger/disabled/loading states, icon size, tooltips/labels, and compact mode. |
+| `aurora-ai-edge` | `AuroraAiEdge.kt` | Match edge label chip, active/error states, direction/metadata slots, and canvas integration. |
+| `aurora-ai-node` | `AuroraCanvasView.kt` node model | Add explicit node rendering API or wrapper for node shape, status, icon/avatar, labels, and selection. |
+| `aurora-ai-panel` | `AuroraAiPanel.kt` | Align title/action/footer slots, violet border/surface, collapsed state, loading/error states, and density. |
+| `aurora-ai-image` | `AuroraAiImage.kt` | Match image frame, caption, loading/error, download/open actions, aspect ratio, and selected/focus states. |
+| `aurora-ai-open-in-chat` | `AuroraOpenInChat.kt` | Align icon/button size, tooltip/label, disabled state, destination metadata, and placement in artifact/source surfaces. |
+
 **Conventions used:**
 - `M3` = `androidx.compose.material3.*`
 - `Foundation` = `androidx.compose.foundation.*`
