@@ -1,10 +1,13 @@
 package tv.tootie.aurora.app.ui.chat
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CheckCircle
@@ -15,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 @Composable
@@ -51,5 +55,24 @@ private fun SkillInvocationRow(inv: SkillInvocation) {
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        SkillSourceBadge(source = inv.source)
+    }
+}
+
+@Composable
+private fun SkillSourceBadge(source: SkillSource) {
+    if (source == SkillSource.EXPLICIT) {
+        val aurora = LocalAuroraColors.current
+        Box(
+            modifier = Modifier
+                .background(aurora.accentViolet.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
+                .padding(horizontal = 4.dp, vertical = 1.dp),
+        ) {
+            Text(
+                "direct",
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
+                color = aurora.accentViolet,
+            )
+        }
     }
 }

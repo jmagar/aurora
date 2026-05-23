@@ -30,12 +30,15 @@ enum class MsgRole { User, Assistant }
 
 data class ChatMsg(val id: String, val role: MsgRole, val content: String)
 data class ToolCall(val id: String, val cmd: String, val out: StringBuilder = StringBuilder(), val done: Boolean = false, val failed: Boolean = false)
-data class SkillItem(val name: String, val description: String)
+enum class SkillSource { HOOK, EXPLICIT }
+
+data class SkillItem(val name: String, val description: String, val path: String? = null)
 
 data class SkillInvocation(
     val id: String,
     val skillName: String,
     val done: Boolean = false,
+    val source: SkillSource = SkillSource.HOOK,
 )
 
 data class McpToolCallItem(
@@ -313,6 +316,52 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun sendWithSkill(text: String, skillName: String, skillPath: String) {
+        val tid = _state.value.threadId
+        val images = _state.value.pendingAttachments
+        val inv = SkillInvocation(id = "explicit-$skillName", skillName = skillName, source = SkillSource.EXPLICIT)
+        rawReasoningBuffer.clear()
+        _state.update { s ->
+            val existing = s.skillInvocations.any { it.skillName.equals(skillName, ignoreCase = true) }
+            s.copy(
+                msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text),
+                thinking = true,
+                toolCalls = emptyList(),
+                reasoning = emptyList(),
+                rawReasoning = "",
+                mcpToolCalls = emptyList(),
+                skillInvocations = if (existing) s.skillInvocations else s.skillInvocations + inv,
+                pendingApprovals = emptyList(),
+                planItems = emptyList(),
+                webSearches = emptyList(),
+                fileChanges = emptyList(),
+                pendingAttachments = emptyList(),
+            )
+        }
+        viewModelScope.launch {
+            if (tid == null) {
+                pendingMsg = text
+                pendingAttachments = listOf(SelectedItem.Skill(skillName, skillPath))
+                pendingImages = images
+                val model = settings.model.first()
+                repo.startThread(model)
+            } else {
+                repo.startTurn(
+                    threadId = tid,
+                    text = text,
+                    attachments = listOf(SelectedItem.Skill(skillName, skillPath)),
+                    model = _state.value.selectedModel,
+                    effort = _state.value.selectedEffort,
+                    images = images,
+                    approvalPolicy = _state.value.selectedApprovalPolicy,
+                    granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
+                        _state.value.granularPolicy else null,
+                    approvalsReviewer = _state.value.selectedReviewer,
+                )
+            }
+        }
+    }
+
     fun approveToolCall(decision: String) {
         val approval = _state.value.pendingApprovals.firstOrNull() ?: return
         val sent = repo.sendApproval(approval.rawServerId, decision)
@@ -350,7 +399,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         val skills = event.skills.mapNotNull { obj ->
             val name = obj["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
             val desc = obj["description"]?.jsonPrimitive?.content ?: ""
-            SkillItem(name, desc)
+            val path = obj["path"]?.jsonPrimitive?.contentOrNull
+            SkillItem(name, desc, path)
         }
         if (skills.isNotEmpty()) {
             _state.update { it.copy(availableSkills = skills.sortedBy { s -> s.name }) }
@@ -558,7 +608,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (eventName != "userPromptSubmit") return
                 val hookId = run["id"]?.jsonPrimitive?.content ?: return
                 val skillName = extractSkillName(hookId) ?: return
-                val inv = SkillInvocation(id = hookId, skillName = skillName, done = false)
+                val inv = SkillInvocation(id = hookId, skillName = skillName, done = false, source = SkillSource.HOOK)
                 _state.update { s -> s.copy(skillInvocations = s.skillInvocations + inv) }
             }
             "hook/completed" -> {

@@ -80,6 +80,7 @@ fun ChatScreen(
     val s by vm.state.collectAsStateWithLifecycle()
     var input by remember { mutableStateOf("") }
     var selectedItems by remember { mutableStateOf<List<SelectedItem>>(emptyList()) }
+    var pendingSkillInvocation by remember { mutableStateOf<Pair<String, String>?>(null) }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -130,6 +131,7 @@ fun ChatScreen(
                 label = skill.name.replace("-", " ").replaceFirstChar { it.uppercase() },
                 description = skill.description.take(80),
                 kind = MentionKind.Skill,
+                path = skill.path,
             )
         }
         commands + skills
@@ -352,11 +354,21 @@ fun ChatScreen(
                     items = filteredMentions,
                     query = mentionQuery,
                     onSelect = { item, structured ->
-                        val lastTrigger = maxOf(input.lastIndexOf('@'), input.lastIndexOf('/'))
-                        input = if (lastTrigger >= 0) input.take(lastTrigger) + item.trigger + " "
-                                else input + item.trigger + " "
-                        selectedItems = selectedItems + structured
-                        showMentions = false
+                        if (item.kind == MentionKind.Skill) {
+                            pendingSkillInvocation = Pair(
+                                item.trigger.removePrefix("@"),
+                                item.path ?: "",
+                            )
+                            val lastAt = input.lastIndexOf('@')
+                            input = if (lastAt >= 0) input.take(lastAt) else ""
+                            showMentions = false
+                        } else {
+                            val lastTrigger = maxOf(input.lastIndexOf('@'), input.lastIndexOf('/'))
+                            input = if (lastTrigger >= 0) input.take(lastTrigger) + item.trigger + " "
+                                    else input + item.trigger + " "
+                            selectedItems = selectedItems + structured
+                            showMentions = false
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -365,19 +377,49 @@ fun ChatScreen(
                 )
             }
 
+            // Pending skill indicator — shown when user selected a skill via @mention
+            pendingSkillInvocation?.let { (skillName, _) ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        "Skill: @$skillName",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                    TextButton(onClick = { pendingSkillInvocation = null }) { Text("Clear") }
+                }
+            }
+
             AuroraPromptInput(
                 value = input,
                 onValueChange = { input = it },
                 onSend = {
-                    val hasText = input.isNotBlank()
-                    val hasAttachments = s.pendingAttachments.isNotEmpty() || selectedItems.isNotEmpty()
-                    // While editing, only text + skill attachments are forwarded; images are dropped.
-                    val canSend = if (s.editingMessage != null) hasText else (hasText || hasAttachments)
-                    if (canSend) {
-                        if (s.editingMessage != null) vm.sendEdit(input, selectedItems)
-                        else vm.send(input, selectedItems)
+                    val pending = pendingSkillInvocation
+                    if (s.editingMessage != null) {
+                        if (input.isNotBlank()) {
+                            vm.sendEdit(input, selectedItems)
+                            pendingSkillInvocation = null
+                            input = ""
+                            selectedItems = emptyList()
+                        }
+                    } else if (pending != null && input.isNotBlank()) {
+                        vm.sendWithSkill(input, pending.first, pending.second)
+                        pendingSkillInvocation = null
                         input = ""
                         selectedItems = emptyList()
+                    } else {
+                        val hasText = input.isNotBlank()
+                        val hasAttachments = s.pendingAttachments.isNotEmpty() || selectedItems.isNotEmpty()
+                        if (hasText || hasAttachments) {
+                            vm.send(input, selectedItems)
+                            input = ""
+                            selectedItems = emptyList()
+                        }
                     }
                 },
                 loading = s.thinking,
