@@ -18,7 +18,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -36,11 +38,17 @@ private const val TAG = "CodexRepository"
  *   - startThread  → result.thread.id → routes to [turnEventsFlow] so
  *                    ChatViewModel's existing null-method dispatch picks it up
  */
-internal enum class RequestKind {
-    Thread,      // thread/list
-    ThreadStart, // thread/start — response goes to turnEventsFlow, not threadsFlow
-    Models,      // model/list
-    Skills,      // skills/list
+public enum class RequestKind {
+    Thread,        // thread/list
+    ThreadStart,   // thread/start — response goes to turnEventsFlow, not threadsFlow
+    ThreadResume,  // thread/resume
+    Steer,         // turn/steer
+    GoalSet,       // thread/goal/set
+    GoalGet,       // thread/goal/get
+    GoalClear,     // thread/goal/clear
+    McpServers,    // mcpServerStatus/list
+    Models,        // model/list
+    Skills,        // skills/list
     Other,
 }
 
@@ -64,7 +72,10 @@ sealed class CodexEvent {
      * - model/list and skills/list are handled separately above and do NOT
      *   appear on this flow
      */
-    data class TurnEvent(val msg: RpcMessage) : CodexEvent()
+    data class TurnEvent(val msg: RpcMessage, val originKind: RequestKind? = null) : CodexEvent()
+
+    /** Parsed result from a mcpServerStatus/list response. */
+    data class McpServerList(val servers: List<JsonObject>) : CodexEvent()
 
     /** A connection-level error (WebSocket failure). */
     data class ConnectionError(val message: String) : CodexEvent()
@@ -80,7 +91,7 @@ sealed class CodexEvent {
 class CodexRepository {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val pendingKinds = ConcurrentHashMap<Int, RequestKind>()
+    private val pendingKinds = ConcurrentHashMap<String, RequestKind>()
     /** Guards connect/reconnect/disconnect so concurrent calls are serialized. */
     private val connectionMutex = Mutex()
     private var client: CodexClient? = null
@@ -114,7 +125,16 @@ class CodexRepository {
     private val _skillsFlow = MutableSharedFlow<CodexEvent.SkillList>(replay = 1)
     val skillsFlow: SharedFlow<CodexEvent.SkillList> = _skillsFlow.asSharedFlow()
 
-    private val _turnEventsFlow = MutableSharedFlow<CodexEvent.TurnEvent>(extraBufferCapacity = 64)
+    private val _mcpServersFlow = MutableSharedFlow<CodexEvent.McpServerList>(replay = 1)
+    val mcpServersFlow: SharedFlow<CodexEvent.McpServerList> = _mcpServersFlow.asSharedFlow()
+
+    private val _sidebarNotificationsFlow = MutableSharedFlow<RpcMessage>(replay = 1)
+    val sidebarNotificationsFlow: SharedFlow<RpcMessage> = _sidebarNotificationsFlow.asSharedFlow()
+
+    private val _sessionInvalidated = MutableSharedFlow<Unit>(replay = 0)
+    val sessionInvalidated: SharedFlow<Unit> = _sessionInvalidated.asSharedFlow()
+
+    private val _turnEventsFlow = MutableSharedFlow<CodexEvent.TurnEvent>(extraBufferCapacity = 256)
     /** All turn-related messages + thread/start responses. ChatViewModel subscribes here. */
     val turnEventsFlow: SharedFlow<CodexEvent.TurnEvent> = _turnEventsFlow.asSharedFlow()
 
@@ -152,6 +172,7 @@ class CodexRepository {
                 client = null
                 _currentClient.value = null
                 pendingKinds.clear()
+                scope.launch { _sessionInvalidated.emit(Unit) }
                 startClientLocked(url, token)
             }
         }
@@ -190,7 +211,7 @@ class CodexRepository {
 
     fun startThread(model: String?): Int {
         val id = client?.startThread(model) ?: return -1
-        pendingKinds[id] = RequestKind.ThreadStart  // response goes to turnEventsFlow
+        pendingKinds[id.toString()] = RequestKind.ThreadStart  // response goes to turnEventsFlow
         return id
     }
 
@@ -209,27 +230,72 @@ class CodexRepository {
             threadId, text, attachments, model, effort, images,
             approvalPolicy, granularPolicy, approvalsReviewer,
         ) ?: return -1
-        pendingKinds[id] = RequestKind.Other
+        pendingKinds[id.toString()] = RequestKind.Other
         return id
     }
 
     fun listModels(): Int {
         val id = client?.listModels() ?: return -1
-        pendingKinds[id] = RequestKind.Models
+        pendingKinds[id.toString()] = RequestKind.Models
         return id
     }
 
     fun listSkills(): Int {
         val id = client?.listSkills() ?: return -1
-        pendingKinds[id] = RequestKind.Skills
+        pendingKinds[id.toString()] = RequestKind.Skills
         return id
     }
 
     fun listThreads(limit: Int = 50): Int {
         val id = client?.listThreads(limit) ?: return -1
-        pendingKinds[id] = RequestKind.Thread  // response goes to threadsFlow
+        pendingKinds[id.toString()] = RequestKind.Thread  // response goes to threadsFlow
         return id
     }
+
+    fun resumeThread(threadId: String, history: List<JsonObject>? = null): String {
+        val rawId = client?.resumeThread(threadId, history) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ThreadResume
+        return key
+    }
+
+    fun steerTurn(threadId: String, text: String, expectedTurnId: String): String {
+        val rawId = client?.steerTurn(threadId, text, expectedTurnId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.Steer
+        return key
+    }
+
+    fun setGoal(threadId: String, objective: String, tokenBudget: Int? = null): String {
+        val rawId = client?.setGoal(threadId, objective, tokenBudget) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.GoalSet
+        return key
+    }
+
+    fun getGoal(threadId: String): String {
+        val rawId = client?.getGoal(threadId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.GoalGet
+        return key
+    }
+
+    fun clearGoal(threadId: String): String {
+        val rawId = client?.clearGoal(threadId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.GoalClear
+        return key
+    }
+
+    fun listMcpServers(): String {
+        val rawId = client?.listMcpServers() ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.McpServers
+        return key
+    }
+
+    fun sendApproval(rawServerId: JsonElement, decision: String): Boolean =
+        client?.sendApproval(rawServerId, decision) ?: false
 
     fun interrupt(threadId: String) {
         client?.interrupt(threadId)
@@ -238,20 +304,20 @@ class CodexRepository {
     // --- Demux logic -------------------------------------------------------
 
     private suspend fun demux(msg: RpcMessage) {
-        // Extract the request id as an Int (RpcMessage.id is a JsonElement?)
-        val idNum: Int? = try { msg.id?.jsonPrimitive?.content?.toIntOrNull() } catch (_: Exception) { null }
+        // Extract the request id as a String (RpcMessage.id is a JsonElement?)
+        val idStr: String? = try { msg.id?.jsonPrimitive?.contentOrNull } catch (_: Exception) { null }
 
         // Responses to our own requests (method == null, id present)
-        if (msg.method == null && idNum != null) {
-            when (pendingKinds.remove(idNum)) {
+        if (msg.method == null && idStr != null) {
+            val kind = pendingKinds.remove(idStr)
+            when (kind) {
                 RequestKind.Thread -> routeThreadListResponse(msg)
                 RequestKind.Models -> routeModelsResponse(msg)
                 RequestKind.Skills -> routeSkillsResponse(msg)
-                // ThreadStart and Other both go to turnEventsFlow so ChatViewModel
-                // handles them with its existing null-method dispatch.
-                // emit() (suspend) is used instead of tryEmit() to prevent silent
-                // drops when the buffer is full — turn/completed must never be lost.
-                else -> _turnEventsFlow.emit(CodexEvent.TurnEvent(msg))
+                RequestKind.McpServers -> routeMcpServersResponse(msg)
+                // ThreadStart, ThreadResume, Steer, Goal*, Other, null — go to turnEventsFlow
+                // so ChatViewModel handles them with its existing null-method dispatch.
+                else -> scope.launch { _turnEventsFlow.emit(CodexEvent.TurnEvent(msg, originKind = kind)) }
             }
             return
         }
@@ -272,6 +338,14 @@ class CodexRepository {
         }
 
         // All server-initiated notifications (turn/*, item/*, hook/*, etc.)
+        // Route sidebar-relevant methods to sidebarNotificationsFlow as well.
+        val sidebarMethods = setOf(
+            "thread/goal/updated", "thread/goal/cleared",
+            "mcpServer/startupStatus/updated"
+        )
+        if (msg.method in sidebarMethods) {
+            _sidebarNotificationsFlow.tryEmit(msg)
+        }
         // suspend emit() ensures critical events like turn/completed are never dropped.
         _turnEventsFlow.emit(CodexEvent.TurnEvent(msg))
     }
@@ -302,5 +376,16 @@ class CodexRepository {
             try { it.jsonObject } catch (_: Exception) { null }
         } ?: return
         _skillsFlow.tryEmit(CodexEvent.SkillList(skills))
+    }
+
+    private fun routeMcpServersResponse(msg: RpcMessage) {
+        val result = msg.result ?: return
+        val servers = try {
+            result.jsonObject["servers"]?.jsonArray
+        } catch (_: Exception) { null }
+            ?: try { result.jsonArray } catch (_: Exception) { null }
+            ?: run { Log.w(TAG, "unexpected mcpServerStatus shape"); return }
+        val list = servers.mapNotNull { try { it.jsonObject } catch (_: Exception) { null } }
+        _mcpServersFlow.tryEmit(CodexEvent.McpServerList(list))
     }
 }
