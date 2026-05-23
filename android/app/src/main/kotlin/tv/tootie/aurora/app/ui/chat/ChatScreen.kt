@@ -100,6 +100,7 @@ fun ChatScreen(
                 uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null
             )?.use { c -> if (c.moveToFirst()) c.getString(0) else null } ?: "Photo"
             val bytes = cr.openInputStream(uri)?.use { it.readBytes() } ?: return@launch
+            if (bytes.isEmpty()) return@launch  // Empty file would encode to "" and produce an invalid attachment.
             val base64 = android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
             withContext(Dispatchers.Main) {
                 vm.addImageAttachment(

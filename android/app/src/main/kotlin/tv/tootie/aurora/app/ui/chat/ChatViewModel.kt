@@ -3,6 +3,7 @@ package tv.tootie.aurora.app.ui.chat
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
@@ -176,19 +178,25 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 selectedApprovalPolicy = ApprovalPolicy.fromWire(policyWire),
                 selectedReviewer = ApprovalsReviewer.fromWire(reviewerWire),
             ) }
-            // Wait for handshake to complete before issuing requests
-            repo.isReady.filter { it }.first()
-            repo.listModels()
-            repo.listSkills()
-            // Only try to resume on cold start (msgs empty = no prior session in this ViewModel).
-            // If msgs is non-empty the user navigated to chat/new intentionally — don't hijack
-            // their new session by resuming the old one.
-            if (threadId == "new" && _state.value.msgs.isEmpty()) {
-                val saved = settings.savedThreadId.first()
-                if (saved != null) {
-                    tryResumeThread(saved)
+            // Wait for the handshake to complete before issuing requests. Wrapped in
+            // withTimeout so a never-ready connection surfaces an error instead of
+            // hanging forever (e.g. if disconnect() runs concurrently from logout).
+            try {
+                withTimeout(10_000) { repo.isReady.filter { it }.first() }
+                repo.listModels()
+                repo.listSkills()
+                // Only try to resume on cold start (msgs empty = no prior session in this ViewModel).
+                // If msgs is non-empty the user navigated to chat/new intentionally — don't hijack
+                // their new session by resuming the old one.
+                if (threadId == "new" && _state.value.msgs.isEmpty()) {
+                    val saved = settings.savedThreadId.first()
+                    if (saved != null) {
+                        tryResumeThread(saved)
+                    }
+                    // saved == null -> new thread created lazily on first send()
                 }
-                // saved == null -> new thread created lazily on first send()
+            } catch (_: TimeoutCancellationException) {
+                _state.update { it.copy(error = "Server handshake did not complete") }
             }
         }
     }
@@ -634,16 +642,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             "item/reasoning/summaryPartAdded" -> {
                 _state.update { s ->
                     s.copy(reasoning = s.reasoning + "")
-                }
-            }
-
-            // Available commands from server
-            "session/update" -> {
-                val commands = params?.get("availableCommands")?.jsonArray
-                if (commands != null) {
-                    _state.update { it.copy(availableCommands = commands.mapNotNull { c ->
-                        c.jsonObject["name"]?.jsonPrimitive?.content
-                    }) }
                 }
             }
 

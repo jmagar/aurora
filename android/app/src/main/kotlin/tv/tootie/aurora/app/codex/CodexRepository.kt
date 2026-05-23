@@ -306,8 +306,14 @@ class CodexRepository {
     // --- Demux logic -------------------------------------------------------
 
     private suspend fun demux(msg: RpcMessage) {
-        // Extract the request id as a String (RpcMessage.id is a JsonElement?)
+        // Extract the request id as a String (RpcMessage.id is a JsonElement?).
+        // Safe-cast skips non-primitive ids (e.g. malformed JsonObject), which silently
+        // routes them to turnEventsFlow below — diagnose with the warning if the id was
+        // present but unparseable.
         val idStr: String? = (msg.id as? JsonPrimitive)?.contentOrNull
+        if (msg.id != null && idStr == null) {
+            Log.w(TAG, "demux: non-primitive id ignored (method=${msg.method}): ${msg.id}")
+        }
 
         // Responses to our own requests (method == null, id present)
         if (msg.method == null && idStr != null) {

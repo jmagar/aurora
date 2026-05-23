@@ -3,6 +3,7 @@ package tv.tootie.aurora.app.ui.sidebar
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
@@ -131,9 +133,15 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             // Wait for the initialize/initialized handshake to complete before
             // sending thread/list — otherwise the request can arrive before the
             // server has finished its handshake and will be silently ignored.
-            repo.isReady.filter { it }.first()
-            repo.listThreads()
-            loadMcpServers()
+            // Wrapped in withTimeout because isReady can stay false forever if
+            // disconnect() runs while we are waiting (e.g. user logs out concurrently).
+            try {
+                withTimeout(10_000) { repo.isReady.filter { it }.first() }
+                repo.listThreads()
+                loadMcpServers()
+            } catch (_: TimeoutCancellationException) {
+                _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 
