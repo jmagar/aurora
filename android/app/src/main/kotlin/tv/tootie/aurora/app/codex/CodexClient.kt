@@ -183,7 +183,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 })
             }
         )
-        return Pair(frame, id)
+        return frame to id
     }
 
     fun startTurn(
@@ -375,7 +375,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
         send("turn/interrupt", buildJsonObject { put("threadId", threadId) })
     }
 
-    private fun send(method: String, params: kotlinx.serialization.json.JsonElement, id: Int? = null) {
+    private fun send(method: String, params: JsonElement, id: Int? = null) {
         val msg = buildJsonObject {
             put("method", method)
             if (id != null) put("id", id)

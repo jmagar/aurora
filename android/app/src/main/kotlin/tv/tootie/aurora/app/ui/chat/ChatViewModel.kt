@@ -571,8 +571,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }) }
                     }
                     "mcpToolCall" -> {
-                        val output = try { item["result"]?.toString() } catch (_: Exception) { null }
-                            ?.take(8000)?.sanitizeForDisplay() ?: ""
+                        val output = item["result"]?.toString()?.take(8000)?.sanitizeForDisplay() ?: ""
                         val err = item["error"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                         _state.update { s ->
                             s.copy(mcpToolCalls = s.mcpToolCalls.map { call ->
@@ -700,12 +699,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private fun extractSkillName(hookId: String): String? {
         val parts = hookId.split("/")
         val cacheIdx = parts.indexOf("cache")
-        if (cacheIdx >= 0 && cacheIdx + 2 < parts.size) {
-            return parts[cacheIdx + 2]
-        }
-        return null
+        return if (cacheIdx >= 0 && cacheIdx + 2 < parts.size) parts[cacheIdx + 2] else null
     }
 
     // Do NOT disconnect here — the repository owns the connection lifetime.
-    override fun onCleared() { super.onCleared() }
 }

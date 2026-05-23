@@ -22,6 +22,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ConcurrentHashMap
@@ -305,7 +307,7 @@ class CodexRepository {
 
     private suspend fun demux(msg: RpcMessage) {
         // Extract the request id as a String (RpcMessage.id is a JsonElement?)
-        val idStr: String? = try { msg.id?.jsonPrimitive?.contentOrNull } catch (_: Exception) { null }
+        val idStr: String? = (msg.id as? JsonPrimitive)?.contentOrNull
 
         // Responses to our own requests (method == null, id present)
         if (msg.method == null && idStr != null) {
@@ -353,40 +355,30 @@ class CodexRepository {
 
     private fun routeThreadListResponse(msg: RpcMessage) {
         val result = msg.result?.jsonObject ?: return
-        val threads = result["data"]?.jsonArray?.mapNotNull {
-            try { it.jsonObject } catch (_: Exception) { null }
-        } ?: return
+        val threads = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: return
         _threadsFlow.tryEmit(CodexEvent.ThreadList(threads))
     }
 
     private fun routeModelsResponse(msg: RpcMessage) {
         val result = msg.result?.jsonObject ?: return
-        val data = result["data"]?.jsonArray?.mapNotNull {
-            try { it.jsonObject } catch (_: Exception) { null }
-        } ?: return
+        val data = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: return
         _modelsFlow.tryEmit(CodexEvent.ModelList(data))
     }
 
     private fun routeSkillsResponse(msg: RpcMessage) {
         val result = msg.result?.jsonObject ?: return
         // skills/list response shape: result.data[0].skills[]
-        val firstItem = result["data"]?.jsonArray?.firstOrNull()?.let {
-            try { it.jsonObject } catch (_: Exception) { null }
-        } ?: return
-        val skills = firstItem["skills"]?.jsonArray?.mapNotNull {
-            try { it.jsonObject } catch (_: Exception) { null }
-        } ?: return
+        val firstItem = result["data"]?.jsonArray?.firstOrNull() as? JsonObject ?: return
+        val skills = firstItem["skills"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: return
         _skillsFlow.tryEmit(CodexEvent.SkillList(skills))
     }
 
     private fun routeMcpServersResponse(msg: RpcMessage) {
         val result = msg.result ?: return
-        val servers = try {
-            result.jsonObject["servers"]?.jsonArray
-        } catch (_: Exception) { null }
-            ?: try { result.jsonArray } catch (_: Exception) { null }
+        val servers = (result as? JsonObject)?.get("servers") as? JsonArray
+            ?: (result as? JsonArray)
             ?: run { Log.w(TAG, "unexpected mcpServerStatus shape"); return }
-        val list = servers.mapNotNull { try { it.jsonObject } catch (_: Exception) { null } }
+        val list = servers.mapNotNull { it as? JsonObject }
         _mcpServersFlow.tryEmit(CodexEvent.McpServerList(list))
     }
 }
