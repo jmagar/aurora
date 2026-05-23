@@ -94,7 +94,7 @@ private fun ToolCallRow(call: ToolCall) {
 
             // Command — truncated, monospace
             Text(
-                text = call.cmd.substringAfterLast(" -lc ").trim().trim('\'', '"').take(60),
+                text = call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"').take(60),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace),
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
@@ -125,7 +125,7 @@ private fun ToolCallRow(call: ToolCall) {
             enter = expandVertically(),
             exit = shrinkVertically(),
         ) {
-            val output = call.out.toString()
+            val output = call.out.toString().sanitizeForDisplay()
             if (output.isNotBlank()) {
                 Box(
                     modifier = Modifier
@@ -134,7 +134,7 @@ private fun ToolCallRow(call: ToolCall) {
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        text = "$ ${call.cmd.substringAfterLast(" -lc ").trim().trim('\'', '"')}\n$output",
+                        text = "$ ${call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"')}\n$output",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,
@@ -151,7 +151,7 @@ private fun ToolCallRow(call: ToolCall) {
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                 ) {
                     Text(
-                        "$ ${call.cmd.substringAfterLast(" -lc ").trim().trim('\'', '"')}",
+                        "$ ${call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"')}",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,

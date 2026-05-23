@@ -64,6 +64,25 @@ data class ChatState(
     val selectedReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
 )
 
+/**
+ * Strips terminal escape sequences, Bidi overrides, and zero-width chars from
+ * server-supplied strings before storing in UI state.
+ * Internal visibility so ToolCallTimeline.kt (same module) can use it.
+ * Uses ESC variable to avoid storing literal 0x1B bytes in source.
+ */
+internal fun String.sanitizeForDisplay(): String {
+    val ESC = "\u001B"
+    return this
+        .replace(Regex("""$ESC\[[0-?]*[ -/]*[@-~]"""), "")          // CSI sequences
+        .replace(Regex("""$ESC[\]PX^_][^$ESC]*(?:$ESC\\|)?"""), "") // OSC/DCS/APC/SOS/PM
+        .replace(Regex("""$ESC[@-_]"""), "")                          // 2-byte Fe sequences
+        .replace(ESC, "")                                             // stray ESC byte
+        .replace(Regex("[\u0000-\u0008\u000B\u000C\u000E-\u001F]"), "") // C0 (keep \t\n\r)
+        .replace(Regex("[\u0080-\u009F]"), "")                        // C1 controls
+        .replace(Regex("[‎‏‪-‮⁦-⁩]"), "") // Bidi overrides
+        .replace(Regex("[​-‍﻿]"), "")                  // zero-width + BOM
+}
+
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
     private val repo: CodexRepository = (app as CodexApp).repository
