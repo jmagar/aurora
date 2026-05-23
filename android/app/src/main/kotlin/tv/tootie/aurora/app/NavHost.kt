@@ -87,6 +87,7 @@ fun CodexNavHost() {
                 isLoading = sidebarState.isLoading,
                 onSessionClick = { id ->
                     sidebarVm.setActiveSession(id)
+                    sidebarVm.setCurrentThread(id)
                     nav.navigate(Screen.Chat.go(id)) {
                         popUpTo(Screen.Chat.route) { inclusive = false }
                         launchSingleTop = true
@@ -94,6 +95,7 @@ fun CodexNavHost() {
                     scope.launch { drawerState.close() }
                 },
                 onNewSession = {
+                    sidebarVm.setCurrentThread(null)
                     nav.navigate(Screen.Chat.NEW) {
                         popUpTo(Screen.Chat.route) { inclusive = true }
                     }
@@ -103,6 +105,12 @@ fun CodexNavHost() {
                     nav.navigate(Screen.Settings.route)
                     scope.launch { drawerState.close() }
                 },
+                currentGoal = sidebarState.currentGoal,
+                showGoalEditor = sidebarState.showGoalEditor,
+                onShowGoalEditor = { sidebarVm.showGoalEditor() },
+                onSetGoal = { sidebarVm.setGoal(it) },
+                onClearGoal = { sidebarVm.clearGoal() },
+                onHideGoalEditor = { sidebarVm.hideGoalEditor() },
             )
         },
     ) {
