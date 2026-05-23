@@ -21,6 +21,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.components.AuroraDropdownMenu
 import tv.tootie.aurora.components.AuroraMenuEntry
@@ -49,7 +52,9 @@ fun ModelReasoningBar(
     var effortMenuOpen by remember { mutableStateOf(false) }
 
     val currentModel = models.find { it.id == selectedModel }
+    val currentModelLabel = currentModel?.displayName ?: selectedModel
     val availableEfforts = currentModel?.reasoningEfforts ?: emptyList()
+    val selectedEffortLabel = selectedEffort.replaceFirstChar { it.uppercase() }
 
     Row(
         modifier = modifier
@@ -59,18 +64,34 @@ fun ModelReasoningBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // Model selector
-        AuroraDropdownMenu(
-            entries = models.map { m ->
+        val modelEntries: List<AuroraMenuEntry> = if (models.isEmpty()) {
+            listOf(
+                AuroraMenuEntry.Item(
+                    label = "Loading models…",
+                    onClick = {},
+                    enabled = false,
+                )
+            )
+        } else {
+            models.map { m ->
                 AuroraMenuEntry.Item(
                     label = m.displayName,
                     onClick = { onModelSelect(m.id) },
+                    trailingText = if (m.id == selectedModel) "✓" else null,
                 )
-            },
+            }
+        }
+        AuroraDropdownMenu(
+            entries = modelEntries,
             expanded = modelMenuOpen,
             onDismissRequest = { modelMenuOpen = false },
             anchor = {
                 Row(
                     modifier = Modifier
+                        .semantics {
+                            contentDescription = "Model selector"
+                            stateDescription = if (models.isEmpty()) "Loading models" else currentModelLabel
+                        }
                         .clickable(role = Role.Button) { modelMenuOpen = true }
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -83,7 +104,7 @@ fun ModelReasoningBar(
                         modifier = Modifier.size(14.dp),
                     )
                     Text(
-                        currentModel?.displayName ?: selectedModel,
+                        currentModelLabel,
                         style = MaterialTheme.typography.labelSmall,
                         color = aurora.accentPink,
                     )
@@ -112,6 +133,10 @@ fun ModelReasoningBar(
                 anchor = {
                     Row(
                         modifier = Modifier
+                            .semantics {
+                                contentDescription = "Reasoning effort selector"
+                                stateDescription = selectedEffortLabel
+                            }
                             .clickable(role = Role.Button) { effortMenuOpen = true }
                             .padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -124,7 +149,7 @@ fun ModelReasoningBar(
                             modifier = Modifier.size(14.dp),
                         )
                         Text(
-                            selectedEffort.replaceFirstChar { it.uppercase() },
+                            selectedEffortLabel,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

@@ -49,6 +49,7 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * @param placeholder        Hint text shown when [value] is empty.
  * @param enabled            When false the field and button are both non-interactive.
  * @param loading            When true a spinner replaces the send icon and submission is blocked.
+ * @param hasSendableContent True when the current composer state can be submitted.
  * @param leadingContent     Optional composable rendered above the input row (e.g. attachment chips).
  */
 @Composable
@@ -60,10 +61,11 @@ public fun AuroraPromptInput(
     placeholder: String = "Message…",
     enabled: Boolean = true,
     loading: Boolean = false,
+    hasSendableContent: Boolean = value.isNotBlank(),
     leadingContent: (@Composable () -> Unit)? = null,
 ) {
     val aurora = LocalAuroraColors.current
-    val canSend = value.isNotBlank() && enabled && !loading
+    val canSend = hasSendableContent && enabled && !loading
     val sendButtonDescription = if (canSend) "Send message" else "Send message, disabled"
 
     Surface(

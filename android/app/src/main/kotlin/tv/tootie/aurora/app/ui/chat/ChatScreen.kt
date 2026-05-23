@@ -443,6 +443,9 @@ fun ChatScreen(
                 },
                 loading = s.thinking,
                 enabled = s.connected,
+                hasSendableContent = input.isNotBlank() ||
+                    s.pendingAttachments.isNotEmpty() ||
+                    selectedItems.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
                 leadingContent = {
                     // Image attachment chips — scrollable row so multiple images stay accessible

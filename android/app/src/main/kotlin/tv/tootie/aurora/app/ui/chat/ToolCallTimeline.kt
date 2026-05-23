@@ -35,6 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -63,7 +66,15 @@ private fun ToolCallRow(call: ToolCall) {
         call.done -> aurora.success
         else -> aurora.info
     }
+    val statusDescription = when {
+        call.failed -> "failed"
+        call.done -> "completed"
+        else -> "running"
+    }
     val displayCmd = call.cmd.sanitizeForDisplay().substringAfterLast(" -lc ").trim().trim('\'', '"')
+    val terminalBackground = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f)
+    val terminalText = MaterialTheme.colorScheme.onSurface
+    val terminalMutedText = MaterialTheme.colorScheme.onSurfaceVariant
 
     Column(
         modifier = Modifier
@@ -75,6 +86,10 @@ private fun ToolCallRow(call: ToolCall) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .semantics {
+                    contentDescription = "Command ${displayCmd.take(80)}"
+                    stateDescription = if (expanded) "$statusDescription, expanded" else "$statusDescription, collapsed"
+                }
                 .clickable(role = Role.Button) { expanded = !expanded }
                 .padding(horizontal = 10.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -133,7 +148,7 @@ private fun ToolCallRow(call: ToolCall) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF0A0F14))
+                        .background(terminalBackground)
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                 ) {
                     Text(
@@ -143,14 +158,14 @@ private fun ToolCallRow(call: ToolCall) {
                             fontSize = 11.sp,
                             lineHeight = 16.sp,
                         ),
-                        color = Color(0xFFD4D4D4),
+                        color = terminalText,
                     )
                 }
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF0A0F14))
+                        .background(terminalBackground)
                         .padding(horizontal = 10.dp, vertical = 8.dp),
                 ) {
                     Text(
@@ -159,7 +174,7 @@ private fun ToolCallRow(call: ToolCall) {
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,
                         ),
-                        color = Color(0xFF888888),
+                        color = terminalMutedText,
                     )
                 }
             }
@@ -183,6 +198,19 @@ private fun McpToolCallRow(call: McpToolCallItem) {
         "failed" -> aurora.error
         else -> aurora.accentViolet
     }
+    val server = call.server.sanitizeForDisplay()
+    val tool = call.tool.sanitizeForDisplay()
+    val arguments = call.arguments.sanitizeForDisplay()
+    val output = call.output.sanitizeForDisplay()
+    val error = call.error?.sanitizeForDisplay()
+    val statusDescription = when (call.status) {
+        "done" -> "completed"
+        "failed" -> "failed"
+        else -> "running"
+    }
+    val terminalBackground = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f)
+    val terminalText = MaterialTheme.colorScheme.onSurface
+    val terminalMutedText = MaterialTheme.colorScheme.onSurfaceVariant
 
     Column(
         modifier = Modifier
@@ -193,6 +221,10 @@ private fun McpToolCallRow(call: McpToolCallItem) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .semantics {
+                    contentDescription = "MCP tool $server $tool"
+                    stateDescription = if (expanded) "$statusDescription, expanded" else "$statusDescription, collapsed"
+                }
                 .clickable(role = Role.Button) { expanded = !expanded }
                 .padding(horizontal = 10.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -206,7 +238,7 @@ private fun McpToolCallRow(call: McpToolCallItem) {
                 modifier = Modifier.size(13.dp),
             )
             Text(
-                text = "${call.server}: ${call.tool}",
+                text = "$server: $tool",
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace),
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
@@ -231,26 +263,26 @@ private fun McpToolCallRow(call: McpToolCallItem) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF0A0F14))
+                    .background(terminalBackground)
                     .padding(horizontal = 10.dp, vertical = 8.dp),
             ) {
-                if (call.arguments.isNotBlank()) {
+                if (arguments.isNotBlank()) {
                     Text(
-                        "args: ${call.arguments.take(300)}",
+                        "args: ${arguments.take(300)}",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace, fontSize = 11.sp),
-                        color = Color(0xFF888888),
+                        color = terminalMutedText,
                     )
                 }
-                if (call.output.isNotBlank()) {
+                if (output.isNotBlank()) {
                     Text(
-                        call.output.take(500),
+                        output.take(500),
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontFamily = FontFamily.Monospace, fontSize = 11.sp, lineHeight = 16.sp),
-                        color = Color(0xFFD4D4D4),
+                        color = terminalText,
                     )
                 }
-                call.error?.let {
+                error?.let {
                     Text(it, style = MaterialTheme.typography.labelSmall, color = aurora.error)
                 }
             }

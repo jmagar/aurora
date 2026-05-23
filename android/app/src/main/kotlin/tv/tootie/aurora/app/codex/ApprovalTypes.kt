@@ -10,12 +10,16 @@ package tv.tootie.aurora.app.codex
  *   "never"       — never pause for approval (fully autonomous)
  *   "granular"    — fine-grained per-feature control via [GranularPolicy]
  */
-enum class ApprovalPolicy(val wire: String, val displayName: String) {
-    Untrusted("untrusted", "Untrusted"),
-    OnFailure("on-failure", "On Failure"),
-    OnRequest("on-request", "On Request"),
-    Never("never", "Never"),
-    Granular("granular", "Granular"),
+enum class ApprovalPolicy(
+    val wire: String,
+    val displayName: String,
+    val description: String,
+) {
+    Untrusted("untrusted", "Untrusted", "Approve every command"),
+    OnFailure("on-failure", "On Failure", "Auto-approve until something fails"),
+    OnRequest("on-request", "On Request", "Ask before each command"),
+    Never("never", "Never", "Run fully autonomously"),
+    Granular("granular", "Granular", "Configure per-feature toggles below"),
     ;
 
     companion object {
@@ -47,9 +51,13 @@ data class GranularPolicy(
  *   "user"        — the human user reviews each request (default)
  *   "auto_review" — an automated reviewer handles them
  */
-enum class ApprovalsReviewer(val wire: String, val displayName: String) {
-    User("user", "User"),
-    AutoReview("auto_review", "Auto Review"),
+enum class ApprovalsReviewer(
+    val wire: String,
+    val displayName: String,
+    val description: String,
+) {
+    User("user", "User", "I review each request"),
+    AutoReview("auto_review", "Auto Review", "Automated handler reviews"),
     ;
 
     companion object {

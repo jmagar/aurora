@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,6 +40,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import tv.tootie.aurora.components.AuroraButton
+import tv.tootie.aurora.components.AuroraButtonVariant
 import tv.tootie.aurora.components.AuroraStatusIndicator
 import tv.tootie.aurora.components.AuroraStatusTone
 import tv.tootie.aurora.theme.LocalAuroraColors
@@ -189,7 +190,10 @@ fun SessionsSidebar(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                FilledTonalButton(onClick = onNewSession) { Text("Start one") }
+                AuroraButton(
+                    onClick = onNewSession,
+                    variant = AuroraButtonVariant.Filled,
+                ) { Text("Start one") }
             }
         } else {
             LazyColumn(
