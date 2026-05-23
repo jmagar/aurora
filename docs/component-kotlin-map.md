@@ -2,6 +2,142 @@
 
 Cross-reference of every Aurora (shadcn/React) component and its nearest Jetpack Compose / Material 3 equivalent.
 
+## Current Registry → Android Counterparts
+
+Generated from the current `registry.json` inventory and `android/aurora/src/main/kotlin/tv/tootie/aurora/components`.
+
+Registry items mapped: 127. Most registry items have a named Kotlin counterpart; seven are intentionally primitive/library/native-flow patterns rather than standalone Aurora Kotlin files. `aurora-ai-elements` is an umbrella registry item whose child items are mapped separately.
+
+| Shadcn registry item | Type | Kotlin counterpart |
+|---|---|---|
+| `aurora-button` | ui | `AuroraButton.kt` |
+| `aurora-badge` | ui | `AuroraBadge.kt` |
+| `aurora-input` | ui | `AuroraTextField.kt` |
+| `aurora-select` | ui | `AuroraSelect.kt` |
+| `aurora-native-select` | ui | `AuroraSelect.kt` |
+| `aurora-textarea` | ui | `AuroraTextField.kt` |
+| `aurora-avatar` | ui | `AuroraAvatar.kt` |
+| `aurora-progress` | ui | `AuroraProgress.kt` |
+| `aurora-switch` | ui | `AuroraSwitch.kt` |
+| `aurora-tabs` | ui | `AuroraTabs.kt` |
+| `aurora-breadcrumb` | ui | `AuroraBreadcrumb.kt` |
+| `aurora-pagination` | ui | `AuroraPagination.kt` |
+| `aurora-dialog` | ui | `AuroraDialog.kt` |
+| `aurora-dropdown-menu` | ui | `AuroraDropdownMenu.kt` |
+| `aurora-tooltip` | ui | `AuroraTooltip.kt` |
+| `aurora-context-menu` | ui | `AuroraContextMenu.kt` |
+| `aurora-banner` | ui | `AuroraBanner.kt` |
+| `aurora-toast` | ui | `AuroraToast.kt` |
+| `aurora-empty-state` | ui | `AuroraEmptyState.kt` |
+| `aurora-skeleton` | ui | `AuroraAiShimmer.kt` |
+| `aurora-stat-card` | ui | `AuroraStatCard.kt` |
+| `aurora-data-table` | ui | `AuroraDataTable.kt` |
+| `aurora-filter-bar` | ui | `AuroraFilterBar.kt` |
+| `aurora-prompt-input` | block | `AuroraPromptInput.kt` |
+| `aurora-tool-calls` | block | `AuroraToolCallList.kt` |
+| `aurora-thinking` | block | `AuroraThinking.kt` |
+| `aurora-code-block` | block | `AuroraCodeBlock.kt` |
+| `aurora-terminal` | block | `AuroraTerminal.kt` |
+| `aurora-sidebar` | block | `AuroraSidebar.kt` |
+| `aurora-checkbox` | ui | `AuroraCheckbox.kt` |
+| `aurora-artifact` | block | `AuroraArtifact.kt` |
+| `aurora-permission-prompt` | block | `AuroraPermissionPrompt.kt` |
+| `aurora-ask-user-question` | block | `AuroraAskUserQuestion.kt` |
+| `aurora-permissions-dropdown` | block | `AuroraPermissionPrompt.kt` |
+| `aurora-file-tree` | block | `AuroraFileTree.kt` |
+| `aurora-code-editor` | block | `AuroraCodeEditor.kt` |
+| `aurora-web-preview` | block | `AuroraWebView.kt` |
+| `aurora-login` | block | `AuroraLoginScreen.kt` |
+| `aurora-oauth` | block | No direct Kotlin component; use Custom Tabs/AppAuth flow |
+| `aurora-error-page` | block | `AuroraErrorPage.kt` |
+| `aurora-attachment` | block | `AuroraAttachment.kt` |
+| `aurora-command-palette` | block | `AuroraCommandPalette.kt` |
+| `aurora-share-dialog` | block | `AuroraShareSheet.kt` |
+| `aurora-file-picker` | block | `AuroraFilePicker.kt` |
+| `aurora-field` | ui | `AuroraField.kt` |
+| `aurora-radio-group` | ui | `AuroraRadioGroup.kt` |
+| `aurora-slider` | ui | `AuroraSlider.kt` |
+| `aurora-number-input` | ui | `AuroraNumberInput.kt` |
+| `aurora-combobox` | ui | `AuroraCombobox.kt` |
+| `aurora-popover` | ui | `AuroraPopover.kt` |
+| `aurora-sheet` | ui | `AuroraSheet.kt` |
+| `aurora-callout` | ui | `AuroraCallout.kt` |
+| `aurora-status-indicator` | ui | `AuroraStatusIndicator.kt` |
+| `aurora-timeline` | ui | `AuroraTimeline.kt` |
+| `aurora-description-list` | ui | `AuroraDescriptionList.kt` |
+| `aurora-resizable-panels` | ui | `AuroraResizablePanels.kt` |
+| `aurora-listbox` | ui | `AuroraListbox.kt` |
+| `aurora-search-results` | ui | `AuroraListbox.kt` / LazyColumn pattern |
+| `aurora-kbd` | ui | `AuroraKbd.kt` |
+| `aurora-toolbar` | ui | `AuroraToolbar.kt` |
+| `aurora-separator` | ui | `AuroraSeparator.kt` |
+| `aurora-spinner` | ui | `AuroraSpinner.kt` |
+| `aurora-button-group` | ui | `AuroraButtonGroup.kt` |
+| `aurora-accordion` | ui | `AuroraCollapsible.kt` |
+| `aurora-ai-elements` | block | Umbrella registry item; map child registry items separately |
+| `aurora-marketplace` | block | `AuroraMarketplace.kt` |
+| `aurora-alert-dialog` | ui | `AuroraAlertDialog.kt` |
+| `aurora-aspect-ratio` | ui | No direct Kotlin component; use `Modifier.aspectRatio` |
+| `aurora-calendar` | ui | `AuroraCalendar.kt` |
+| `aurora-card` | ui | `AuroraCard.kt` |
+| `aurora-carousel` | ui | `AuroraCarousel.kt` |
+| `aurora-chart` | ui | No direct Kotlin component; use Vico or another chart library |
+| `aurora-collapsible` | ui | `AuroraCollapsible.kt` |
+| `aurora-date-picker` | ui | `AuroraCalendar.kt` |
+| `aurora-direction` | ui | No direct Kotlin component; use `LocalLayoutDirection` |
+| `aurora-hover-card` | ui | `AuroraPopover.kt` |
+| `aurora-input-group` | ui | `AuroraInputGroup.kt` |
+| `aurora-input-otp` | ui | `AuroraInputOtp.kt` |
+| `aurora-item` | ui | `AuroraItem.kt` |
+| `aurora-label` | ui | No direct Kotlin component; use `Text` with label typography |
+| `aurora-menubar` | ui | `AuroraMenubar.kt` |
+| `aurora-navigation-menu` | ui | `AuroraNavigationMenu.kt` |
+| `aurora-scroll-area` | ui | No direct Kotlin component; use Compose scroll modifiers / `LazyColumn` |
+| `aurora-table` | ui | `AuroraTable.kt` |
+| `aurora-toggle` | ui | `AuroraToggle.kt` |
+| `aurora-toggle-group` | ui | `AuroraButtonGroup.kt` |
+| `aurora-ai-attachments` | block | `AuroraAttachment.kt` |
+| `aurora-ai-chain-of-thought` | block | `AuroraChainOfThought.kt` |
+| `aurora-ai-checkpoint` | block | `AuroraCheckpoint.kt` |
+| `aurora-ai-confirmation` | block | `AuroraAlertDialog.kt` |
+| `aurora-ai-context` | block | `AuroraContextPanel.kt` |
+| `aurora-ai-conversation` | block | `AuroraConversation.kt` |
+| `aurora-ai-inline-citation` | block | `AuroraInlineCitation.kt` |
+| `aurora-ai-message` | block | `AuroraMessage.kt` |
+| `aurora-ai-model-selector` | block | `AuroraModelSelector.kt` |
+| `aurora-ai-plan` | block | `AuroraPlanList.kt` |
+| `aurora-ai-queue` | block | `AuroraQueueList.kt` |
+| `aurora-ai-reasoning` | block | `AuroraReasoning.kt` |
+| `aurora-ai-shimmer` | block | `AuroraAiShimmer.kt` |
+| `aurora-ai-sources` | block | `AuroraSources.kt` |
+| `aurora-ai-suggestion` | block | `AuroraSuggestionChip.kt` |
+| `aurora-ai-task` | block | `AuroraTaskItem.kt` |
+| `aurora-ai-tool` | block | `AuroraToolCallList.kt` |
+| `aurora-ai-agent` | block | `AuroraAgentRow.kt` |
+| `aurora-ai-commit` | block | `AuroraCommitRow.kt` |
+| `aurora-ai-environment-variables` | block | `AuroraEnvironmentVariables.kt` |
+| `aurora-ai-jsx-preview` | block | No direct Kotlin component; use `AuroraWebView.kt` for rendered preview |
+| `aurora-ai-package-info` | block | `AuroraPackageInfo.kt` |
+| `aurora-ai-sandbox` | block | `AuroraSandbox.kt` |
+| `aurora-ai-schema-display` | block | `AuroraSchemaDisplay.kt` |
+| `aurora-ai-snippet` | block | `AuroraSnippet.kt` |
+| `aurora-ai-stack-trace` | block | `AuroraStackTrace.kt` |
+| `aurora-ai-test-results` | block | `AuroraTestResults.kt` |
+| `aurora-ai-audio-player` | block | `AuroraAudioPlayer.kt` |
+| `aurora-ai-mic-selector` | block | `AuroraMicSelector.kt` |
+| `aurora-ai-persona` | block | `AuroraPersona.kt` |
+| `aurora-ai-speech-input` | block | `AuroraSpeechInput.kt` |
+| `aurora-ai-transcription` | block | `AuroraTranscription.kt` |
+| `aurora-ai-voice-selector` | block | `AuroraVoiceSelector.kt` |
+| `aurora-ai-canvas` | block | `AuroraCanvasView.kt` |
+| `aurora-ai-connection` | block | `AuroraConnection.kt` |
+| `aurora-ai-controls` | block | `AuroraControls.kt` |
+| `aurora-ai-edge` | block | `AuroraAiEdge.kt` |
+| `aurora-ai-node` | block | `AuroraCanvasView.kt` node model |
+| `aurora-ai-panel` | block | `AuroraAiPanel.kt` |
+| `aurora-ai-image` | block | `AuroraAiImage.kt` |
+| `aurora-ai-open-in-chat` | block | `AuroraOpenInChat.kt` |
+
 **Conventions used:**
 - `M3` = `androidx.compose.material3.*`
 - `Foundation` = `androidx.compose.foundation.*`
