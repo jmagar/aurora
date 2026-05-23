@@ -192,7 +192,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun tryResumeThread(threadId: String) {
-        repo.resumeThread(threadId)
+        val key = repo.resumeThread(threadId)
+        if (key == "-1") {
+            // Client not connected yet — connect() will retry once isReady fires
+            android.util.Log.w("ChatViewModel", "tryResumeThread: called before client connected for thread $threadId")
+        }
         // Response arrives as TurnEvent with originKind=RequestKind.ThreadResume
         // Handled in handle() — see ThreadResume branch in the null-method dispatch
     }
@@ -394,7 +398,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         val threadId = _state.value.threadId ?: return
         steerText.set(text)
         _state.update { it.copy(showSteerSheet = false) }
-        repo.steerTurn(threadId, text, turnId)
+        val key = repo.steerTurn(threadId, text, turnId)
+        if (key == "-1") {
+            android.util.Log.w("ChatViewModel", "steer: not connected — steer input will be lost if connection doesn't recover")
+        }
     }
 
     fun showSteer() = _state.update { it.copy(showSteerSheet = true) }
@@ -425,8 +432,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun handleSkills(event: CodexEvent.SkillList) {
         val skills = event.skills.mapNotNull { obj ->
-            val name = obj["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
-            val desc = obj["description"]?.jsonPrimitive?.content ?: ""
+            val name = obj["name"]?.jsonPrimitive?.content?.sanitizeForDisplay() ?: return@mapNotNull null
+            val desc = obj["description"]?.jsonPrimitive?.content?.sanitizeForDisplay() ?: ""
             val path = obj["path"]?.jsonPrimitive?.contentOrNull
             SkillItem(name, desc, path)
         }

@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.ui.chat.ChatScreen
+import tv.tootie.aurora.app.ui.chat.ChatViewModel
 import tv.tootie.aurora.app.ui.login.LoginScreen
 import tv.tootie.aurora.app.ui.settings.SettingsScreen
 import tv.tootie.aurora.app.ui.sidebar.SessionsSidebar
@@ -55,6 +56,16 @@ fun CodexNavHost() {
 
     val sidebarVm: SidebarViewModel = viewModel()
     val sidebarState by sidebarVm.state.collectAsStateWithLifecycle()
+
+    // Shared ChatViewModel so NavHost can observe threadId changes (e.g. after thread resume)
+    val chatVm: ChatViewModel = viewModel()
+    val chatState by chatVm.state.collectAsStateWithLifecycle()
+
+    // Keep SidebarViewModel in sync when ChatViewModel resumes/creates a thread.
+    // This covers the thread-resume path where NavHost never navigates to a specific session.
+    LaunchedEffect(chatState.threadId) {
+        chatState.threadId?.let { tid -> sidebarVm.setCurrentThread(tid) }
+    }
 
     // Trigger startup on first composition
     LaunchedEffect(Unit) { startupVm.start() }
@@ -139,6 +150,7 @@ fun CodexNavHost() {
                     threadId = threadId,
                     onOpenSidebar = { scope.launch { drawerState.open() } },
                     onBack = { nav.popBackStack() },
+                    vm = chatVm,  // share the NavHost-level ViewModel so threadId changes are observable
                 )
             }
             composable(Screen.Settings.route) {
