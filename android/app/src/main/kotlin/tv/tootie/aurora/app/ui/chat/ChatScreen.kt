@@ -370,9 +370,12 @@ fun ChatScreen(
                     query = mentionQuery,
                     onSelect = { item, structured ->
                         if (item.kind == MentionKind.Skill) {
+                            val skillName = item.trigger.removePrefix("@")
+                            // Fall back to skill name as path when no canonical path is provided
+                            // so the server can still locate the skill via its name identifier
                             pendingSkillInvocation = Pair(
-                                item.trigger.removePrefix("@"),
-                                item.path ?: "",
+                                skillName,
+                                item.path ?: skillName,
                             )
                             val lastAt = input.lastIndexOf('@')
                             input = if (lastAt >= 0) input.take(lastAt) else ""
