@@ -138,6 +138,22 @@ Registry items mapped: 127. Most registry items have a named Kotlin counterpart;
 | `aurora-ai-image` | block | `AuroraAiImage.kt` |
 | `aurora-ai-open-in-chat` | block | `AuroraOpenInChat.kt` |
 
+## Observed Alignment Notes
+
+### `aurora-button` → `AuroraButton.kt`
+
+Viewed web `aurora-button` in the local gallery at `/gallery/buttons` with `agent-browser`, then viewed the Android counterpart on emulator `emulator-5554` in the app settings screen. The web gallery shows `aurora`, `neutral`, `rose`, `ghost`, and `destructive` variants, three size tiers, disabled states, icon content, and async/loading examples. The Android screen currently renders `AuroraButton` instances such as `Save`, `Log out`, `Approval Policy`, and `Approvals Reviewer`.
+
+Required Kotlin alignment work:
+
+- Rename or expand `AuroraButtonVariant` to match the shadcn API: `Aurora`, `Neutral`, `Rose`, `Violet`, `Ghost`, `Destructive`, and optionally `Plain`. Keep compatibility aliases only if app call sites need migration time.
+- Replace the Material filled primary treatment with the web primary treatment: control-surface background, cyan mixed border, subtle top inset highlight, and cyan outer glow. The current Android `Save` button is a solid cyan filled pill, which is visually stronger than the web `aurora` variant.
+- Add a size model matching web sizes: `Sm`, `Default`, `Lg`, `Icon`, and optionally `Unstyled`, with fixed heights and radius equivalents for 7px, 8px, and 10px rather than relying on Material default pill shapes.
+- Add rose and violet variants using Aurora token colors. Rose is used for send/agent affordances on web; violet is used for AI/automation identity.
+- Add trailing icon and icon-only support. Current Kotlin has `leadingIcon` only, while web supports arbitrary icon content and has an explicit `icon` size.
+- Preserve loading state width and spinner tone by variant. The web implementation keeps layout stable during loading and maps spinner tone to cyan, rose, or muted.
+- Align disabled and pressed states with web behavior: disabled opacity around 45%, active press scale/tint feedback, and focus/selection as border plus glow rather than filled-state changes.
+
 **Conventions used:**
 - `M3` = `androidx.compose.material3.*`
 - `Foundation` = `androidx.compose.foundation.*`
