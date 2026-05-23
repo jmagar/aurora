@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import tv.tootie.aurora.app.codex.PendingAttachment
 import tv.tootie.aurora.components.AuroraAttachment
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Assistant
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -190,7 +191,14 @@ fun ChatScreen(
                         Icon(Icons.Default.Menu, contentDescription = "Open sidebar")
                     }
                 },
-                actions = { AuroraControls(onStop = if (s.thinking) vm::interrupt else null) },
+                actions = {
+                    if (s.thinking && s.activeTurnId != null) {
+                        IconButton(onClick = { vm.showSteer() }) {
+                            Icon(Icons.Default.Assistant, contentDescription = "Steer agent")
+                        }
+                    }
+                    AuroraControls(onStop = if (s.thinking) vm::interrupt else null)
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
             )
         },
@@ -498,6 +506,13 @@ fun ChatScreen(
                 cm?.setPrimaryClip(ClipData.newPlainText("message", target.content))
             },
             onDismiss = vm::dismissActions,
+        )
+    }
+
+    if (s.showSteerSheet) {
+        SteerInputSheet(
+            onSteer = { vm.steer(it) },
+            onDismiss = { vm.hideSteer() },
         )
     }
 }

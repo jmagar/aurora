@@ -96,6 +96,8 @@ data class ChatState(
     val granularPolicy: GranularPolicy = GranularPolicy(),
     val selectedReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
     val pendingApprovals: List<ToolApproval> = emptyList(),
+    val activeTurnId: String? = null,
+    val showSteerSheet: Boolean = false,
 )
 
 /**
@@ -129,6 +131,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     // unnecessary state emissions on every textDelta. Snapshot to ChatState.rawReasoning
     // only on turn/completed or when the UI opts in to display it.
     private val rawReasoningBuffer = StringBuilder()
+    private val steerText = java.util.concurrent.atomic.AtomicReference<String?>(null)
 
     private val _state = MutableStateFlow(ChatState())
     val state: StateFlow<ChatState> = _state.asStateFlow()
@@ -250,7 +253,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     fun interrupt() {
         val tid = _state.value.threadId ?: return
         repo.interrupt(tid)
-        _state.update { it.copy(thinking = false) }
+        _state.update { it.copy(thinking = false, activeTurnId = null) }
     }
 
     // Feature 1: Model + Reasoning selectors
@@ -372,6 +375,17 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun steer(text: String) {
+        val turnId = _state.value.activeTurnId ?: return
+        val threadId = _state.value.threadId ?: return
+        steerText.set(text)
+        _state.update { it.copy(showSteerSheet = false) }
+        repo.steerTurn(threadId, text, turnId)
+    }
+
+    fun showSteer() = _state.update { it.copy(showSteerSheet = true) }
+    fun hideSteer() = _state.update { it.copy(showSteerSheet = false) }
+
     // --- Flow handlers for typed repository events ---
 
     private fun handleModels(event: CodexEvent.ModelList) {
@@ -436,6 +450,21 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     return
                 }
 
+                if (event.originKind == RequestKind.Steer) {
+                    val text = steerText.getAndSet(null)
+                    if (msg.error != null) {
+                        // -32600 = turn already completed (race condition) — dismiss silently
+                        _state.update { it.copy(showSteerSheet = false) }
+                        return
+                    }
+                    // Steer accepted — append [steer] user message
+                    if (text != null) {
+                        val steerMsg = ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer] $text")
+                        _state.update { s -> s.copy(msgs = s.msgs + steerMsg) }
+                    }
+                    return
+                }
+
                 // thread/start response: result.thread.id
                 val tid = result
                     ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
@@ -477,11 +506,14 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             // Turn lifecycle
-            "turn/started" -> _state.update { it.copy(thinking = true, assistantId = null) }
+            "turn/started" -> {
+                val turnId = params?.get("turn")?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull ?: return
+                _state.update { it.copy(thinking = true, activeTurnId = turnId, assistantId = null) }
+            }
             "turn/completed" -> {
                 // Snapshot buffered raw reasoning to state once at turn end (avoids per-delta emissions)
                 val raw = rawReasoningBuffer.toString()
-                _state.update { it.copy(thinking = false, assistantId = null, rawReasoning = raw) }
+                _state.update { it.copy(thinking = false, assistantId = null, rawReasoning = raw, activeTurnId = null) }
             }
 
             // Item lifecycle — track command executions and other items as tool calls
