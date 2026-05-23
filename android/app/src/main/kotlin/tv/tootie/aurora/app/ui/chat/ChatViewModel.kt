@@ -101,6 +101,9 @@ data class ChatState(
     val pendingApprovals: List<ToolApproval> = emptyList(),
     val activeTurnId: String? = null,
     val showSteerSheet: Boolean = false,
+    // Bead nev6: thread name + cwd shown in top bar
+    val threadName: String? = null,
+    val cwd: String? = null,
 )
 
 /**
@@ -472,11 +475,13 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         // Any other error: leave savedThreadId intact (transient failure)
                         return
                     }
-                    // Success — extract threadId from result
-                    val tid = result
-                        ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
+                    // Success — extract threadId (and metadata) from result
+                    val threadObj = result?.get("thread")?.jsonObject
+                    val tid = threadObj?.get("id")?.jsonPrimitive?.content
                     if (tid != null) {
-                        _state.update { it.copy(threadId = tid, msgs = emptyList()) }
+                        val cwd = threadObj["cwd"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                        val name = threadObj["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                        _state.update { it.copy(threadId = tid, msgs = emptyList(), cwd = cwd, threadName = name) }
                     }
                     return
                 }
@@ -496,11 +501,13 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     return
                 }
 
-                // thread/start response: result.thread.id
-                val tid = result
-                    ?.get("thread")?.jsonObject?.get("id")?.jsonPrimitive?.content
+                // thread/start response: result.thread.id (+ optional cwd / name)
+                val threadObj = result?.get("thread")?.jsonObject
+                val tid = threadObj?.get("id")?.jsonPrimitive?.content
                 if (tid != null && _state.value.threadId == null) {
-                    _state.update { it.copy(threadId = tid) }
+                    val cwd = threadObj["cwd"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                    val name = threadObj["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                    _state.update { it.copy(threadId = tid, cwd = cwd ?: it.cwd, threadName = name ?: it.threadName) }
                     viewModelScope.launch { settings.saveThread(tid) }
                     pendingMsg?.let { text ->
                         val attachments = pendingAttachments
@@ -671,6 +678,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         if (it.id == hookId) it.copy(done = true) else it
                     })
                 }
+            }
+
+            // Bead nev6: thread name updated from server
+            "thread/name/updated" -> {
+                val name = params?.get("name")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                _state.update { it.copy(threadName = name) }
             }
 
             // Errors

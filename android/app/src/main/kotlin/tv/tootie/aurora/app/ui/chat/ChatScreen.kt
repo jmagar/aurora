@@ -38,18 +38,27 @@ import androidx.compose.material.icons.filled.Assistant
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.background
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import tv.tootie.aurora.theme.LocalAuroraColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -75,8 +84,6 @@ import tv.tootie.aurora.components.AuroraMessageData
 import tv.tootie.aurora.components.AuroraMessageRole
 import tv.tootie.aurora.components.AuroraPermissionPrompt
 import tv.tootie.aurora.components.AuroraPromptInput
-import tv.tootie.aurora.components.AuroraStatusIndicator
-import tv.tootie.aurora.components.AuroraStatusTone
 import tv.tootie.aurora.components.AuroraThinking
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -187,21 +194,34 @@ fun ChatScreen(
         }
     }
 
+    var approvalsSheetOpen by remember { mutableStateOf(false) }
+    val approvalsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val auroraColors = LocalAuroraColors.current
+    val haptics = LocalHapticFeedback.current
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    val statusTone = when {
-                        s.thinking -> AuroraStatusTone.Syncing
-                        s.connected -> AuroraStatusTone.Online
-                        else -> AuroraStatusTone.Offline
+                    // Bead nev6: primary title = threadName ?? "New chat", subtitle = cwd basename
+                    val threadName = s.threadName?.takeIf { it.isNotBlank() } ?: "New chat"
+                    val cwdSubtitle = s.cwd?.let { cwdBasename(it) }
+                    Column {
+                        Text(
+                            threadName,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                        )
+                        if (cwdSubtitle != null) {
+                            Text(
+                                cwdSubtitle,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                            )
+                        }
                     }
-                    val statusLabel = when {
-                        s.thinking -> "Thinking..."
-                        s.connected -> "Connected"
-                        else -> "Disconnected"
-                    }
-                    AuroraStatusIndicator(tone = statusTone, label = statusLabel)
                 },
                 navigationIcon = {
                     IconButton(onClick = onOpenSidebar) {
@@ -209,6 +229,32 @@ fun ChatScreen(
                     }
                 },
                 actions = {
+                    // Bead nev6: connection/thinking status as a small dot indicator
+                    val statusColor = when {
+                        s.thinking -> auroraColors.accentViolet
+                        s.connected -> auroraColors.success
+                        else -> auroraColors.error
+                    }
+                    val statusLabel = when {
+                        s.thinking -> "Thinking"
+                        s.connected -> "Connected"
+                        else -> "Disconnected"
+                    }
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .size(8.dp)
+                            .background(statusColor, CircleShape)
+                            .semantics { contentDescription = "Status: $statusLabel" },
+                    )
+                    // Bead ilkm: shield icon opens approvals bottom sheet
+                    IconButton(onClick = { approvalsSheetOpen = true }) {
+                        Icon(
+                            Icons.Default.Security,
+                            contentDescription = "Approval settings",
+                            tint = auroraColors.accentViolet,
+                        )
+                    }
                     if (s.thinking && s.activeTurnId != null) {
                         IconButton(onClick = { vm.showSteer() }) {
                             Icon(Icons.Default.Assistant, contentDescription = "Steer agent")
@@ -230,15 +276,7 @@ fun ChatScreen(
                 onEffortSelect = vm::selectEffort,
             )
 
-            // Approval policy + reviewer selector bar
-            ApprovalPolicyBar(
-                selectedPolicy = s.selectedApprovalPolicy,
-                granularPolicy = s.granularPolicy,
-                selectedReviewer = s.selectedReviewer,
-                onPolicySelect = vm::selectApprovalPolicy,
-                onGranularUpdate = vm::updateGranularPolicy,
-                onReviewerSelect = vm::selectReviewer,
-            )
+            // Bead ilkm: ApprovalPolicyBar moved into ModalBottomSheet (opened via shield icon)
 
             // Replace AuroraConversation with a LazyColumn supporting long-press gestures
             val listState = rememberLazyListState()
@@ -499,6 +537,8 @@ fun ChatScreen(
                     // Attach button — opens Photo Picker (no runtime permission on API 33+)
                     IconButton(
                         onClick = {
+                            // Bead 01xq: haptic on attach tap
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             imageLauncher.launch(
                                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                             )
@@ -559,6 +599,41 @@ fun ChatScreen(
             onDismiss = { vm.hideSteer() },
         )
     }
+
+    // Bead ilkm: ModalBottomSheet hosting the ApprovalPolicyBar (opened via shield icon)
+    if (approvalsSheetOpen) {
+        ModalBottomSheet(
+            onDismissRequest = { approvalsSheetOpen = false },
+            sheetState = approvalsSheetState,
+        ) {
+            Column(modifier = Modifier.padding(bottom = 16.dp)) {
+                Text(
+                    "Approvals",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                ApprovalPolicyBar(
+                    selectedPolicy = s.selectedApprovalPolicy,
+                    granularPolicy = s.granularPolicy,
+                    selectedReviewer = s.selectedReviewer,
+                    onPolicySelect = vm::selectApprovalPolicy,
+                    onGranularUpdate = vm::updateGranularPolicy,
+                    onReviewerSelect = vm::selectReviewer,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Bead nev6: derive a short subtitle from a cwd path — last 2 path segments
+ * joined by "/", e.g. "/home/user/project/src/main" -> "src/main".
+ */
+private fun cwdBasename(cwd: String): String? {
+    val parts = cwd.split('/').filter { it.isNotBlank() }
+    if (parts.isEmpty()) return null
+    val tail = parts.takeLast(2).joinToString("/")
+    return if (tail.length > 40) "…" + tail.takeLast(39) else tail
 }
 
 /**

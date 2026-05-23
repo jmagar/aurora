@@ -24,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -129,10 +131,13 @@ fun MentionSuggestionList(
 
 @Composable
 private fun MentionRow(item: MentionItem, onSelect: (MentionItem, SelectedItem) -> Unit) {
+    val haptics = LocalHapticFeedback.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(role = Role.Button) {
+                // Bead 01xq: light haptic on mention/command selection
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 val structured: SelectedItem = when (item.kind) {
                     MentionKind.Skill -> SelectedItem.Skill(
                         name = item.trigger.removePrefix("@"),
