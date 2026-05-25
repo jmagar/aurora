@@ -3,7 +3,6 @@ import { notFound, redirect } from "next/navigation"
 import dynamic from "next/dynamic"
 import { getRegistryMeta } from "@/lib/registry-meta"
 import { ComponentInstall } from "@/components/component-install"
-import { GalleryAlternatives } from "@/components/gallery-alternatives"
 
 const COMPONENT_DEMOS: Record<string, React.ComponentType> = {
   alert: dynamic(() => import("../demos/alert-demo")),
@@ -261,7 +260,6 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
           <ComponentInstall meta={meta} />
         </section>
       )}
-      <GalleryAlternatives section={section} title={title} />
     </div>
   )
 }
