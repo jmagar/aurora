@@ -294,6 +294,13 @@ export function PromptInput({
 
   const modelLabel = DEFAULT_MODELS.find((m) => m.id === model)?.label ?? model
 
+  function clearBlurTimer() {
+    if (blurTimerRef.current) {
+      clearTimeout(blurTimerRef.current)
+      blurTimerRef.current = null
+    }
+  }
+
   const containerBoxShadow = isFocused
     ? [
         "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)",
@@ -642,7 +649,10 @@ export function PromptInput({
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => setIsFocused(true)}
+          onFocus={() => {
+            clearBlurTimer()
+            setIsFocused(true)
+          }}
           onBlur={() => {
             setIsFocused(false)
             // Delay close so click events on popups register first
@@ -708,6 +718,7 @@ export function PromptInput({
           {/* Slash command trigger */}
           <ToolbarButton
             onClick={() => {
+              clearBlurTimer()
               insertTrigger(value, "/", onChange)
               setSlashQuery("")
               setSlashIndex(0)
@@ -725,6 +736,7 @@ export function PromptInput({
           {/* Mention trigger */}
           <ToolbarButton
             onClick={() => {
+              clearBlurTimer()
               insertTrigger(value, "@", onChange)
               setMentionQuery("")
               setMentionIndex(0)
@@ -744,7 +756,12 @@ export function PromptInput({
             type="button"
             variant="neutral"
             size="sm"
-            onClick={() => setShowModelMenu((o) => !o)}
+            onClick={() => {
+              clearBlurTimer()
+              setShowModelMenu((o) => !o)
+              setSlashOpen(false)
+              setMentionOpen(false)
+            }}
             aria-haspopup="listbox"
             aria-expanded={showModelMenu}
             style={{
