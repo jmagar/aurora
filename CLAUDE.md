@@ -52,18 +52,40 @@ bd close <id>         # Complete work
 
 ## Build & Test
 
-_Add your build and test commands here_
-
 ```bash
-# Example:
-# npm install
-# npm test
+pnpm install
+pnpm dev                  # Next dev server (Turbopack)
+pnpm build                # Production Next build
+pnpm lint                 # ESLint (flat config)
+pnpm registry:build       # Rebuild shadcn registry JSON → public/r/*.json
+pnpm tokens:generate      # Export Aurora tokens + run Android Style Dictionary
+pnpm audit:composition    # Check registry composition rules
 ```
 
 ## Architecture Overview
 
-_Add a brief overview of your project architecture_
+Aurora is a **shadcn-compatible component registry** (128 items) served as a
+Next.js 16 / React 19 / Tailwind v4 app at `aurora.tootie.tv`. The site doubles
+as a gallery and a live registry endpoint — `/` content-negotiates between
+browser (gallery) and shadcn CLI (registry JSON from `public/r/*.json`).
+
+- `app/` — Next.js App Router (gallery UI, root content negotiation)
+- `registry/aurora/styles/` — Aurora token layer (`aurora.css`, CSS custom properties)
+- `registry/aurora/ui/` — 64 shadcn UI primitives recolored to Aurora tokens
+- `registry/aurora/blocks/{ai,auth,feedback,files,navigation,workspace}` — composed product blocks
+- `android/` — Style Dictionary output for native parity
+- `scripts/` — `export-aurora-tokens.mjs`, `audit-composition.mjs`
+- `registry.json` — shadcn registry manifest (source of truth for the build)
 
 ## Conventions & Patterns
 
-_Add your project-specific conventions here_
+- **Dark-first.** Navy base `#07131c`; accents = Cyan (primary), Rose (secondary), Violet (AI).
+- **Always use Aurora tokens** via CSS custom properties — no raw Tailwind color defaults.
+- **Registry changes require rebuild.** After editing anything in `registry/aurora/**`,
+  run `pnpm registry:build` so `public/r/*.json` stays in sync.
+- **Token changes are cross-platform.** Edits to `registry/aurora/styles/aurora.css`
+  must be followed by `pnpm tokens:generate` to refresh Android outputs.
+- **Package manager: pnpm** (`packageManager: pnpm@10.33.2`). Do not introduce npm/yarn lockfiles.
+- **Non-interactive shell.** Use `cp -f`, `mv -f`, `rm -f`, `rm -rf` — see `AGENTS.md`.
+- **See also:** `AGENTS.md` (agent shell rules), `SKILL.md` (Aurora usage skill),
+  `docs/component-kotlin-map.md` (Kotlin/Compose parity matrix).

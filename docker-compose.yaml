@@ -23,7 +23,7 @@ services:
     command: sh -c "pnpm install --frozen-lockfile --config.confirmModulesPurge=false --store-dir /pnpm/store && pnpm dev --hostname 0.0.0.0"
     restart: unless-stopped
     networks:
-      - jakenet
+      - app
 
 volumes:
   aurora-node-modules:
@@ -31,6 +31,6 @@ volumes:
   aurora-pnpm-store:
 
 networks:
-  jakenet:
-    name: jakenet
+  app:
+    name: ${DOCKER_NETWORK:-aurora-design-system}
     external: true
