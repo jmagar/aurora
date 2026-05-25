@@ -73,7 +73,7 @@ function Combobox({ options, value, defaultValue, onValueChange, placeholder = "
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((next) => !next)}
-        className="flex h-9 w-full items-center justify-between gap-2 rounded-[var(--aurora-radius-1)] border px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0"
+        className="flex h-9 w-full items-center justify-between gap-2 rounded-[var(--aurora-radius-1)] border px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0"
         style={{
           background: "var(--aurora-control-surface)",
           borderColor: open ? "var(--aurora-accent-primary)" : "var(--aurora-border-strong)",

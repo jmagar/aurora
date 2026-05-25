@@ -124,7 +124,7 @@ export const FilterTag = React.forwardRef<HTMLSpanElement, FilterTagProps>(
             type="button"
             aria-label="Remove filter"
             onClick={onRemove}
-            className="ml-0.5 rounded-full p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-accent-primary)]"
+            className="ml-0.5 rounded-full p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-focus-ring)]"
             style={{ color: "var(--aurora-accent-strong)" }}
           >
             <svg
@@ -179,7 +179,7 @@ export const FilterTagRose = React.forwardRef<HTMLSpanElement, FilterTagProps>(
             type="button"
             aria-label="Remove filter"
             onClick={onRemove}
-            className="ml-0.5 rounded-full p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-accent-pink)]"
+            className="ml-0.5 rounded-full p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-focus-ring)]"
             style={{ color: "var(--aurora-accent-pink)" }}
           >
             <svg
@@ -246,7 +246,7 @@ export const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
             <Button variant="plain" size="unstyled"
               type="button"
               onClick={onClearAll}
-              className="transition-colors hover:text-[var(--aurora-error)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-accent-primary)]"
+              className="transition-colors hover:text-[var(--aurora-error)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-focus-ring)]"
               style={{
                 color: "var(--aurora-text-muted)",
                 fontFamily: "var(--aurora-font-sans)",

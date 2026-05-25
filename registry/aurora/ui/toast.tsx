@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { CheckCircle2, Info, TriangleAlert, X, XCircle } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
@@ -81,39 +82,12 @@ const DISMISS_COLOR: Record<ToastStatus, string> = {
 // ---------------------------------------------------------------------------
 
 function StatusIcon({ status }: { status: ToastStatus }) {
-  if (status === "success") {
-    return (
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-        <circle cx="9" cy="9" r="8" stroke="var(--aurora-success)" strokeWidth="1.5" />
-        <path d="M5.5 9l2.5 2.5 4.5-4.5" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    );
-  }
-  if (status === "error") {
-    return (
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-        <circle cx="9" cy="9" r="8" stroke="var(--aurora-error)" strokeWidth="1.5" />
-        <path d="M6 6l6 6M12 6l-6 6" stroke="var(--aurora-error)" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  if (status === "warn") {
-    return (
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-        <path d="M9 2L16.5 15H1.5L9 2z" stroke="var(--aurora-warn)" strokeWidth="1.5" strokeLinejoin="round" />
-        <path d="M9 7v3.5" stroke="var(--aurora-warn)" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="9" cy="12.5" r="0.75" fill="var(--aurora-warn)" />
-      </svg>
-    );
-  }
-  // info (default)
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <circle cx="9" cy="9" r="8" stroke="var(--aurora-info)" strokeWidth="1.5" />
-      <path d="M9 8v5" stroke="var(--aurora-info)" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="9" cy="5.5" r="0.75" fill="var(--aurora-info)" />
-    </svg>
-  );
+  const iconProps = { size: 18, strokeWidth: 1.65, "aria-hidden": true } as const;
+
+  if (status === "success") return <CheckCircle2 {...iconProps} color="var(--aurora-success)" />;
+  if (status === "error") return <XCircle {...iconProps} color="var(--aurora-error)" />;
+  if (status === "warn") return <TriangleAlert {...iconProps} color="var(--aurora-warn)" />;
+  return <Info {...iconProps} color="var(--aurora-info)" />;
 }
 
 // ---------------------------------------------------------------------------
@@ -196,18 +170,7 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
           style={{ color: dismissColor }}
           className="shrink-0 rounded p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1"
         >
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 13 13"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <path d="M1.5 1.5l10 10M11.5 1.5l-10 10" />
-          </svg>
+          <X size={13} strokeWidth={1.8} aria-hidden="true" />
         </Button>
       </div>
     );

@@ -93,7 +93,7 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
 
     const baseClass = cn(
       "inline-flex min-w-0 items-center gap-1 rounded-[8px] px-2 py-1 transition-colors duration-150",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
       variant === "default" && "aurora-text-control",
       variant === "mono" && "aurora-text-code",
       variant === "pill-trail" &&

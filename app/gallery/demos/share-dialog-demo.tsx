@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Share2 } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button";
 import {
   ShareDialog,
@@ -40,30 +41,12 @@ export function ShareDialogDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "24px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-        <Button variant="plain" size="unstyled"
+        <Button
+          variant="aurora"
+          size="lg"
           onClick={() => setOpen(true)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            height: "36px",
-            padding: "0 16px",
-            borderRadius: "10px",
-            background: "var(--aurora-accent-primary)",
-            border: "none",
-            color: "#051520",
-            fontFamily: "var(--aurora-font-sans)",
-            fontSize: "13px",
-            fontWeight: 700,
-            cursor: "pointer",
-          }}
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <circle cx="11" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.2" />
-            <circle cx="3" cy="7" r="1.5" stroke="currentColor" strokeWidth="1.2" />
-            <circle cx="11" cy="11" r="1.5" stroke="currentColor" strokeWidth="1.2" />
-            <path d="M4.4 6.3L9.6 3.7M4.4 7.7L9.6 10.3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-          </svg>
+          <Share2 size={15} strokeWidth={1.7} aria-hidden="true" />
           Share
         </Button>
         <span style={{ fontFamily: "var(--aurora-font-sans)", fontSize: "12px", color: "var(--aurora-text-muted)" }}>

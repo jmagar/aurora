@@ -99,7 +99,7 @@ export default function PromptInputDemo() {
                   justifyContent: "center",
                   fontSize: "11px",
                   fontWeight: 700,
-                  color: "#fff",
+                  color: "var(--aurora-accent-foreground)",
                 }}
               >
                 A
@@ -155,7 +155,7 @@ export default function PromptInputDemo() {
                     justifyContent: "center",
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#fff",
+                    color: "var(--aurora-accent-foreground)",
                   }}
                 >
                   A

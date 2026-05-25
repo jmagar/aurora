@@ -10,6 +10,7 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from "@/registry/aurora/ui/pagination";
+import { Badge, type BadgeTone } from "@/registry/aurora/ui/badge";
 
 // Mock data: 60 fake gateway rows (5 per page = 12 pages)
 
@@ -24,11 +25,11 @@ interface Gateway {
   status: GatewayStatus;
 }
 
-const STATUS_COLORS: Record<GatewayStatus, string> = {
-  healthy: "#7dd3c7",
-  degraded: "#c6a36b",
-  offline: "#c78490",
-  deploying: "#29b6f6",
+const STATUS_TONES: Record<GatewayStatus, BadgeTone> = {
+  healthy: "success",
+  degraded: "warn",
+  offline: "error",
+  deploying: "info",
 };
 
 const SUFFIXES = ["prod", "edge", "auth", "proxy", "mesh", "core", "internal", "public", "admin", "worker"];
@@ -150,10 +151,9 @@ function InteractivePaginatedTable() {
                 <td style={{ padding: "10px 14px", fontFamily: "var(--aurora-font-mono)", fontSize: 11, color: "var(--aurora-text-muted)" }}>{gw.region}</td>
                 <td style={{ padding: "10px 14px", fontFamily: "var(--aurora-font-mono)", fontSize: 11, color: "var(--aurora-text-muted)", textAlign: "right" }}>{gw.rps.toLocaleString()}</td>
                 <td style={{ padding: "10px 14px" }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, fontFamily: "var(--aurora-font-mono)", color: STATUS_COLORS[gw.status] }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: STATUS_COLORS[gw.status], flexShrink: 0 }} />
+                  <Badge tone={STATUS_TONES[gw.status]} dot>
                     {gw.status}
-                  </span>
+                  </Badge>
                 </td>
               </tr>
             ))}

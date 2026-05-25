@@ -43,8 +43,8 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       : "var(--aurora-shadow-medium)"
 
     const insetHighlight = elevated
-      ? "inset 0 1px 0 rgba(255,255,255,0.055)"
-      : "inset 0 1px 0 rgba(255,255,255,0.04)"
+      ? "var(--aurora-highlight-strong)"
+      : "var(--aurora-highlight-medium)"
 
     const accentGlow = accentToken
       ? `0 0 0 1px color-mix(in srgb, ${accentToken} 20%, transparent), 0 0 20px color-mix(in srgb, ${accentToken} 12%, transparent)`
@@ -76,7 +76,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
             /* focus ring */
             "focus-visible:outline-none",
             "focus-visible:ring-2",
-            "focus-visible:ring-[var(--aurora-accent-primary)]",
+            "focus-visible:ring-[var(--aurora-focus-ring)]",
             "focus-visible:ring-offset-0",
           ],
           className,

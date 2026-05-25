@@ -255,7 +255,7 @@ export function AiElementPage({ slug }: { slug: string }) {
                 borderRadius: "var(--aurora-radius-2)",
                 border: "1px solid var(--aurora-border-strong)",
                 background: "var(--aurora-panel-strong)",
-                boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)",
+                boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
               }
         }
       >

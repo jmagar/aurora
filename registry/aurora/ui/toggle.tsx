@@ -20,8 +20,8 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(({ className, pr
         : "linear-gradient(180deg, color-mix(in srgb, var(--aurora-panel-strong) 92%, transparent), var(--aurora-control-surface))",
       borderColor: pressed ? "color-mix(in srgb, var(--aurora-accent-primary) 48%, var(--aurora-border-strong))" : "var(--aurora-border-default)",
       boxShadow: pressed
-        ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 16%, transparent), var(--aurora-active-glow)"
-        : "inset 0 1px 0 rgba(255,255,255,0.04)",
+        ? "var(--aurora-highlight-strong), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 16%, transparent), var(--aurora-active-glow)"
+        : "var(--aurora-highlight-medium)",
       color: pressed ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
       fontFamily: "var(--aurora-font-sans)",
       fontSize: "var(--aurora-type-control)",

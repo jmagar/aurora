@@ -554,7 +554,7 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
       className={[
         "inline-flex items-center rounded-[4px] border px-1.5 py-0.5 align-baseline no-underline",
         "transition-colors hover:bg-[var(--aurora-hover-bg)]",
-        "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0",
+        "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
         className,
       ].filter(Boolean).join(" ")}
       style={{
@@ -591,7 +591,7 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(({ className, so
     href={source.href ?? "#"}
     className={[
       "grid gap-1 rounded-[7px] border px-3 py-2 no-underline transition-colors hover:bg-[var(--aurora-hover-bg)]",
-      "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0",
+      "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
       className,
     ].filter(Boolean).join(" ")}
     style={{

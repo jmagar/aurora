@@ -30,7 +30,7 @@ const card: React.CSSProperties = {
   border: "1px solid var(--aurora-border-default)",
   borderRadius: "var(--aurora-radius-2)",
   background: "var(--aurora-panel-medium)",
-  boxShadow: "var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)",
+  boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
 }
 
 const label: React.CSSProperties = {

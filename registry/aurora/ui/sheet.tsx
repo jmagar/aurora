@@ -34,7 +34,7 @@ const SheetContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.
         style={{
           background: "var(--aurora-panel-strong)",
           borderColor: "var(--aurora-border-strong)",
-          boxShadow: "0 28px 72px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05)",
+          boxShadow: "0 28px 72px rgba(0,0,0,0.42), var(--aurora-highlight-strong)",
           color: "var(--aurora-text-primary)",
           ...style,
         }}

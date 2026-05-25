@@ -240,7 +240,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
             "cursor-pointer",
             "transition-[box-shadow,filter,transform] duration-150",
             "hover:brightness-125",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)]",
           ],
           className
         )}

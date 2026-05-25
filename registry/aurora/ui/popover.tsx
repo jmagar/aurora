@@ -69,7 +69,7 @@ export const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentPro
           transform: align === "center" ? "translateX(-50%)" : undefined,
           background: "var(--aurora-panel-strong)",
           borderColor: "var(--aurora-border-strong)",
-          boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.04)",
+          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-medium)",
           color: "var(--aurora-text-primary)",
           ...style,
         }}

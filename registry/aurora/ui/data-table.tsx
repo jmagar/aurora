@@ -127,7 +127,7 @@ export function DataTable<TRow extends Record<string, unknown>>({
                     tabIndex={col.sortable ? 0 : undefined}
                     className={cn(
                       "px-4 py-2.5 text-left",
-                      col.sortable && "cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--aurora-accent-primary)]",
+                      col.sortable && "cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--aurora-focus-ring)]",
                       col.numeric && "text-right tabular-nums",
                     )}
                     style={{

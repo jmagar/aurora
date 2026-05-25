@@ -1,15 +1,17 @@
 "use client";
 
 import * as React from "react";
+import { AlertTriangle } from "lucide-react";
+import { Badge, type BadgeTone } from "@/registry/aurora/ui/badge";
 import { Button } from "@/registry/aurora/ui/button";
 
-type BadgeEntry = { label: string; bg: string; border: string; color: string; dot: string };
+type BadgeEntry = { label: string; tone: BadgeTone };
 
 const BADGES: BadgeEntry[] = [
-  { label: "Live", bg: "color-mix(in srgb, #7dd3c7 12%, transparent)", border: "color-mix(in srgb, #7dd3c7 30%, transparent)", color: "var(--aurora-success)", dot: "#7dd3c7" },
-  { label: "Degraded", bg: "color-mix(in srgb, #c6a36b 12%, transparent)", border: "color-mix(in srgb, #c6a36b 30%, transparent)", color: "var(--aurora-warn)", dot: "#c6a36b" },
-  { label: "Unreachable", bg: "color-mix(in srgb, #c78490 12%, transparent)", border: "color-mix(in srgb, #c78490 30%, transparent)", color: "var(--aurora-error)", dot: "#c78490" },
-  { label: "Default", bg: "color-mix(in srgb, #29b6f6 12%, transparent)", border: "color-mix(in srgb, #29b6f6 30%, transparent)", color: "var(--aurora-accent-primary)", dot: "#29b6f6" },
+  { label: "Live", tone: "success" },
+  { label: "Degraded", tone: "warn" },
+  { label: "Unreachable", tone: "error" },
+  { label: "Default", tone: "info" },
 ];
 
 type StatEntry = { label: string; value: string; delta: string; positive: boolean | undefined };
@@ -22,7 +24,7 @@ const STATS: StatEntry[] = [
 
 export default function LightmodeDemo() {
   return (
-    <div className="light" style={{ background: "#f0f6f8", borderRadius: 12, padding: 28, display: "flex", flexDirection: "column", gap: 24 }}>
+    <div className="light" style={{ background: "var(--aurora-page-bg)", borderRadius: "var(--aurora-radius-2)", padding: 28, display: "flex", flexDirection: "column", gap: 24 }}>
       <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--aurora-text-muted)", margin: 0 }}>
         Light mode surface — CSS var remap
       </p>
@@ -40,10 +42,9 @@ export default function LightmodeDemo() {
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
         <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginRight: 4 }}>Badges:</span>
         {BADGES.map((b) => (
-          <span key={b.label} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "2px 8px", borderRadius: 4, border: "1px solid " + b.border, background: b.bg, color: b.color, fontSize: 10, fontFamily: "var(--aurora-font-mono, monospace)", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            <span style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", backgroundColor: b.dot, boxShadow: "0 0 4px " + b.dot, flexShrink: 0 }} />
+          <Badge key={b.label} tone={b.tone} dot>
             {b.label}
-          </span>
+          </Badge>
         ))}
       </div>
 
@@ -53,8 +54,8 @@ export default function LightmodeDemo() {
         <Button variant="destructive">Delete</Button>
       </div>
 
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 16px", borderRadius: 8, border: "1px solid color-mix(in srgb, #c6a36b 30%, transparent)", background: "color-mix(in srgb, #c6a36b 10%, transparent)" }}>
-        <span style={{ fontSize: 15, lineHeight: 1, marginTop: 1, color: "var(--aurora-warn)" }} aria-hidden>&#9888;</span>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 16px", borderRadius: 8, border: "1px solid var(--aurora-warn-border)", background: "var(--aurora-warn-surface)" }}>
+        <AlertTriangle size={16} strokeWidth={1.7} style={{ marginTop: 1, color: "var(--aurora-warn)", flexShrink: 0 }} aria-hidden />
         <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <span style={{ fontSize: 13, fontWeight: 600, color: "var(--aurora-warn)" }}>Staging gateway degraded</span>
           <span style={{ fontSize: 12, color: "var(--aurora-text-muted)" }}>P99 latency has exceeded 200 ms for the past 5 minutes. Consider scaling the replica count or investigating upstream dependencies.</span>

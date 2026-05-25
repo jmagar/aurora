@@ -47,7 +47,7 @@ const AccordionItem = React.forwardRef<HTMLDetailsElement, AccordionItemProps>(
         {...props}
       >
         <summary
-          className="grid cursor-pointer list-none grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--aurora-hover-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0 [&::-webkit-details-marker]:hidden"
+          className="grid cursor-pointer list-none grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--aurora-hover-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0 [&::-webkit-details-marker]:hidden"
           style={{
             color: "var(--aurora-text-primary)",
             fontFamily: "var(--aurora-font-sans)",

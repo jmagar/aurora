@@ -12,7 +12,7 @@ const Kbd = React.forwardRef<HTMLElement, KbdProps>(({ className, style, ...prop
     style={{
       background: "var(--aurora-control-surface)",
       borderColor: "var(--aurora-border-strong)",
-      boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.045)",
+      boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.35), var(--aurora-highlight-medium)",
       color: "var(--aurora-text-muted)",
       fontFamily: "var(--aurora-font-mono)",
       fontSize: 11,

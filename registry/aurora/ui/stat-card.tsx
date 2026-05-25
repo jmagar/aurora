@@ -54,7 +54,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
           border: `1px solid var(--aurora-border-strong)`,
           borderRadius: 8,
           boxShadow:
-            "var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)",
+            "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
           ...style,
         }}
         {...rest}

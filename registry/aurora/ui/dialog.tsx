@@ -83,7 +83,7 @@ const DialogContent = React.forwardRef<
         backgroundColor: "var(--aurora-panel-strong)",
         borderColor: "var(--aurora-border-strong)",
         boxShadow:
-          "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.055)",
+          "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
         ...style,
       }}
       {...props}

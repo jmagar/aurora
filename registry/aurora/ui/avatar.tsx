@@ -108,7 +108,7 @@ const Avatar = React.forwardRef<
     const botStyle: React.CSSProperties = isBot
       ? {
           borderRadius: "var(--aurora-radius-1, 14px)",
-          border: "1.5px solid var(--aurora-border-strong, #24536c)",
+          border: "1.5px solid var(--aurora-border-strong)",
           boxShadow: [
             "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 20%, transparent)",
             "0 2px 12px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
@@ -180,7 +180,7 @@ const Avatar = React.forwardRef<
               "text-[var(--aurora-accent-primary)]",
             )}
             style={{
-              background: "var(--aurora-panel-strong, #13293a)",
+              background: "var(--aurora-panel-strong)",
               fontSize: dims.text,
               fontFamily: "var(--aurora-font-sans, Inter, sans-serif)",
             }}
@@ -202,7 +202,7 @@ const Avatar = React.forwardRef<
               height: dims.statusSize,
               borderRadius: "50%",
               backgroundColor: statusColorMap[status],
-              border: "2px solid var(--aurora-page-bg, #07131c)",
+              border: "2px solid var(--aurora-page-bg)",
               boxShadow: `0 0 4px ${statusColorMap[status]}`,
             }}
           />

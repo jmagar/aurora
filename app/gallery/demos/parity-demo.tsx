@@ -143,7 +143,7 @@ const tasks = [
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
+    <section className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5" style={{ background: "var(--aurora-panel-strong)", borderColor: "var(--aurora-border-strong)", boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)" }}>
       {children}
     </section>
   )

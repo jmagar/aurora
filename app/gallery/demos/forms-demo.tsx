@@ -20,6 +20,9 @@ const section: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: "24px",
+  width: "100%",
+  minWidth: 0,
+  boxSizing: "border-box",
   padding: "clamp(16px, 4vw, 32px)",
   background: "var(--aurora-panel-medium)",
   border: "1px solid var(--aurora-border-default)",
@@ -111,19 +114,7 @@ function ErrorInput(props: React.ComponentPropsWithoutRef<typeof Input>) {
   return (
     <Input
       {...props}
-      style={{ borderColor: "var(--aurora-error)", ...props.style }}
-      onFocus={(e) => {
-        e.currentTarget.style.boxShadow = [
-          "0 0 0 3px color-mix(in srgb, #c78490 22%, transparent)",
-          "0 0 0 1px color-mix(in srgb, #c78490 45%, transparent)",
-        ].join(", ")
-        props.onFocus?.(e)
-      }}
-      onBlur={(e) => {
-        e.currentTarget.style.boxShadow = "none"
-        e.currentTarget.style.borderColor = "var(--aurora-error)"
-        props.onBlur?.(e)
-      }}
+      state="error"
     />
   )
 }
@@ -282,7 +273,7 @@ export default function FormsDemo() {
           </div>
           <div>
             <label htmlFor="textarea-error" style={fieldLabel}>Environment config (YAML)</label>
-            <Textarea id="textarea-error" defaultValue={"gateway:\n  region: invalid-region\n  tier: enterprise\n  tls: true"} rows={5} style={{ borderColor: "var(--aurora-error)" }} />
+            <Textarea id="textarea-error" defaultValue={"gateway:\n  region: invalid-region\n  tier: enterprise\n  tls: true"} rows={5} state="error" />
             <span style={errorText}>Invalid region: &quot;invalid-region&quot; is not a supported deployment target</span>
           </div>
         </div>
@@ -354,41 +345,10 @@ export default function FormsDemo() {
           </div>
           <div style={divider} />
           <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
-            <Button variant="plain" size="unstyled"
-              style={{
-                height: "36px",
-                padding: "0 16px",
-                borderRadius: "14px",
-                border: "1px solid var(--aurora-border-strong)",
-                background: "linear-gradient(180deg, rgba(23,54,75,0.6) 0%, rgba(12,26,36,0.8) 100%)",
-                color: "var(--aurora-text-primary)",
-                fontSize: "14px",
-                fontWeight: 600,
-                fontFamily: "var(--aurora-font-sans)",
-                cursor: "pointer",
-              }}
-            >
+            <Button variant="neutral" size="lg">
               Cancel
             </Button>
-            <Button variant="plain" size="unstyled"
-              style={{
-                height: "36px",
-                padding: "0 16px",
-                borderRadius: "14px",
-                border: "1px solid transparent",
-                background: "linear-gradient(180deg, #4dc8fa 0%, #1da8e6 100%)",
-                color: "white",
-                fontSize: "14px",
-                fontWeight: 600,
-                fontFamily: "var(--aurora-font-sans)",
-                cursor: "pointer",
-                boxShadow: [
-                  "inset 0 1px 0 rgba(255,255,255,0.25)",
-                  "0 0 0 1px color-mix(in srgb, #29b6f6 40%, transparent)",
-                  "0 2px 12px color-mix(in srgb, #29b6f6 30%, transparent)",
-                ].join(", "),
-              }}
-            >
+            <Button variant="aurora" size="lg">
               Provision gateway
             </Button>
           </div>

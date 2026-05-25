@@ -28,7 +28,7 @@ export const Menubar = React.forwardRef<HTMLDivElement, MenubarProps>(
       style={{
         background: "var(--aurora-control-surface)",
         borderColor: "var(--aurora-border-default)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+        boxShadow: "var(--aurora-highlight-medium)",
         ...style,
       }}
       {...props}

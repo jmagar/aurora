@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export type InputState = "error" | "warn" | "success"
@@ -135,8 +136,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           "text-[var(--aurora-text-muted)] hover:text-[var(--aurora-text-primary)]",
           "hover:bg-[var(--aurora-hover-bg)]",
           "transition-colors duration-100",
-          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-accent-primary)]",
-          "text-[10px] leading-none select-none"
+          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-focus-ring)]",
+          "select-none"
         )}
         onMouseDown={(e) => {
           // Prevent input blur before we fire onChange
@@ -166,7 +167,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           }
         }}
       >
-        ×
+        <X size={10} strokeWidth={1.8} aria-hidden="true" />
       </button>
     ) : endAdornment
 
@@ -192,7 +193,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         : undefined
 
     return (
-      <div className="relative inline-flex w-full items-center">
+      <div className="relative inline-flex w-full min-w-0 items-center">
         {hasStart && (
           <span
             className="pointer-events-none absolute left-3 z-10 flex items-center text-[var(--aurora-text-muted)]"
@@ -209,7 +210,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           defaultValue={defaultValue}
           className={cn(
             // Layout — size-driven
-            "w-full py-2",
+            "w-full min-w-0 py-2",
             sizeClasses[size],
             // Typography
             "font-[var(--aurora-font-sans)]",
@@ -217,9 +218,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             "placeholder:text-[var(--aurora-text-muted)]",
             // Background & border
             "border",
-            tokens
-              ? `border-[${tokens.border}]`
-              : "border-[var(--aurora-border-strong)]",
+            "border-[var(--aurora-border-strong)]",
             // Rounded
             "rounded-[var(--aurora-radius-1)]",
             // Transitions

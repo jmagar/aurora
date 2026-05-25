@@ -156,7 +156,7 @@ function BannerElevated({
           type="button"
           aria-label="Dismiss"
           onClick={handleDismiss}
-          className="banner-elev-dismiss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:rounded-[4px]"
+          className="banner-elev-dismiss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:rounded-[4px]"
           style={{
             marginLeft: "auto",
             flexShrink: 0,

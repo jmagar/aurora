@@ -11,7 +11,7 @@ const buttonVariants = cva(
     "inline-flex items-center justify-center gap-2 whitespace-nowrap",
     "transition-all duration-150 ease-out",
     "disabled:pointer-events-none disabled:opacity-45",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-accent-primary)] focus-visible:ring-offset-0",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
     "select-none cursor-pointer",
     "active:scale-[0.97]",
   ].join(" "),
@@ -79,7 +79,7 @@ const VARIANT_CONFIG: Record<ButtonVariant, VariantConfig> = {
         "var(--aurora-control-surface)",
       ].join(", "),
       boxShadow: [
-        "inset 0 1px 0 rgba(255,255,255,0.055)",
+        "var(--aurora-highlight-strong)",
         "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 16%, transparent)",
         "0 0 10px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
       ].join(", "),
@@ -93,7 +93,7 @@ const VARIANT_CONFIG: Record<ButtonVariant, VariantConfig> = {
     style: {
       borderColor: "var(--aurora-border-strong)",
       background: "var(--aurora-control-surface)",
-      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045)",
+      boxShadow: "var(--aurora-highlight-medium)",
     },
     hoverClass:
       "hover:border-[var(--aurora-border-strong)] hover:bg-[var(--aurora-hover-bg)]",
@@ -109,7 +109,7 @@ const VARIANT_CONFIG: Record<ButtonVariant, VariantConfig> = {
         "var(--aurora-control-surface)",
       ].join(", "),
       boxShadow: [
-        "inset 0 1px 0 rgba(255,255,255,0.06)",
+        "var(--aurora-highlight-strong)",
         "0 0 0 1px color-mix(in srgb, var(--aurora-accent-pink) 18%, transparent)",
         "0 0 13px color-mix(in srgb, var(--aurora-accent-pink) 16%, transparent)",
       ].join(", "),
@@ -128,7 +128,7 @@ const VARIANT_CONFIG: Record<ButtonVariant, VariantConfig> = {
         "var(--aurora-control-surface)",
       ].join(", "),
       boxShadow: [
-        "inset 0 1px 0 rgba(255,255,255,0.055)",
+        "var(--aurora-highlight-strong)",
         "0 0 0 1px color-mix(in srgb, var(--aurora-accent-violet) 16%, transparent)",
         "0 0 10px color-mix(in srgb, var(--aurora-accent-violet) 12%, transparent)",
       ].join(", "),
@@ -152,7 +152,7 @@ const VARIANT_CONFIG: Record<ButtonVariant, VariantConfig> = {
         "var(--aurora-control-surface)",
       ].join(", "),
       boxShadow: [
-        "inset 0 1px 0 rgba(255,255,255,0.045)",
+        "var(--aurora-highlight-medium)",
         "0 0 0 1px color-mix(in srgb, var(--aurora-error) 14%, transparent)",
       ].join(", "),
     },

@@ -64,9 +64,9 @@ function LabeledSwitch({
         gap: "16px",
         padding: "12px 16px",
         borderRadius: "var(--aurora-radius-1)",
-        background: checked ? "color-mix(in srgb, #29b6f6 4%, transparent)" : "transparent",
+        background: checked ? "color-mix(in srgb, var(--aurora-accent-primary) 4%, transparent)" : "transparent",
         border: "1px solid",
-        borderColor: checked ? "color-mix(in srgb, #29b6f6 18%, transparent)" : "var(--aurora-border-default)",
+        borderColor: checked ? "color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)" : "var(--aurora-border-default)",
         transition: "background 200ms, border-color 200ms",
         opacity: disabled ? 0.5 : 1,
       }}

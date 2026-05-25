@@ -68,23 +68,10 @@ export function FilePickerDemo() {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-        <Button variant="plain" size="unstyled"
+        <Button
+          variant="aurora"
+          size="lg"
           onClick={() => setOpen(true)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            height: "36px",
-            padding: "0 16px",
-            borderRadius: "10px",
-            background: "var(--aurora-accent-primary)",
-            border: "none",
-            color: "#051520",
-            fontFamily: "var(--aurora-font-sans)",
-            fontSize: "13px",
-            fontWeight: 700,
-            cursor: "pointer",
-          }}
         >
           Open file picker
         </Button>

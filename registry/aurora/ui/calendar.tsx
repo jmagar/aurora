@@ -38,7 +38,7 @@ export function Calendar({ month, selected, onSelect, className, style, ...props
         background: "var(--aurora-panel-medium)",
         borderColor: "var(--aurora-border-default)",
         color: "var(--aurora-text-primary)",
-        boxShadow: "var(--aurora-shadow-medium), inset 0 1px 0 rgba(255,255,255,0.04)",
+        boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
         ...style,
       }}
       {...props}
