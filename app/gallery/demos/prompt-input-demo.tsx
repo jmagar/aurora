@@ -2,6 +2,10 @@
 
 import React, { useState } from "react"
 import { PromptInput, Attachment } from "@/registry/aurora/blocks/ai/prompt-input/prompt-input"
+import { Message, MessageAvatar, MessageContent } from "@/registry/aurora/blocks/ai/elements/message"
+import { Conversation } from "@/registry/aurora/blocks/ai/elements/conversation"
+import { InlineCitation } from "@/registry/aurora/blocks/ai/elements/inline-citation"
+import { Spinner } from "@/registry/aurora/ui/spinner"
 
 export default function PromptInputDemo() {
   const [value, setValue] = useState("")
@@ -53,144 +57,59 @@ export default function PromptInputDemo() {
       <div style={{ width: "100%", maxWidth: "560px" }}>
         <h2
           style={{
-            fontSize: "13px",
-            fontWeight: 600,
-            color: "var(--aurora-text-muted)",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
+            fontFamily: "var(--aurora-font-display)",
+            fontSize: "22px",
+            fontWeight: 760,
+            color: "var(--aurora-text-primary)",
+            letterSpacing: 0,
+            lineHeight: 1.15,
             marginBottom: "var(--aurora-space-4)",
           }}
         >
-          Prompt Input
+          Prompt input
         </h2>
 
         {/* Chat frame */}
         <div
           style={{
             width: "100%",
-            background: "var(--aurora-panel-medium)",
-            border: "1px solid var(--aurora-border-default)",
+            background: "var(--aurora-surface-raised)",
+            border: "1px solid var(--aurora-border-strong)",
             borderRadius: "var(--aurora-radius-2)",
             overflow: "hidden",
-            boxShadow: "var(--aurora-shadow-medium)",
+            boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
           }}
         >
-          {/* Mock chat messages */}
-          <div
+          <Conversation
             style={{
-              padding: "20px 20px 12px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
+              border: "none",
+              borderRadius: 0,
+              boxShadow: "none",
               minHeight: "160px",
+              maxHeight: "none",
+              background:
+                "radial-gradient(circle at 14% 0%, color-mix(in srgb, var(--aurora-accent-violet) 12%, transparent), transparent 36%), var(--aurora-panel-medium)",
             }}
           >
-            <div style={{ display: "flex", gap: "10px" }}>
-              <div
-                style={{
-                  width: "28px",
-                  height: "28px",
-                  borderRadius: "50%",
-                  background:
-                    "linear-gradient(135deg, var(--aurora-accent-violet) 0%, var(--aurora-accent-pink) 100%)",
-                  flexShrink: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: "var(--aurora-accent-foreground)",
-                }}
-              >
-                A
-              </div>
-              <div
-                style={{
-                  background: "var(--aurora-panel-strong)",
-                  border: "1px solid var(--aurora-border-default)",
-                  borderRadius: "var(--aurora-radius-1)",
-                  padding: "10px 14px",
-                  fontSize: "13px",
-                  color: "var(--aurora-text-primary)",
-                  lineHeight: "1.6",
-                  maxWidth: "80%",
-                }}
-              >
-                Hello! How can I help you today? Try typing{" "}
-                <code
-                  style={{
-                    fontFamily: "var(--aurora-font-mono)",
-                    color: "var(--aurora-accent-primary)",
-                    fontSize: "12px",
-                  }}
-                >
-                  /
-                </code>{" "}
-                for commands or{" "}
-                <code
-                  style={{
-                    fontFamily: "var(--aurora-font-mono)",
-                    color: "var(--aurora-accent-primary)",
-                    fontSize: "12px",
-                  }}
-                >
-                  @
-                </code>{" "}
-                to mention files.
-              </div>
-            </div>
+            <Message>
+              <MessageAvatar label="AI" />
+              <MessageContent>
+                I found three registry surfaces that need the same visual treatment. The prompt can attach files, mention context, and switch models without leaving the transcript <InlineCitation index={1} href="#" />.
+              </MessageContent>
+            </Message>
 
             {isStreaming && (
-              <div style={{ display: "flex", gap: "10px" }}>
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    background:
-                      "linear-gradient(135deg, var(--aurora-accent-violet) 0%, var(--aurora-accent-pink) 100%)",
-                    flexShrink: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    color: "var(--aurora-accent-foreground)",
-                  }}
-                >
-                  A
-                </div>
-                <div
-                  style={{
-                    background: "var(--aurora-panel-strong)",
-                    border: "1px solid var(--aurora-border-default)",
-                    borderRadius: "var(--aurora-radius-1)",
-                    padding: "10px 14px",
-                    fontSize: "13px",
-                    color: "var(--aurora-text-muted)",
-                    lineHeight: "1.6",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}
-                >
-                  <span
-                    style={{
-                      display: "inline-block",
-                      width: "8px",
-                      height: "8px",
-                      borderRadius: "50%",
-                      border: "1.5px solid var(--aurora-accent-violet)",
-                      borderTopColor: "transparent",
-                      animation: "spin 0.7s linear infinite",
-                    }}
-                  />
-                  Thinking…
-                  <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                </div>
-              </div>
+              <Message>
+                <MessageAvatar label="AI" />
+                <MessageContent>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--aurora-text-muted)" }}>
+                    <Spinner size="sm" />
+                    Generating…
+                  </span>
+                </MessageContent>
+              </Message>
             )}
-          </div>
+          </Conversation>
 
           {/* Input */}
           <div style={{ borderTop: "1px solid var(--aurora-border-default)" }}>
@@ -211,28 +130,6 @@ export default function PromptInputDemo() {
           </div>
         </div>
 
-        <p
-          style={{
-            marginTop: "10px",
-            fontSize: "11px",
-            color: "var(--aurora-text-muted)",
-            textAlign: "center",
-          }}
-        >
-          Violet marks AI and automation affordances. Semantic colors stay reserved for system meaning.
-        </p>
-        <p
-          style={{
-            marginTop: "6px",
-            fontSize: "11px",
-            color: "var(--aurora-text-muted)",
-            textAlign: "center",
-          }}
-        >
-          Type <code style={{ fontFamily: "var(--aurora-font-mono)" }}>/</code> for slash commands
-          or <code style={{ fontFamily: "var(--aurora-font-mono)" }}>@</code> to mention files.
-          Submit toggles streaming for 2s.
-        </p>
       </div>
     </div>
   )

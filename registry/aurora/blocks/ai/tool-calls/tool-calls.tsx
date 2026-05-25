@@ -110,9 +110,10 @@ function ToolIcon({ tool }: { tool: string }) {
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 7,
-        border: "1px solid var(--aurora-border-default)",
-        background: "var(--aurora-control-surface)",
+        border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 22%, var(--aurora-border-default))",
+        background: "color-mix(in srgb, var(--aurora-accent-primary) 8%, var(--aurora-control-surface))",
         color: "var(--aurora-accent-strong)",
+        boxShadow: "var(--aurora-highlight-medium)",
         flexShrink: 0,
       }}
     >
@@ -133,7 +134,7 @@ function DetailCard({
   return (
     <div
       style={{
-        background: "var(--aurora-control-surface)",
+        background: "var(--aurora-panel-strong)",
         border: "1px solid var(--aurora-border-default)",
         borderRadius: 12,
         padding: "9px 11px",
@@ -172,11 +173,12 @@ function ToolCallRow({ call }: { call: ToolCall }) {
         display: "inline-block",
         width: expanded ? "min(100%, 560px)" : "fit-content",
         maxWidth: "100%",
-        border: "1px solid var(--aurora-border-default)",
+        border: `1px solid ${expanded ? "var(--aurora-border-strong)" : "var(--aurora-border-default)"}`,
         borderRadius: expanded ? 16 : 999,
-        background: "var(--aurora-panel-strong)",
-        boxShadow: expanded ? "var(--aurora-highlight-medium)" : "none",
+        background: expanded ? "var(--aurora-surface-raised)" : "var(--aurora-panel-strong)",
+        boxShadow: expanded ? "var(--aurora-shadow-medium), var(--aurora-highlight-medium)" : "var(--aurora-highlight-medium)",
         overflow: "hidden",
+        transition: "border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease",
       }}
     >
       <Button

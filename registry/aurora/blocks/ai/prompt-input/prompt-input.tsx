@@ -1,6 +1,19 @@
 "use client"
 
 import * as React from "react"
+import {
+  AtSign,
+  ChevronDown,
+  Command,
+  FileText,
+  Folder,
+  Paperclip,
+  Send,
+  Sparkles,
+  Square,
+  UserRound,
+  X,
+} from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 
@@ -66,64 +79,11 @@ function insertTrigger(current: string, char: string, setter: (v: string) => voi
   setter(current + sep + char)
 }
 
-function AttachIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M13.5 7.5L7.5 13.5C6.1 14.9 3.9 14.9 2.5 13.5C1.1 12.1 1.1 9.9 2.5 8.5L9 2C9.9 1.1 11.3 1.1 12.2 2C13.1 2.9 13.1 4.3 12.2 5.2L6.2 11.2C5.8 11.6 5.2 11.6 4.8 11.2C4.4 10.8 4.4 10.2 4.8 9.8L10.5 4"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function SendIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-      <path
-        d="M7.5 1.5L7.5 13.5M7.5 1.5L3 6M7.5 1.5L12 6"
-        stroke="currentColor"
-        strokeWidth="1.85"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function StopIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-      <rect x="2" y="2" width="8" height="8" rx="1.5" fill="currentColor" />
-    </svg>
-  )
-}
-
 function FileIcon({ kind }: { kind: "file" | "agent" | "folder" }) {
-  if (kind === "folder") {
-    return (
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-        <path d="M1 3.5C1 2.67 1.67 2 2.5 2H5L6.5 3.5H10.5C11.33 3.5 12 4.17 12 5V9.5C12 10.33 11.33 11 10.5 11H2.5C1.67 11 1 10.33 1 9.5V3.5Z" stroke="currentColor" strokeWidth="1.2" fill="none" />
-      </svg>
-    )
-  }
-  if (kind === "agent") {
-    return (
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-        <circle cx="6.5" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M1.5 12C1.5 9.5 3.8 7.5 6.5 7.5C9.2 7.5 11.5 9.5 11.5 12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    )
-  }
-  return (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-      <path d="M2.5 1.5H7.5L10.5 4.5V11.5C10.5 12.05 10.05 12.5 9.5 12.5H2.5C1.95 12.5 1.5 12.05 1.5 11.5V2.5C1.5 1.95 1.95 1.5 2.5 1.5Z" stroke="currentColor" strokeWidth="1.2" fill="none" />
-      <path d="M7.5 1.5V4.5H10.5" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  )
+  const iconProps = { size: 13, strokeWidth: 1.6, "aria-hidden": true } as const
+  if (kind === "folder") return <Folder {...iconProps} />
+  if (kind === "agent") return <UserRound {...iconProps} />
+  return <FileText {...iconProps} />
 }
 
 export function PromptInput({
@@ -338,12 +298,13 @@ export function PromptInput({
     ? [
         "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)",
         "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
-        "var(--aurora-shadow-medium)",
+        "0 16px 36px color-mix(in srgb, var(--aurora-accent-primary) 9%, transparent)",
+        "var(--aurora-highlight-strong)",
       ].join(", ")
-    : "var(--aurora-shadow-medium)"
+    : "var(--aurora-shadow-medium), var(--aurora-highlight-medium)"
 
   return (
-    <div style={{ position: "relative", width: "100%" }}>
+    <div style={{ position: "relative", width: "100%", minWidth: 0 }}>
       {/* Popups */}
       {slashOpen && filteredSlash.length > 0 && (
         <div
@@ -354,10 +315,10 @@ export function PromptInput({
             bottom: "calc(100% + 6px)",
             left: 0,
             width: "280px",
-            background: "var(--aurora-panel-strong)",
+            background: "var(--aurora-surface-raised)",
             border: "1px solid var(--aurora-border-strong)",
             borderRadius: "var(--aurora-radius-2)",
-            boxShadow: "var(--aurora-shadow-strong)",
+            boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
             zIndex: 50,
             overflow: "hidden",
           }}
@@ -393,6 +354,7 @@ export function PromptInput({
                 cursor: "pointer",
                 textAlign: "left",
                 borderLeft: i === slashIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
+                boxShadow: i === slashIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-violet) 16%, transparent)" : "none",
               }}
             >
               <span
@@ -424,10 +386,10 @@ export function PromptInput({
             bottom: "calc(100% + 6px)",
             left: 0,
             width: "260px",
-            background: "var(--aurora-panel-strong)",
+            background: "var(--aurora-surface-raised)",
             border: "1px solid var(--aurora-border-strong)",
             borderRadius: "var(--aurora-radius-2)",
-            boxShadow: "var(--aurora-shadow-strong)",
+            boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
             zIndex: 50,
             overflow: "hidden",
           }}
@@ -463,6 +425,7 @@ export function PromptInput({
                 cursor: "pointer",
                 textAlign: "left",
                 borderLeft: i === mentionIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
+                boxShadow: i === mentionIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-violet) 16%, transparent)" : "none",
                 color: "var(--aurora-text-primary)",
               }}
             >
@@ -493,10 +456,10 @@ export function PromptInput({
             bottom: "calc(100% + 6px)",
             right: 0,
             width: "220px",
-            background: "var(--aurora-panel-strong)",
+            background: "var(--aurora-surface-raised)",
             border: "1px solid var(--aurora-border-strong)",
             borderRadius: "var(--aurora-radius-2)",
-            boxShadow: "var(--aurora-shadow-strong)",
+            boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
             zIndex: 50,
             overflow: "hidden",
             padding: "4px",
@@ -521,6 +484,7 @@ export function PromptInput({
                 fontSize: "13px",
                 color: m.id === model ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
                 fontWeight: m.id === model ? 600 : 400,
+                boxShadow: m.id === model ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)" : "none",
               }}
             >
               {m.label}
@@ -532,11 +496,11 @@ export function PromptInput({
       {/* Main container */}
       <div
         style={{
-          background: "var(--aurora-panel-medium)",
-          border: "1px solid var(--aurora-border-strong)",
+          background: "var(--aurora-surface-raised)",
+          border: `1px solid ${isFocused ? "color-mix(in srgb, var(--aurora-accent-primary) 48%, var(--aurora-border-strong))" : "var(--aurora-border-strong)"}`,
           borderRadius: "var(--aurora-radius-2)",
           boxShadow: containerBoxShadow,
-          transition: "box-shadow 0.15s ease-out",
+          transition: "border-color 0.15s ease-out, box-shadow 0.15s ease-out",
           overflow: "hidden",
         }}
       >
@@ -576,14 +540,13 @@ export function PromptInput({
                     border: "none",
                     cursor: "pointer",
                     padding: "0 0 0 2px",
-                    color: "var(--aurora-text-muted)",
-                    fontSize: "11px",
-                    lineHeight: 1,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  ×
+                  color: "var(--aurora-text-muted)",
+                  lineHeight: 1,
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                  <X size={12} strokeWidth={1.8} aria-hidden />
                 </Button>
               </span>
             ))}
@@ -659,14 +622,13 @@ export function PromptInput({
                       cursor: "pointer",
                       color: "var(--aurora-text-muted)",
                       padding: "0",
-                      fontSize: "13px",
                       lineHeight: 1,
                       flexShrink: 0,
                       display: "flex",
                       alignItems: "center",
                     }}
                   >
-                    ×
+                    <X size={12} strokeWidth={1.8} aria-hidden />
                   </Button>
                 )}
               </div>
@@ -722,7 +684,9 @@ export function PromptInput({
             display: "flex",
             alignItems: "center",
             gap: "6px",
-            padding: "6px 10px 8px",
+            padding: "8px 10px 10px",
+            borderTop: "1px solid color-mix(in srgb, var(--aurora-border-default) 72%, transparent)",
+            background: "color-mix(in srgb, var(--aurora-control-surface) 45%, transparent)",
           }}
         >
           {/* Attach */}
@@ -738,7 +702,7 @@ export function PromptInput({
             aria-label="Attach file"
             title="Attach file"
           >
-            <AttachIcon />
+            <Paperclip size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
 
           {/* Slash command trigger */}
@@ -754,9 +718,8 @@ export function PromptInput({
             }}
             aria-label="Slash commands"
             title="Commands"
-            style={{ fontFamily: "var(--aurora-font-mono)", fontSize: "13px", fontWeight: 600 }}
           >
-            /
+            <Command size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
 
           {/* Mention trigger */}
@@ -772,9 +735,8 @@ export function PromptInput({
             }}
             aria-label="Mention"
             title="Mention file or agent"
-            style={{ fontFamily: "var(--aurora-font-mono)", fontSize: "13px", fontWeight: 600 }}
           >
-            @
+            <AtSign size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
 
           {/* Model selector pill */}
@@ -789,12 +751,14 @@ export function PromptInput({
               gap: "5px",
               fontSize: "11px",
               marginLeft: "2px",
+              color: "var(--aurora-accent-violet)",
+              borderColor: "var(--aurora-accent-violet-border)",
+              background: "var(--aurora-accent-violet-surface)",
             }}
           >
+            <Sparkles size={13} strokeWidth={1.6} aria-hidden />
             {modelLabel}
-            <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true">
-              <path d="M2 3.5L4.5 6L7 3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <ChevronDown size={12} strokeWidth={1.65} aria-hidden />
           </Button>
 
           {/* Spacer */}
@@ -810,7 +774,7 @@ export function PromptInput({
               aria-label="Stop generation"
               style={{ flexShrink: 0 }}
             >
-              <StopIcon />
+              <Square size={12} strokeWidth={1.6} fill="currentColor" aria-hidden />
             </Button>
           )}
 
@@ -825,7 +789,7 @@ export function PromptInput({
               aria-label="Send message"
               style={{ flexShrink: 0 }}
             >
-              <SendIcon />
+              <Send size={15} strokeWidth={1.7} aria-hidden />
             </Button>
           )}
         </div>
@@ -849,6 +813,7 @@ function ToolbarButton({
         width: 28,
         height: 28,
         flexShrink: 0,
+        color: "var(--aurora-text-muted)",
         ...style,
       }}
     >

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Brain, ChevronDown, ListChecks, ListTree } from "lucide-react"
+import { Brain, CheckCircle2, ChevronDown, Circle, CircleAlert, ListChecks, ListTree } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // Aurora violet tokens represent AI/automation identity.
@@ -60,20 +60,10 @@ const KEYFRAMES = `
 // ---------------------------------------------------------------------------
 
 function StepIcon({ status }: { status: StepStatus }) {
+  const iconProps = { size: 16, strokeWidth: 1.6, "aria-hidden": true } as const
+
   if (status === "pending") {
-    return (
-      <span
-        style={{
-          display: "inline-block",
-          width: "16px",
-          height: "16px",
-          borderRadius: "50%",
-          border: "1.5px solid var(--aurora-border-strong)",
-          flexShrink: 0,
-        }}
-        aria-label="Pending"
-      />
-    )
+    return <Circle {...iconProps} aria-label="Pending" style={{ color: "var(--aurora-border-strong)", flexShrink: 0 }} />
   }
   if (status === "inprog") {
     return (
@@ -93,45 +83,9 @@ function StepIcon({ status }: { status: StepStatus }) {
     )
   }
   if (status === "error") {
-    return (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        aria-label="Error"
-        style={{ flexShrink: 0 }}
-      >
-        <circle cx="8" cy="8" r="7" stroke="var(--aurora-error)" strokeWidth="1.4" />
-        <path
-          d="M8 5V8.5M8 10.5V10.6"
-          stroke="var(--aurora-error)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    )
+    return <CircleAlert {...iconProps} aria-label="Error" style={{ color: "var(--aurora-error)", flexShrink: 0 }} />
   }
-  // done
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-label="Done"
-      style={{ flexShrink: 0 }}
-    >
-      <circle cx="8" cy="8" r="7" stroke="var(--aurora-success)" strokeWidth="1.4" />
-      <path
-        d="M5 8.5L7 10.5L11 6"
-        stroke="var(--aurora-success)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
+  return <CheckCircle2 {...iconProps} aria-label="Done" style={{ color: "var(--aurora-success)", flexShrink: 0 }} />
 }
 
 // ---------------------------------------------------------------------------
@@ -213,13 +167,13 @@ function ThinkingBlock({
         display: open ? "block" : "inline-block",
         width: open ? "100%" : "max-content",
         minWidth: 0,
-        border: open ? `1px solid var(--aurora-border-default)` : `1px solid ${borderLeftColor}`,
+        border: open ? `1px solid var(--aurora-border-strong)` : `1px solid ${borderLeftColor}`,
         borderLeft: open ? `3px solid ${borderLeftColor}` : `1px solid ${borderLeftColor}`,
         borderRadius: open ? "var(--aurora-radius-2)" : "999px",
-        background: open ? "var(--aurora-panel-medium)" : "var(--aurora-panel-strong)",
-        boxShadow: open ? "var(--aurora-highlight-medium)" : "none",
+        background: open ? "var(--aurora-surface-raised)" : "var(--aurora-panel-strong)",
+        boxShadow: open ? "var(--aurora-shadow-medium), var(--aurora-highlight-medium)" : "var(--aurora-highlight-medium)",
         animation: isStreaming ? "aurora-border-pulse 1.8s ease-in-out infinite" : "none",
-        transition: "border-color 0.3s, width 0.2s ease",
+        transition: "border-color 0.3s, width 0.2s ease, box-shadow 0.2s ease",
       }}
     >
       <Button variant="plain" size="unstyled"
@@ -330,7 +284,7 @@ function CotBlock({
         {open && (
           <>
             <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
-              Chain of Thought
+              Chain of thought
               {steps.length > 0 && ` · ${steps.length} steps`}
             </span>
             <ChevronDown
@@ -511,6 +465,7 @@ function PlanBlock({
                 gap: "10px",
                 padding: "6px 8px",
                 borderRadius: "10px",
+                border: step.status === "inprog" || step.status === "error" ? "1px solid var(--aurora-border-default)" : "1px solid transparent",
                 background:
                   step.status === "inprog" || step.status === "error"
                     ? PLAN_ROW_BACKGROUND[step.status]
@@ -579,11 +534,11 @@ export function Thinking({
       {type !== "thinking" && (
         <div
           style={{
-            background: "var(--aurora-panel-medium)",
-            border: "1px solid var(--aurora-border-default)",
+            background: "var(--aurora-surface-raised)",
+            border: "1px solid var(--aurora-border-strong)",
             borderRadius: "var(--aurora-radius-2)",
             overflow: "hidden",
-            boxShadow: "var(--aurora-highlight-medium)",
+            boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
             display: "inline-block",
             width: "fit-content",
             maxWidth: "min(100%, 560px)",
