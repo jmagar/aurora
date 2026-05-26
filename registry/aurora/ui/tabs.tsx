@@ -19,7 +19,7 @@ const TabsList = React.forwardRef<
 >(({ className, style, ...props }, ref) => (
   <TabsPrimitive.List
     ref={ref}
-    className={cn("flex items-end gap-1 border-b", className)}
+    className={cn("flex max-w-full items-end gap-1 overflow-x-auto overflow-y-hidden border-b", className)}
     style={{ borderColor: "var(--aurora-border-default)", ...style }}
     {...props}
   />
@@ -94,7 +94,7 @@ const PillGroup = React.forwardRef<
   <TabsPrimitive.Root ref={ref} {...props}>
     <TabsPrimitive.List
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border p-1",
+        "inline-flex max-w-full items-center gap-1 overflow-x-auto overflow-y-hidden rounded-full border p-1",
         className
       )}
       style={{

@@ -166,11 +166,12 @@ function DetailCard({
 function ToolCallRow({ call }: { call: ToolCall }) {
   const [expanded, setExpanded] = React.useState(false)
   const duration = durationMs(call)
+  const summary = call.tool.replace(/[._-]+/g, " ")
 
   return (
     <div
       style={{
-        display: "inline-block",
+        display: "block",
         width: expanded ? "min(100%, 560px)" : "fit-content",
         maxWidth: "100%",
         border: `1px solid ${expanded ? "var(--aurora-border-strong)" : "var(--aurora-border-default)"}`,
@@ -193,7 +194,8 @@ function ToolCallRow({ call }: { call: ToolCall }) {
           gap: 7,
           width: expanded ? "100%" : "auto",
           maxWidth: "100%",
-          padding: expanded ? "8px 12px" : "7px 9px",
+          minWidth: expanded ? undefined : "min(100%, 188px)",
+          padding: expanded ? "8px 12px" : "7px 10px",
           background: "none",
           border: "none",
           cursor: "pointer",
@@ -202,33 +204,32 @@ function ToolCallRow({ call }: { call: ToolCall }) {
       >
         <StatusDot status={call.status} />
         <ToolIcon tool={call.tool} />
-        {expanded && (
-          <>
-            <span
-              style={{
-                color: "var(--aurora-text-primary)",
-                fontSize: 12,
-                fontWeight: 600,
-                lineHeight: 1.35,
-                fontFamily: "var(--aurora-font-mono)",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {call.tool}
-            </span>
-            {duration !== null && (
-              <span
-                style={{
-                  color: "var(--aurora-text-muted)",
-                  fontSize: 11,
-                  fontVariantNumeric: "tabular-nums",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {formatDuration(duration)}
-              </span>
-            )}
-          </>
+        <span
+          style={{
+            minWidth: 0,
+            color: expanded ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
+            fontSize: 12,
+            fontWeight: expanded ? 650 : 600,
+            lineHeight: 1.35,
+            fontFamily: "var(--aurora-font-mono)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {expanded ? call.tool : summary}
+        </span>
+        {expanded && duration !== null && (
+          <span
+            style={{
+              color: "var(--aurora-text-muted)",
+              fontSize: 11,
+              fontVariantNumeric: "tabular-nums",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {formatDuration(duration)}
+          </span>
         )}
         <span
           style={

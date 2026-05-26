@@ -102,6 +102,7 @@ function GatewayRow({ gw, last }: { gw: (typeof GATEWAYS)[0]; last: boolean }) {
       style={{
         display: "flex",
         alignItems: "center",
+        flexWrap: "wrap",
         gap: 12,
         padding: "11px 20px",
         borderBottom: last ? "none" : "1px solid var(--aurora-border-default)",
@@ -146,7 +147,7 @@ function GatewayRow({ gw, last }: { gw: (typeof GATEWAYS)[0]; last: boolean }) {
 
 export default function TabsDemo() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 40, width: "100%", minWidth: 0 }}>
       <div>
         <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
           Navigation
@@ -225,6 +226,7 @@ export default function TabsDemo() {
             borderRadius: 18,
             overflow: "hidden",
             background: "var(--aurora-panel-medium)",
+            minWidth: 0,
           }}
         >
           <Tabs defaultValue="all">
@@ -233,6 +235,8 @@ export default function TabsDemo() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 10,
                 padding: "0 20px",
                 borderBottom: "1px solid var(--aurora-border-default)",
               }}

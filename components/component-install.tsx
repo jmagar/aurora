@@ -103,6 +103,7 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
       style={{
         display: "grid",
         gap: "16px",
+        minWidth: 0,
         padding: "20px 24px",
         borderRadius: "var(--aurora-radius-2)",
         border: "1px solid var(--aurora-border-default)",
@@ -114,14 +115,14 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
       {meta.description && (
         <p
           className="aurora-text-body"
-          style={{ margin: 0, color: "var(--aurora-text-secondary)", maxWidth: 680 }}
+          style={{ margin: 0, color: "var(--aurora-text-muted)", maxWidth: 680, minWidth: 0 }}
         >
           {meta.description}
         </p>
       )}
 
       {/* Install command */}
-      <div>
+      <div style={{ minWidth: 0 }}>
         <p
           style={{
             margin: "0 0 8px",
@@ -140,6 +141,9 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
             display: "flex",
             alignItems: "center",
             gap: "8px",
+            minWidth: 0,
+            maxWidth: "100%",
+            overflow: "hidden",
             padding: "10px 14px",
             borderRadius: "var(--aurora-radius-1)",
             border: "1px solid var(--aurora-border-strong)",
@@ -150,6 +154,7 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
             style={{
               flex: 1,
               minWidth: 0,
+              display: "block",
               fontSize: "12.5px",
               fontFamily: "var(--aurora-font-mono)",
               color: "var(--aurora-text-primary)",
@@ -171,6 +176,7 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
             display: "flex",
             flexWrap: "wrap",
             gap: "16px",
+            minWidth: 0,
             paddingTop: "4px",
             borderTop: "1px solid var(--aurora-border-default)",
           }}
@@ -230,7 +236,7 @@ export function ComponentInstall({ meta, className }: ComponentInstallProps) {
                   style={{
                     fontSize: "11.5px",
                     fontFamily: "var(--aurora-font-mono)",
-                    color: "var(--aurora-text-secondary)",
+                    color: "var(--aurora-text-muted)",
                     background: "color-mix(in srgb, var(--aurora-control-surface) 70%, transparent)",
                     border: "1px solid var(--aurora-border-default)",
                     borderRadius: "5px",
