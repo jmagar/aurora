@@ -29,6 +29,10 @@ export interface LabbyWordmarkProps extends React.HTMLAttributes<HTMLSpanElement
   fontSize?: number
 }
 
+export interface AuroraWordmarkProps extends React.HTMLAttributes<HTMLSpanElement> {
+  fontSize?: number
+}
+
 export function LabbyWordmark({ fontSize = 30, style, ...props }: LabbyWordmarkProps) {
   return (
     <span
@@ -53,15 +57,41 @@ export function LabbyWordmark({ fontSize = 30, style, ...props }: LabbyWordmarkP
   )
 }
 
+export function AuroraWordmark({ fontSize = 30, style, ...props }: AuroraWordmarkProps) {
+  return (
+    <span
+      aria-label="Aurora"
+      style={{
+        display: "inline-flex",
+        alignItems: "baseline",
+        fontFamily: "var(--aurora-font-display, Inter, sans-serif)",
+        fontSize,
+        fontWeight: 800,
+        letterSpacing: 0,
+        lineHeight: 0.96,
+        userSelect: "none",
+        color: "var(--aurora-text-primary)",
+        ...style,
+      }}
+      {...props}
+    >
+      <span>Aur</span>
+      <span style={{ color: "var(--aurora-accent-primary)" }}>ora</span>
+    </span>
+  )
+}
+
 export interface LabbyLockupProps extends React.HTMLAttributes<HTMLDivElement> {
   markSize?: number
   wordmarkSize?: number
+  wordmark?: React.ReactNode
   subtitle?: React.ReactNode
 }
 
 export function LabbyLockup({
   markSize = 34,
   wordmarkSize = 28,
+  wordmark,
   subtitle = "Aurora DS",
   style,
   ...props
@@ -78,7 +108,7 @@ export function LabbyLockup({
     >
       <LabbyMark size={markSize} />
       <div style={{ display: "grid", gap: 2 }}>
-        <LabbyWordmark fontSize={wordmarkSize} />
+        {wordmark ?? <LabbyWordmark fontSize={wordmarkSize} />}
         <span
           className="aurora-text-eyebrow"
           style={{

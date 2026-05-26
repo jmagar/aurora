@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X, Sun, Moon } from "lucide-react"
-import { LabbyLockup } from "@/components/labby-brand"
+import { AuroraWordmark, LabbyLockup } from "@/components/labby-brand"
 
 const NAV = [
   { group: "Foundations", items: [
@@ -570,7 +570,11 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
       >
         <div className="aurora-gallery-nav-header">
           <Link href="/gallery/buttons" className="aurora-gallery-brand-link" aria-label="Aurora Design System home">
-            <LabbyLockup markSize={28} wordmarkSize={17} />
+            <LabbyLockup
+              markSize={28}
+              wordmark={<AuroraWordmark fontSize={17} />}
+              subtitle="Design System"
+            />
           </Link>
 
           {/* Current page name — mobile only */}
