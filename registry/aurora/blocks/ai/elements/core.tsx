@@ -908,7 +908,7 @@ Shimmer.displayName = "Shimmer"
 
 const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
   ({ className, style, options, children, onClick, disabled, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-2", className].filter(Boolean).join(" ")} style={style} {...props}>
+    <div ref={ref} className={["grid gap-2", className].filter(Boolean).join(" ")} style={{ width: "100%", minWidth: 0, ...style }} {...props}>
       {(options ?? [{ id: "default", title: typeof children === "string" ? children : "Suggested next step" }]).map((option) => (
         <Button
           key={option.id}
@@ -916,18 +916,18 @@ const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
           variant="neutral"
           disabled={disabled}
           onClick={onClick}
-          className="h-auto justify-start rounded-[10px] border px-3 py-3 text-left"
+          className="h-auto min-w-0 justify-start whitespace-normal rounded-[10px] border px-3 py-3 text-left"
           style={{
             borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 18%, var(--aurora-border-default))",
             background: "color-mix(in srgb, var(--aurora-accent-primary) 4%, var(--aurora-panel-medium))",
           }}
         >
-          <span className="grid gap-1">
-            <span className="flex items-center gap-2">
+          <span className="grid min-w-0 gap-1">
+            <span className="flex min-w-0 flex-wrap items-center gap-2">
               <span className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{option.title}</span>
               {option.badge ? <Badge>{option.badge}</Badge> : null}
             </span>
-            {option.description ? <span className="aurora-text-meta">{option.description}</span> : null}
+            {option.description ? <span className="aurora-text-meta" style={{ minWidth: 0 }}>{option.description}</span> : null}
           </span>
         </Button>
       ))}

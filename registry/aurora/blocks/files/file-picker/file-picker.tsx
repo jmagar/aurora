@@ -583,12 +583,15 @@ const KEYFRAMES_FP = `
 
   .aurora-file-picker-sidebar {
     width: 100% !important;
-    max-height: 104px !important;
+    max-height: 126px !important;
     border-right: 0 !important;
     border-bottom: 1px solid var(--aurora-border-default) !important;
     flex-direction: row !important;
+    flex-wrap: wrap !important;
     align-items: center !important;
-    overflow-x: auto !important;
+    gap: 6px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
   }
 
   .aurora-file-picker-sidebar-title,
@@ -597,8 +600,9 @@ const KEYFRAMES_FP = `
   }
 
   .aurora-file-picker-sidebar button {
-    width: auto !important;
-    flex-shrink: 0 !important;
+    flex: 1 1 calc(33.333% - 6px) !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
   }
 
   .aurora-file-picker-main {
@@ -751,6 +755,7 @@ export function FilePicker({
           position: "fixed",
           top: "50%",
           left: "50%",
+          transform: "translate(-50%, -50%)",
           zIndex: 201,
           width: "780px",
           maxWidth: "calc(100vw - 32px)",
