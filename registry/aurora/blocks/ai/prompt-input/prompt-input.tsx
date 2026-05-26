@@ -86,6 +86,12 @@ function FileIcon({ kind }: { kind: "file" | "agent" | "folder" }) {
   return <FileText {...iconProps} />
 }
 
+function getMentionKindLabel(item: MentionItem) {
+  const label = item.label.toLowerCase()
+  const kind = item.kind.toLowerCase()
+  return label.includes(kind) ? null : item.kind
+}
+
 export function PromptInput({
   value,
   onChange,
@@ -414,50 +420,58 @@ export function PromptInput({
           >
             Mention
           </div>
-          {filteredMentions.map((item, i) => (
-            <Button variant="plain" size="unstyled"
-              key={item.id}
-              role="option"
-              aria-selected={i === mentionIndex}
-              onClick={() => insertMention(item)}
-              onMouseEnter={() => setMentionIndex(i)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                width: "100%",
-                padding: "7px 12px",
-                background: i === mentionIndex ? "var(--aurora-hover-bg)" : "transparent",
-                border: "none",
-                cursor: "pointer",
-                textAlign: "left",
-                borderLeft: i === mentionIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
-                boxShadow: i === mentionIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-violet) 16%, transparent)" : "none",
-                color: "var(--aurora-text-primary)",
-              }}
-            >
-              <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
-                <FileIcon kind={item.kind} />
-              </span>
-              <span style={{ fontSize: "13px" }}>{item.label}</span>
-              <span
+          {filteredMentions.map((item, i) => {
+            const kindLabel = getMentionKindLabel(item)
+
+            return (
+              <Button variant="plain" size="unstyled"
+                key={item.id}
+                role="option"
+                aria-selected={i === mentionIndex}
+                onClick={() => insertMention(item)}
+                onMouseEnter={() => setMentionIndex(i)}
                 style={{
-                  marginLeft: "auto",
-                  fontSize: "10px",
-                  color: "var(--aurora-text-muted)",
-                  textTransform: "capitalize",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  width: "100%",
+                  padding: "7px 12px",
+                  background: i === mentionIndex ? "var(--aurora-hover-bg)" : "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  borderLeft: i === mentionIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
+                  boxShadow: i === mentionIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-violet) 16%, transparent)" : "none",
+                  color: "var(--aurora-text-primary)",
                 }}
               >
-                {item.kind}
-              </span>
-            </Button>
-          ))}
+                <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
+                  <FileIcon kind={item.kind} />
+                </span>
+                <span style={{ fontSize: "13px" }}>{item.label}</span>
+                {kindLabel && (
+                  <span
+                    style={{
+                      marginLeft: "auto",
+                      fontSize: "10px",
+                      color: "var(--aurora-text-muted)",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {kindLabel}
+                  </span>
+                )}
+              </Button>
+            )
+          })}
         </div>
       )}
 
       {/* Model selector dropdown */}
       {showModelMenu && (
         <div
+          role="listbox"
+          aria-label="Models"
           style={{
             position: "absolute",
             bottom: "calc(100% + 6px)",
@@ -475,6 +489,8 @@ export function PromptInput({
           {DEFAULT_MODELS.map((m) => (
             <Button variant="plain" size="unstyled"
               key={m.id}
+              role="option"
+              aria-selected={m.id === model}
               onClick={() => {
                 onModelChange?.(m.id)
                 setShowModelMenu(false)
