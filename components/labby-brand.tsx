@@ -75,8 +75,8 @@ export function AuroraWordmark({ fontSize = 30, style, ...props }: AuroraWordmar
       }}
       {...props}
     >
-      <span>Aur</span>
-      <span style={{ color: "var(--aurora-accent-primary)" }}>ora</span>
+      <span aria-hidden="true">Aur</span>
+      <span aria-hidden="true" style={{ color: "var(--aurora-accent-primary)" }}>ora</span>
     </span>
   )
 }
