@@ -53,6 +53,9 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * @param loading            When true a spinner replaces the send icon and submission is blocked.
  * @param hasSendableContent True when the current composer state can be submitted.
  * @param leadingContent     Optional composable rendered above the input row (e.g. attachment chips).
+ * @param actionLeft         Optional composable rendered inline between the text field and the
+ *                           send button — use for a secondary action that sits "to the left of
+ *                           Send" (e.g. a mode-options cog, attachment picker, voice trigger).
  */
 @Composable
 public fun AuroraPromptInput(
@@ -65,6 +68,7 @@ public fun AuroraPromptInput(
     loading: Boolean = false,
     hasSendableContent: Boolean = value.isNotBlank(),
     leadingContent: (@Composable () -> Unit)? = null,
+    actionLeft: (@Composable () -> Unit)? = null,
 ) {
     val aurora = LocalAuroraColors.current
     val haptics = LocalHapticFeedback.current
@@ -136,6 +140,7 @@ public fun AuroraPromptInput(
                         }
                     },
                 )
+                actionLeft?.invoke()
                 FilledIconButton(
                     // Always enabled so a tap during loading can produce reject haptic;
                     // triggerSend() guards the actual send call.
