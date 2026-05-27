@@ -5,7 +5,16 @@ const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypescript,
   {
-    ignores: [".worktrees/**", ".next/**", "out/**", "public/r/**", "android/**/build/**"],
+    ignores: [
+      ".worktrees/**",
+      ".next/**",
+      "out/**",
+      "public/r/**",
+      "public/animations.jsx",
+      "public/components.jsx",
+      "public/scenes.jsx",
+      "android/**/build/**",
+    ],
   },
   {
     rules: {
