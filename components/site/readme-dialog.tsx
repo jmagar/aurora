@@ -18,18 +18,22 @@ import type { AuroraTheme } from "@/lib/themes"
 type Status = "idle" | "loading" | "loaded" | "error"
 
 export function ReadmeDialog({ theme }: { theme: AuroraTheme }) {
+  const { readmePath } = theme
   const [open, setOpen] = React.useState(false)
   const [status, setStatus] = React.useState<Status>("idle")
   const [content, setContent] = React.useState("")
+  // Guard so we fetch once per dialog, not on every status-driven re-render.
+  // (Depending on `status` here would let the effect's cleanup cancel its own
+  // in-flight fetch, leaving the dialog stuck on "Loading README…".)
+  const fetched = React.useRef(false)
 
   React.useEffect(() => {
-    if (!open || status !== "idle") return
+    if (!open || fetched.current) return
+    fetched.current = true
     let cancelled = false
-    // Lazy-fetch README on first open — syncing an external resource into state
-    // is the intended use of an effect here.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setStatus("loading")
-    fetch(`/api/readme?path=${encodeURIComponent(theme.readmePath)}`)
+    fetch(`/api/readme?path=${encodeURIComponent(readmePath)}`)
       .then((r) => (r.ok ? r.text() : Promise.reject(new Error(`${r.status}`))))
       .then((text) => {
         if (cancelled) return
@@ -42,7 +46,7 @@ export function ReadmeDialog({ theme }: { theme: AuroraTheme }) {
     return () => {
       cancelled = true
     }
-  }, [open, status, theme.readmePath])
+  }, [open, readmePath])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
