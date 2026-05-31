@@ -146,6 +146,22 @@ document.documentElement.classList.toggle("light")
 --aurora-error: #c78490;
 ```
 
+### Editor & terminal themes
+
+The same palette ships as ready-to-install themes for editors and the shell:
+
+- **[`editors/`](editors)** — [Zed](editors/zed), [Warp](editors/warp), and
+  [Claude Code](editors/claude-code). Served copies under `public/{zed,warp}/`
+  for `curl` install from `aurora.tootie.tv`.
+- **[`shell/`](shell)** — Powerlevel10k prompt, the Claude Code statusline, `bat`,
+  Midnight Commander, `nano`, and zsh colors (`eza`, dircolors,
+  fast-syntax-highlighting, `fzf`).
+
+Each subdir has its own README with a palette table, install commands, and a
+source-of-truth note. The Claude Code theme in
+[`editors/claude-code/`](editors/claude-code) is the origin everything else
+aligns to.
+
 ## Development
 
 ```bash

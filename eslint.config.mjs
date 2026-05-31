@@ -14,6 +14,8 @@ const eslintConfig = [
       "public/components.jsx",
       "public/scenes.jsx",
       "android/**/build/**",
+      "editors/**",
+      "shell/**",
     ],
   },
   {
