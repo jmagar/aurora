@@ -29,6 +29,15 @@
     "fastMode": "#8a6914",
     "fastModeShimmer": "#b08a28",
 
+    "clawd_body": "#0288d1",
+    "clawd_background": "#ffffff",
+    "claudeBlue_FOR_SYSTEM_SPINNER": "#0288d1",
+    "claudeBlueShimmer_FOR_SYSTEM_SPINNER": "#1aa6e8",
+    "effortUltra": "#7c3aed",
+    "background": "#8fb4c4",
+    "professionalBlue": "#1aa6e8",
+    "chromeYellow": "#b08a28",
+
     "diffAdded": "#e8f5e9",
     "diffRemoved": "#fde8ec",
     "diffAddedDimmed": "#f1f9f1",

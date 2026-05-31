@@ -197,11 +197,19 @@ Spectrum used for gradient/celebration effects. Each has a brighter `_shimmer`.
 values: cyan primary `#0288d1`, rose `#d63a6f`, text `#07131c` on white. The
 light variant keeps the *web* hues (it is not brightness-pushed the way dark is).
 
-> **Known gap:** the light theme does **not** yet define the mascot/spinner/accent
-> keys added to dark (`clawd_body`, `clawd_background`,
-> `claudeBlue_FOR_SYSTEM_SPINNER`, `claudeBlueShimmer_FOR_SYSTEM_SPINNER`,
-> `effortUltra`, `background`, `professionalBlue`, `chromeYellow`). They fall back
-> to the light base until added. Fill these to bring light to parity.
+Light is at **full key parity** with dark, including the mascot/spinner/accent
+keys, mapped to light-surface equivalents:
+
+| Key | Light value |
+|-----|-------------|
+| `clawd_body` | `#0288d1` |
+| `clawd_background` | `#ffffff` |
+| `claudeBlue_FOR_SYSTEM_SPINNER` | `#0288d1` |
+| `claudeBlueShimmer_FOR_SYSTEM_SPINNER` | `#1aa6e8` |
+| `effortUltra` | `#7c3aed` |
+| `background` | `#8fb4c4` |
+| `professionalBlue` | `#1aa6e8` |
+| `chromeYellow` | `#b08a28` |
 
 ---
 
