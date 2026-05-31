@@ -5,8 +5,11 @@ design system (`aurora.tootie.tv`) and the Claude Code Aurora theme tokens.
 
 Ships two variants:
 
-- **Aurora** — dark, navy base `#07131c`, cyan primary `#29b6f6`, gradient + background image
-- **Aurora Light** — light, white base, cyan primary `#0288d1`, gradient
+- **Aurora** — dark, navy base `#07131c`, bright-cyan primary `#4dc8fa`, gradient + background image
+- **Aurora Light** — light, white base, cyan primary `#0098e6`, gradient
+
+Tuned for punch: brightened accents over the source tokens, plus a vivid glow
+background on the dark variant.
 
 ## Install (Windows)
 
@@ -50,7 +53,9 @@ background image.
 ## Background image
 
 `aurora.jpg` (2560×1440) is a navy vertical gradient (`#102535 → #06111a`) with a
-soft cyan glow lower-left and a fainter violet glow upper-right, Gaussian-blurred.
+bright cyan glow lower-left, a vivid violet glow upper-right, and a soft rose glow
+mid-right, Gaussian-blurred. Applied at `opacity: 68`. Glow positions/strengths are
+parameters at the bottom of `aurora_bg.py`.
 
 ```sh
 # regenerate themes/aurora.jpg (requires Pillow)
@@ -83,13 +88,16 @@ Learned from the [Warp custom-themes docs](https://docs.warp.dev/terminal/appear
 
 ## Palette
 
+Deployed "pop" palette (brighter than the source Aurora tokens):
+
 | Role | Dark | Light |
 |------|------|-------|
-| background | `#07131c` | `#ffffff` |
-| foreground | `#e6f4fb` | `#07131c` |
-| cyan (primary) | `#29b6f6` | `#0288d1` |
-| rose (magenta) | `#f9a8c4` | `#d63a6f` |
-| violet (bright magenta) | `#a78bfa` | `#7c3aed` |
-| teal (green) | `#7dd3c7` | `#2d7d6e` |
-| amber (yellow) | `#c6a36b` | `#8a6914` |
-| error (red) | `#c78490` | `#9c3545` |
+| background (gradient top → bottom) | `#102535 → #07131c` | `#ffffff → #e6f1f6` |
+| foreground | `#f0f8fd` | `#05121b` |
+| accent / cyan (primary) | `#4dc8fa` | `#0098e6` |
+| blue | `#4dc8fa` | `#0277c0` |
+| rose (magenta) | `#ffb0d0` | `#d6266a` |
+| violet (bright magenta) | `#c4b5fd` | `#7c3aed` |
+| teal (green) | `#8fe6d8` | `#1f8a6e` |
+| amber (yellow) | `#e0bc7a` | `#9a7410` |
+| error (red) | `#e090a0` | `#b32a3d` |
