@@ -65,17 +65,29 @@ pnpm audit:composition    # Check registry composition rules
 ## Architecture Overview
 
 Aurora is a **shadcn-compatible component registry** (128 items) served as a
-Next.js 16 / React 19 / Tailwind v4 app at `aurora.tootie.tv`. The site doubles
-as a gallery and a live registry endpoint — `/` content-negotiates between
-browser (gallery) and shadcn CLI (registry JSON from `public/r/*.json`).
+Next.js 16 / React 19 / Tailwind v4 app at `aurora.tootie.tv`. The site is a
+landing page (`/`) + a component gallery + a themes hub (`/themes`), and doubles
+as a live registry endpoint — `/` content-negotiates between browser (landing)
+and shadcn CLI (registry JSON from `public/r/*.json`).
 
-- `app/` — Next.js App Router (gallery UI, root content negotiation)
+- `app/(marketing)/` — public site: landing at `/` and the `/themes` hub
+  (shared chrome from `components/site/`; root content negotiation → registry JSON)
+- `app/gallery/` — the component gallery
+- `app/dinglebear/` — serves the co-hosted dinglebear.ai tenant (see below)
 - `registry/aurora/styles/` — Aurora token layer (`aurora.css`, CSS custom properties)
 - `registry/aurora/ui/` — 64 shadcn UI primitives recolored to Aurora tokens
 - `registry/aurora/blocks/{ai,auth,feedback,files,navigation,workspace}` — composed product blocks
+- `lib/themes.ts` — catalog powering the `/themes` site (single source of truth for the web)
+- `components/site/` — shared marketing chrome (header/footer shell, theme cards, style helpers)
 - `android/` — Style Dictionary output for native parity
-- `editors/{zed,warp,claude-code,chrome}/` — Aurora themes for GUI editors, terminal emulators, Claude Code, and the Chrome browser (native theme files + per-tool READMEs; served copies under `public/`)
-- `shell/{p10k,statusline,bat,mc,nano,zsh}/` — Aurora themes for shell & CLI tools (prompt, statusline, pager, file manager, editor, highlighting)
+- `themes/` — canonical Aurora theme sources for every surface:
+  `themes/editors/{zed,warp,claude-code}`, `themes/browser/chrome`,
+  `themes/shell/{p10k,statusline,bat,mc,nano,zsh}`. Per-tool READMEs +
+  [`themes/README.md`](themes/README.md). Served copies under
+  `public/{chrome,zed,warp}/` — those install URLs are canonical, keep them stable.
+- `dinglebear/` + `public/dinglebear/` + `proxy.ts` — **co-hosted tenant**: a
+  separate site (dinglebear.ai) served via host rewrite, unrelated to Aurora
+  (see `dinglebear/README.md`). Don't wire Aurora into it.
 - `scripts/` — `export-aurora-tokens.mjs`, `audit-composition.mjs`
 - `registry.json` — shadcn registry manifest (source of truth for the build)
 
@@ -87,10 +99,14 @@ browser (gallery) and shadcn CLI (registry JSON from `public/r/*.json`).
   run `pnpm registry:build` so `public/r/*.json` stays in sync.
 - **Token changes are cross-platform.** Edits to `registry/aurora/styles/aurora.css`
   must be followed by `pnpm tokens:generate` to refresh Android outputs.
-- **Terminal & editor themes mirror the tokens.** `editors/` and `shell/` hand-author
-  the Aurora palette in each tool's native format (these are excluded from the Next
-  build, TS, and eslint). They are canonical here; `~` configs are deployed copies —
-  keep both in sync when palette values change, and re-sync `public/{zed,warp}/`.
+- **Themes mirror the tokens.** Everything under `themes/` (`editors/`, `browser/`,
+  `shell/`) hand-authors the Aurora palette in each tool's native format (excluded
+  from the Next build, TS, and eslint). They are canonical here; `~` configs are
+  deployed copies — keep both in sync when palette values change, re-sync
+  `public/{chrome,zed,warp}/`, and update `lib/themes.ts` if the catalog changes.
+- **Don't move served theme URLs.** `public/{chrome,zed,warp}/` and
+  `public/themes/previews/` are canonical install/asset URLs referenced by docs and
+  external users. Theme *source* lives in `themes/`; served copies stay in `public/`.
 - **Package manager: pnpm** (`packageManager: pnpm@10.33.2`). Do not introduce npm/yarn lockfiles.
 - **pnpm `overrides` + `onlyBuiltDependencies` live in `pnpm-workspace.yaml`, NOT the `package.json` `pnpm` field** — pnpm 10 silently ignores that field. A dead `pnpm.overrides` block let a vulnerable `tmp` slip past the security pins (fixed 2026-05-31).
 - **Non-interactive shell.** Use `cp -f`, `mv -f`, `rm -f`, `rm -rf` — see `AGENTS.md`.

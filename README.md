@@ -146,21 +146,27 @@ document.documentElement.classList.toggle("light")
 --aurora-error: #c78490;
 ```
 
-### Editor & terminal themes
+### Themes — one palette, every surface
 
-The same palette ships as ready-to-install themes for editors and the shell:
+The same palette ships as ready-to-install themes for your editor, terminal,
+browser, and shell, all under **[`themes/`](themes)** (browse them at
+[`aurora.tootie.tv/themes`](https://aurora.tootie.tv/themes)):
 
-- **[`editors/`](editors)** — [Zed](editors/zed), [Warp](editors/warp), and
-  [Claude Code](editors/claude-code). Served copies under `public/{zed,warp}/`
-  for `curl` install from `aurora.tootie.tv`.
-- **[`shell/`](shell)** — Powerlevel10k prompt, the Claude Code statusline, `bat`,
-  Midnight Commander, `nano`, and zsh colors (`eza`, dircolors,
-  fast-syntax-highlighting, `fzf`).
+- **[`themes/editors/`](themes/editors)** — [Zed](themes/editors/zed) (Aurora
+  Neon + icon theme), [Warp](themes/editors/warp), and
+  [Claude Code](themes/editors/claude-code).
+- **[`themes/browser/`](themes/browser)** — [Chrome](themes/browser/chrome) MV3
+  theme (dark + light).
+- **[`themes/shell/`](themes/shell)** — Powerlevel10k prompt, the Claude Code
+  statusline, `bat`, Midnight Commander, `nano`, and zsh colors (`eza`,
+  dircolors, fast-syntax-highlighting, `fzf`).
 
-Each subdir has its own README with a palette table, install commands, and a
-source-of-truth note. The Claude Code theme in
-[`editors/claude-code/`](editors/claude-code) is the origin everything else
-aligns to.
+See [`themes/README.md`](themes/README.md) for the full catalog; each subdir has
+its own README with a palette table and install commands. The Claude Code theme
+in [`themes/editors/claude-code/`](themes/editors/claude-code) is the origin
+everything else aligns to. Served copies live under `public/{chrome,zed,warp}/`
+for `curl` install from `aurora.tootie.tv` — those URLs are canonical, keep them
+stable.
 
 ## Development
 

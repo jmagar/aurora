@@ -28,14 +28,19 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const [light, setLight] = React.useState(false)
   const [still, setStill] = React.useState(false)
 
-  // restore persisted theme + honor screenshot ?still flag
+  // Sync external client-only state (persisted theme + URL flags) into React on
+  // mount. setState-in-effect is the correct tool here — the values aren't known
+  // until the client, and reading them in a useState initializer would mismatch
+  // SSR hydration.
   React.useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     const stored = window.localStorage.getItem("aurora-site-theme")
     if (stored === "light") setLight(true)
     const p = new URLSearchParams(window.location.search)
     if (p.get("still") === "1") setStill(true)
     if (p.get("theme") === "light") setLight(true)
     if (p.get("theme") === "dark") setLight(false)
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [])
 
   React.useEffect(() => {

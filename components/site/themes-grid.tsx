@@ -83,8 +83,11 @@ function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
 export function ThemesGrid() {
   const [cat, setCat] = React.useState<ThemeCategory>("editors")
 
+  // Sync the ?cat URL param into state on mount (client-only; a useState
+  // initializer reading window would mismatch SSR hydration).
   React.useEffect(() => {
     const c = new URLSearchParams(window.location.search).get("cat")
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (c === "editors" || c === "browser" || c === "shell") setCat(c)
   }, [])
 
