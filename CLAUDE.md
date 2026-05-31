@@ -92,6 +92,7 @@ browser (gallery) and shadcn CLI (registry JSON from `public/r/*.json`).
   build, TS, and eslint). They are canonical here; `~` configs are deployed copies —
   keep both in sync when palette values change, and re-sync `public/{zed,warp}/`.
 - **Package manager: pnpm** (`packageManager: pnpm@10.33.2`). Do not introduce npm/yarn lockfiles.
+- **pnpm `overrides` + `onlyBuiltDependencies` live in `pnpm-workspace.yaml`, NOT the `package.json` `pnpm` field** — pnpm 10 silently ignores that field. A dead `pnpm.overrides` block let a vulnerable `tmp` slip past the security pins (fixed 2026-05-31).
 - **Non-interactive shell.** Use `cp -f`, `mv -f`, `rm -f`, `rm -rf` — see `AGENTS.md`.
 - **See also:** `AGENTS.md` (agent shell rules), `SKILL.md` (Aurora usage skill),
   `docs/component-kotlin-map.md` (Kotlin/Compose parity matrix).
