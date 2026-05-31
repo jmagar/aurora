@@ -1,0 +1,26 @@
+# pnpm v10 reads overrides / onlyBuiltDependencies from here, NOT the "pnpm"
+# field in package.json (that field is silently ignored as of pnpm 10). See
+# https://pnpm.io/settings. Migrated from package.json on 2026-05-31.
+overrides:
+  "@types/react": "19.1.2"
+  "@types/react-dom": "19.1.2"
+  "minimatch@<3.1.4": "3.1.5"
+  "picomatch@<3": "2.3.2"
+  "picomatch@>=4.0.0 <4.0.4": "4.0.4"
+  "path-to-regexp@>=8.0.0 <8.4.0": "8.4.0"
+  "postcss@<8.5.10": "8.5.15"
+  "flatted@<=3.4.1": "3.4.2"
+  "js-yaml@>=4.0.0 <4.1.1": "4.1.1"
+  "diff@>=6.0.0 <8.0.3": "8.0.3"
+  "qs@<=6.15.1": "6.15.2"
+  "brace-expansion@<1.1.13": "1.1.13"
+  "brace-expansion@>=5.0.0 <5.0.6": "5.0.6"
+  "ajv@<6.14.0": "6.15.0"
+  # GHSA-ph9p-34f9-6g65 — tmp path traversal via unsanitized prefix/postfix
+  "tmp@<0.2.6": "0.2.6"
+
+onlyBuiltDependencies:
+  - "@tailwindcss/oxide"
+  - msw
+  - sharp
+  - unrs-resolver

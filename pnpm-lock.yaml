@@ -19,6 +19,7 @@ overrides:
   brace-expansion@<1.1.13: 1.1.13
   brace-expansion@>=5.0.0 <5.0.6: 5.0.6
   ajv@<6.14.0: 6.15.0
+  tmp@<0.2.6: 0.2.6
 
 importers:
 
@@ -3745,8 +3746,8 @@ packages:
     resolution: {integrity: sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==}
     engines: {node: '>=12.0.0'}
 
-  tmp@0.2.5:
-    resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
+  tmp@0.2.6:
+    resolution: {integrity: sha512-5sJPdPjfI5Kx+qbrDesxkglRBxW//g7hCsqspEjwkewGvBMGIKMOTKzLt1hFVJzyadba3lDUN20O9qhvbQUSTA==}
     engines: {node: '>=14.14'}
 
   to-regex-range@5.0.1:
@@ -7325,7 +7326,7 @@ snapshots:
       open: 7.4.2
       semver: 7.7.4
       slash: 2.0.0
-      tmp: 0.2.5
+      tmp: 0.2.6
       yaml: 2.9.0
 
   path-browserify@1.0.1: {}
@@ -7910,7 +7911,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
 
-  tmp@0.2.5: {}
+  tmp@0.2.6: {}
 
   to-regex-range@5.0.1:
     dependencies:
