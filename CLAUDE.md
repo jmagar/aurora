@@ -74,6 +74,8 @@ browser (gallery) and shadcn CLI (registry JSON from `public/r/*.json`).
 - `registry/aurora/ui/` — 64 shadcn UI primitives recolored to Aurora tokens
 - `registry/aurora/blocks/{ai,auth,feedback,files,navigation,workspace}` — composed product blocks
 - `android/` — Style Dictionary output for native parity
+- `editors/{zed,warp,claude-code,chrome}/` — Aurora themes for GUI editors, terminal emulators, Claude Code, and the Chrome browser (native theme files + per-tool READMEs; served copies under `public/`)
+- `shell/{p10k,statusline,bat,mc,nano,zsh}/` — Aurora themes for shell & CLI tools (prompt, statusline, pager, file manager, editor, highlighting)
 - `scripts/` — `export-aurora-tokens.mjs`, `audit-composition.mjs`
 - `registry.json` — shadcn registry manifest (source of truth for the build)
 
@@ -85,6 +87,10 @@ browser (gallery) and shadcn CLI (registry JSON from `public/r/*.json`).
   run `pnpm registry:build` so `public/r/*.json` stays in sync.
 - **Token changes are cross-platform.** Edits to `registry/aurora/styles/aurora.css`
   must be followed by `pnpm tokens:generate` to refresh Android outputs.
+- **Terminal & editor themes mirror the tokens.** `editors/` and `shell/` hand-author
+  the Aurora palette in each tool's native format (these are excluded from the Next
+  build, TS, and eslint). They are canonical here; `~` configs are deployed copies —
+  keep both in sync when palette values change, and re-sync `public/{zed,warp}/`.
 - **Package manager: pnpm** (`packageManager: pnpm@10.33.2`). Do not introduce npm/yarn lockfiles.
 - **Non-interactive shell.** Use `cp -f`, `mv -f`, `rm -f`, `rm -rf` — see `AGENTS.md`.
 - **See also:** `AGENTS.md` (agent shell rules), `SKILL.md` (Aurora usage skill),

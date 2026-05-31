@@ -1,0 +1,105 @@
+{
+  "manifest_version": 3,
+  "version": "1.1.0",
+  "name": "Aurora",
+  "description": "Aurora design system theme for Chrome — vivid navy with cyan glow.",
+  "theme": {
+    "colors": {
+      "frame": [
+        16,
+        49,
+        84
+      ],
+      "frame_inactive": [
+        11,
+        37,
+        64
+      ],
+      "frame_incognito": [
+        21,
+        36,
+        58
+      ],
+      "frame_incognito_inactive": [
+        11,
+        37,
+        64
+      ],
+      "toolbar": [
+        22,
+        57,
+        92
+      ],
+      "tab_text": [
+        240,
+        248,
+        253
+      ],
+      "tab_background_text": [
+        188,
+        214,
+        230
+      ],
+      "bookmark_text": [
+        240,
+        248,
+        253
+      ],
+      "ntp_background": [
+        10,
+        28,
+        46
+      ],
+      "ntp_text": [
+        240,
+        248,
+        253
+      ],
+      "ntp_link": [
+        77,
+        200,
+        250
+      ],
+      "ntp_header": [
+        77,
+        200,
+        250
+      ],
+      "button_background": [
+        22,
+        57,
+        92
+      ],
+      "toolbar_button_icon": [
+        127,
+        205,
+        250
+      ],
+      "omnibox_background": [
+        14,
+        42,
+        68
+      ],
+      "omnibox_text": [
+        240,
+        248,
+        253
+      ]
+    },
+    "tints": {
+      "buttons": [
+        -1.0,
+        -1.0,
+        -1.0
+      ]
+    },
+    "properties": {
+      "ntp_logo_alternate": 1,
+      "ntp_background_alignment": "center",
+      "ntp_background_repeat": "no-repeat"
+    },
+    "images": {
+      "theme_ntp_background": "images/ntp.png"
+    }
+  }
+}

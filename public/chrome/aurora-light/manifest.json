@@ -1,0 +1,100 @@
+{
+  "manifest_version": 3,
+  "version": "1.1.0",
+  "name": "Aurora Light",
+  "description": "Aurora design system theme for Chrome — bright cyan-tinted light.",
+  "theme": {
+    "colors": {
+      "frame": [
+        214,
+        236,
+        245
+      ],
+      "frame_inactive": [
+        228,
+        240,
+        245
+      ],
+      "frame_incognito": [
+        207,
+        227,
+        238
+      ],
+      "frame_incognito_inactive": [
+        228,
+        240,
+        245
+      ],
+      "toolbar": [
+        255,
+        255,
+        255
+      ],
+      "tab_text": [
+        5,
+        18,
+        27
+      ],
+      "tab_background_text": [
+        44,
+        83,
+        102
+      ],
+      "bookmark_text": [
+        5,
+        18,
+        27
+      ],
+      "ntp_background": [
+        232,
+        244,
+        250
+      ],
+      "ntp_text": [
+        5,
+        18,
+        27
+      ],
+      "ntp_link": [
+        0,
+        152,
+        230
+      ],
+      "ntp_header": [
+        0,
+        152,
+        230
+      ],
+      "button_background": [
+        255,
+        255,
+        255
+      ],
+      "toolbar_button_icon": [
+        2,
+        119,
+        192
+      ],
+      "omnibox_background": [
+        242,
+        249,
+        252
+      ],
+      "omnibox_text": [
+        5,
+        18,
+        27
+      ]
+    },
+    "tints": {
+      "buttons": [
+        -1.0,
+        -1.0,
+        -1.0
+      ]
+    },
+    "properties": {
+      "ntp_logo_alternate": 0
+    }
+  }
+}

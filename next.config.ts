@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["aurora.tootie.tv", "10.1.0.6"],
+  allowedDevOrigins: ["aurora.tootie.tv", "10.1.0.6", "dinglebear.ai", "www.dinglebear.ai"],
   output: "standalone",
   async rewrites() {
     return {
