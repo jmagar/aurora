@@ -1,89 +1,89 @@
 {
   "manifest_version": 3,
-  "version": "1.1.0",
-  "name": "Aurora",
-  "description": "Aurora design system theme for Chrome — vivid navy with cyan glow.",
+  "version": "1.2.0",
+  "name": "Aurora Neon",
+  "description": "Aurora design system theme for Chrome — bright navy with neon cyan glow.",
   "theme": {
     "colors": {
       "frame": [
         16,
-        49,
-        84
+        42,
+        62
       ],
       "frame_inactive": [
-        11,
-        37,
-        64
+        13,
+        35,
+        52
       ],
       "frame_incognito": [
-        21,
-        36,
-        58
+        22,
+        48,
+        74
       ],
       "frame_incognito_inactive": [
-        11,
-        37,
-        64
+        13,
+        35,
+        52
       ],
       "toolbar": [
-        22,
-        57,
-        92
+        29,
+        66,
+        99
       ],
       "tab_text": [
-        240,
-        248,
-        253
+        255,
+        255,
+        255
       ],
       "tab_background_text": [
-        188,
-        214,
-        230
+        207,
+        224,
+        234
       ],
       "bookmark_text": [
-        240,
-        248,
-        253
+        255,
+        255,
+        255
       ],
       "ntp_background": [
-        10,
-        28,
-        46
+        16,
+        42,
+        62
       ],
       "ntp_text": [
-        240,
-        248,
-        253
+        255,
+        255,
+        255
       ],
       "ntp_link": [
-        77,
-        200,
-        250
+        56,
+        210,
+        255
       ],
       "ntp_header": [
-        77,
-        200,
-        250
+        56,
+        210,
+        255
       ],
       "button_background": [
-        22,
-        57,
-        92
+        29,
+        66,
+        99
       ],
       "toolbar_button_icon": [
-        127,
-        205,
-        250
+        94,
+        208,
+        255
       ],
       "omnibox_background": [
-        14,
-        42,
-        68
+        22,
+        58,
+        86
       ],
       "omnibox_text": [
-        240,
-        248,
-        253
+        255,
+        255,
+        255
       ]
     },
     "tints": {

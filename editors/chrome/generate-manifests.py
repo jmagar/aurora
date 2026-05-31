@@ -24,7 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 PUBLIC = os.path.join(ROOT, "public", "chrome")
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 
 def rgb(h):
@@ -38,52 +38,53 @@ def hx(h):
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-# Aurora "pop" palette — brightened over the source tokens so the browser chrome
-# really reads as Aurora rather than near-black navy. Mirrors the deployed Warp
-# pop palette (cyan #4dc8fa, foreground #f0f8fd). Map: Chrome slot -> hex.
+# Aurora Neon palette — matched to the deployed "Aurora Neon" Zed theme: a bright
+# lifted navy base (#102a3e), pure-white text, saturated raised surfaces, and
+# neon accents (cyan #38d2ff, mint #5ef0d8, violet #c4a5ff). Poppier than the
+# Warp pop palette. Map: Chrome slot -> hex.
 DARK = {
-    "frame":                     "#103154",  # vivid lifted navy (was near-black)
-    "frame_inactive":            "#0b2540",  # dimmer lifted navy
-    "frame_incognito":           "#15243a",  # cool slate-navy
-    "frame_incognito_inactive":  "#0b2540",
-    "toolbar":                   "#16395c",  # brighter than frame — tabs separate
-    "tab_text":                  "#f0f8fd",  # bright foreground
-    "tab_background_text":       "#bcd6e6",  # bright muted, readable on lifted frame
-    "bookmark_text":             "#f0f8fd",
-    "ntp_background":            "#0a1c2e",  # deep navy so the glow art pops
-    "ntp_text":                  "#f0f8fd",
-    "ntp_link":                  "#4dc8fa",  # vivid cyan — the pop accent
-    "ntp_header":                "#4dc8fa",
-    "button_background":         "#16395c",
-    "toolbar_button_icon":       "#7fcdfa",  # bright cyan-leaning icons
-    "omnibox_background":        "#0e2a44",  # lifted, not near-black
-    "omnibox_text":              "#f0f8fd",
+    "frame":                     "#102a3e",  # Neon base (bright lifted navy)
+    "frame_inactive":            "#0d2334",  # slightly deeper
+    "frame_incognito":           "#16304a",  # cool slate-navy
+    "frame_incognito_inactive":  "#0d2334",
+    "toolbar":                   "#1d4263",  # Neon raised surface — tabs separate
+    "tab_text":                  "#ffffff",  # Neon pure-white foreground
+    "tab_background_text":       "#cfe0ea",  # Neon muted
+    "bookmark_text":             "#ffffff",
+    "ntp_background":            "#102a3e",  # Neon base — glow rides on top
+    "ntp_text":                  "#ffffff",
+    "ntp_link":                  "#38d2ff",  # Neon cyan — the pop accent
+    "ntp_header":                "#38d2ff",
+    "button_background":         "#1d4263",
+    "toolbar_button_icon":       "#5ed0ff",  # Neon bright cyan icons
+    "omnibox_background":        "#163a56",  # bright lifted control surface
+    "omnibox_text":              "#ffffff",
 }
 
 LIGHT = {
-    "frame":                     "#d6ecf5",  # cyan-tinted light frame (pop)
+    "frame":                     "#f1f7fa",  # Neon Light title/tab bar
     "frame_inactive":            "#e4f0f5",
-    "frame_incognito":           "#cfe3ee",
+    "frame_incognito":           "#edf5f8",
     "frame_incognito_inactive":  "#e4f0f5",
     "toolbar":                   "#ffffff",
-    "tab_text":                  "#05121b",
-    "tab_background_text":       "#2c5366",
-    "bookmark_text":             "#05121b",
-    "ntp_background":            "#e8f4fa",
-    "ntp_text":                  "#05121b",
-    "ntp_link":                  "#0098e6",  # vivid cyan (Warp light pop)
+    "tab_text":                  "#07131c",
+    "tab_background_text":       "#3d6070",
+    "bookmark_text":             "#07131c",
+    "ntp_background":            "#eef6fa",
+    "ntp_text":                  "#07131c",
+    "ntp_link":                  "#0098e6",  # vivid cyan
     "ntp_header":                "#0098e6",
     "button_background":         "#ffffff",
     "toolbar_button_icon":       "#0277c0",
-    "omnibox_background":        "#f2f9fc",
-    "omnibox_text":              "#05121b",
+    "omnibox_background":        "#ffffff",
+    "omnibox_text":              "#07131c",
 }
 
-# Glow accents painted onto the dark new-tab background.
+# Neon glow accents painted onto the dark new-tab background.
 NTP_BASE = hx(DARK["ntp_background"])
-CYAN = hx("#29b6f6")
-VIOLET = hx("#a78bfa")
-ROSE = hx("#f9a8c4")
+CYAN = hx("#38d2ff")    # Neon cyan
+VIOLET = hx("#c4a5ff")  # Neon violet
+MINT = hx("#5ef0d8")    # Neon mint
 
 
 def manifest(name, description, colors, logo_alternate, ntp_image=None):
@@ -139,20 +140,20 @@ def make_ntp_glow(width=2560, height=1440):
 
     # Kept within the central band so center-cropping on smaller screens still
     # shows the glow, and radii stay clear of the edges for seamless margins.
-    add_glow(CYAN,   int(width * 0.50), int(height * 0.66), int(width * 0.30), 0.55)
-    add_glow(VIOLET, int(width * 0.68), int(height * 0.30), int(width * 0.24), 0.34)
-    add_glow(ROSE,   int(width * 0.33), int(height * 0.40), int(width * 0.18), 0.18)
+    add_glow(CYAN,   int(width * 0.50), int(height * 0.66), int(width * 0.34), 0.78)
+    add_glow(VIOLET, int(width * 0.69), int(height * 0.28), int(width * 0.26), 0.50)
+    add_glow(MINT,   int(width * 0.31), int(height * 0.38), int(width * 0.20), 0.30)
 
     return img.filter(ImageFilter.GaussianBlur(radius=3))
 
 
 VARIANTS = [
     ("aurora", manifest(
-        "Aurora",
-        "Aurora design system theme for Chrome — vivid navy with cyan glow.",
+        "Aurora Neon",
+        "Aurora design system theme for Chrome — bright navy with neon cyan glow.",
         DARK, 1, ntp_image="images/ntp.png")),
     ("aurora-light", manifest(
-        "Aurora Light",
+        "Aurora Neon Light",
         "Aurora design system theme for Chrome — bright cyan-tinted light.",
         LIGHT, 0)),
 ]

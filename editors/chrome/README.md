@@ -1,20 +1,20 @@
 # Aurora for Chrome
 
-Dark-first navy browser theme with a vivid cyan accent, derived from the Aurora
+Dark-first navy browser theme with a neon cyan accent, derived from the Aurora
 design system (`aurora.tootie.tv`). A Chrome theme is a code-less MV3 extension —
 a `manifest.json` with a `theme` block. It styles **browser chrome only** (window
 frame, tabs, toolbar, bookmarks bar, new-tab page); it cannot style web page
 content.
 
-Uses the Aurora **"pop" palette** — brightened over the source tokens (cyan
-`#4dc8fa`, foreground `#f0f8fd`, lifted navy frame) so the chrome reads as Aurora
-rather than near-black, matching the deployed Warp theme. The dark variant adds an
-Aurora glow image on the new-tab page.
+Uses the **Aurora Neon palette** — matched to the deployed "Aurora Neon" Zed
+theme: a bright lifted navy base (`#102a3e`), pure-white text, saturated raised
+surfaces, and neon accents (cyan `#38d2ff`, mint `#5ef0d8`, violet `#c4a5ff`).
+The dark variant adds a cranked Aurora glow on the new-tab page.
 
 Ships two variants, each a loadable unpacked folder:
 
-- **Aurora** (`aurora/`) — dark, lifted navy frame `#103154`, vivid cyan `#4dc8fa`, NTP glow
-- **Aurora Light** (`aurora-light/`) — light, cyan-tinted frame `#d6ecf5`, cyan `#0098e6`
+- **Aurora Neon** (`aurora/`) — dark, navy base `#102a3e`, neon cyan `#38d2ff`, NTP glow
+- **Aurora Neon Light** (`aurora-light/`) — light, frame `#f1f7fa`, cyan `#0098e6`
 
 ```
 editors/chrome/
@@ -68,8 +68,8 @@ copies under `public/chrome/`, and the downloadable `public/chrome/*.zip`.
   tint stays `[-1, -1, -1]`.
 - **`ntp_logo_alternate`** — `1` forces the white Google wordmark (dark variant),
   `0` keeps the colored one (light variant).
-- **NTP glow image.** `aurora/images/ntp.png` is a 2560×1440 Aurora glow (cyan
-  lower-center, violet upper, rose mid) on the deep-navy `ntp_background`. Its
+- **NTP glow image.** `aurora/images/ntp.png` is a 2560×1440 Aurora Neon glow
+  (cyan lower-center, violet upper, mint mid) on the navy `ntp_background`. Its
   glows fade to zero before the edges, so the PNG corners equal `ntp_background`
   exactly — centered with no tiling, any uncovered margin on large screens is
   seamless. Only the dark variant uses it; a background image under the light
@@ -81,20 +81,20 @@ Load unpacked is enough for personal use and sharing the folder/zip. To list on
 the Chrome Web Store, zip the variant folder, register a developer account
 (one-time $5 fee), and upload — themes are reviewed like any extension.
 
-## Color map (pop palette)
+## Color map (Neon palette)
 
-Brightened over the source tokens for punch — edit the `DARK` / `LIGHT` maps in
+Matched to the deployed Aurora Neon Zed theme — edit the `DARK` / `LIGHT` maps in
 `generate-manifests.py`:
 
 | Chrome slot | Role | Dark | Light |
 |------|------|------|-------|
-| `frame` | window frame | `#103154` | `#d6ecf5` |
-| `toolbar` | toolbar / active tab | `#16395c` | `#ffffff` |
-| `tab_text` | active tab / foreground | `#f0f8fd` | `#05121b` |
-| `tab_background_text` | inactive tab text | `#bcd6e6` | `#2c5366` |
-| `bookmark_text` | bookmarks bar | `#f0f8fd` | `#05121b` |
-| `ntp_background` | new-tab base | `#0a1c2e` | `#e8f4fa` |
-| `ntp_text` | new-tab text | `#f0f8fd` | `#05121b` |
-| `ntp_link` | new-tab links | `#4dc8fa` | `#0098e6` |
-| `omnibox_background` | address bar | `#0e2a44` | `#f2f9fc` |
-| `toolbar_button_icon` | toolbar icons | `#7fcdfa` | `#0277c0` |
+| `frame` | window frame | `#102a3e` | `#f1f7fa` |
+| `toolbar` | toolbar / active tab | `#1d4263` | `#ffffff` |
+| `tab_text` | active tab / foreground | `#ffffff` | `#07131c` |
+| `tab_background_text` | inactive tab text | `#cfe0ea` | `#3d6070` |
+| `bookmark_text` | bookmarks bar | `#ffffff` | `#07131c` |
+| `ntp_background` | new-tab base | `#102a3e` | `#eef6fa` |
+| `ntp_text` | new-tab text | `#ffffff` | `#07131c` |
+| `ntp_link` | new-tab links | `#38d2ff` | `#0098e6` |
+| `omnibox_background` | address bar | `#163a56` | `#ffffff` |
+| `toolbar_button_icon` | toolbar icons | `#5ed0ff` | `#0277c0` |
