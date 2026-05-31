@@ -1,0 +1,7 @@
+id = "aurora"
+name = "Aurora"
+version = "0.1.0"
+schema_version = 1
+authors = ["jmagar <jmagar@gmail.com>"]
+description = "Dark-first navy theme with cyan/rose/violet accents — matches the Aurora design system."
+repository = "https://github.com/jmagar/aurora-design-system"
