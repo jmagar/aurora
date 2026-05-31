@@ -5,8 +5,8 @@ design system (`aurora.tootie.tv`) and the Claude Code Aurora theme tokens.
 
 Ships **UI themes** + a matching **icon theme**:
 
-- **Aurora** / **Aurora Light** — editor color themes (`themes/aurora.json`)
-- **Aurora Icons** / **Aurora Icons Light** — full file-type icon set
+- **Aurora Neon** / **Aurora Neon Light** — editor color themes (`themes/aurora.json`)
+- **Aurora Neon Icons** / **Aurora Neon Icons Light** — full file-type icon set
   (`icon_themes/aurora.json` + `icons/*.svg`): glyph tiles tinted by category
   (cyan=web, gold=systems, mint=scripting, violet=jvm/config, rose=docs/media)
 
@@ -31,8 +31,8 @@ Icon themes only load from an installed extension. In Zed, run
 `zed: install dev extension` and select this directory (`editors/zed`). That
 registers all four themes. Then:
 
-- `theme selector: toggle` → **Aurora** / **Aurora Light**
-- `icon theme selector: toggle` → **Aurora Icons** / **Aurora Icons Light**
+- `theme selector: toggle` → **Aurora Neon** / **Aurora Neon Light**
+- `icon theme selector: toggle` → **Aurora Neon Icons** / **Aurora Neon Icons Light**
 
 ## UI theme only (no extension, no icons)
 

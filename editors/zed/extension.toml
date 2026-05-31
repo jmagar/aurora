@@ -1,7 +1,7 @@
-id = "aurora"
-name = "Aurora"
+id = "aurora-neon"
+name = "Aurora Neon"
 version = "0.1.0"
 schema_version = 1
 authors = ["jmagar <jmagar@gmail.com>"]
-description = "Dark-first navy theme with cyan/rose/violet accents — matches the Aurora design system."
+description = "Brightened neon variant of Aurora — electric cyan/violet/mint on a lifted navy canvas. UI themes + matching file-type icon theme."
 repository = "https://github.com/jmagar/aurora-design-system"

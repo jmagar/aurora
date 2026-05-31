@@ -143,11 +143,11 @@ def main():
     }
     doc = {
         "$schema": "https://zed.dev/schema/icon_themes/v0.2.0.json",
-        "name": "Aurora Icons",
+        "name": "Aurora Neon Icons",
         "author": "jmagar",
         "themes": [
-            {"name": "Aurora Icons", "appearance": "dark", **theme_body},
-            {"name": "Aurora Icons Light", "appearance": "light", **theme_body},
+            {"name": "Aurora Neon Icons", "appearance": "dark", **theme_body},
+            {"name": "Aurora Neon Icons Light", "appearance": "light", **theme_body},
         ],
     }
     (THEMES / "aurora.json").write_text(json.dumps(doc, indent=2) + "\n")
