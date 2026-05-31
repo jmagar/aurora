@@ -2,11 +2,12 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { Code2, Globe, TerminalSquare, Download, BookText } from "lucide-react"
+import { Code2, Globe, TerminalSquare, Download } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { SpectrumBar, CopyLine } from "@/components/site/site-ui"
 import { panelStrong, tint } from "@/components/site/style-tokens"
+import { ReadmeDialog } from "@/components/site/readme-dialog"
 import {
   AURORA_THEMES,
   THEME_CATEGORIES,
@@ -46,9 +47,7 @@ function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
             <h3 className="aurora-text-section" style={{ fontSize: 16 }}>
               {t.name}
             </h3>
-            <div className="mt-0.5 text-xs" style={{ color: "var(--aurora-text-muted)" }}>
-              {t.tool}
-            </div>
+            <div className="aurora-text-meta mt-0.5">{t.tool}</div>
           </div>
           {t.badge && (
             <Badge tone={t.badge.tone} dot>
@@ -57,7 +56,7 @@ function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
           )}
         </div>
         <SpectrumBar colors={t.spectrum} />
-        <p className="flex-1 text-[13px]" style={{ color: "var(--aurora-text-muted)" }}>
+        <p className="aurora-text-body-sm flex-1" style={{ color: "var(--aurora-text-muted)" }}>
           {t.description}
         </p>
         <CopyLine cmd={t.install} />
@@ -68,12 +67,7 @@ function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
               Download
             </a>
           </Button>
-          <Button variant="neutral" size="sm" className="flex-1" asChild>
-            <a href={t.readme} target="_blank" rel="noreferrer">
-              <BookText size={14} strokeWidth={1.75} />
-              README
-            </a>
-          </Button>
+          <ReadmeDialog theme={t} />
         </div>
       </div>
     </div>
@@ -99,19 +93,11 @@ export function ThemesGrid() {
       <h1 className="aurora-reveal aurora-text-display-2 mb-2" style={{ animationDelay: "50ms" }}>
         Aurora everywhere you work
       </h1>
-      <p
-        className="aurora-reveal mb-7 max-w-[620px]"
-        style={{ animationDelay: "100ms", color: "var(--aurora-text-muted)" }}
-      >
+      <p className="aurora-reveal aurora-text-lead mb-7 max-w-[620px]" style={{ animationDelay: "100ms" }}>
         Each theme hand-ports the canonical Aurora palette into a tool&apos;s native format. Source lives in{" "}
-        <span className="font-mono text-[13px]" style={{ color: "var(--aurora-text-primary)" }}>
-          themes/
-        </span>
-        ; served copies install straight from{" "}
-        <span className="font-mono text-[13px]" style={{ color: "var(--aurora-text-primary)" }}>
-          aurora.tootie.tv
-        </span>
-        .
+        <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>themes/</span>; served
+        copies install straight from{" "}
+        <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>aurora.tootie.tv</span>.
       </p>
 
       <div
@@ -129,7 +115,7 @@ export function ThemesGrid() {
             <button
               key={c.id}
               onClick={() => setCat(c.id)}
-              className="inline-flex items-center gap-1.5 rounded-[9px] border px-4 py-2 text-[13px] font-[560] transition-colors"
+              className="aurora-text-control inline-flex items-center gap-1.5 rounded-[9px] border px-4 py-2 transition-colors"
               style={{
                 color: active ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
                 background: active ? "var(--aurora-control-surface)" : "transparent",
@@ -140,8 +126,8 @@ export function ThemesGrid() {
               {CAT_ICON[c.id]}
               {c.label}
               <span
-                className="ml-0.5 font-mono text-[11px]"
-                style={{ color: active ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)" }}
+                className="aurora-text-code ml-0.5"
+                style={{ fontSize: 11, color: active ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)" }}
               >
                 {themeCounts[c.id]}
               </span>
@@ -156,9 +142,9 @@ export function ThemesGrid() {
         ))}
       </div>
 
-      <p className="mt-7 text-xs" style={{ color: "var(--aurora-text-muted)" }}>
+      <p className="aurora-text-caption mt-7" style={{ color: "var(--aurora-text-muted)" }}>
         Previews are palette-faithful renders from each theme&apos;s real colors. Source of truth:{" "}
-        <span className="font-mono">registry/aurora/styles/aurora.css</span>.
+        <span className="aurora-text-code">registry/aurora/styles/aurora.css</span>.
       </p>
     </section>
   )

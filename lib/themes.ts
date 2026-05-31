@@ -25,6 +25,8 @@ export interface AuroraTheme {
   download: string
   /** path to the theme's README in the repo */
   readme: string
+  /** repo-relative path to the README file (read at runtime for the dialog) */
+  readmePath: string
   /** anchor colors for the per-card spectrum bar — each theme's real palette */
   spectrum: string[]
 }
@@ -52,6 +54,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/zed.png",
     download: "/zed/aurora.json",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/editors/zed",
+    readmePath: "themes/editors/zed/README.md",
     spectrum: ["#102a3e", "#38d2ff", "#c4a5ff", "#5ef0d8", "#ffcf6b"],
   },
   {
@@ -66,6 +69,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/warp.png",
     download: "/warp/aurora.yaml",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/editors/warp",
+    readmePath: "themes/editors/warp/README.md",
     spectrum: ["#07131c", "#4dc8fa", "#f0f8fd", "#f9a8c4", "#8fe6d8"],
   },
   {
@@ -80,6 +84,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/claude-code.png",
     download: "https://github.com/jmagar/aurora-design-system/blob/main/themes/editors/claude-code/aurora.json",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/editors/claude-code",
+    readmePath: "themes/editors/claude-code/README.md",
     spectrum: ["#07131c", "#36c9ff", "#a78bfa", "#7dd3c7", "#ff7eb6"],
   },
   {
@@ -94,6 +99,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/chrome-dark.png",
     download: "/chrome/aurora.zip",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/browser/chrome",
+    readmePath: "themes/browser/chrome/README.md",
     spectrum: ["#0a1c2e", "#103154", "#4dc8fa", "#67cbfa", "#b39ddb"],
   },
   {
@@ -108,6 +114,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/chrome-light.png",
     download: "/chrome/aurora-light.zip",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/browser/chrome",
+    readmePath: "themes/browser/chrome/README.md",
     spectrum: ["#f5f9fc", "#dbe9f4", "#0288d1", "#0d2236", "#c2607f"],
   },
   {
@@ -121,6 +128,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/p10k.png",
     download: "https://github.com/jmagar/aurora-design-system/blob/main/themes/shell/p10k/aurora-p10k.zsh",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/shell/p10k",
+    readmePath: "themes/shell/p10k/README.md",
     spectrum: ["#07131c", "#1c7fac", "#f9a8c4", "#c6a36b", "#7dd3c7"],
   },
   {
@@ -134,6 +142,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/statusline.png",
     download: "https://github.com/jmagar/aurora-design-system/blob/main/themes/shell/statusline/statusline-aurora.sh",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/shell/statusline",
+    readmePath: "themes/shell/statusline/README.md",
     spectrum: ["#0f2030", "#a78bfa", "#29b6f6", "#f9a8c4", "#7dd3c7"],
   },
   {
@@ -146,6 +155,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/bat.png",
     download: "https://github.com/jmagar/aurora-design-system/blob/main/themes/shell/bat/Aurora.tmTheme",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/shell/bat",
+    readmePath: "themes/shell/bat/README.md",
     spectrum: ["#07131c", "#29b6f6", "#a78bfa", "#7dd3c7", "#c6a36b"],
   },
   {
@@ -158,6 +168,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/mc.png",
     download: "https://github.com/jmagar/aurora-design-system/blob/main/themes/shell/mc/aurora.ini",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/shell/mc",
+    readmePath: "themes/shell/mc/README.md",
     spectrum: ["#07131c", "#29b6f6", "#1c7fac", "#f0f8fd", "#a78bfa"],
   },
   {
@@ -170,6 +181,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/nano.png",
     download: "https://github.com/jmagar/aurora-design-system/blob/main/themes/shell/nano/nanorc",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/shell/nano",
+    readmePath: "themes/shell/nano/README.md",
     spectrum: ["#07131c", "#29b6f6", "#38d2ff", "#c9a6f0", "#b8e6a0"],
   },
   {
@@ -183,6 +195,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     preview: "/themes/previews/zsh.png",
     download: "https://github.com/jmagar/aurora-design-system/tree/main/themes/shell/zsh",
     readme: "https://github.com/jmagar/aurora-design-system/tree/main/themes/shell/zsh",
+    readmePath: "themes/shell/zsh/README.md",
     spectrum: ["#07131c", "#29b6f6", "#67cbfa", "#7dd3c7", "#f9a8c4"],
   },
 ]

@@ -38,7 +38,7 @@ const PILLARS = [
     title: "Tokens",
     body: "One source of truth in CSS custom properties, exported to Android via Style Dictionary. Dark-first, with a verified light mode.",
     meta: "View the token contract",
-    href: "/gallery/colors",
+    href: "/tokens",
   },
 ]
 
@@ -113,18 +113,12 @@ export default function LandingPage() {
         >
           <LabbyMark size={78} />
         </div>
-        <h1
-          className="aurora-reveal aurora-text-display-1 mx-auto max-w-[18ch]"
-          style={{ animationDelay: "60ms", fontSize: "clamp(44px,7vw,84px)", lineHeight: 0.98, letterSpacing: "-0.03em" }}
-        >
+        <h1 className="aurora-reveal aurora-text-display-hero mx-auto max-w-[18ch]" style={{ animationDelay: "60ms" }}>
           One palette.
           <br />
           <span className="aurora-gradient-text">Every surface.</span>
         </h1>
-        <p
-          className="aurora-reveal mx-auto mt-5 max-w-[640px] text-[17px]"
-          style={{ animationDelay: "120ms", color: "var(--aurora-text-muted)" }}
-        >
+        <p className="aurora-reveal aurora-text-lead mx-auto mt-5 max-w-[640px]" style={{ animationDelay: "120ms" }}>
           Aurora is an operator-grade, dark-first design system for agent products — a shadcn component
           registry, cross-platform tokens, and matching themes for the editors, terminals, and tools you live in.
         </p>
@@ -144,10 +138,8 @@ export default function LandingPage() {
         </div>
         <div className="aurora-reveal mx-auto mt-8 w-fit max-w-full" style={{ animationDelay: "240ms" }}>
           <div className="flex items-center gap-3 rounded-[var(--aurora-radius-1)] py-2.5 pl-4 pr-3" style={panelStrong}>
-            <span className="font-mono text-[13px]" style={{ color: "var(--aurora-accent-primary)" }}>
-              $
-            </span>
-            <code className="truncate font-mono text-[13px]" style={{ color: "var(--aurora-text-primary)" }}>
+            <span className="aurora-text-code" style={{ color: "var(--aurora-accent-primary)" }}>$</span>
+            <code className="aurora-text-code truncate" style={{ color: "var(--aurora-text-primary)" }}>
               npx shadcn@latest add https://aurora.tootie.tv/r/aurora-tokens.json
             </code>
           </div>
@@ -173,14 +165,12 @@ export default function LandingPage() {
             >
               {p.icon}
             </div>
-            <h3 className="aurora-text-section" style={{ fontSize: 18 }}>
-              {p.title}
-            </h3>
-            <p className="mb-4 mt-1.5 text-[13.5px]" style={{ color: "var(--aurora-text-muted)" }}>
+            <h3 className="aurora-text-section">{p.title}</h3>
+            <p className="aurora-text-body-sm mb-4 mt-1.5" style={{ color: "var(--aurora-text-muted)" }}>
               {p.body}
             </p>
             <span
-              className="inline-flex items-center gap-1.5 text-xs font-semibold transition-all group-hover:gap-2.5"
+              className="aurora-text-control inline-flex items-center gap-1.5 transition-all group-hover:gap-2.5"
               style={{ color: "var(--aurora-accent-primary)" }}
             >
               {p.meta} <ArrowRight size={14} strokeWidth={2} />
@@ -194,7 +184,7 @@ export default function LandingPage() {
           <div>
             <div className="aurora-text-eyebrow mb-2">Themes</div>
             <h2 className="aurora-text-display-2">Your whole workspace, in Aurora</h2>
-            <p className="mt-2 max-w-[560px] text-sm" style={{ color: "var(--aurora-text-muted)" }}>
+            <p className="aurora-text-lead mt-2 max-w-[560px]">
               Not just the app — the navy base, cyan primary, rose secondary, and violet AI accents reach every
               tool you touch. Pick a surface and install in one line.
             </p>
@@ -224,12 +214,22 @@ export default function LandingPage() {
               }}
             >
               <div className="flex items-baseline gap-2">
-                <div className="aurora-text-display-2" style={{ fontSize: 30, lineHeight: 1 }}>
+                <div
+                  style={{
+                    fontFamily: "var(--aurora-font-display)",
+                    fontSize: 30,
+                    fontWeight: 800,
+                    lineHeight: 1,
+                    letterSpacing: "-0.02em",
+                    fontVariantNumeric: "tabular-nums",
+                    color: "var(--aurora-text-primary)",
+                  }}
+                >
                   {n}
                 </div>
                 <div className="aurora-text-eyebrow">{t}</div>
               </div>
-              <div className="mt-1.5 text-xs" style={{ color: "var(--aurora-text-muted)" }}>
+              <div className="aurora-text-caption mt-1.5" style={{ color: "var(--aurora-text-muted)" }}>
                 {l}
               </div>
             </div>

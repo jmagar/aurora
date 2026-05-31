@@ -12,7 +12,7 @@ const NAV = [
   { label: "Overview", href: "/" },
   { label: "Components", href: "/gallery/buttons" },
   { label: "Themes", href: "/themes" },
-  { label: "Tokens", href: "/gallery/colors" },
+  { label: "Tokens", href: "/tokens" },
 ]
 
 const GITHUB_URL = "https://github.com/jmagar/aurora-design-system"
@@ -71,7 +71,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           <LabbyMark size={26} />
           <AuroraWordmark fontSize={17} />
           <span
-            className="ml-0.5 hidden pl-2 text-[11px] sm:inline"
+            className="aurora-text-meta ml-0.5 hidden pl-2 sm:inline"
             style={{ color: "var(--aurora-text-muted)", borderLeft: "1px solid var(--aurora-border-strong)" }}
           >
             Design system
@@ -85,7 +85,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-[10px] border px-3 py-[7px] text-[13px] font-[560] transition-colors"
+                className="aurora-text-control rounded-[10px] border px-3 py-[7px] transition-colors"
                 style={{
                   color: active ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
                   background: active ? "var(--aurora-control-surface)" : "transparent",
@@ -142,11 +142,13 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         style={{ borderTop: "1px solid var(--aurora-border-default)" }}
       >
         <div
-          className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-4 text-[13px]"
+          className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-4"
           style={{ color: "var(--aurora-text-muted)" }}
         >
-          <span>Aurora design system — operator-first, built for Labby.</span>
-          <span className="font-mono">aurora.tootie.tv</span>
+          <span className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)" }}>
+            Aurora design system — operator-first, built for Labby.
+          </span>
+          <span className="aurora-text-code">aurora.tootie.tv</span>
         </div>
       </footer>
     </div>

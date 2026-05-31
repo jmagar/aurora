@@ -410,6 +410,27 @@
   line-height: 1.25;
 }
 
+/* Marketing scale — site landing/section heroes only. A scaled display-1:
+   same Manrope face, same -0.045em tracking, larger optical size. Not for
+   in-app/operator surfaces (use display-1/-2 there). */
+.aurora-text-display-hero {
+  color: var(--aurora-text-primary);
+  font-family: var(--aurora-font-display);
+  font-size: clamp(40px, 7vw, 76px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.aurora-text-lead {
+  color: var(--aurora-text-muted);
+  font-family: var(--aurora-font-sans);
+  font-size: clamp(15px, 2.2vw, 18px);
+  font-weight: var(--aurora-weight-body);
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
 .aurora-slider::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 999px;
