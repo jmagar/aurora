@@ -31,7 +31,6 @@ export function ReadmeDialog({ theme }: { theme: AuroraTheme }) {
     if (!open || fetched.current) return
     fetched.current = true
     let cancelled = false
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStatus("loading")
     fetch(`/api/readme?path=${encodeURIComponent(readmePath)}`)
       .then((r) => (r.ok ? r.text() : Promise.reject(new Error(`${r.status}`))))
