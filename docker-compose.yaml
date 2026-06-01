@@ -20,8 +20,19 @@ services:
       - aurora-node-modules:/app/node_modules
       - aurora-next-cache:/app/.next
       - aurora-pnpm-store:/pnpm/store
-    command: sh -c "pnpm install --frozen-lockfile --config.confirmModulesPurge=false --store-dir /pnpm/store && pnpm dev --hostname 0.0.0.0"
+    # Clear Turbopack's persistent cache on every (re)start so a corrupted cache
+    # DB can never survive a restart and trigger a deadlock loop (see 2026-06-01 incident).
+    command: sh -c "rm -rf /app/.next/cache && pnpm install --frozen-lockfile --config.confirmModulesPurge=false --store-dir /pnpm/store && pnpm dev --hostname 0.0.0.0"
     restart: unless-stopped
+    # Detect a wedged dev server (holds the port but stops serving) so restart fires.
+    healthcheck:
+      # Use 127.0.0.1, not localhost: busybox wget tries IPv6 ::1 first, but Next
+      # listens on IPv4 0.0.0.0 — localhost would falsely report unhealthy.
+      test: ["CMD", "wget", "-q", "-T", "5", "-O", "/dev/null", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
     networks:
       - app
 
