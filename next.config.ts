@@ -39,6 +39,20 @@ const nextConfig: NextConfig = {
       ],
     };
   },
+  async redirects() {
+    return [
+      {
+        source: "/young_office",
+        destination: "/young_office/index.html",
+        permanent: false,
+      },
+      {
+        source: "/young_office/",
+        destination: "/young_office/index.html",
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {
