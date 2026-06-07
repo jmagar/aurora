@@ -8,6 +8,9 @@ kotlin {
     explicitApi()
 }
 
+// Token generation task — tracks the source files that produce tokens JSON before compileKotlin
+val generatedTokensDir = layout.buildDirectory.dir("generated/aurora-tokens/kotlin")
+
 android {
     namespace = "tv.tootie.aurora"
     compileSdk = 36
@@ -29,9 +32,6 @@ android {
         jvmTarget = "17"
     }
 }
-
-// Token generation task — tracks the source files that produce tokens JSON before compileKotlin
-val generatedTokensDir = layout.buildDirectory.dir("generated/aurora-tokens/kotlin")
 
 val generateAuroraTokens by tasks.registering(Exec::class) {
     workingDir = rootDir.parentFile  // project root (where package.json lives)
@@ -58,11 +58,11 @@ val generateAuroraTokens by tasks.registering(Exec::class) {
     description = "Generate Android token JSON and Kotlin token files from Aurora CSS"
 }
 
-android.sourceSets["main"].kotlin.srcDir(generatedTokensDir)
-
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     dependsOn(generateAuroraTokens)
 }
+
+android.sourceSets["main"].kotlin.srcDir(generatedTokensDir)
 
 dependencies {
     val bom = platform(libs.compose.bom)

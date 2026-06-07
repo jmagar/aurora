@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { sanitizeMarkdownHref } from "@/lib/markdown-links"
 
 /**
  * Minimal, dependency-free Markdown renderer tuned to Aurora tokens. Handles the
@@ -159,10 +160,16 @@ function Inline({ text }: { text: string }) {
       nodes.push(<em key={key++}>{tok.slice(1, -1)}</em>)
     } else {
       const lm = tok.match(/^\[([^\]]+)\]\(([^)]+)\)$/)!
+      const href = sanitizeMarkdownHref(lm[2])
+      if (!href) {
+        nodes.push(lm[1])
+        last = m.index + tok.length
+        continue
+      }
       nodes.push(
         <a
           key={key++}
-          href={lm[2]}
+          href={href}
           target="_blank"
           rel="noreferrer"
           style={{ color: "var(--aurora-accent-primary)", textDecoration: "underline", textUnderlineOffset: 2 }}

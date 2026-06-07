@@ -9,7 +9,7 @@ Operator-first design system for [Labby](https://github.com/jmagar/labby) — an
 Aurora is a shadcn-compatible registry for agent products and operator-grade application workflows.
 
 It is a dark-first, operator-grade design system featuring:
-- **128 registry items** — 64 UI primitives + 63 composed blocks + the Aurora token style layer
+- **129 registry items** — 2 style entries + 64 UI primitives + 63 composed blocks
 - **CSS custom properties** — compatible with both dark and light themes
 - **shadcn registry** — install any component with one command
 - **Manrope + Inter + JetBrains Mono** font stack
@@ -173,8 +173,19 @@ stable.
 ```bash
 pnpm install
 pnpm dev        # starts on http://localhost:3000
-pnpm build
 pnpm lint
+pnpm audit:composition
+pnpm exec tsc --noEmit
+pnpm audit --audit-level high
+pnpm build
+pnpm audit:standalone
+pnpm registry:build
+pnpm tokens:generate
+
+# Android gates
+cd android
+./gradlew :app:testDebugUnitTest --no-daemon
+./gradlew :aurora:lintDebug --no-daemon
 ```
 
 ## Contributing

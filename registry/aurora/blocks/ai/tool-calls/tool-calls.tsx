@@ -3,16 +3,9 @@
 import * as React from "react"
 import { ChevronDown, FilePenLine, FileText, Search, Terminal, Wrench } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
+import { groupConsecutiveCalls, summarizeToolCallGroup, type ToolCallGroup, type ToolCallModel } from "./tool-calls-model"
 
-export interface ToolCall {
-  id: string
-  tool: string
-  args: Record<string, unknown>
-  status: "running" | "completed" | "error"
-  result?: string
-  startedAt?: Date
-  completedAt?: Date
-}
+export type ToolCall = ToolCallModel
 
 export interface ToolCallsProps {
   calls: ToolCall[]
@@ -270,6 +263,149 @@ function ToolCallRow({ call }: { call: ToolCall }) {
   )
 }
 
+function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
+  const [expanded, setExpanded] = React.useState(false)
+  const summary = summarizeToolCallGroup(group)
+  const count = group.calls.length
+
+  if (count === 1) {
+    return <ToolCallRow call={group.calls[0]} />
+  }
+
+  return (
+    <div
+      style={{
+        display: "block",
+        width: expanded ? "min(100%, 560px)" : "fit-content",
+        maxWidth: "100%",
+        border: `1px solid ${expanded ? "var(--aurora-border-strong)" : "var(--aurora-border-default)"}`,
+        borderRadius: expanded ? 16 : 999,
+        background: expanded ? "var(--aurora-surface-raised)" : "var(--aurora-panel-strong)",
+        boxShadow: expanded ? "var(--aurora-shadow-medium), var(--aurora-highlight-medium)" : "var(--aurora-highlight-medium)",
+        overflow: "hidden",
+        transition: "border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease",
+      }}
+    >
+      <Button
+        variant="plain"
+        size="unstyled"
+        onClick={() => setExpanded((open) => !open)}
+        aria-expanded={expanded}
+        aria-label={`${group.tool} tool calls, ${count} calls, ${group.status}`}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 7,
+          width: expanded ? "100%" : "auto",
+          maxWidth: "100%",
+          minWidth: expanded ? undefined : "min(100%, 220px)",
+          padding: expanded ? "8px 12px" : "7px 10px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <StatusDot status={group.status} />
+        <ToolIcon tool={group.tool} />
+        <span
+          style={{
+            minWidth: 0,
+            color: expanded ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
+            fontSize: 12,
+            fontWeight: expanded ? 650 : 600,
+            lineHeight: 1.35,
+            fontFamily: "var(--aurora-font-mono)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {expanded ? group.tool : summary}
+        </span>
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minWidth: 22,
+            height: 18,
+            padding: "0 7px",
+            borderRadius: 999,
+            border: "1px solid var(--aurora-border-default)",
+            color: "var(--aurora-text-muted)",
+            fontSize: 11,
+            fontVariantNumeric: "tabular-nums",
+            lineHeight: 1,
+          }}
+        >
+          {count}
+        </span>
+        <span
+          style={
+            expanded
+              ? {
+                  marginLeft: "auto",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }
+              : {
+                  display: "inline-flex",
+                  alignItems: "center",
+                }
+          }
+        >
+          <Chevron expanded={expanded} />
+        </span>
+      </Button>
+
+      {expanded && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            padding: "0 12px 12px",
+          }}
+        >
+          {group.calls.map((call, index) => (
+            <div
+              key={call.id}
+              style={{
+                display: "grid",
+                gap: 8,
+                paddingTop: index === 0 ? 0 : 8,
+                borderTop: index === 0 ? "none" : "1px solid var(--aurora-border-default)",
+              }}
+            >
+              <div
+                className="aurora-text-label"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 7,
+                  color: "var(--aurora-text-muted)",
+                  fontSize: 11,
+                }}
+              >
+                <StatusDot status={call.status} />
+                <span>{call.tool}</span>
+                <span style={{ fontVariantNumeric: "tabular-nums" }}>#{index + 1}</span>
+              </div>
+              <DetailCard label="input">{JSON.stringify(call.args, null, 2)}</DetailCard>
+              {call.result && (
+                <DetailCard label="output" tone={call.status === "error" ? "var(--aurora-error)" : "var(--aurora-text-primary)"}>
+                  {call.result}
+                </DetailCard>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 const TOOL_CALLS_KEYFRAMES = `
 @keyframes aurora-spin {
   to { transform: rotate(360deg); }
@@ -277,6 +413,8 @@ const TOOL_CALLS_KEYFRAMES = `
 `
 
 export function ToolCalls({ calls }: ToolCallsProps) {
+  const groups = React.useMemo(() => groupConsecutiveCalls(calls), [calls])
+
   return (
     <>
       <style href="aurora-tool-calls-keyframes" precedence="default">{TOOL_CALLS_KEYFRAMES}</style>
@@ -290,8 +428,8 @@ export function ToolCalls({ calls }: ToolCallsProps) {
           width: "100%",
         }}
       >
-        {calls.map((call) => (
-          <ToolCallRow key={call.id} call={call} />
+        {groups.map((group) => (
+          <ToolCallGroupRow key={group.id} group={group} />
         ))}
 
         {calls.length === 0 && (

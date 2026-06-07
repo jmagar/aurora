@@ -121,7 +121,7 @@ public fun AuroraInputOtp(
                         },
                         shape = RoundedCornerShape(8.dp),
                     )
-                    .focusRequester(focusRequesters.getOrElse(index) { FocusRequester() })
+                    .focusRequester(focusRequesters[index])
                     .onFocusChanged { state ->
                         if (state.isFocused) focusedIndex.value = index
                         else if (focusedIndex.value == index) focusedIndex.value = -1

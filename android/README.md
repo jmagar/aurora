@@ -29,6 +29,20 @@ pnpm run tokens:generate   # Runs from repo root — generates AuroraColors.kt
 
 Generated file: `android/aurora/build/generated/aurora-tokens/kotlin/tv/tootie/aurora/tokens/AuroraColors.kt`
 
+## Verification
+
+Run these from the repo root unless noted:
+
+```bash
+pnpm run tokens:generate
+pnpm run registry:build
+
+cd android
+./gradlew :app:testDebugUnitTest --no-daemon
+./gradlew :aurora:lintDebug --no-daemon
+./gradlew :app:assembleDebug --no-daemon
+```
+
 ## Token Mapping
 
 | CSS Token | Kotlin Token | Usage |

@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  web:
+    name: Web, registry, and standalone
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run audit:composition
+      - run: pnpm exec tsc --noEmit
+      - run: pnpm audit --audit-level high
+      - run: pnpm run test:unit
+      - run: pnpm run build
+      - run: pnpm run audit:standalone
+      - run: pnpm run registry:build
+      - run: pnpm run tokens:generate
+      - name: Generated artifacts are committed
+        run: git diff --exit-code
+
+  android:
+    name: Android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - run: pnpm install --frozen-lockfile
+      - run: ./gradlew :app:testDebugUnitTest --no-daemon
+        working-directory: android
+      - run: ./gradlew :aurora:lintDebug --no-daemon
+        working-directory: android

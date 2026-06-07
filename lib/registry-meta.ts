@@ -26,6 +26,36 @@ const BY_NAME: Record<string, RegistryItem> = Object.fromEntries(
   items.map((item) => [item.name, item])
 )
 
+export const SECTION_TITLE_OVERRIDES: Record<string, string> = {
+  colors: "Color tokens",
+  type: "Typography",
+  spacing: "Spacing & radii",
+  brand: "Brand & mark",
+  lightmode: "Light mode",
+  oauth: "OAuth flow",
+  kbd: "Kbd",
+}
+
+export const SECTION_REDIRECTS: Record<string, string> = {
+  queue: "task",
+  resizable: "resizable-panels",
+  table: "tables",
+}
+
+export function formatSectionTitle(section: string) {
+  const override = SECTION_TITLE_OVERRIDES[section]
+  if (override) return override
+
+  const words = section.split("-").map((word) => {
+    if (word === "ai") return "AI"
+    if (word === "otp") return "OTP"
+    if (word === "jsx") return "JSX"
+    return word.charAt(0).toUpperCase() + word.slice(1)
+  })
+
+  return words.join(" ")
+}
+
 // Gallery slug → registry item name. Handles plurals and aliases.
 // NOTE: ai- prefix normalization is handled in getRegistryMeta(), not here —
 // "ai-message" strips to "message" as a fallback when the ai-* slug itself is absent.
