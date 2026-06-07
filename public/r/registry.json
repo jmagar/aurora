@@ -32,7 +32,7 @@
       "cssVars": {
         "theme": {
           "font-aurora-display": "'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
-          "font-aurora-sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          "font-aurora-sans": "'Inter', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
           "font-aurora-mono": "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace",
           "radius-aurora-1": "14px",
           "radius-aurora-2": "18px",
@@ -82,7 +82,7 @@
           "aurora-radius-2": "18px",
           "aurora-radius-3": "22px",
           "aurora-font-display": "'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
-          "aurora-font-sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          "aurora-font-sans": "'Inter', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
           "aurora-font-mono": "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace",
           "aurora-type-body": "14px",
           "aurora-type-body-sm": "13px",
@@ -206,6 +206,39 @@
           }
         }
       }
+    },
+    {
+      "name": "aurora-fonts",
+      "type": "registry:style",
+      "title": "Aurora Hosted Fonts",
+      "description": "Hosted Manrope, Inter, Noto Sans, and JetBrains Mono @font-face declarations for Aurora typography tokens.",
+      "files": [
+        {
+          "path": "registry/aurora/styles/aurora-fonts.css",
+          "type": "registry:style"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "categories": [
+        "aurora",
+        "style",
+        "fonts"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "style",
+        "requiresTokens": false,
+        "sourcePath": "registry/aurora/styles/aurora-fonts.css",
+        "hostedAssets": [
+          "https://aurora.tootie.tv/fonts/aurora/manrope-var.woff2",
+          "https://aurora.tootie.tv/fonts/aurora/inter-var.woff2",
+          "https://aurora.tootie.tv/fonts/aurora/noto-sans-var.woff2",
+          "https://aurora.tootie.tv/fonts/aurora/jetbrains-mono-var.woff2"
+        ]
+      },
+      "docs": "Install after aurora-tokens when the consuming app should use Aurora-hosted webfonts instead of system fallbacks.\n\nImport this stylesheet before aurora-tokens or alongside it at the app root."
     },
     {
       "name": "aurora-button",
