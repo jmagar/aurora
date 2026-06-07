@@ -1069,6 +1069,11 @@
           "path": "registry/aurora/blocks/ai/tool-calls/tool-calls.tsx",
           "type": "registry:component",
           "target": "@components/aurora/tool-calls.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/tool-calls/tool-calls-model.ts",
+          "type": "registry:component",
+          "target": "@components/aurora/tool-calls-model.ts"
         }
       ],
       "author": "jmagar <https://github.com/jmagar>",
