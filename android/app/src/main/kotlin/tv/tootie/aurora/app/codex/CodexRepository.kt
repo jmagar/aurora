@@ -3,6 +3,7 @@ package tv.tootie.aurora.app.codex
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -111,6 +112,7 @@ class CodexRepository {
      * Callers (e.g. [SidebarViewModel]) should `first { it }` before issuing
      * requests that require an established connection.
      */
+    @OptIn(ExperimentalCoroutinesApi::class)
     val isReady: StateFlow<Boolean> = _currentClient
         .flatMapLatest { c -> c?.isInitialized ?: flowOf(false) }
         .stateIn(scope, kotlinx.coroutines.flow.SharingStarted.Eagerly, false)

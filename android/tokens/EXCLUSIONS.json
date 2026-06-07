@@ -15,7 +15,7 @@
     },
     {
       "name": "--aurora-font-sans",
-      "rawValue": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+      "rawValue": "'Inter', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
       "reason": "font-family"
     },
     {

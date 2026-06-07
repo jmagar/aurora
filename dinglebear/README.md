@@ -30,5 +30,10 @@ So a browser hitting `dinglebear.ai` gets `public/dinglebear/index.html`, while
 **not** reference the sibling `.jsx` files. To update the live page, replace
 `public/dinglebear/index.html`.
 
+The standalone export uses `innerHTML` only to render fixed, repo-local arrays
+embedded in the page. Do not feed remote, user-authored, or CMS-provided data
+into those templates; if the fleet data ever becomes external, rebuild those
+sections with DOM nodes and `textContent` instead.
+
 > This folder is intentionally walled off from the Aurora design system. Don't
 > wire Aurora tokens, the registry, or `themes/` into it.

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { notFound, redirect } from "next/navigation"
 import dynamic from "next/dynamic"
-import { getRegistryMeta } from "@/lib/registry-meta"
+import { formatSectionTitle, getRegistryMeta, SECTION_REDIRECTS } from "@/lib/registry-meta"
 import { ComponentInstall } from "@/components/component-install"
 
 const COMPONENT_DEMOS: Record<string, React.ComponentType> = {
@@ -101,16 +101,6 @@ const AI_CANONICAL_DEMOS: Record<string, React.ComponentType> = Object.fromEntri
   Object.entries(AI_DEMOS).map(([slug, Demo]) => [`ai-${slug}`, Demo])
 )
 
-const SECTION_TITLE_OVERRIDES: Record<string, string> = {
-  colors: "Color tokens",
-  type: "Typography",
-  spacing: "Spacing & radii",
-  brand: "Brand & mark",
-  lightmode: "Light mode",
-  oauth: "OAuth flow",
-  kbd: "Kbd",
-}
-
 const DEMOS: Record<string, React.ComponentType> = {
   ...COMPONENT_DEMOS,
   ...AI_DEMOS,
@@ -183,28 +173,8 @@ const DEMOS: Record<string, React.ComponentType> = {
   lightmode:      dynamic(() => import("../demos/lightmode-demo")),
 }
 
-const SECTION_REDIRECTS: Record<string, string> = {
-  queue: "task",
-  resizable: "resizable-panels",
-  table: "tables",
-}
-
 export function generateStaticParams() {
   return Object.keys(DEMOS).map((section) => ({ section }))
-}
-
-function formatSectionTitle(section: string) {
-  const override = SECTION_TITLE_OVERRIDES[section]
-  if (override) return override
-
-  const words = section.split("-").map((word) => {
-    if (word === "ai") return "AI"
-    if (word === "otp") return "OTP"
-    if (word === "jsx") return "JSX"
-    return word.charAt(0).toUpperCase() + word.slice(1)
-  })
-
-  return words.join(" ")
 }
 
 export default async function SectionPage({ params }: { params: Promise<{ section: string }> }) {
