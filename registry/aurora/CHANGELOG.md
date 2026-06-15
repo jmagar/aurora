@@ -32,3 +32,19 @@ need to account for.
   `input` event, instead of constructing a detached element and passing it as
   `event.target`. Form libraries (react-hook-form, Formik) reading `e.target.name` /
   `e.target.form` from the clear event now receive the real element.
+- **`unstyled` escape hatch (additive API, no behavior change).** New optional
+  `unstyled?: boolean` prop (default `false`). When `true`, the component renders a
+  **bare `<input>`** — no wrapper `<div>`, no inline style skin, no imperative
+  `onFocus`/`onBlur` border/box-shadow mutation, and no adornment/clear logic —
+  forwarding only `className`, the `ref`, `type`, `value`/`defaultValue`/`onChange`,
+  and the remaining props, so the consumer's className/CSS fully controls
+  appearance. Lets bespoke-CSS-styled inputs route through the primitive. Existing
+  (styled) usage is unchanged.
+
+### Kbd (`ui/kbd.tsx`)
+
+- **`unstyled` escape hatch (additive API, no behavior change).** New optional
+  `unstyled?: boolean` prop (default `false`). When `true`, the component renders a
+  **bare `<kbd>`** with only `className` and the forwarded props/ref and **no inline
+  style object**, so the consumer's CSS fully controls appearance. Existing (styled)
+  usage is unchanged.
