@@ -54,3 +54,6 @@ next-env.d.ts
 
 # webwright / screenshot scratch
 /outputs/
+
+# codex marketplace assets (large generated PNGs, not part of the registry)
+/public/codex-marketplace/
