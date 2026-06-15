@@ -183,11 +183,15 @@ fun SettingsScreen(
                 onClick = {
                     scope.launch {
                         try {
+                            // Persist the non-secret fields first; setAuthToken (the only
+                            // setter that can throw on Keystore failure) runs last, so a
+                            // failure leaves every other field correctly saved and only the
+                            // token unchanged — matching the error message below.
                             settings.setServerUrl(url)
-                            settings.setAuthToken(token.takeIf { it.isNotBlank() })
                             settings.setModel(model)
                             settings.setApprovalPolicy(selectedApprovalPolicy.wire)
                             settings.setApprovalsReviewer(selectedReviewer.wire)
+                            settings.setAuthToken(token.takeIf { it.isNotBlank() })
                             val app = ctx.applicationContext as CodexApp
                             app.repository.reconnect(url, token.takeIf { it.isNotBlank() })
                             onBack()

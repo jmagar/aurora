@@ -163,6 +163,12 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
                             }
                             _state.update { it.copy(step = LoginStep.Success) }
                         } catch (e: SecretPersistException) {
+                            // The setters are sequential and non-atomic: an earlier one may
+                            // have committed before a later one threw, leaving a half-saved
+                            // auth state. Roll back to a clean slate so the next launch
+                            // doesn't read a method/key without a usable auth token.
+                            // clearAuth() only removes keys (no encryption) so it can't throw.
+                            settings.clearAuth()
                             _state.update {
                                 it.copy(
                                     step = LoginStep.Error,

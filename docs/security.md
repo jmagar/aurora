@@ -88,9 +88,15 @@ emulator alias for the host machine's loopback). Cleartext is permitted **only
 for local/dev hosts**, scoped via `network_security_config.xml`.
 
 Remote hosts are **not** auto-upgraded to TLS: for a remote connection the user
-must enter a `wss://` URL themselves. There is **no enforcement in code** that
-rejects a cleartext `ws://` URL pointing at a remote host, so the burden of
-choosing `wss://` for non-local destinations is on the user.
+must enter a `wss://` URL themselves, and there is **no application-level code**
+that rejects a cleartext `ws://` URL aimed at a remote host. On **API ≥ 28**
+(the platform's default), however, cleartext to any host outside the
+`network_security_config.xml` allow-list (`10.0.2.2` / `127.0.0.1` / `localhost`)
+is **blocked by the OS** — a remote `ws://` connection simply fails rather than
+silently sending in the clear. The residual window where a remote `ws://` would
+be permitted is **API 24–27** (`minSdk = 24`), where the platform default allows
+cleartext; on those versions choosing `wss://` for non-local destinations is on
+the user.
 
 There is also currently **no certificate pinning** on that connection — this is
 a known limitation.
