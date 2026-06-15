@@ -33,7 +33,9 @@ import kotlinx.coroutines.launch
 import tv.tootie.aurora.app.CodexApp
 import tv.tootie.aurora.app.codex.ApprovalPolicy
 import tv.tootie.aurora.app.codex.ApprovalsReviewer
+import android.widget.Toast
 import tv.tootie.aurora.app.data.AppSettings
+import tv.tootie.aurora.app.data.SecretPersistException
 import tv.tootie.aurora.components.AuroraButton
 import tv.tootie.aurora.components.AuroraButtonVariant
 import tv.tootie.aurora.components.AuroraDropdownMenu
@@ -180,14 +182,24 @@ fun SettingsScreen(
             AuroraButton(
                 onClick = {
                     scope.launch {
-                        settings.setServerUrl(url)
-                        settings.setAuthToken(token.takeIf { it.isNotBlank() })
-                        settings.setModel(model)
-                        settings.setApprovalPolicy(selectedApprovalPolicy.wire)
-                        settings.setApprovalsReviewer(selectedReviewer.wire)
-                        val app = ctx.applicationContext as CodexApp
-                        app.repository.reconnect(url, token.takeIf { it.isNotBlank() })
-                        onBack()
+                        try {
+                            settings.setServerUrl(url)
+                            settings.setAuthToken(token.takeIf { it.isNotBlank() })
+                            settings.setModel(model)
+                            settings.setApprovalPolicy(selectedApprovalPolicy.wire)
+                            settings.setApprovalsReviewer(selectedReviewer.wire)
+                            val app = ctx.applicationContext as CodexApp
+                            app.repository.reconnect(url, token.takeIf { it.isNotBlank() })
+                            onBack()
+                        } catch (e: SecretPersistException) {
+                            // Keystore encryption failed — don't reconnect with a half-saved
+                            // state or crash the coroutine; the previous token is preserved.
+                            Toast.makeText(
+                                ctx,
+                                "Couldn't securely save your token on this device. Please try again.",
+                                Toast.LENGTH_LONG,
+                            ).show()
+                        }
                     }
                 },
                 variant = AuroraButtonVariant.Filled,

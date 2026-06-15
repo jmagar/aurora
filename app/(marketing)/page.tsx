@@ -13,6 +13,8 @@ import registry from "@/registry.json"
 // Derive the component count from the registry source so the marketing copy
 // can never drift from the actual number of published registry items.
 const REGISTRY_ITEM_COUNT = registry.items.length
+const UI_PRIMITIVE_COUNT = registry.items.filter((i) => i.type === "registry:ui").length
+const BLOCK_COUNT = registry.items.filter((i) => i.type === "registry:block").length
 
 export const metadata = {
   title: "Aurora — one palette, every surface",
@@ -25,7 +27,7 @@ const PILLARS = [
     icon: <Blocks size={20} strokeWidth={1.6} />,
     tone: "--aurora-accent-primary",
     title: "Components",
-    body: `${REGISTRY_ITEM_COUNT} registry items — 64 UI primitives plus composed AI, workspace, files, auth, and feedback blocks. Install one with the shadcn CLI.`,
+    body: `${REGISTRY_ITEM_COUNT} registry items — ${UI_PRIMITIVE_COUNT} UI primitives plus ${BLOCK_COUNT} composed AI, workspace, files, auth, and feedback blocks. Install one with the shadcn CLI.`,
     meta: "Open the gallery",
     href: "/gallery/buttons",
   },

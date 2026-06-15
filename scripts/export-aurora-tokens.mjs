@@ -252,8 +252,10 @@ function exclusionReason(rawValue) {
 // ─── CSS extraction ───────────────────────────────────────────────────────────
 
 // Module-level map of --aurora-varName → raw value string, populated by the
-// run path. `resolveToken` reads this global. Declared here (not inside the
-// isMain guard) so its scope matches the original top-level behavior.
+// run path. `resolveToken` reads this global. It must be declared here, not
+// inside the `if (isMain)` guard: `resolveToken` is a top-level function that
+// closes over `rawVars`, so moving this declaration into the guard would put
+// `rawVars` out of scope for that function.
 /** @type {Record<string, string>} */
 let rawVars = {};
 

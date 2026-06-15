@@ -47,6 +47,15 @@ function loadDemoKeys(): Set<string> {
 
 const DEMO_KEYS = loadDemoKeys()
 
+// Parse-floor tripwire: the demo keys are extracted from page.tsx by regex, so a
+// refactor that breaks the regex could yield an empty set and make every
+// consistency assertion below pass vacuously. The real count is ~140; a floor of
+// 50 catches a broken parser without being brittle to normal churn.
+assert.ok(
+  DEMO_KEYS.size > 50,
+  `demo-key parse likely broke — found ${DEMO_KEYS.size} keys, expected far more`,
+)
+
 const REGISTRY_NAMES: Set<string> = new Set(
   (JSON.parse(
     readFileSync(new URL("../registry.json", import.meta.url), "utf8"),

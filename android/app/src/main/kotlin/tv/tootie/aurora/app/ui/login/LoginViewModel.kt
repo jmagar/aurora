@@ -19,6 +19,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import tv.tootie.aurora.app.codex.CodexClient
 import tv.tootie.aurora.app.codex.LoginMethodType
 import tv.tootie.aurora.app.data.AppSettings
+import tv.tootie.aurora.app.data.SecretPersistException
 
 // ---------------------------------------------------------------------------
 // State
@@ -137,25 +138,38 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
                         // AUTH_TOKEN is the credential that CodexRepository uses for
                         // authenticated connections — always write it so that ChatViewModel
                         // (and any other ViewModel that calls repo.connect()) can authenticate.
-                        if (apiKey != null) {
-                            settings.setApiKey(apiKey)
-                            settings.setAuthMethod(LoginMethodType.apiKey.name)
-                            settings.setAuthToken(apiKey)
+                        // The secret setters throw SecretPersistException if Keystore
+                        // encryption fails; catch it here so the login flow surfaces an
+                        // error to the user instead of cancelling the message collection
+                        // (an uncaught throw would tear down this launchIn coroutine).
+                        try {
+                            if (apiKey != null) {
+                                settings.setApiKey(apiKey)
+                                settings.setAuthMethod(LoginMethodType.apiKey.name)
+                                settings.setAuthToken(apiKey)
+                            }
+                            if (accessToken != null) {
+                                settings.setAccessToken(accessToken)
+                                // For ChatGPT methods, accessToken is the credential used
+                                // as the Bearer token on the main authenticated connection.
+                                if (apiKey == null) settings.setAuthToken(accessToken)
+                            }
+                            if (accountId != null) {
+                                settings.setChatgptAccountId(accountId)
+                            }
+                            if (apiKey == null && (accessToken != null || accountId != null)) {
+                                val completedMethod = pendingLoginMethod ?: LoginMethodType.chatgpt
+                                settings.setAuthMethod(completedMethod.name)
+                            }
+                            _state.update { it.copy(step = LoginStep.Success) }
+                        } catch (e: SecretPersistException) {
+                            _state.update {
+                                it.copy(
+                                    step = LoginStep.Error,
+                                    errorMessage = "Couldn't securely store your credentials on this device. Please try again.",
+                                )
+                            }
                         }
-                        if (accessToken != null) {
-                            settings.setAccessToken(accessToken)
-                            // For ChatGPT methods, accessToken is the credential used
-                            // as the Bearer token on the main authenticated connection.
-                            if (apiKey == null) settings.setAuthToken(accessToken)
-                        }
-                        if (accountId != null) {
-                            settings.setChatgptAccountId(accountId)
-                        }
-                        if (apiKey == null && (accessToken != null || accountId != null)) {
-                            val completedMethod = pendingLoginMethod ?: LoginMethodType.chatgpt
-                            settings.setAuthMethod(completedMethod.name)
-                        }
-                        _state.update { it.copy(step = LoginStep.Success) }
                     }
                     "account/login/deviceCode" -> {
                         // Notification path (server-push) — same shape as response path above.

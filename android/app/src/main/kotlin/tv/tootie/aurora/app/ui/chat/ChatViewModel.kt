@@ -64,6 +64,8 @@ data class FileChangeItem(
 
 data class ToolApproval(
     val itemId: String,
+    // Correlation key. Removal/resolution assumes server-id uniqueness; if two pending
+    // entries share a rawServerId (a tie), the reducer removes ALL matches (see reduceApprovals).
     val rawServerId: JsonElement,
     val type: String,              // "command" or "fileChange"
     val command: String? = null,   // already sanitized
@@ -144,8 +146,10 @@ internal sealed interface ApprovalEvent {
     data class Requested(val approval: ToolApproval) : ApprovalEvent
     /** The user (or VM) resolved a specific approval, identified by server id. */
     data class Approved(val rawServerId: JsonElement) : ApprovalEvent
-    /** serverRequest/resolved: drop the matching id, or clear all if id is null. */
-    data class Resolved(val rawServerId: JsonElement?) : ApprovalEvent
+    /** serverRequest/resolved with a specific id: drop the matching approval. */
+    data class Resolved(val rawServerId: JsonElement) : ApprovalEvent
+    /** serverRequest/resolved without an id: clear ALL pending approvals. */
+    data object ResolvedAll : ApprovalEvent
 }
 
 /**
@@ -158,9 +162,8 @@ internal fun reduceApprovals(
 ): List<ToolApproval> = when (event) {
     is ApprovalEvent.Requested -> pending + event.approval
     is ApprovalEvent.Approved -> pending.filter { it.rawServerId != event.rawServerId }
-    is ApprovalEvent.Resolved ->
-        if (event.rawServerId != null) pending.filter { it.rawServerId != event.rawServerId }
-        else emptyList()
+    is ApprovalEvent.Resolved -> pending.filter { it.rawServerId != event.rawServerId }
+    ApprovalEvent.ResolvedAll -> emptyList()
 }
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -189,18 +192,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     // dirty (no extra job). So a burst of N tokens collapses to ~one emission per 50ms
     // (≈20 fps) instead of N emissions, while latency stays imperceptible. Completion
     // events (item/agentMessage completed, commandExecution completed, turn/completed,
-    // interrupt) flush synchronously so final text is never stranded in the buffer.
-    private val agentMessageBuffer = StringBuilder()  // visible streaming agent message text
-    private var agentBufferId: String? = null         // message id the buffer belongs to
-    // Buffer for the reasoning-summary line currently being streamed. On flush its
-    // contents replace the last entry of ChatState.reasoning. Reset on summaryPartAdded.
-    private val reasoningBuffer = StringBuilder()
-    private var reasoningDirty = false
-    // Set when buffered streaming text has not yet been snapshotted into ChatState.
-    private var streamDirty = false
-    // Set when a ToolCall.out StringBuilder was mutated in place and the list needs
-    // a fresh reference emitted so Compose recomposes (StringBuilder identity is equal).
-    private var commandOutputDirty = false
+    // interrupt, error) flush synchronously so final text is never stranded in the buffer.
+    //
+    // The pure buffer state machine (buffers + dirty flags) lives in StreamCoalescer.
+    // The VM keeps the timing: viewModelScope, delay(STREAM_FLUSH_MS), and flushJob below.
+    private val coalescer = StreamCoalescer()
     private var flushJob: Job? = null
 
     private companion object {
@@ -212,17 +208,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private fun resetStreamBuffers() {
         flushJob?.cancel()
         flushJob = null
-        agentMessageBuffer.setLength(0)
-        agentBufferId = null
-        reasoningBuffer.setLength(0)
-        reasoningDirty = false
-        commandOutputDirty = false
-        streamDirty = false
+        coalescer.reset()
     }
 
     /** Schedule a coalesced flush of buffered streaming text into ChatState. */
     private fun scheduleFlush() {
-        streamDirty = true
         if (flushJob?.isActive == true) return
         flushJob = viewModelScope.launch {
             delay(STREAM_FLUSH_MS)
@@ -236,33 +226,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
      * tick and synchronously at item/turn completion.
      */
     private fun flushStreaming() {
-        if (!streamDirty) return
-        val emitAgent = agentBufferId != null
-        val emitReasoning = reasoningDirty
-        val emitCommand = commandOutputDirty
-        streamDirty = false
-        reasoningDirty = false
-        commandOutputDirty = false
-        val aid = agentBufferId
-        val agentText = agentMessageBuffer.toString()
-        val reasoningText = reasoningBuffer.toString()
-        _state.update { s ->
-            var next = s
-            if (emitAgent && aid != null) {
-                next = next.copy(msgs = next.msgs.map { if (it.id == aid) it.copy(content = agentText) else it })
-            }
-            if (emitReasoning && next.reasoning.isNotEmpty()) {
-                val lines = next.reasoning.toMutableList()
-                lines[lines.lastIndex] = reasoningText
-                next = next.copy(reasoning = lines)
-            }
-            if (emitCommand) {
-                // ToolCall.out is mutated in place; emit a fresh list reference so the
-                // streamed command output recomposes in the UI.
-                next = next.copy(toolCalls = next.toolCalls.toList())
-            }
-            next
-        }
+        if (!coalescer.isDirty) return
+        _state.update { s -> coalescer.flush(s) }
     }
 
     private val _state = MutableStateFlow(ChatState())
@@ -274,6 +239,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         repo.skillsFlow.onEach { handleSkills(it) }.launchIn(viewModelScope)
         repo.turnEventsFlow.onEach { handle(it) }.launchIn(viewModelScope)
         repo.errorsFlow.onEach { e ->
+            // Commit any buffered streaming text before teardown so a connection drop
+            // racing a pending flush doesn't strand the last <50ms of streamed text.
+            // Idempotent; mirrors the "error" event handler and interrupt().
+            flushJob?.cancel()
+            flushStreaming()
+            coalescer.clearAgentBuffer()
             // Clear steerText on connection drop so it doesn't reference a lost turn
             val lostSteer = steerText.getAndSet(null)
             _state.update { s ->
@@ -413,7 +384,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         // Commit any buffered streaming text so partial output survives the interrupt.
         flushJob?.cancel()
         flushStreaming()
-        agentBufferId = null
+        coalescer.clearAgentBuffer()
         repo.interrupt(tid)
         _state.update { it.copy(thinking = false, activeTurnId = null) }
     }
@@ -688,21 +659,15 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (aid != null && (itemId == null || itemId == aid)) {
                     // Continuation of the active message: append to the non-state buffer
                     // and snapshot on a debounce instead of rebuilding the list per token.
-                    if (agentBufferId != aid) {
-                        // Buffer belongs to a previous message — seed from current content.
-                        agentMessageBuffer.setLength(0)
-                        agentMessageBuffer.append(_state.value.msgs.find { it.id == aid }?.content ?: "")
-                        agentBufferId = aid
-                    }
-                    agentMessageBuffer.append(delta)
+                    // The coalescer re-seeds from current content if the buffer id changed.
+                    val priorContent = _state.value.msgs.find { it.id == aid }?.content ?: ""
+                    coalescer.appendAgentDelta(aid, delta, priorContent)
                     scheduleFlush()
                 } else {
                     // New assistant message: emit immediately so the bubble appears, and
                     // seed the buffer so subsequent deltas coalesce.
                     flushStreaming() // commit any prior message's buffered tail first
-                    agentMessageBuffer.setLength(0)
-                    agentMessageBuffer.append(delta)
-                    agentBufferId = resolvedId
+                    coalescer.startAgentMessage(resolvedId, delta)
                     _state.update { s -> s.copy(msgs = s.msgs + ChatMsg(resolvedId, MsgRole.Assistant, delta), assistantId = resolvedId) }
                 }
             }
@@ -716,7 +681,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 // Force a final flush of any buffered streaming text before the turn closes.
                 flushJob?.cancel()
                 flushStreaming()
-                agentBufferId = null
+                coalescer.clearAgentBuffer()
                 // Snapshot buffered raw reasoning to state once at turn end (avoids per-delta emissions)
                 val raw = rawReasoningBuffer.toString()
                 _state.update { it.copy(thinking = false, assistantId = null, rawReasoning = raw, activeTurnId = null) }
@@ -768,7 +733,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (type == "agentMessage") {
                     // Commit buffered text for this message before clearing the active id.
                     flushStreaming()
-                    if (agentBufferId == id) agentBufferId = null
+                    if (coalescer.agentBufferId == id) coalescer.clearAgentBuffer()
                     _state.update { it.copy(assistantId = null) }
                     return
                 }
@@ -809,7 +774,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 // UI-visible refresh into the debounced flush.
                 val target = _state.value.toolCalls.find { it.id == itemId } ?: return
                 target.out.append(out)
-                commandOutputDirty = true
+                coalescer.markCommandDirty()
                 scheduleFlush()
             }
 
@@ -819,13 +784,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (_state.value.reasoning.isEmpty()) {
                     // No part started yet — create the first line immediately so the
                     // reasoning section appears, and seed the buffer for coalescing.
-                    reasoningBuffer.setLength(0)
-                    reasoningBuffer.append(delta)
+                    coalescer.startReasoning(delta)
                     _state.update { s -> s.copy(reasoning = listOf(delta)) }
                 } else {
-                    reasoningBuffer.append(delta)
+                    coalescer.appendReasoning(delta)
                 }
-                reasoningDirty = true
                 scheduleFlush()
             }
 
@@ -833,7 +796,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             // Commit the prior line's buffered tail first, then reset the buffer.
             "item/reasoning/summaryPartAdded" -> {
                 flushStreaming()
-                reasoningBuffer.setLength(0)
+                coalescer.resetReasoningLine()
                 _state.update { s ->
                     s.copy(reasoning = s.reasoning + "")
                 }
@@ -875,6 +838,14 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
             // Errors
             "error" -> {
+                // Commit any buffered streaming text before teardown. A sub-50ms error
+                // followed by sessionInvalidated (which resetStreamBuffers + cancels the
+                // pending flushJob) would otherwise drop the last <50ms of streamed text.
+                // Mirrors interrupt()/turn-completed; flushStreaming() is idempotent so it
+                // never double-emits when the buffer is clean.
+                flushJob?.cancel()
+                flushStreaming()
+                coalescer.clearAgentBuffer()
                 val errMsg = params?.get("error")?.jsonObject?.get("message")?.jsonPrimitive?.content
                     ?: msg.error?.message
                 _state.update { it.copy(error = errMsg, thinking = false) }
@@ -912,8 +883,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             "serverRequest/resolved" -> {
                 // Extract the resolved request ID if the server provides it; otherwise clear all
                 val resolvedId = params?.get("id")
+                val event = if (resolvedId == null) ApprovalEvent.ResolvedAll
+                            else ApprovalEvent.Resolved(resolvedId)
                 _state.update { s ->
-                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Resolved(resolvedId)))
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, event))
                 }
             }
         }

@@ -69,10 +69,10 @@ class ApprovalReducerTest {
     }
 
     @Test
-    fun `resolved without id clears all pending approvals`() {
+    fun `resolvedAll clears all pending approvals`() {
         val a = approval(idA, "item-A")
         val b = approval(idB, "item-B")
-        val after = reduceApprovals(listOf(a, b), ApprovalEvent.Resolved(null))
+        val after = reduceApprovals(listOf(a, b), ApprovalEvent.ResolvedAll)
         assertTrue(after.isEmpty())
     }
 
