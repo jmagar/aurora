@@ -1,7 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { cn, devWarn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
+
+function devWarn(message: string): void {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(message)
+  }
+}
 
 export type StatusTone = "online" | "syncing" | "queued" | "degraded" | "offline" | "error" | "automating"
 

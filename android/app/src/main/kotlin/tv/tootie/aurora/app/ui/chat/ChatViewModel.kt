@@ -3,7 +3,9 @@ package tv.tootie.aurora.app.ui.chat
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -125,6 +127,42 @@ internal fun String.sanitizeForDisplay(): String {
         .replace(Regex("[​-‍﻿]"), "")                  // zero-width + BOM
 }
 
+/**
+ * Pure state transitions for the pending-approval list (P1-6).
+ *
+ * Extracted from ChatViewModel so the human-in-the-loop approval correlation logic
+ * can be unit-tested without an Android runtime. All transitions correlate by
+ * [ToolApproval.rawServerId] identity (the JsonElement server id), never by list
+ * position — so approving/removing always targets the intended request.
+ *
+ * The reducer is side-effect free: it never auto-accepts. The ViewModel performs the
+ * actual repo.sendApproval(...) network call and then applies [ApprovalEvent.Approved]
+ * to drop the resolved entry.
+ */
+internal sealed interface ApprovalEvent {
+    /** A new approval request arrived from the server. */
+    data class Requested(val approval: ToolApproval) : ApprovalEvent
+    /** The user (or VM) resolved a specific approval, identified by server id. */
+    data class Approved(val rawServerId: JsonElement) : ApprovalEvent
+    /** serverRequest/resolved: drop the matching id, or clear all if id is null. */
+    data class Resolved(val rawServerId: JsonElement?) : ApprovalEvent
+}
+
+/**
+ * Apply an [ApprovalEvent] to the pending-approval list, returning the new list.
+ * Pure: no side effects, correlates strictly by rawServerId identity.
+ */
+internal fun reduceApprovals(
+    pending: List<ToolApproval>,
+    event: ApprovalEvent,
+): List<ToolApproval> = when (event) {
+    is ApprovalEvent.Requested -> pending + event.approval
+    is ApprovalEvent.Approved -> pending.filter { it.rawServerId != event.rawServerId }
+    is ApprovalEvent.Resolved ->
+        if (event.rawServerId != null) pending.filter { it.rawServerId != event.rawServerId }
+        else emptyList()
+}
+
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
     private val repo: CodexRepository = (app as CodexApp).repository
@@ -138,6 +176,94 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     // only on turn/completed or when the UI opts in to display it.
     private val rawReasoningBuffer = StringBuilder()
     private val steerText = java.util.concurrent.atomic.AtomicReference<String?>(null)
+
+    // --- Streaming coalescing buffers (P0-2) ---
+    // Per-token deltas used to rebuild the immutable message list + re-emit ChatState,
+    // which is O(n²) over the streamed length. Instead we accumulate the active
+    // streaming text in non-state StringBuilders (mirroring rawReasoningBuffer) and
+    // snapshot into ChatState on a short debounce, plus a forced flush at item/turn
+    // completion. Text still streams visibly; only the emit cadence changes.
+    //
+    // Chosen cadence: STREAM_FLUSH_MS (50ms) fixed-window coalesce — the first delta
+    // schedules one flush 50ms out; further deltas in that window only mark the buffer
+    // dirty (no extra job). So a burst of N tokens collapses to ~one emission per 50ms
+    // (≈20 fps) instead of N emissions, while latency stays imperceptible. Completion
+    // events (item/agentMessage completed, commandExecution completed, turn/completed,
+    // interrupt) flush synchronously so final text is never stranded in the buffer.
+    private val agentMessageBuffer = StringBuilder()  // visible streaming agent message text
+    private var agentBufferId: String? = null         // message id the buffer belongs to
+    // Buffer for the reasoning-summary line currently being streamed. On flush its
+    // contents replace the last entry of ChatState.reasoning. Reset on summaryPartAdded.
+    private val reasoningBuffer = StringBuilder()
+    private var reasoningDirty = false
+    // Set when buffered streaming text has not yet been snapshotted into ChatState.
+    private var streamDirty = false
+    // Set when a ToolCall.out StringBuilder was mutated in place and the list needs
+    // a fresh reference emitted so Compose recomposes (StringBuilder identity is equal).
+    private var commandOutputDirty = false
+    private var flushJob: Job? = null
+
+    private companion object {
+        const val STREAM_FLUSH_MS = 50L
+    }
+
+    /** Reset all streaming buffers + cancel any pending flush. Call when a new turn
+     *  begins and the prior msgs/toolCalls/reasoning state is being cleared. */
+    private fun resetStreamBuffers() {
+        flushJob?.cancel()
+        flushJob = null
+        agentMessageBuffer.setLength(0)
+        agentBufferId = null
+        reasoningBuffer.setLength(0)
+        reasoningDirty = false
+        commandOutputDirty = false
+        streamDirty = false
+    }
+
+    /** Schedule a coalesced flush of buffered streaming text into ChatState. */
+    private fun scheduleFlush() {
+        streamDirty = true
+        if (flushJob?.isActive == true) return
+        flushJob = viewModelScope.launch {
+            delay(STREAM_FLUSH_MS)
+            flushStreaming()
+        }
+    }
+
+    /**
+     * Snapshot all buffered streaming text into ChatState in a single update.
+     * Idempotent and safe to call when nothing is dirty. Called on the debounce
+     * tick and synchronously at item/turn completion.
+     */
+    private fun flushStreaming() {
+        if (!streamDirty) return
+        val emitAgent = agentBufferId != null
+        val emitReasoning = reasoningDirty
+        val emitCommand = commandOutputDirty
+        streamDirty = false
+        reasoningDirty = false
+        commandOutputDirty = false
+        val aid = agentBufferId
+        val agentText = agentMessageBuffer.toString()
+        val reasoningText = reasoningBuffer.toString()
+        _state.update { s ->
+            var next = s
+            if (emitAgent && aid != null) {
+                next = next.copy(msgs = next.msgs.map { if (it.id == aid) it.copy(content = agentText) else it })
+            }
+            if (emitReasoning && next.reasoning.isNotEmpty()) {
+                val lines = next.reasoning.toMutableList()
+                lines[lines.lastIndex] = reasoningText
+                next = next.copy(reasoning = lines)
+            }
+            if (emitCommand) {
+                // ToolCall.out is mutated in place; emit a fresh list reference so the
+                // streamed command output recomposes in the UI.
+                next = next.copy(toolCalls = next.toolCalls.toList())
+            }
+            next
+        }
+    }
 
     private val _state = MutableStateFlow(ChatState())
     val state: StateFlow<ChatState> = _state.asStateFlow()
@@ -163,6 +289,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }.launchIn(viewModelScope)
         repo.sessionInvalidated.onEach {
             // Clear all transient state on reconnect — pendingApprovals prevents stuck modal
+            resetStreamBuffers()
             _state.update { it.copy(threadId = null, msgs = emptyList(), pendingApprovals = emptyList()) }
             viewModelScope.launch { settings.clearThreadId() }
         }.launchIn(viewModelScope)
@@ -237,6 +364,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         rawReasoningBuffer.clear()
+        resetStreamBuffers()
         _state.update { s ->
             s.copy(
                 msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, displayContent),
@@ -282,6 +410,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun interrupt() {
         val tid = _state.value.threadId ?: return
+        // Commit any buffered streaming text so partial output survives the interrupt.
+        flushJob?.cancel()
+        flushStreaming()
+        agentBufferId = null
         repo.interrupt(tid)
         _state.update { it.copy(thinking = false, activeTurnId = null) }
     }
@@ -320,6 +452,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         val idx = _state.value.msgs.indexOfFirst { it.id == editing.id }
         val trimmed = if (idx >= 0) _state.value.msgs.take(idx) else _state.value.msgs
         rawReasoningBuffer.clear()
+        resetStreamBuffers()
         _state.update { s ->
             s.copy(
                 msgs = trimmed,
@@ -354,6 +487,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         val images = _state.value.pendingAttachments
         val inv = SkillInvocation(id = "explicit-$skillName", skillName = skillName, source = SkillSource.EXPLICIT)
         rawReasoningBuffer.clear()
+        resetStreamBuffers()
         _state.update { s ->
             val existing = s.skillInvocations.any { it.skillName.equals(skillName, ignoreCase = true) }
             s.copy(
@@ -395,12 +529,27 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Resolve the currently displayed approval. The UI renders
+     * pendingApprovals.firstOrNull(), so this targets the same entry the user sees.
+     */
     fun approveToolCall(decision: String) {
         val approval = _state.value.pendingApprovals.firstOrNull() ?: return
+        approveToolCall(approval, decision)
+    }
+
+    /**
+     * Resolve a specific approval by identity. Human-in-the-loop: the decision is
+     * always sent explicitly; nothing is auto-accepted. Removal is correlated by
+     * rawServerId via [reduceApprovals], so concurrent serverRequest/resolved races
+     * never drop the wrong entry.
+     */
+    fun approveToolCall(approval: ToolApproval, decision: String) {
         val sent = repo.sendApproval(approval.rawServerId, decision)
         if (sent) {
-            // Use identity-based removal to handle concurrent serverRequest/resolved races
-            _state.update { it.copy(pendingApprovals = it.pendingApprovals.filter { a -> a.rawServerId != approval.rawServerId }) }
+            _state.update {
+                it.copy(pendingApprovals = reduceApprovals(it.pendingApprovals, ApprovalEvent.Approved(approval.rawServerId)))
+            }
         } else {
             _state.update { it.copy(error = "Could not send approval — connection lost. Reconnecting...") }
         }
@@ -537,8 +686,23 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val aid = _state.value.assistantId
                 val resolvedId = itemId ?: aid ?: "a${System.currentTimeMillis()}"
                 if (aid != null && (itemId == null || itemId == aid)) {
-                    _state.update { s -> s.copy(msgs = s.msgs.map { if (it.id == aid) it.copy(content = it.content + delta) else it }) }
+                    // Continuation of the active message: append to the non-state buffer
+                    // and snapshot on a debounce instead of rebuilding the list per token.
+                    if (agentBufferId != aid) {
+                        // Buffer belongs to a previous message — seed from current content.
+                        agentMessageBuffer.setLength(0)
+                        agentMessageBuffer.append(_state.value.msgs.find { it.id == aid }?.content ?: "")
+                        agentBufferId = aid
+                    }
+                    agentMessageBuffer.append(delta)
+                    scheduleFlush()
                 } else {
+                    // New assistant message: emit immediately so the bubble appears, and
+                    // seed the buffer so subsequent deltas coalesce.
+                    flushStreaming() // commit any prior message's buffered tail first
+                    agentMessageBuffer.setLength(0)
+                    agentMessageBuffer.append(delta)
+                    agentBufferId = resolvedId
                     _state.update { s -> s.copy(msgs = s.msgs + ChatMsg(resolvedId, MsgRole.Assistant, delta), assistantId = resolvedId) }
                 }
             }
@@ -549,6 +713,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(thinking = true, activeTurnId = turnId, assistantId = null) }
             }
             "turn/completed" -> {
+                // Force a final flush of any buffered streaming text before the turn closes.
+                flushJob?.cancel()
+                flushStreaming()
+                agentBufferId = null
                 // Snapshot buffered raw reasoning to state once at turn end (avoids per-delta emissions)
                 val raw = rawReasoningBuffer.toString()
                 _state.update { it.copy(thinking = false, assistantId = null, rawReasoning = raw, activeTurnId = null) }
@@ -598,12 +766,17 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val id = item["id"]?.jsonPrimitive?.content ?: return
                 val type = item["type"]?.jsonPrimitive?.content
                 if (type == "agentMessage") {
+                    // Commit buffered text for this message before clearing the active id.
+                    flushStreaming()
+                    if (agentBufferId == id) agentBufferId = null
                     _state.update { it.copy(assistantId = null) }
                     return
                 }
                 val failed = item["status"]?.jsonPrimitive?.content == "failed"
                 when (type) {
                     "commandExecution" -> {
+                        // Flush any buffered output so the final text + done flag land together.
+                        flushStreaming()
                         _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }) }
                     }
                     "mcpToolCall" -> {
@@ -632,21 +805,35 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             "item/commandExecution/outputDelta" -> {
                 val itemId = params?.get("itemId")?.jsonPrimitive?.content ?: return
                 val out = params["delta"]?.jsonPrimitive?.content ?: return
-                _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == itemId) { it.out.append(out); it } else it }) }
+                // Append in place (no per-token list rebuild + emit); coalesce the
+                // UI-visible refresh into the debounced flush.
+                val target = _state.value.toolCalls.find { it.id == itemId } ?: return
+                target.out.append(out)
+                commandOutputDirty = true
+                scheduleFlush()
             }
 
             // Reasoning summary — extends the current (last) step with streamed characters
             "item/reasoning/summaryTextDelta" -> {
                 val delta = params?.get("delta")?.jsonPrimitive?.content ?: return
-                _state.update { s ->
-                    val lines = s.reasoning.toMutableList()
-                    if (lines.isEmpty()) lines.add(delta) else lines[lines.lastIndex] += delta
-                    s.copy(reasoning = lines)
+                if (_state.value.reasoning.isEmpty()) {
+                    // No part started yet — create the first line immediately so the
+                    // reasoning section appears, and seed the buffer for coalescing.
+                    reasoningBuffer.setLength(0)
+                    reasoningBuffer.append(delta)
+                    _state.update { s -> s.copy(reasoning = listOf(delta)) }
+                } else {
+                    reasoningBuffer.append(delta)
                 }
+                reasoningDirty = true
+                scheduleFlush()
             }
 
-            // Reasoning summary — a new summary part begins; append a fresh step
+            // Reasoning summary — a new summary part begins; append a fresh step.
+            // Commit the prior line's buffered tail first, then reset the buffer.
             "item/reasoning/summaryPartAdded" -> {
+                flushStreaming()
+                reasoningBuffer.setLength(0)
                 _state.update { s ->
                     s.copy(reasoning = s.reasoning + "")
                 }
@@ -701,34 +888,32 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val decisions = params?.get("availableDecisions")?.jsonArray
                     ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")
                 _state.update { s ->
-                    s.copy(pendingApprovals = s.pendingApprovals + ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
                         rawServerId = rawId,
                         type = "command",
                         command = safeCommand,
                         reason = reason,
                         availableDecisions = decisions,
-                    ))
+                    ))))
                 }
             }
             "item/fileChange/requestApproval" -> {
                 val rawId = event.msg.id ?: return
                 _state.update { s ->
-                    s.copy(pendingApprovals = s.pendingApprovals + ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
                         rawServerId = rawId,
                         type = "fileChange",
                         reason = params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay(),
-                    ))
+                    ))))
                 }
             }
             "serverRequest/resolved" -> {
                 // Extract the resolved request ID if the server provides it; otherwise clear all
                 val resolvedId = params?.get("id")
                 _state.update { s ->
-                    s.copy(pendingApprovals = if (resolvedId != null)
-                        s.pendingApprovals.filter { it.rawServerId != resolvedId }
-                    else emptyList())
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Resolved(resolvedId)))
                 }
             }
         }

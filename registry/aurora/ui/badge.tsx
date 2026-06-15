@@ -3,7 +3,13 @@
 // BREAKING: badgeVariants export removed in this version. See badgeVariants deprecation shim below.
 
 import * as React from "react"
-import { cn, devWarn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
+
+function devWarn(message: string): void {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(message)
+  }
+}
 
 export type BadgeTone = "info" | "success" | "warn" | "error" | "neutral" | "rose" | "violet"
 

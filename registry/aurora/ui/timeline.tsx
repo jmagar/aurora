@@ -1,9 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { cn, devWarn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { toneColor } from "./status-indicator"
 import type { StatusTone } from "./status-indicator"
+
+function devWarn(message: string): void {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(message)
+  }
+}
 
 export type TimelineProps = React.HTMLAttributes<HTMLOListElement>
 

@@ -54,4 +54,9 @@ USER node
 
 EXPOSE 3000
 
+# Use 127.0.0.1, not localhost: busybox wget tries IPv6 ::1 first, but Next
+# listens on IPv4 0.0.0.0 — localhost would falsely report unhealthy.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD wget -q -T 5 -O /dev/null http://127.0.0.1:3000/ || exit 1
+
 CMD ["node", "server.js"]

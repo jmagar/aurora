@@ -8,6 +8,11 @@ import { LabbyMark } from "@/components/labby-brand"
 import { SpectrumBar } from "@/components/site/site-ui"
 import { panelStrong, tint } from "@/components/site/style-tokens"
 import { AURORA_THEMES, AURORA_SPECTRUM, type AuroraTheme } from "@/lib/themes"
+import registry from "@/registry.json"
+
+// Derive the component count from the registry source so the marketing copy
+// can never drift from the actual number of published registry items.
+const REGISTRY_ITEM_COUNT = registry.items.length
 
 export const metadata = {
   title: "Aurora — one palette, every surface",
@@ -20,7 +25,7 @@ const PILLARS = [
     icon: <Blocks size={20} strokeWidth={1.6} />,
     tone: "--aurora-accent-primary",
     title: "Components",
-    body: "128 registry items — 64 UI primitives plus composed AI, workspace, files, auth, and feedback blocks. Install one with the shadcn CLI.",
+    body: `${REGISTRY_ITEM_COUNT} registry items — 64 UI primitives plus composed AI, workspace, files, auth, and feedback blocks. Install one with the shadcn CLI.`,
     meta: "Open the gallery",
     href: "/gallery/buttons",
   },
@@ -73,7 +78,6 @@ function BentoTile({ theme, big }: { theme: AuroraTheme; big?: boolean }) {
         fill
         sizes={big ? "(max-width:760px) 100vw, 560px" : "(max-width:760px) 50vw, 280px"}
         className="object-cover transition-transform duration-500 group-hover:scale-[1.05]"
-        unoptimized
       />
       <div
         className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3.5"

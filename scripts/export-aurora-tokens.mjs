@@ -40,7 +40,7 @@ const EXCLUSIONS_PATH = resolve(OUTPUT_DIR, 'EXCLUSIONS.json');
  * Parse a CSS color string to [r, g, b, a] where r/g/b ∈ [0,255], a ∈ [0,1].
  * Returns null if unparseable.
  */
-function parseColor(str) {
+export function parseColor(str) {
   str = str.trim().toLowerCase();
 
   if (str === 'transparent') return [0, 0, 0, 0];
@@ -86,12 +86,12 @@ function parseColor(str) {
 }
 
 /** Clamp n to [0, 255] and return as 2-digit hex. */
-function hex2(n) {
+export function hex2(n) {
   return Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
 }
 
 /** Convert [r,g,b,a] to lowercase hex string (#rrggbb or #rrggbbaa). */
-function rgbaToHex(r, g, b, a) {
+export function rgbaToHex(r, g, b, a) {
   const base = `#${hex2(r)}${hex2(g)}${hex2(b)}`;
   if (a >= 0.9999) return base;
   return `${base}${hex2(a * 255)}`;
@@ -114,7 +114,7 @@ function rgbaToHex(r, g, b, a) {
  * @param {[number,number,number,number]} colorB - [r,g,b,a]
  * @returns {string} hex color
  */
-function blendColors(colorA, percentA, colorB) {
+export function blendColors(colorA, percentA, colorB) {
   const [rA, gA, bA, aA] = colorA;
   const [rB, gB, bB, aB] = colorB;
   const pA = percentA / 100;
@@ -137,7 +137,7 @@ function blendColors(colorA, percentA, colorB) {
 const COLOR_MIX_RE =
   /^color-mix\(\s*in\s+srgb\s*,\s*(.+?)\s+(\d+(?:\.\d+)?)%\s*,\s*(.+?)(?:\s+(\d+(?:\.\d+)?)%)?\s*\)$/;
 
-function colorMixPercentages(firstPercent, secondPercent) {
+export function colorMixPercentages(firstPercent, secondPercent) {
   const first = parseFloat(firstPercent);
   const second = secondPercent === undefined ? 100 - first : parseFloat(secondPercent);
   const total = first + second;
@@ -150,7 +150,7 @@ function colorMixPercentages(firstPercent, secondPercent) {
  * evaluate it and return a hex string. Returns null if not a color-mix or
  * the colors cannot be parsed.
  */
-function tryResolveColorMix(value) {
+export function tryResolveColorMix(value) {
   const m = value.trim().match(COLOR_MIX_RE);
   if (!m) return null;
   const [, rawA, pctStr, rawB, rawPctB] = m;
@@ -166,7 +166,7 @@ function tryResolveColorMix(value) {
  * Resolve all var(--aurora-*) references in a value string.
  * Stops at depth 20 to prevent infinite loops on circular references.
  */
-function resolveVars(value, vars, visited = new Set(), depth = 0) {
+export function resolveVars(value, vars, visited = new Set(), depth = 0) {
   if (depth > 20) {
     console.warn(`  warn: var() depth limit reached for value: ${value.slice(0, 60)}`);
     return value;
@@ -251,12 +251,24 @@ function exclusionReason(rawValue) {
 
 // ─── CSS extraction ───────────────────────────────────────────────────────────
 
+// Module-level map of --aurora-varName → raw value string, populated by the
+// run path. `resolveToken` reads this global. Declared here (not inside the
+// isMain guard) so its scope matches the original top-level behavior.
+/** @type {Record<string, string>} */
+let rawVars = {};
+
+// Only execute the build/run side effects when invoked directly
+// (e.g. `node scripts/export-aurora-tokens.mjs` / `pnpm tokens:generate`),
+// not when the pure functions above are imported by a test.
+const isMain = process.argv[1] === fileURLToPath(import.meta.url);
+
+if (isMain) {
+
 console.log('Reading CSS:', CSS_SOURCE);
 const cssText = readFileSync(CSS_SOURCE, 'utf8');
 const ast = parse(cssText);
 
-/** @type {Record<string, string>} Map of --aurora-varName → raw value string */
-const rawVars = {};
+rawVars = {};
 
 walk(ast, function (node) {
   if (node.type !== 'Rule') return;
@@ -417,3 +429,5 @@ for (const [reason, n] of Object.entries(byReason).sort()) {
 }
 console.log(`  total excluded: ${exclusions.length}`);
 console.log('\nDone. Output validation passed.');
+
+} // end if (isMain)

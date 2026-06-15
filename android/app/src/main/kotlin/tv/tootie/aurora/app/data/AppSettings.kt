@@ -1,12 +1,20 @@
 package tv.tootie.aurora.app.data
 
 import android.content.Context
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
+import android.util.Base64
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import java.security.KeyStore
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.spec.GCMParameterSpec
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -30,17 +38,80 @@ object Keys {
     val THREAD_UPDATED_AT = longPreferencesKey("thread_updated_at")
 }
 
+/**
+ * At-rest encryption for the secret settings (API key, ChatGPT access token, bearer auth token,
+ * ChatGPT account id). Values are encrypted with an AES-256/GCM key held in the AndroidKeyStore,
+ * which never leaves secure hardware. Only ciphertext is written to the (plaintext) DataStore file.
+ *
+ * Storage layout for an encrypted value: Base64(IV ‖ ciphertext+GCM-tag).
+ *
+ * Decrypt is intentionally lenient: any value that isn't valid ciphertext for the current key
+ * (e.g. a legacy plaintext value written before encryption was added, a corrupted entry, or a
+ * value encrypted under a key that has since been invalidated) decodes to `null` — treated as
+ * "no value" — rather than throwing. This keeps first-run/migration and key-reset graceful.
+ */
+private object SecretCrypto {
+    private const val KEYSTORE = "AndroidKeyStore"
+    private const val KEY_ALIAS = "aurora_app_settings_secret_key"
+    private const val TRANSFORMATION = "AES/GCM/NoPadding"
+    private const val IV_LENGTH = 12          // 96-bit nonce, recommended for GCM
+    private const val GCM_TAG_BITS = 128
+
+    private fun secretKey(): SecretKey {
+        val ks = KeyStore.getInstance(KEYSTORE).apply { load(null) }
+        (ks.getEntry(KEY_ALIAS, null) as? KeyStore.SecretKeyEntry)?.let { return it.secretKey }
+
+        val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, KEYSTORE)
+        val spec = KeyGenParameterSpec.Builder(
+            KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+        )
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(256)
+            .build()
+        generator.init(spec)
+        return generator.generateKey()
+    }
+
+    /** Encrypts [plain] and returns Base64(IV ‖ ciphertext), or `null` if encryption is unavailable. */
+    fun encrypt(plain: String): String? = runCatching {
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey())
+        val iv = cipher.iv
+        val ciphertext = cipher.doFinal(plain.toByteArray(Charsets.UTF_8))
+        val combined = ByteArray(iv.size + ciphertext.size)
+        System.arraycopy(iv, 0, combined, 0, iv.size)
+        System.arraycopy(ciphertext, 0, combined, iv.size, ciphertext.size)
+        Base64.encodeToString(combined, Base64.NO_WRAP)
+    }.getOrNull()
+
+    /** Decrypts a Base64(IV ‖ ciphertext) string. Returns `null` for null/blank/legacy/corrupt input. */
+    fun decrypt(stored: String?): String? {
+        if (stored.isNullOrEmpty()) return null
+        return runCatching {
+            val combined = Base64.decode(stored, Base64.NO_WRAP)
+            if (combined.size <= IV_LENGTH) return null
+            val iv = combined.copyOfRange(0, IV_LENGTH)
+            val ciphertext = combined.copyOfRange(IV_LENGTH, combined.size)
+            val cipher = Cipher.getInstance(TRANSFORMATION)
+            cipher.init(Cipher.DECRYPT_MODE, secretKey(), GCMParameterSpec(GCM_TAG_BITS, iv))
+            String(cipher.doFinal(ciphertext), Charsets.UTF_8)
+        }.getOrNull()
+    }
+}
+
 class AppSettings(private val ctx: Context) {
     // 10.0.2.2 = Android emulator alias for host machine's 127.0.0.1
     val serverUrl: Flow<String> = ctx.store.data.map { it[Keys.SERVER_URL] ?: "ws://10.0.2.2:4500" }
-    val authToken: Flow<String?> = ctx.store.data.map { it[Keys.AUTH_TOKEN] }
+    val authToken: Flow<String?> = ctx.store.data.map { SecretCrypto.decrypt(it[Keys.AUTH_TOKEN]) }
     val model: Flow<String> = ctx.store.data.map { it[Keys.MODEL] ?: "gpt-5.5" }
 
     // Auth method flows
     val authMethod: Flow<String?> = ctx.store.data.map { it[Keys.AUTH_METHOD] }
-    val apiKey: Flow<String?> = ctx.store.data.map { it[Keys.API_KEY] }
-    val accessToken: Flow<String?> = ctx.store.data.map { it[Keys.ACCESS_TOKEN] }
-    val chatgptAccountId: Flow<String?> = ctx.store.data.map { it[Keys.CHATGPT_ACCOUNT_ID] }
+    val apiKey: Flow<String?> = ctx.store.data.map { SecretCrypto.decrypt(it[Keys.API_KEY]) }
+    val accessToken: Flow<String?> = ctx.store.data.map { SecretCrypto.decrypt(it[Keys.ACCESS_TOKEN]) }
+    val chatgptAccountId: Flow<String?> = ctx.store.data.map { SecretCrypto.decrypt(it[Keys.CHATGPT_ACCOUNT_ID]) }
 
     // Approval policy flows
     val approvalPolicy: Flow<String> = ctx.store.data.map { it[Keys.APPROVAL_POLICY] ?: "on-request" }
@@ -53,7 +124,8 @@ class AppSettings(private val ctx: Context) {
 
     suspend fun setServerUrl(v: String) = ctx.store.edit { it[Keys.SERVER_URL] = v }
     suspend fun setAuthToken(v: String?) = ctx.store.edit {
-        if (v != null) it[Keys.AUTH_TOKEN] = v else it.remove(Keys.AUTH_TOKEN)
+        val enc = v?.let { SecretCrypto.encrypt(it) }
+        if (enc != null) it[Keys.AUTH_TOKEN] = enc else it.remove(Keys.AUTH_TOKEN)
     }
     suspend fun setModel(v: String) = ctx.store.edit { it[Keys.MODEL] = v }
 
@@ -61,13 +133,16 @@ class AppSettings(private val ctx: Context) {
         if (v != null) it[Keys.AUTH_METHOD] = v else it.remove(Keys.AUTH_METHOD)
     }
     suspend fun setApiKey(v: String?) = ctx.store.edit {
-        if (v != null) it[Keys.API_KEY] = v else it.remove(Keys.API_KEY)
+        val enc = v?.let { SecretCrypto.encrypt(it) }
+        if (enc != null) it[Keys.API_KEY] = enc else it.remove(Keys.API_KEY)
     }
     suspend fun setAccessToken(v: String?) = ctx.store.edit {
-        if (v != null) it[Keys.ACCESS_TOKEN] = v else it.remove(Keys.ACCESS_TOKEN)
+        val enc = v?.let { SecretCrypto.encrypt(it) }
+        if (enc != null) it[Keys.ACCESS_TOKEN] = enc else it.remove(Keys.ACCESS_TOKEN)
     }
     suspend fun setChatgptAccountId(v: String?) = ctx.store.edit {
-        if (v != null) it[Keys.CHATGPT_ACCOUNT_ID] = v else it.remove(Keys.CHATGPT_ACCOUNT_ID)
+        val enc = v?.let { SecretCrypto.encrypt(it) }
+        if (enc != null) it[Keys.CHATGPT_ACCOUNT_ID] = enc else it.remove(Keys.CHATGPT_ACCOUNT_ID)
     }
 
     suspend fun setApprovalPolicy(v: String) = ctx.store.edit { it[Keys.APPROVAL_POLICY] = v }

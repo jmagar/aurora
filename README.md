@@ -196,6 +196,12 @@ cd android
 4. Update `registry.json` with the new entry
 5. Use inline styles with Aurora CSS vars — never hardcode hex values
 
+## Security
+
+The web app sets a baseline of HTTP security headers (CSP, HSTS, `X-Frame-Options`,
+and more). See [`docs/security.md`](docs/security.md) for the full security posture
+and known limitations.
+
 ## License
 
 MIT
