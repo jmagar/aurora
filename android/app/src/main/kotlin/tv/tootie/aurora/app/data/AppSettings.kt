@@ -65,12 +65,33 @@ class SecretPersistException(message: String) : Exception(message)
  * encryption path is currently unverified by automated tests (no Robolectric/instrumentation
  * harness is set up for the AndroidKeyStore), so this is a visible, accepted decision.
  */
+
+/** 96-bit GCM nonce length; the stored envelope is IV ‖ ciphertext+tag. */
+internal const val SECRET_IV_LENGTH = 12
+
+/**
+ * Pure, JVM-testable pre-validation of a stored secret value. Splits a Base64(IV ‖ ciphertext)
+ * string into (iv, ciphertext), or returns `null` for null/blank/non-Base64/too-short input —
+ * exactly the lenient-decrypt branches that classify a value as "absent" BEFORE any
+ * AndroidKeyStore touch. The Base64 decoder is injectable so tests can use java.util.Base64
+ * instead of the Android stub; production uses the default android.util.Base64 decoder.
+ */
+internal fun parseSecretEnvelope(
+    stored: String?,
+    decode: (String) -> ByteArray = { Base64.decode(it, Base64.NO_WRAP) },
+): Pair<ByteArray, ByteArray>? {
+    if (stored.isNullOrEmpty()) return null
+    val combined = runCatching { decode(stored) }.getOrNull() ?: return null  // non-Base64 → absent
+    if (combined.size <= SECRET_IV_LENGTH) return null                         // too-short → absent
+    return combined.copyOfRange(0, SECRET_IV_LENGTH) to
+        combined.copyOfRange(SECRET_IV_LENGTH, combined.size)
+}
+
 private object SecretCrypto {
     private const val TAG = "SecretCrypto"
     private const val KEYSTORE = "AndroidKeyStore"
     private const val KEY_ALIAS = "aurora_app_settings_secret_key"
     private const val TRANSFORMATION = "AES/GCM/NoPadding"
-    private const val IV_LENGTH = 12          // 96-bit nonce, recommended for GCM
     private const val GCM_TAG_BITS = 128
 
     private fun secretKey(): SecretKey {
@@ -107,12 +128,8 @@ private object SecretCrypto {
 
     /** Decrypts a Base64(IV ‖ ciphertext) string. Returns `null` for null/blank/legacy/corrupt input. */
     fun decrypt(stored: String?): String? {
-        if (stored.isNullOrEmpty()) return null
+        val (iv, ciphertext) = parseSecretEnvelope(stored) ?: return null
         return runCatching {
-            val combined = Base64.decode(stored, Base64.NO_WRAP)
-            if (combined.size <= IV_LENGTH) return null
-            val iv = combined.copyOfRange(0, IV_LENGTH)
-            val ciphertext = combined.copyOfRange(IV_LENGTH, combined.size)
             val cipher = Cipher.getInstance(TRANSFORMATION)
             cipher.init(Cipher.DECRYPT_MODE, secretKey(), GCMParameterSpec(GCM_TAG_BITS, iv))
             String(cipher.doFinal(ciphertext), Charsets.UTF_8)

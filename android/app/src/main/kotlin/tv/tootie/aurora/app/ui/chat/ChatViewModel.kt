@@ -3,9 +3,7 @@ package tv.tootie.aurora.app.ui.chat
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -156,6 +155,17 @@ internal sealed interface ApprovalEvent {
  * Apply an [ApprovalEvent] to the pending-approval list, returning the new list.
  * Pure: no side effects, correlates strictly by rawServerId identity.
  */
+/**
+ * Normalize a server request id to a primitive correlation key. Codex request ids are scalars
+ * (string/number) on the wire, so a JsonPrimitive passes through UNCHANGED — the reducer's
+ * structural equality and the sendApproval echo are byte-identical for the real protocol. A
+ * (non-protocol) JsonObject/JsonArray id is collapsed to a deterministic primitive so it can't
+ * cause structural-equality collisions in correlation. Apply at id ingestion so every
+ * downstream use (ToolApproval.rawServerId, Approved/Resolved, the echo) shares one key.
+ */
+internal fun normalizeServerId(id: JsonElement): JsonElement =
+    if (id is JsonPrimitive) id else JsonPrimitive(id.toString())
+
 internal fun reduceApprovals(
     pending: List<ToolApproval>,
     event: ApprovalEvent,
@@ -195,9 +205,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     // interrupt, error) flush synchronously so final text is never stranded in the buffer.
     //
     // The pure buffer state machine (buffers + dirty flags) lives in StreamCoalescer.
-    // The VM keeps the timing: viewModelScope, delay(STREAM_FLUSH_MS), and flushJob below.
+    // The timing (coalesce window + cancel/flush ordering) lives in StreamFlushScheduler,
+    // which is driven by viewModelScope but is itself unit-testable with a TestScope.
     private val coalescer = StreamCoalescer()
-    private var flushJob: Job? = null
+    private val flushScheduler = StreamFlushScheduler(viewModelScope, STREAM_FLUSH_MS) { flushStreaming() }
 
     private companion object {
         const val STREAM_FLUSH_MS = 50L
@@ -206,19 +217,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     /** Reset all streaming buffers + cancel any pending flush. Call when a new turn
      *  begins and the prior msgs/toolCalls/reasoning state is being cleared. */
     private fun resetStreamBuffers() {
-        flushJob?.cancel()
-        flushJob = null
+        flushScheduler.cancel()
         coalescer.reset()
     }
 
     /** Schedule a coalesced flush of buffered streaming text into ChatState. */
-    private fun scheduleFlush() {
-        if (flushJob?.isActive == true) return
-        flushJob = viewModelScope.launch {
-            delay(STREAM_FLUSH_MS)
-            flushStreaming()
-        }
-    }
+    private fun scheduleFlush() = flushScheduler.schedule()
 
     /**
      * Snapshot all buffered streaming text into ChatState in a single update.
@@ -242,8 +246,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             // Commit any buffered streaming text before teardown so a connection drop
             // racing a pending flush doesn't strand the last <50ms of streamed text.
             // Idempotent; mirrors the "error" event handler and interrupt().
-            flushJob?.cancel()
-            flushStreaming()
+            flushScheduler.flushNow()
             coalescer.clearAgentBuffer()
             // Clear steerText on connection drop so it doesn't reference a lost turn
             val lostSteer = steerText.getAndSet(null)
@@ -382,8 +385,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     fun interrupt() {
         val tid = _state.value.threadId ?: return
         // Commit any buffered streaming text so partial output survives the interrupt.
-        flushJob?.cancel()
-        flushStreaming()
+        flushScheduler.flushNow()
         coalescer.clearAgentBuffer()
         repo.interrupt(tid)
         _state.update { it.copy(thinking = false, activeTurnId = null) }
@@ -679,8 +681,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             }
             "turn/completed" -> {
                 // Force a final flush of any buffered streaming text before the turn closes.
-                flushJob?.cancel()
-                flushStreaming()
+                flushScheduler.flushNow()
                 coalescer.clearAgentBuffer()
                 // Snapshot buffered raw reasoning to state once at turn end (avoids per-delta emissions)
                 val raw = rawReasoningBuffer.toString()
@@ -840,11 +841,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             "error" -> {
                 // Commit any buffered streaming text before teardown. A sub-50ms error
                 // followed by sessionInvalidated (which resetStreamBuffers + cancels the
-                // pending flushJob) would otherwise drop the last <50ms of streamed text.
+                // pending scheduled flush) would otherwise drop the last <50ms of streamed text.
                 // Mirrors interrupt()/turn-completed; flushStreaming() is idempotent so it
                 // never double-emits when the buffer is clean.
-                flushJob?.cancel()
-                flushStreaming()
+                flushScheduler.flushNow()
                 coalescer.clearAgentBuffer()
                 val errMsg = params?.get("error")?.jsonObject?.get("message")?.jsonPrimitive?.content
                     ?: msg.error?.message
@@ -852,7 +852,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             "item/commandExecution/requestApproval" -> {
-                val rawId = event.msg.id ?: return
+                val rawId = normalizeServerId(event.msg.id ?: return)
                 val rawCommand = params?.get("command")?.jsonPrimitive?.contentOrNull ?: ""
                 val safeCommand = rawCommand.sanitizeForDisplay()
                 val reason = params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
@@ -870,7 +870,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             "item/fileChange/requestApproval" -> {
-                val rawId = event.msg.id ?: return
+                val rawId = normalizeServerId(event.msg.id ?: return)
                 _state.update { s ->
                     s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
@@ -884,7 +884,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 // Extract the resolved request ID if the server provides it; otherwise clear all
                 val resolvedId = params?.get("id")
                 val event = if (resolvedId == null) ApprovalEvent.ResolvedAll
-                            else ApprovalEvent.Resolved(resolvedId)
+                            else ApprovalEvent.Resolved(normalizeServerId(resolvedId))
                 _state.update { s ->
                     s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, event))
                 }

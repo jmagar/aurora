@@ -37,8 +37,13 @@ internal class StreamCoalescer {
     // fresh reference emitted so Compose recomposes (StringBuilder identity is equal)
     private var commandOutputDirty = false
 
-    /** True when buffered text still needs to be flushed into ChatState. */
-    val isDirty: Boolean get() = streamDirty
+    /**
+     * True when any buffered text still needs to be flushed into ChatState. Derived from all
+     * three sub-flags so the flush gate can't drift from them: today every mutator that sets
+     * reasoning/command also sets streamDirty, but deriving the gate keeps that coupling from
+     * silently breaking if a future mutator forgets to flip streamDirty.
+     */
+    val isDirty: Boolean get() = streamDirty || reasoningDirty || commandOutputDirty
 
     /** Current agent-message buffer contents (test/inspection helper). */
     val agentText: String get() = agentMessageBuffer.toString()
