@@ -6,7 +6,7 @@ Cross-reference of every Aurora (shadcn/React) component and its nearest Jetpack
 
 Generated from the current `registry.json` inventory and `android/aurora/src/main/kotlin/tv/tootie/aurora/components`.
 
-Registry items mapped: 127. Most registry items have a named Kotlin counterpart; seven are intentionally primitive/library/native-flow patterns rather than standalone Aurora Kotlin files. `aurora-ai-elements` is an umbrella registry item whose child items are mapped separately.
+Registry items mapped: every component item in `registry.json` (its `items` array minus the `registry:style` token entries) — see `registry.json` for the current total. Most registry items have a named Kotlin counterpart; a handful are intentionally primitive/library/native-flow patterns rather than standalone Aurora Kotlin files. `aurora-ai-elements` is an umbrella registry item whose child items are mapped separately.
 
 | Shadcn registry item | Type | Kotlin counterpart |
 |---|---|---|

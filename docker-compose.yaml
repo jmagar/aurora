@@ -36,6 +36,32 @@ services:
     networks:
       - app
 
+  aurora-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: ${AURORA_IMAGE:-aurora-design-system}:${AURORA_TAG:-latest}
+    container_name: aurora-design-system-prod
+    ports:
+      - "${AURORA_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    restart: unless-stopped
+    healthcheck:
+      # Use 127.0.0.1, not localhost: busybox wget tries IPv6 ::1 first, but Next
+      # listens on IPv4 0.0.0.0 — localhost would falsely report unhealthy.
+      test: ["CMD", "wget", "-q", "-T", "5", "-O", "/dev/null", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - app
+
 volumes:
   aurora-node-modules:
   aurora-next-cache:
