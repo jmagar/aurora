@@ -146,7 +146,7 @@ Don't use `box-shadow` for the left edge on a rounded element — the glow round
 import { PromptInput } from "@/registry/aurora/blocks/ai/prompt-input/prompt-input"
 
 const [value, setValue] = React.useState("")
-const [model, setModel] = React.useState("claude-opus-4-7")
+const [model, setModel] = React.useState("provider-model-id")
 
 <PromptInput
   value={value}
