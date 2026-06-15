@@ -108,6 +108,22 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
+    // Hold a real ref to the underlying <input> so the clear button can drive the
+    // actual DOM element (native value setter + dispatched "input" event) instead
+    // of fabricating a detached element. Merge it with any forwarded ref.
+    const inputRef = React.useRef<HTMLInputElement | null>(null)
+    const setRefs = React.useCallback(
+      (node: HTMLInputElement | null) => {
+        inputRef.current = node
+        if (typeof ref === "function") {
+          ref(node)
+        } else if (ref) {
+          ;(ref as React.MutableRefObject<HTMLInputElement | null>).current = node
+        }
+      },
+      [ref]
+    )
+
     // Resolve effective state — explicit `state` wins over `error` shorthand
     const effectiveState: InputState | undefined = stateProp ?? (error ? "error" : undefined)
     const tokens = effectiveState ? STATE_TOKENS[effectiveState] : null
@@ -147,19 +163,20 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           if (onClear) {
             onClear()
           } else if (onChange) {
-            // Fire a synthetic onChange with empty value
-            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-              window.HTMLInputElement.prototype,
-              "value"
-            )?.set
-            const fakeInput = document.createElement("input")
-            nativeInputValueSetter?.call(fakeInput, "")
-            const syntheticEvent = new Event("input", { bubbles: true })
-            Object.defineProperty(syntheticEvent, "target", {
-              writable: false,
-              value: fakeInput,
-            })
-            onChange(syntheticEvent as unknown as React.ChangeEvent<HTMLInputElement>)
+            // Drive the REAL <input> element: set its value via the native setter
+            // (bypassing React's value tracker) then dispatch a bubbling "input"
+            // event so React's synthetic onChange fires with the genuine target.
+            // This keeps form-library consumers (react-hook-form, Formik, etc.)
+            // working, unlike fabricating a detached element as event.target.
+            const el = inputRef.current
+            if (el) {
+              const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                window.HTMLInputElement.prototype,
+                "value"
+              )?.set
+              nativeInputValueSetter?.call(el, "")
+              el.dispatchEvent(new Event("input", { bubbles: true }))
+            }
           }
           // Always update internal state for uncontrolled
           if (!isControlled) {
@@ -204,7 +221,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
 
         <input
-          ref={ref}
+          ref={setRefs}
           type={type}
           value={value}
           defaultValue={defaultValue}

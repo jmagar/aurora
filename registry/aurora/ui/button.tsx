@@ -185,6 +185,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       style,
       children,
       disabled,
+      onClick,
       ...props
     },
     ref
@@ -194,16 +195,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const resolvedVariant: ButtonVariant = (variant as ButtonVariant) ?? "aurora"
     const config = VARIANT_CONFIG[resolvedVariant] ?? VARIANT_CONFIG.aurora
 
-    const typographyStyle =
-      resolvedVariant === "plain" && size === "unstyled"
-        ? {}
-        : {
-            fontFamily: "var(--aurora-font-sans)",
-            fontSize: size === "lg" ? "14px" : size === "sm" ? "12px" : "13px",
-            fontWeight: size === "lg" ? 680 : 650,
-            letterSpacing: "0.012em",
-            lineHeight: "var(--aurora-line-ui)",
-          }
+    const isDisabled = disabled || loading
 
     // Map button size to a spinner size that fits inside it
     const spinnerSize: "sm" | "default" =
@@ -217,26 +209,73 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ? "muted"
         : "cyan"
 
-    const isDisabled = disabled || loading
+    // Memoize the computed className — recomputed only when its inputs change.
+    const computedClassName = React.useMemo(
+      () =>
+        cn(
+          buttonVariants({ variant, size }),
+          config.hoverClass,
+          config.activeClass,
+          // When rendering asChild + disabled, the underlying element is not a
+          // <button> (which ignores `disabled`), so emulate the disabled visuals
+          // and remove it from the tab order via class + aria below.
+          asChild && isDisabled && "pointer-events-none opacity-45",
+          className
+        ),
+      [variant, size, config.hoverClass, config.activeClass, asChild, isDisabled, className]
+    )
+
+    // Memoize the merged inline style object.
+    const computedStyle = React.useMemo<React.CSSProperties>(() => {
+      const typographyStyle =
+        resolvedVariant === "plain" && size === "unstyled"
+          ? {}
+          : {
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: size === "lg" ? "14px" : size === "sm" ? "12px" : "13px",
+              fontWeight: size === "lg" ? 680 : 650,
+              letterSpacing: "0.012em",
+              lineHeight: "var(--aurora-line-ui)",
+            }
+
+      return {
+        ...typographyStyle,
+        ...config.style,
+        // Preserve width during loading so layout doesn't shift
+        ...(loading ? { minWidth: "var(--btn-loading-width, auto)" } : {}),
+        ...style,
+      }
+    }, [resolvedVariant, size, config.style, loading, style])
+
+    // Guard clicks while disabled/loading. A native <button disabled> already
+    // suppresses clicks, but asChild renders a non-button element that does not,
+    // so swallow the event there (and defensively everywhere).
+    const handleClick = React.useCallback(
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (isDisabled) {
+          event.preventDefault()
+          event.stopPropagation()
+          return
+        }
+        onClick?.(event)
+      },
+      [isDisabled, onClick]
+    )
 
     return (
       <Comp
         ref={ref}
         aria-busy={loading ? "true" : undefined}
-        disabled={isDisabled}
-        className={cn(
-          buttonVariants({ variant, size }),
-          config.hoverClass,
-          config.activeClass,
-          className
-        )}
-        style={{
-          ...typographyStyle,
-          ...config.style,
-          // Preserve width during loading so layout doesn't shift
-          ...(loading ? { minWidth: "var(--btn-loading-width, auto)" } : {}),
-          ...style,
-        }}
+        // asChild renders a non-<button>, which ignores the `disabled` attribute;
+        // expose disabled state to AT and drop it from the tab order instead.
+        {...(asChild
+          ? isDisabled
+            ? { "aria-disabled": true, tabIndex: -1 }
+            : {}
+          : { disabled: isDisabled })}
+        className={computedClassName}
+        style={computedStyle}
+        onClick={handleClick}
         {...props}
       >
         {loading ? (
@@ -250,6 +289,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+const MemoButton = React.memo(Button)
+MemoButton.displayName = "Button"
+
+export { MemoButton as Button, buttonVariants }
 export type { ButtonVariant }
-export default Button
+export default MemoButton
