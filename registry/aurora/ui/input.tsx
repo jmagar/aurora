@@ -4,6 +4,12 @@ import * as React from "react"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
+function devWarn(message: string): void {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(message)
+  }
+}
+
 export type InputState = "error" | "warn" | "success"
 export type InputSize = "sm" | "default" | "lg"
 
@@ -118,28 +124,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    // Escape hatch: bare <input>, consumer CSS owns 100% of appearance. No wrapper,
-    // no inline skin, no imperative focus handlers, no adornment/clear logic. The
-    // ref-based clear path only applies to the styled path below, so forward `ref`
-    // directly here.
-    if (unstyled) {
-      return (
-        <input
-          ref={ref}
-          type={type}
-          className={className}
-          style={style}
-          value={value}
-          defaultValue={defaultValue}
-          onChange={onChange}
-          {...props}
-        />
-      )
-    }
-
     // Hold a real ref to the underlying <input> so the clear button can drive the
     // actual DOM element (native value setter + dispatched "input" event) instead
     // of fabricating a detached element. Merge it with any forwarded ref.
+    //
+    // NOTE: All hooks are declared unconditionally at the top of the component,
+    // BEFORE the `unstyled` early-return, to satisfy the Rules of Hooks. The
+    // unstyled bare <input> reuses the same `inputRef`/`setRefs` so the hoisted
+    // useImperativeHandle (via setRefs ref-merge) still exposes the underlying
+    // element to the forwarded ref in both modes.
     const inputRef = React.useRef<HTMLInputElement | null>(null)
     const setRefs = React.useCallback(
       (node: HTMLInputElement | null) => {
@@ -153,16 +146,52 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       [ref]
     )
 
-    // Resolve effective state — explicit `state` wins over `error` shorthand
-    const effectiveState: InputState | undefined = stateProp ?? (error ? "error" : undefined)
-    const tokens = effectiveState ? STATE_TOKENS[effectiveState] : null
-
     // Track internal value for clearable visibility when uncontrolled
     const [internalValue, setInternalValue] = React.useState<string>(
       typeof defaultValue === "string" || typeof defaultValue === "number"
         ? String(defaultValue)
         : ""
     )
+
+    // Escape hatch: bare <input>, consumer CSS owns 100% of appearance. No wrapper,
+    // no inline skin, no imperative focus handlers, no adornment/clear logic. The
+    // bare <input> reuses `setRefs` so the forwarded ref still resolves to the real
+    // DOM element. Skin props are ignored in this mode — warn (dev-only) if any were
+    // passed so the silent drop is discoverable.
+    if (unstyled) {
+      if (process.env.NODE_ENV !== "production") {
+        const ignored: string[] = []
+        if (clearable) ignored.push("clearable")
+        if (onClear) ignored.push("onClear")
+        if (startAdornment !== undefined) ignored.push("startAdornment")
+        if (endAdornment !== undefined) ignored.push("endAdornment")
+        if (stateProp !== undefined) ignored.push("state")
+        if (error !== undefined) ignored.push("error")
+        if (size !== "default") ignored.push("size")
+        if (ignored.length > 0) {
+          devWarn(
+            `[Aurora Input] \`unstyled\` is set, so skin props are ignored: ${ignored.join(", ")}. ` +
+              `Remove them or drop \`unstyled\` to use the styled variant.`
+          )
+        }
+      }
+      return (
+        <input
+          ref={setRefs}
+          type={type}
+          className={className}
+          style={style}
+          value={value}
+          defaultValue={defaultValue}
+          onChange={onChange}
+          {...props}
+        />
+      )
+    }
+
+    // Resolve effective state — explicit `state` wins over `error` shorthand
+    const effectiveState: InputState | undefined = stateProp ?? (error ? "error" : undefined)
+    const tokens = effectiveState ? STATE_TOKENS[effectiveState] : null
 
     // Determine whether the input currently has a value
     const isControlled = value !== undefined
@@ -203,9 +232,27 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 window.HTMLInputElement.prototype,
                 "value"
               )?.set
-              nativeInputValueSetter?.call(el, "")
-              el.dispatchEvent(new Event("input", { bubbles: true }))
+              // Only dispatch the synthetic "input" event when the native setter
+              // actually ran. If the descriptor/setter is missing, the value is
+              // still stale — firing the event would deliver a misleading onChange
+              // with the old value, so skip it.
+              if (nativeInputValueSetter) {
+                nativeInputValueSetter.call(el, "")
+                el.dispatchEvent(new Event("input", { bubbles: true }))
+              } else if (process.env.NODE_ENV !== "production") {
+                devWarn(
+                  "[Aurora Input] Could not resolve the native value setter; clear did not " +
+                    "dispatch an input event. The onChange handler was not notified."
+                )
+              }
             }
+          } else if (isControlled && process.env.NODE_ENV !== "production") {
+            // Controlled input with neither onClear nor onChange: the clear button
+            // cannot change the parent-owned value, so the click is inert.
+            devWarn(
+              "[Aurora Input] `clearable` clear button on a controlled input has no effect " +
+                "without `onClear` or `onChange`. Provide one to handle the clear."
+            )
           }
           // Always update internal state for uncontrolled
           if (!isControlled) {

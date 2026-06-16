@@ -17,10 +17,15 @@ need to account for.
   button is `disabled` or `loading`, the rendered child now receives `aria-disabled`,
   `tabIndex={-1}`, and `pointer-events-none` / reduced-opacity styling. Previously a
   disabled `asChild` button had no disabled affordance.
-- **`onClick` guard (behavior change).** `onClick` now `preventDefault()` +
-  `stopPropagation()` and returns early when the button is `disabled` or `loading`.
-  **Callers relying on a disabled `asChild` button still firing `onClick` will see that
-  click now suppressed.**
+- **`onClick` guard (behavior change).** The Button's own `onClick` prop now
+  `preventDefault()` + `stopPropagation()` and returns early when the button is
+  `disabled` or `loading`, so a click no longer invokes the handler passed to
+  `<Button onClick={...} />`. Note: with `asChild`, this guard only suppresses the
+  Button's own `onClick` — a click handler attached to the Radix-Slot-composed
+  **child** is not stopped by `stopPropagation()` (the child's handler runs in the
+  same capture/bubble path, not below the Button). The reliable enforcement for the
+  disabled/loading state is the `pointer-events-none` class applied to the rendered
+  element, which prevents the click from being dispatched at all.
 - **Memoization (no API change).** The computed `className` and merged inline `style`
   are now memoized via `useMemo`, and the component is wrapped in `React.memo`.
   Performance only — public API and rendered output are unchanged.
