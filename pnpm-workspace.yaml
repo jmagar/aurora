@@ -16,8 +16,8 @@ overrides:
   "brace-expansion@<1.1.13": "1.1.13"
   "brace-expansion@>=5.0.0 <5.0.6": "5.0.6"
   "ajv@<6.14.0": "6.15.0"
-  # GHSA-ph9p-34f9-6g65 — tmp path traversal via unsanitized prefix/postfix
-  "tmp@<0.2.6": "0.2.6"
+  # GHSA-7c78-jf6q-g5cm — tmp path traversal via non-string prefix/postfix/template
+  "tmp@<0.2.7": "0.2.7"
 
 onlyBuiltDependencies:
   - "@tailwindcss/oxide"
