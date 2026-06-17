@@ -1,6 +1,5 @@
 import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
-import { join } from "node:path"
 import test from "node:test"
 
 const root = new URL("..", import.meta.url)
@@ -41,6 +40,8 @@ test("NativeSelect keeps native select ref and props compatibility", () => {
     "React.SelectHTMLAttributes<HTMLSelectElement>",
     "React.forwardRef<HTMLSelectElement, NativeSelectProps>",
     "placeholder?: string",
+    "onFocus, onBlur, ...props",
+    "{...props}",
     "disabled:pointer-events-none disabled:opacity-45 disabled:cursor-not-allowed",
   ])
 })
@@ -57,7 +58,7 @@ test("ScrollArea keeps Axon-compatible root ref, root props, and viewport stylin
 })
 
 test("StatusIndicator supports labeled and dot-only status surfaces", () => {
-  const source = read(join("registry/aurora/ui/status-indicator.tsx"))
+  const source = read("registry/aurora/ui/status-indicator.tsx")
   const artifact = artifactContent("aurora-status-indicator")
   const markers = [
     "showLabel?: boolean",

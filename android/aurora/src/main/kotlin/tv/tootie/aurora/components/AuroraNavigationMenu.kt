@@ -1,7 +1,10 @@
 package tv.tootie.aurora.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.ui.Alignment
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
@@ -55,10 +58,22 @@ public fun AuroraNavigationRailRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: (@Composable () -> Unit)? = null,
-    label: (@Composable () -> Unit)? = { Text(item.label) },
+    label: (@Composable () -> Unit)? = null,
 ) {
     val resolvedIcon = icon ?: item.icon?.let { imageVector ->
         { Icon(imageVector = imageVector, contentDescription = item.label) }
+    }
+    val resolvedLabel = label ?: {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(item.label)
+            item.badge?.let { badge ->
+                Text(
+                    text = badge,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
     }
 
     NavigationRailItem(
@@ -67,7 +82,7 @@ public fun AuroraNavigationRailRow(
         modifier = modifier,
         enabled = item.enabled,
         icon = resolvedIcon ?: {},
-        label = label,
+        label = resolvedLabel,
     )
 }
 

@@ -3,6 +3,7 @@ package tv.tootie.aurora.components
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
+import java.nio.file.Path
 
 class AuroraAxonPrimitiveApiTest {
     @Test
@@ -42,5 +43,21 @@ class AuroraAxonPrimitiveApiTest {
         assertFalse(sidebarRow.enabled)
         assertEquals("new", railRow.badge)
         assertFalse(railRow.enabled)
+    }
+
+    @Test
+    fun sidebarRowExposesDisabledSemanticsWithoutCallingDisabledItems() {
+        val sourcePath = listOf(
+            Path.of("src/main/kotlin/tv/tootie/aurora/components/AuroraSidebar.kt"),
+            Path.of("aurora/src/main/kotlin/tv/tootie/aurora/components/AuroraSidebar.kt"),
+        ).first { it.toFile().isFile }
+        val source = sourcePath.toFile().readText()
+
+        assert(source.contains("if (!item.enabled) disabled()")) {
+            "AuroraSidebarRow must expose disabled semantics when item.enabled is false"
+        }
+        assert(source.contains("onClick = { if (item.enabled) onClick() }")) {
+            "AuroraSidebarRow must not invoke disabled row actions"
+        }
     }
 }

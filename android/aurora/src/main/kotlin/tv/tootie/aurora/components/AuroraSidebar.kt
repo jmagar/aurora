@@ -13,6 +13,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.semantics
 
 public data class AuroraSidebarItem(
     val label: String,
@@ -82,7 +84,9 @@ public fun AuroraSidebarRow(
     NavigationDrawerItem(
         selected = selected,
         onClick = { if (item.enabled) onClick() },
-        modifier = modifier,
+        modifier = modifier.semantics {
+            if (!item.enabled) disabled()
+        },
         icon = resolvedLeadingContent,
         label = {
             if (item.supportingText == null) {

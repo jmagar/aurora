@@ -49,6 +49,9 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * @param enabled            When false the field and button are both non-interactive.
  * @param loading            When true a spinner replaces the send icon and submission is blocked.
  * @param hasSendableContent True when the current composer state can be submitted.
+ * @param primaryActionEnabled Whether the trailing primary action can run. Defaults to normal send gating,
+ *                             but callers may keep it enabled for stop/cancel actions while the input is disabled.
+ * @param primaryActionContent Optional content for the trailing primary action. Receives [loading].
  * @param leadingContent     Optional composable rendered above the input row (e.g. attachment chips).
  * @param inlineLeadingContent Optional composable rendered inline before the text field.
  * @param actionLeft         Optional composable rendered inline between the text field and the
@@ -69,6 +72,8 @@ public fun AuroraPromptInput(
     enabled: Boolean = true,
     loading: Boolean = false,
     hasSendableContent: Boolean = value.isNotBlank(),
+    primaryActionEnabled: Boolean = hasSendableContent && enabled && !loading,
+    primaryActionContent: (@Composable (Boolean) -> Unit)? = null,
     leadingContent: (@Composable () -> Unit)? = null,
     inlineLeadingContent: (@Composable () -> Unit)? = null,
     actionLeft: (@Composable () -> Unit)? = null,
@@ -81,8 +86,7 @@ public fun AuroraPromptInput(
 ) {
     val aurora = LocalAuroraColors.current
     val haptics = LocalHapticFeedback.current
-    val canSend = hasSendableContent && enabled && !loading
-    val sendButtonDescription = if (canSend) sendContentDescription else "$sendContentDescription, disabled"
+    val sendButtonDescription = if (primaryActionEnabled) sendContentDescription else "$sendContentDescription, disabled"
     val inputPadding = if (compact) 8.dp else 12.dp
     val sendButtonSize = if (compact) AuroraIconButtonSize.Compact else AuroraIconButtonSize.Default
 
@@ -97,7 +101,7 @@ public fun AuroraPromptInput(
     }
 
     fun triggerSend() {
-        if (canSend) {
+        if (primaryActionEnabled) {
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             onSend()
         } else if (loading) {
@@ -154,20 +158,25 @@ public fun AuroraPromptInput(
                 )
                 actionLeft?.invoke()
                 AuroraIconButton(
-                    // Always enabled so a tap during loading can produce reject haptic;
-                    // triggerSend() guards the actual send call.
+                    // Keep loading taps available for reject haptics unless the caller
+                    // explicitly turns the primary action into a stop/cancel button.
                     onClick = { triggerSend() },
-                    enabled = enabled && (canSend || loading),
+                    enabled = primaryActionEnabled || loading,
                     contentDescription = sendButtonDescription,
                     variant = AuroraIconButtonVariant.Filled,
                     size = sendButtonSize,
                 ) {
-                    if (loading) AuroraSpinner(contentDescription = "Sending", size = 18.dp)
-                    else Icon(
-                        Icons.AutoMirrored.Filled.Send,
-                        // Null here — the button-level semantics above own the description.
-                        contentDescription = null,
-                    )
+                    if (primaryActionContent != null) {
+                        primaryActionContent(loading)
+                    } else if (loading) {
+                        AuroraSpinner(contentDescription = "Sending", size = 18.dp)
+                    } else {
+                        Icon(
+                            Icons.AutoMirrored.Filled.Send,
+                            // Null here — the button-level semantics above own the description.
+                            contentDescription = null,
+                        )
+                    }
                 }
                 trailingContent?.invoke()
             }

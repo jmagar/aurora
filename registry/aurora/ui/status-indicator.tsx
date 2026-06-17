@@ -32,6 +32,11 @@ export interface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanEleme
   pulse?: boolean
   showLabel?: boolean
   dotClassName?: string
+  /**
+   * Inline dot overrides. Spread after the semantic tone colors so callers can
+   * override background or boxShadow sparingly when a surface needs a one-off
+   * visual treatment without changing the tone-to-color contract.
+   */
   dotStyle?: React.CSSProperties
 }
 
