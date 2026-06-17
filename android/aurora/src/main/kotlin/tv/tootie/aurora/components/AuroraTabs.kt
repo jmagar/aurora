@@ -25,20 +25,21 @@ public fun AuroraTabs(
     onTabSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
     scrollable: Boolean = false,
+    compact: Boolean = false,
 ) {
     if (scrollable) {
         ScrollableTabRow(
             selectedTabIndex = selectedIndex,
             modifier = modifier,
         ) {
-            AuroraTabItems(tabs, selectedIndex, onTabSelected)
+            AuroraTabItems(tabs, selectedIndex, onTabSelected, compact)
         }
     } else {
         TabRow(
             selectedTabIndex = selectedIndex,
             modifier = modifier,
         ) {
-            AuroraTabItems(tabs, selectedIndex, onTabSelected)
+            AuroraTabItems(tabs, selectedIndex, onTabSelected, compact)
         }
     }
 }
@@ -48,12 +49,18 @@ private fun AuroraTabItems(
     tabs: ImmutableList<String>,
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
+    compact: Boolean,
 ) {
     tabs.forEachIndexed { index, title ->
         Tab(
             selected = selectedIndex == index,
             onClick = { onTabSelected(index) },
-            text = { Text(title) },
+            text = {
+                Text(
+                    text = title,
+                    maxLines = if (compact) 1 else Int.MAX_VALUE,
+                )
+            },
         )
     }
 }

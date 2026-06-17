@@ -17,6 +17,14 @@ public data class AuroraNavItem(
     val value: String,
 )
 
+public data class AuroraNavigationRowItem(
+    val label: String,
+    val value: String,
+    val icon: ImageVector? = null,
+    val badge: String? = null,
+    val enabled: Boolean = true,
+)
+
 /**
  * Bottom navigation bar. Maps to web `navigation-menu` mobile layout.
  * Use [AuroraNavigationRail] for tablet/landscape.
@@ -38,6 +46,29 @@ public fun AuroraNavigationBar(
             )
         }
     }
+}
+
+@Composable
+public fun AuroraNavigationRailRow(
+    item: AuroraNavigationRowItem,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
+    label: (@Composable () -> Unit)? = { Text(item.label) },
+) {
+    val resolvedIcon = icon ?: item.icon?.let { imageVector ->
+        { Icon(imageVector = imageVector, contentDescription = item.label) }
+    }
+
+    NavigationRailItem(
+        selected = selected,
+        onClick = onClick,
+        modifier = modifier,
+        enabled = item.enabled,
+        icon = resolvedIcon ?: {},
+        label = label,
+    )
 }
 
 /**

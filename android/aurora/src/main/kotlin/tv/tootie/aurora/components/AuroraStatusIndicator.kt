@@ -45,10 +45,16 @@ public enum class AuroraStatusTone {
         }
 }
 
+public enum class AuroraStatusIndicatorSize(public val dotSize: Dp) {
+    Compact(6.dp),
+    Default(8.dp),
+    Large(12.dp),
+}
+
 /**
  * Status dot with optional text label. Maps to the web `status-indicator` component.
  *
- * [AuroraStatusTone.Syncing] and [AuroraStatusTone.Automating] tones pulse automatically.
+ * Pass [pulse] = true for opt-in animation on transient states.
  *
  * **Accessibility:** the root [Row] merges descendants and carries a `contentDescription`
  * derived from [tone] (e.g. "Online", "Error") so TalkBack announces the status even when
@@ -58,17 +64,20 @@ public enum class AuroraStatusTone {
  * @param modifier Modifier applied to the root [Row].
  * @param label Optional text shown next to the dot. When provided it is also used as the
  *   accessible description; [tone] name is used as a fallback.
- * @param dotSize Diameter of the status dot. Defaults to 8 dp.
- * @param pulse Whether the dot pulses. Defaults to `true` for [AuroraStatusTone.Syncing]
- *   and [AuroraStatusTone.Automating].
+ * @param size Status dot size preset.
+ * @param dotSize Diameter of the status dot. Overrides [size] when provided.
+ * @param pulse Whether the dot pulses. Defaults to `false` so status indicators are static
+ *   unless the caller opts into animation.
  */
 @Composable
 public fun AuroraStatusIndicator(
     tone: AuroraStatusTone,
     modifier: Modifier = Modifier,
     label: String? = null,
-    dotSize: Dp = 8.dp,
-    pulse: Boolean = tone == AuroraStatusTone.Syncing || tone == AuroraStatusTone.Automating,
+    size: AuroraStatusIndicatorSize = AuroraStatusIndicatorSize.Default,
+    dotSize: Dp = size.dotSize,
+    dotOnly: Boolean = label == null,
+    pulse: Boolean = false,
 ) {
     val aurora = LocalAuroraColors.current
     val color: Color = when (tone) {
@@ -110,7 +119,7 @@ public fun AuroraStatusIndicator(
                 .alpha(alpha)
                 .background(color, CircleShape),
         )
-        if (label != null) {
+        if (!dotOnly && label != null) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodySmall,

@@ -1,14 +1,28 @@
 package tv.tootie.aurora.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
 /**
@@ -28,9 +42,13 @@ import androidx.compose.ui.text.input.VisualTransformation
  * @param enabled Whether the field is interactive.
  * @param readOnly When true the field is non-editable but still focusable.
  * @param singleLine Constrains the field to a single line.
+ * @param compact Uses smaller body typography for dense settings/composer fields.
+ * @param minLines Minimum visible lines.
+ * @param maxLines Maximum visible lines.
  * @param keyboardOptions Software keyboard configuration.
  * @param keyboardActions Callbacks for IME actions.
  * @param visualTransformation Transform applied to the input text (e.g. password masking).
+ * @param sensitive When true, text is hidden by default and a reveal/hide toggle is shown.
  * @param leadingIcon Optional icon composable at the start of the field.
  * @param trailingIcon Optional icon composable at the end of the field.
  */
@@ -46,19 +64,65 @@ public fun AuroraTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     singleLine: Boolean = true,
+    compact: Boolean = false,
+    minLines: Int = 1,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    sensitive: Boolean = false,
+    initiallyRevealed: Boolean = false,
+    revealContentDescription: String = "Show value",
+    hideContentDescription: String = "Hide value",
+    contentDescription: String? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
 ) {
     // Explicit remember prevents focus ring flicker on parent recompose
     val interactionSource = remember { MutableInteractionSource() }
+    var revealed by remember(sensitive, initiallyRevealed) { mutableStateOf(initiallyRevealed) }
+    val effectiveVisualTransformation = when {
+        sensitive && !revealed -> PasswordVisualTransformation()
+        else -> visualTransformation
+    }
+    val fieldModifier = modifier.then(
+        if (contentDescription != null) {
+            Modifier.semantics { this.contentDescription = contentDescription }
+        } else {
+            Modifier
+        },
+    )
+    val effectiveTrailingIcon: (@Composable () -> Unit)? = when {
+        sensitive || trailingIcon != null -> {
+            {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    trailingIcon?.invoke()
+                    if (sensitive) {
+                        IconButton(
+                            onClick = { revealed = !revealed },
+                            enabled = enabled,
+                        ) {
+                            Icon(
+                                imageVector = if (revealed) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                contentDescription = if (revealed) hideContentDescription else revealContentDescription,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        else -> null
+    }
+    val textStyle: TextStyle = if (compact) {
+        MaterialTheme.typography.bodySmall
+    } else {
+        MaterialTheme.typography.bodyLarge
+    }
 
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = fieldModifier,
         label = label?.let { { Text(it) } },
         placeholder = placeholder?.let { { Text(it) } },
         isError = isError,
@@ -68,11 +132,14 @@ public fun AuroraTextField(
         enabled = enabled,
         readOnly = readOnly,
         singleLine = singleLine,
+        minLines = minLines,
+        maxLines = maxLines,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        visualTransformation = visualTransformation,
+        visualTransformation = effectiveVisualTransformation,
         leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon,
+        trailingIcon = effectiveTrailingIcon,
+        textStyle = textStyle,
         interactionSource = interactionSource,
     )
 }

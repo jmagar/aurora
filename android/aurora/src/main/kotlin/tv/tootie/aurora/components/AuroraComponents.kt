@@ -7,6 +7,7 @@
  *
  * AuroraBadge          — BadgedBox wrapper with 99+ count cap
  * AuroraButton         — Filled / Outlined / Ghost / Destructive variants
+ * AuroraIconButton     — Icon-only action button with compact/default/large visuals
  * AuroraCard           — Filled / Elevated / Outlined card variants
  * AuroraCheckbox       — Labeled checkbox
  * AuroraDialog         — Titled modal dialog with confirm / dismiss
@@ -14,8 +15,9 @@
  * AuroraSeparator      — Horizontal / Vertical divider
  * AuroraSpinner        — CircularProgressIndicator with Aurora primary color
  * AuroraSwitch         — Animated toggle switch
+ * AuroraSwitchRow      — Labeled settings row with trailing switch
  * AuroraTabs           — Line tabs + ScrollableTabs
- * AuroraTextField      — OutlinedTextField with label / error / icons
+ * AuroraTextField      — OutlinedTextField with label / error / icons / compact / sensitive reveal
  * AuroraToast          — SnackbarHost with status variants (Success/Error/Warn/Info)
  *
  * ── Phase 1: M3 Wrapper Components ─────────────────────────────────────────
@@ -35,15 +37,17 @@
  * AuroraItem              — M3 ListItem wrapper
  * AuroraNavigationBar     — Bottom NavigationBar
  * AuroraNavigationRail    — Side NavigationRail with optional header
+ * AuroraNavigationRailRow — Generic rail row with optional custom slots
  * AuroraPermissionPrompt  — Permission / confirmation AlertDialog
  * AuroraPopover           — Foundation Popup + Surface
- * AuroraProgress          — LinearProgressIndicator with status variants
+ * AuroraProgress          — LinearProgressIndicator with status variants and size presets
  * AuroraRadioGroup        — Labeled RadioButton column
  * AuroraRangeSlider       — Dual-thumb RangeSlider
  * AuroraRichTooltip       — Rich TooltipBox with title + optional action
  * shareText()             — Android native share sheet (Intent.ACTION_SEND)
  * AuroraSheet             — ModalBottomSheet
  * AuroraSidebar           — ModalNavigationDrawer
+ * AuroraSidebarRow        — Generic sidebar row with optional supporting text and badge
  * AuroraSlider            — Single-thumb Slider
  * AuroraSuggestionChip    — SuggestionChip (AI suggestions)
  * AuroraToggle            — Icon(Filled)ToggleButton
@@ -60,7 +64,7 @@
  * AuroraEmptyState     — Icon + title + description + action placeholder
  * AuroraKbd            — Keyboard shortcut chip (monospace)
  * AuroraStatCard       — Metric display: label + value + trend
- * AuroraStatusIndicator — Status dot with optional pulse animation
+ * AuroraStatusIndicator — Status dot with optional opt-in pulse animation
  * AuroraTimeline       — Vertical timeline with connecting line + status dots
  *
  * Form / Input:

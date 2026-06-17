@@ -7,16 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,9 +50,14 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * @param loading            When true a spinner replaces the send icon and submission is blocked.
  * @param hasSendableContent True when the current composer state can be submitted.
  * @param leadingContent     Optional composable rendered above the input row (e.g. attachment chips).
+ * @param inlineLeadingContent Optional composable rendered inline before the text field.
  * @param actionLeft         Optional composable rendered inline between the text field and the
  *                           send button — use for a secondary action that sits "to the left of
  *                           Send" (e.g. a mode-options cog, attachment picker, voice trigger).
+ * @param trailingContent    Optional composable rendered after the send button.
+ * @param compact            Reduces padding and send button visuals while preserving 48 dp target.
+ * @param minLines           Minimum visible composer lines.
+ * @param maxLines           Maximum visible composer lines.
  */
 @Composable
 public fun AuroraPromptInput(
@@ -68,12 +70,21 @@ public fun AuroraPromptInput(
     loading: Boolean = false,
     hasSendableContent: Boolean = value.isNotBlank(),
     leadingContent: (@Composable () -> Unit)? = null,
+    inlineLeadingContent: (@Composable () -> Unit)? = null,
     actionLeft: (@Composable () -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null,
+    compact: Boolean = false,
+    minLines: Int = 1,
+    maxLines: Int = 6,
+    textFieldContentDescription: String = "Message input",
+    sendContentDescription: String = "Send message",
 ) {
     val aurora = LocalAuroraColors.current
     val haptics = LocalHapticFeedback.current
     val canSend = hasSendableContent && enabled && !loading
-    val sendButtonDescription = if (canSend) "Send message" else "Send message, disabled"
+    val sendButtonDescription = if (canSend) sendContentDescription else "$sendContentDescription, disabled"
+    val inputPadding = if (compact) 8.dp else 12.dp
+    val sendButtonSize = if (compact) AuroraIconButtonSize.Compact else AuroraIconButtonSize.Default
 
     // Bead 01xq: HapticFeedbackType.Reject was added in androidx.compose.ui 1.7 /
     // platform API 34. Resolve via reflection so we degrade gracefully on
@@ -106,25 +117,26 @@ public fun AuroraPromptInput(
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.padding(inputPadding)) {
             leadingContent?.invoke()
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                inlineLeadingContent?.invoke()
                 BasicTextField(
                     value = value,
                     onValueChange = onValueChange,
                     enabled = enabled,
                     modifier = Modifier
                         .weight(1f)
-                        .semantics { contentDescription = "Message input" },
+                        .semantics { contentDescription = textFieldContentDescription },
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface,
                     ),
                     cursorBrush = SolidColor(aurora.accentPink),
-                    minLines = 1,
-                    maxLines = 6,
+                    minLines = minLines,
+                    maxLines = maxLines,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                     keyboardActions = KeyboardActions(onSend = { triggerSend() }),
                     decorationBox = { inner ->
@@ -141,19 +153,14 @@ public fun AuroraPromptInput(
                     },
                 )
                 actionLeft?.invoke()
-                FilledIconButton(
+                AuroraIconButton(
                     // Always enabled so a tap during loading can produce reject haptic;
                     // triggerSend() guards the actual send call.
                     onClick = { triggerSend() },
                     enabled = enabled && (canSend || loading),
-                    modifier = Modifier
-                        .size(36.dp)
-                        .semantics { contentDescription = sendButtonDescription },
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = aurora.accentPinkButton,
-                        contentColor = MaterialTheme.colorScheme.surface,
-                        disabledContainerColor = aurora.borderStrong,
-                    ),
+                    contentDescription = sendButtonDescription,
+                    variant = AuroraIconButtonVariant.Filled,
+                    size = sendButtonSize,
                 ) {
                     if (loading) AuroraSpinner(contentDescription = "Sending", size = 18.dp)
                     else Icon(
@@ -162,6 +169,7 @@ public fun AuroraPromptInput(
                         contentDescription = null,
                     )
                 }
+                trailingContent?.invoke()
             }
         }
     }
