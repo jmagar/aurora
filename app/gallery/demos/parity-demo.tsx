@@ -312,6 +312,11 @@ function ShadcnDemo({ slug }: { slug: string }) {
           <StatusIndicator tone="offline"    label="Agent offline" />
           <StatusIndicator tone="error"      label="Connection failed" />
           <StatusIndicator tone="automating" label="Automation executing" />
+          <div className="flex items-center gap-3 pt-1">
+            <StatusIndicator tone="online" showLabel={false} aria-label="Online" />
+            <StatusIndicator tone="syncing" showLabel={false} aria-label="Syncing" />
+            <StatusIndicator tone="error" showLabel={false} aria-label="Error" />
+          </div>
         </div>
       )
     case "timeline":
