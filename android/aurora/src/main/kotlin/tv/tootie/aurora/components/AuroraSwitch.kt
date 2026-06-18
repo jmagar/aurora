@@ -43,3 +43,28 @@ public fun AuroraSwitch(
         colors = colors,
     )
 }
+
+@Composable
+public fun AuroraSwitchRow(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    description: String? = null,
+    enabled: Boolean = true,
+    contentDescription: String = label,
+) {
+    AuroraItem(
+        title = label,
+        modifier = modifier,
+        description = description,
+        trailingContent = {
+            AuroraSwitch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                contentDescription = contentDescription,
+                enabled = enabled,
+            )
+        },
+    )
+}

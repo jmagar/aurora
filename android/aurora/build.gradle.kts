@@ -76,4 +76,5 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.webkit)
     implementation(libs.compose.material.icons.extended)
+    testImplementation(libs.junit)
 }

@@ -18,6 +18,8 @@ overrides:
   "ajv@<6.14.0": "6.15.0"
   # GHSA-7c78-jf6q-g5cm — tmp path traversal via non-string prefix/postfix/template
   "tmp@<0.2.7": "0.2.7"
+  # GHSA-88fw-hqm2-52qc — hono CORS credential reflection through shadcn's MCP SDK dependency
+  "hono@<4.12.25": "4.12.25"
 
 onlyBuiltDependencies:
   - "@tailwindcss/oxide"

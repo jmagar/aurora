@@ -77,17 +77,30 @@ AuroraTheme {
 | Component | Status | Notes |
 |-----------|--------|-------|
 | `AuroraButton` | Ready | Filled, Outlined, Ghost, Destructive variants; loading state; leading icon |
-| `AuroraTextField` | Ready | Error semantics via supportingText; keyboard options; visual transformation |
+| `AuroraIconButton` | Ready | Standard, filled, tonal, outlined icon action variants with compact/default/large sizing and preserved 48dp target |
+| `AuroraTextField` | Ready | Error semantics via supportingText; compact mode; sensitive values hidden by default with reveal/hide control; keyboard options; visual transformation |
 | `AuroraCheckbox` | Ready | Toggleable row pattern; WCAG compliant |
-| `AuroraSwitch` | Ready | contentDescription param |
+| `AuroraSwitch` | Ready | contentDescription param; `AuroraSwitchRow` for labeled settings rows |
 | `AuroraSelect` | Ready | Exposed dropdown menu |
 | `AuroraDialog` | Ready | AlertDialog wrapper; DialogProperties support |
 | `AuroraBadge` | Ready | 99+ overflow; notification contentDescription |
 | `AuroraCard` | Ready | Filled, Outlined, Elevated variants |
-| `AuroraTabs` | Ready | TabRow / ScrollableTabRow; ImmutableList |
+| `AuroraTabs` | Ready | TabRow / ScrollableTabRow; ImmutableList; compact labels |
 | `AuroraToast` | Ready | SnackbarVisuals-based; variant colors |
 | `AuroraSpinner` | Ready | Required contentDescription; configurable size |
 | `AuroraSeparator` | Ready | Horizontal and vertical |
+
+## Axon Primitive Migration Mapping
+
+The Android library exposes reusable surfaces for the Axon primitive-convergence inventory without requiring changes to the Aurora web registry:
+
+| Inventory row | Aurora Android surface |
+|---------------|------------------------|
+| `A-AND-001` compact prompt/settings fields | `AuroraTextField(compact = true)`, `AuroraTextField(sensitive = true)`, `AuroraPromptInput(compact = true, inlineLeadingContent = ..., actionLeft = ..., trailingContent = ...)` |
+| `A-AND-002` icon/action buttons | `AuroraIconButton` and `AuroraButton` slots/variants |
+| `A-AND-003` tabs/toggles/chips | `AuroraTabs(compact = true)`, `AuroraButtonGroup`, `AuroraSuggestionChip(selected = ...)`, `AuroraSwitchRow` |
+| `A-AND-004` progress/status/dot-only | `AuroraProgress(size = ..., variant = ...)`, `AuroraStatusIndicator(size = ..., dotOnly = true, pulse = false)` |
+| `A-AND-005` nav/sidebar rows | `AuroraSidebarRow`, `AuroraNavigationRailRow`, `AuroraSidebarRowItem`, `AuroraNavigationRowItem` |
 
 ## Requirements
 
