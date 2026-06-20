@@ -14,7 +14,9 @@
     "registry:build": "shadcn build",
     "tokens:export": "node scripts/export-aurora-tokens.mjs",
     "tokens:generate": "node scripts/export-aurora-tokens.mjs && node android/sd.config.mjs",
-    "readmes:generate": "node scripts/generate-readmes.mjs"
+    "readmes:generate": "node scripts/generate-readmes.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",
@@ -49,6 +51,12 @@
     "eslint-config-next": "16.2.6",
     "style-dictionary": "4.0.0",
     "tailwindcss": "^4.3.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "storybook": "^10.4.6",
+    "@storybook/nextjs-vite": "^10.4.6",
+    "@storybook/addon-a11y": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6",
+    "vite": "^8.0.16",
+    "eslint-plugin-storybook": "^10.4.6"
   }
 }
