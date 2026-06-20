@@ -1,6 +1,16 @@
 ---
 name: aurora-design-system
-description: Use whenever building, modifying, or styling UI for any Aurora, Labby, or Lab/operator surface on ANY platform — web (React/Next.js/shadcn), Android (Jetpack Compose), or CLI/editor/terminal — or when the user mentions Aurora, Labby UI, the operator console, the aurora-design-system repo (`~/workspace/aurora-design-system`), `aurora.tootie.tv`, the `@aurora` shadcn registry, `registry/aurora/`, `--aurora-*` CSS tokens, `aurora-page-shell`, the `tv.tootie.aurora` Android library, `AuroraTheme`/`AxonTheme`/Compose theming for an Aurora app, or the Aurora CLI/editor palette (`CliTheme`, Zed "Aurora Neon"). Invoke it any time React, Next.js, shadcn, Tailwind, Jetpack Compose, or "dashboard"-style UI work happens inside `~/workspace/aurora-design-system` or a project that consumes Aurora (web registry, Android library, or CLI tokens), even if the user doesn't say "Aurora" by name. Aurora is dark-first, uses a navy palette with cyan primary / rose secondary / violet AI accents, muted status colors, a Manrope + Inter + JetBrains Mono type stack, and semantic tokens (`var(--aurora-*)` on web, `AxonTheme.colors`/`tv.tootie.aurora` on Android) — never raw hex. Fix issues in the design-system source and sync down — never fork-and-diverge.
+description: >-
+  Use whenever building, modifying, or styling UI for Aurora, Labby, or
+  Lab/operator surfaces on web, Android, CLI, editor, or terminal. Trigger on
+  mentions of Aurora, Labby UI, the operator console, aurora-design-system,
+  aurora.tootie.tv, the @aurora shadcn registry, registry/aurora, --aurora-*
+  CSS tokens, aurora-page-shell, tv.tootie.aurora, AuroraTheme, AxonTheme,
+  Compose theming, CliTheme, or Zed Aurora Neon. Also use for React, Next.js,
+  shadcn, Tailwind, Jetpack Compose, or dashboard-style UI work inside Aurora or
+  consuming apps. Aurora is dark-first navy with cyan, rose, and violet accents,
+  Manrope, Inter, JetBrains Mono, and semantic tokens. Fix the design-system
+  source and sync down; never fork-and-diverge.
 ---
 
 # Aurora Design System
