@@ -6,7 +6,7 @@
   "description": "Minimal direction wrapper for LTR and RTL layout previews.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

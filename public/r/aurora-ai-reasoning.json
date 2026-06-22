@@ -8,9 +8,9 @@
     "lucide-react@^0.487.0"
   ],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-ai-elements",
-    "aurora-thinking"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-ai-elements",
+    "@aurora/aurora-thinking"
   ],
   "files": [
     {

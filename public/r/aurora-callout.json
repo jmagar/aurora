@@ -6,7 +6,7 @@
   "description": "Inline contextual notice for forms, panels, docs, and permission flows.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

@@ -6,9 +6,9 @@
   "description": "Full-featured AI prompt input with attach, slash commands, @mentions, model selector, send/stop buttons, attachment chips, and streaming state.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-textarea"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-textarea"
   ],
   "files": [
     {

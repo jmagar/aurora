@@ -6,7 +6,7 @@
   "description": "Pressed-state toggle button for compact workbench controls.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

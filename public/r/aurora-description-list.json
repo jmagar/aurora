@@ -6,7 +6,7 @@
   "description": "Dense key-value metadata layout for operational detail panels.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

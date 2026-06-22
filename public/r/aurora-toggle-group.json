@@ -6,8 +6,8 @@
   "description": "Grouped toggle container for segmented command choices.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-toggle"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-toggle"
   ],
   "files": [
     {

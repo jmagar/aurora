@@ -6,7 +6,7 @@
   "description": "Field wrapper for labels, descriptions, required markers, disabled state, and validation errors.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

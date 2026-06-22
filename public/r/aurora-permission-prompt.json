@@ -6,8 +6,8 @@
   "description": "Three-variant permission prompt (modal, banner, inline) showing tool name, action description, target chip, Allow/Deny/Allow-always buttons. Danger mode adds red border, warning strip, and destructive copy.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

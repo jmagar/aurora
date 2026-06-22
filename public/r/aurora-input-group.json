@@ -6,8 +6,8 @@
   "description": "Grouped input shell with addons for protocol, units, and compact command prefixes.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-input"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-input"
   ],
   "files": [
     {

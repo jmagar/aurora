@@ -6,9 +6,9 @@
   "description": "Centered empty state with icon slot, heading, description, and optional CTA button.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-input"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-input"
   ],
   "files": [
     {

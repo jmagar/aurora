@@ -6,7 +6,7 @@
   "description": "Full-width status banners with info, success, warn, and error Aurora tint variants.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

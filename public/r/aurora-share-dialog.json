@@ -6,12 +6,12 @@
   "description": "Two-tab share/export dialog: Share tab with copy-link URL input, collaborator rows (avatar + name + role dropdown), and email invite form; Export tab with format radio group (HTML, PDF, PNG, Markdown), inline share chip, and a gradient download button.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-avatar",
-    "aurora-button",
-    "aurora-input",
-    "aurora-radio-group",
-    "aurora-select"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-avatar",
+    "@aurora/aurora-button",
+    "@aurora/aurora-input",
+    "@aurora/aurora-radio-group",
+    "@aurora/aurora-select"
   ],
   "files": [
     {

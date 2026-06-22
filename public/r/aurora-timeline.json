@@ -6,8 +6,8 @@
   "description": "Activity feed for agent runs, tool calls, deployments, and audit trails.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-status-indicator"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-status-indicator"
   ],
   "files": [
     {

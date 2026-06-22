@@ -250,7 +250,7 @@
         "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -284,7 +284,7 @@
         "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -315,7 +315,7 @@
       "description": "Text input with Aurora focus glow, leading/trailing adornment slots, and control-surface background.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -349,7 +349,7 @@
         "@radix-ui/react-select@^2.2.6"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -383,7 +383,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -415,7 +415,7 @@
       "description": "Auto-resizing textarea with Aurora focus glow and control-surface background.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -449,7 +449,7 @@
         "@radix-ui/react-avatar@^1.1.11"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -481,7 +481,7 @@
       "description": "Animated progress bar with Aurora accent-primary fill and panel track.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -515,7 +515,7 @@
         "@radix-ui/react-switch@^1.2.6"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -549,7 +549,7 @@
         "@radix-ui/react-tabs@^1.1.13"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -584,7 +584,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -618,7 +618,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -653,7 +653,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -688,7 +688,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -722,7 +722,7 @@
         "@radix-ui/react-tooltip@^1.2.8"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -757,7 +757,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -789,7 +789,7 @@
       "description": "Full-width status banners with info, success, warn, and error Aurora tint variants.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -821,7 +821,7 @@
       "description": "Floating toast notifications with Aurora panel surface, status icons, and auto-dismiss.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -853,9 +853,9 @@
       "description": "Centered empty state with icon slot, heading, description, and optional CTA button.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -889,9 +889,9 @@
         "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -923,11 +923,11 @@
       "description": "Metric stat card with label, large value, trend indicator, and Aurora panel styling.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input",
-        "aurora-radio-group",
-        "aurora-select"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input",
+        "@aurora/aurora-radio-group",
+        "@aurora/aurora-select"
       ],
       "files": [
         {
@@ -959,7 +959,7 @@
       "description": "Sortable, paginated data table with Aurora panel headers, row hover states, and border-default separators.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -991,10 +991,10 @@
       "description": "Horizontal filter toolbar with search input, select dropdowns, and Aurora button actions.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input",
-        "aurora-select"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input",
+        "@aurora/aurora-select"
       ],
       "files": [
         {
@@ -1025,9 +1025,9 @@
       "description": "Full-featured AI prompt input with attach, slash commands, @mentions, model selector, send/stop buttons, attachment chips, and streaming state.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-textarea"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-textarea"
       ],
       "files": [
         {
@@ -1060,9 +1060,9 @@
       "description": "Condensed, grouped tool call display for AI sessions. Supports running shimmer, completed, and error states with collapsible arg/result panels.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -1100,8 +1100,8 @@
       "description": "Reasoning and chain-of-thought disclosure block. Three variants: thinking (streaming text), cot (numbered steps with connector), plan (step list with status icons).",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1134,9 +1134,9 @@
       "description": "Syntax-highlighted code display with Aurora titlebar, copy button, optional line numbers, diff variant, and inline CodeChip export. Supports TypeScript, Rust, Bash, JSON, TOML, diff.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-textarea"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-textarea"
       ],
       "files": [
         {
@@ -1169,8 +1169,8 @@
       "description": "Aurora-native terminal with 38px navy titlebar (Labby mark, session name, status dot, kill/clear/run buttons), full color system using Aurora tokens, compact in-chat variant, and blinking cursor.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1203,10 +1203,10 @@
       "description": "Zed-like project sidebar with collapsible project groups, session items with relative time, live beacon pulse, active accent border, search input, avatar bottom bar, and icon-only collapsed variant.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-avatar",
-        "aurora-button",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-avatar",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -1239,11 +1239,11 @@
       "description": "Aurora-styled checkbox and radio group built on button[role=checkbox/radio] patterns. 16px control with accent-primary fill, animated check/dot, focus ring glow, and full keyboard support. Includes RadioGroup + RadioGroupItem exports.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input",
-        "aurora-radio-group",
-        "aurora-select"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input",
+        "@aurora/aurora-radio-group",
+        "@aurora/aurora-select"
       ],
       "files": [
         {
@@ -1275,8 +1275,8 @@
       "description": "Artifact panel with preview/code tab switcher, copy/download/expand toolbar, language badge, and streaming cursor. Three variants: panel (full-featured), card (compact collapsible in-chat), inline (bare code strip).",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1309,8 +1309,8 @@
       "description": "Three-variant permission prompt (modal, banner, inline) showing tool name, action description, target chip, Allow/Deny/Allow-always buttons. Danger mode adds red border, warning strip, and destructive copy.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1343,9 +1343,9 @@
       "description": "Assistant question block with radio, multi-select, or free-text input. Option cards feature hover accent-border glow and active-glow on selection. Supports optional code preview panel per option.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-textarea"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-textarea"
       ],
       "files": [
         {
@@ -1378,8 +1378,8 @@
       "description": "LLM runtime permission config panel with master toggle, per-tool Allow/Ask/Block segmented controls, state badges, and scrollable tool list. Also exports PermissionChip for compact summary display.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1414,8 +1414,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1448,8 +1448,8 @@
       "description": "Display-only code editor panel with title bar (filename, language badge, close button), line numbers, syntax highlighting, minimap column, diff mode (add/remove line backgrounds), error diagnostics (squiggly underlines, gutter icons, error panel), status bar, and a compact variant.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1482,8 +1482,8 @@
       "description": "Browser chrome component with Aurora panel titlebar, three neutral square window dots, address bar with lock icon, reload and share icon buttons. Four variants: browser (full chrome), unfurl-card (link preview with favicon, title, description, domain chip), skeleton (shimmer loading), and error (failed to load).",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1516,10 +1516,10 @@
       "description": "Full-page login card centered on Aurora radial page wash. Features Labby stacked-plane mark + wordmark, email/password fields with show/hide toggle, Style D glow-border sign-in button, forgot password link, magic-link sent state with envelope icon, and 6-box OTP input that auto-advances on keystroke for 2FA.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input",
-        "aurora-input-otp"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input",
+        "@aurora/aurora-input-otp"
       ],
       "files": [
         {
@@ -1552,8 +1552,8 @@
       "description": "OAuth consent screen with app icon, scope checklist (sensitive scopes highlighted in warn color), and Allow/Deny buttons. Success/callback state with animated SVG check and close-window message. Token management table with token name, scopes chips, created date, last used, and Revoke button.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1586,8 +1586,8 @@
       "description": "Operator-first error pages for 404 (Not found + mono path + Go home button), 403 (Access denied + contact link), and 500 (Something went wrong + mono incident ID + animated countdown ring with auto-retry). No consumer-app illustrations — uses ghost numeric backdrop instead.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1620,8 +1620,8 @@
       "description": "Six attachment UI variants: inline rose-tinted chip (with image thumbnail), media grid with hover overlay, tall doc/PDF card with file-type badge and page count, animated audio chip with 5 waveform bars, upload progress tracker with fixed-80px accent-fill track, and drag-and-drop zone.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1654,9 +1654,9 @@
       "description": "Full-screen command palette with 72% alpha backdrop, centered 560px panel, magnifier search input with ⌘K shortcut hint, sectioned results (Recent, Actions, Skills, Navigate), keyboard shortcut kbd badges, arrow-key navigation, Enter to select, Escape to close, and a useCommandPalette hook that binds ⌘K globally.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -1689,12 +1689,12 @@
       "description": "Two-tab share/export dialog: Share tab with copy-link URL input, collaborator rows (avatar + name + role dropdown), and email invite form; Export tab with format radio group (HTML, PDF, PNG, Markdown), inline share chip, and a gradient download button.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-avatar",
-        "aurora-button",
-        "aurora-input",
-        "aurora-radio-group",
-        "aurora-select"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-avatar",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input",
+        "@aurora/aurora-radio-group",
+        "@aurora/aurora-select"
       ],
       "files": [
         {
@@ -1727,9 +1727,9 @@
       "description": "Modal file picker with sidebar navigation (Recent, Documents, Downloads, Project, Uploads), grid and list view modes, search bar, filter chips (All, Images, Documents, Code), drag-drop upload overlay, staged selection chips below the grid, and a multi-select confirm action using --font-sans for all file names.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -1762,7 +1762,7 @@
       "description": "Field wrapper for labels, descriptions, required markers, disabled state, and validation errors.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -1794,8 +1794,8 @@
       "description": "Single-choice radio group extracted as an independently installable Aurora primitive.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-checkbox"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-checkbox"
       ],
       "files": [
         {
@@ -1827,7 +1827,7 @@
       "description": "Range slider with Aurora accent track, glow thumb, and controlled or uncontrolled value support.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -1861,9 +1861,9 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -1897,9 +1897,9 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-input",
-        "aurora-search-results"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-input",
+        "@aurora/aurora-search-results"
       ],
       "files": [
         {
@@ -1931,7 +1931,7 @@
       "description": "Lightweight anchored disclosure surface for inline details, previews, and quick editors.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -1966,7 +1966,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -1998,7 +1998,7 @@
       "description": "Inline contextual notice for forms, panels, docs, and permission flows.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2030,7 +2030,7 @@
       "description": "Live status label with muted Aurora tones for connected, syncing, degraded, offline, and error states.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2062,8 +2062,8 @@
       "description": "Activity feed for agent runs, tool calls, deployments, and audit trails.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-status-indicator"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-status-indicator"
       ],
       "files": [
         {
@@ -2095,7 +2095,7 @@
       "description": "Dense key-value metadata layout for operational detail panels.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2127,7 +2127,7 @@
       "description": "Two-pane resizable workbench layout for chat, editor, preview, logs, and inspectors.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2159,8 +2159,8 @@
       "description": "Shared Aurora listbox, group, and option row primitives for command palettes, search results, and combobox menus.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -2191,8 +2191,8 @@
       "description": "Reusable grouped result list with active, empty, metadata, and keyboard-friendly option semantics.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-listbox"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-listbox"
       ],
       "files": [
         {
@@ -2224,7 +2224,7 @@
       "description": "Keyboard shortcut keycap for command labels, menus, and dense workbench controls.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2255,7 +2255,7 @@
       "description": "Dense workbench toolbar with grouped controls and separators for editors, previews, and inspectors.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2287,7 +2287,7 @@
       "description": "Horizontal or vertical separator using Aurora border tokens for grouped controls, menus, and dense metadata panels.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2319,7 +2319,7 @@
       "description": "Compact loading spinner with cyan, rose, and muted tones for asynchronous agent and registry work.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2351,7 +2351,7 @@
       "description": "Grouped action container for segmented command clusters and compact toolbar controls.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2385,7 +2385,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2419,14 +2419,14 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-avatar",
-        "aurora-badge",
-        "aurora-button",
-        "aurora-native-select",
-        "aurora-separator",
-        "aurora-spinner",
-        "aurora-textarea"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-avatar",
+        "@aurora/aurora-badge",
+        "@aurora/aurora-button",
+        "@aurora/aurora-native-select",
+        "@aurora/aurora-separator",
+        "@aurora/aurora-spinner",
+        "@aurora/aurora-textarea"
       ],
       "files": [
         {
@@ -2466,14 +2466,14 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-badge",
-        "aurora-button",
-        "aurora-description-list",
-        "aurora-filter-bar",
-        "aurora-sheet",
-        "aurora-stat-card",
-        "aurora-status-indicator"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-badge",
+        "@aurora/aurora-button",
+        "@aurora/aurora-description-list",
+        "@aurora/aurora-filter-bar",
+        "@aurora/aurora-sheet",
+        "@aurora/aurora-stat-card",
+        "@aurora/aurora-status-indicator"
       ],
       "files": [
         {
@@ -2506,9 +2506,9 @@
       "description": "Confirmation dialog built on the Aurora modal surface for destructive or high-friction decisions.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button",
-        "aurora-dialog"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
+        "@aurora/aurora-dialog"
       ],
       "files": [
         {
@@ -2540,7 +2540,7 @@
       "description": "Fixed-ratio media wrapper for previews, charts, and embedded surfaces.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2574,8 +2574,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -2607,7 +2607,7 @@
       "description": "Composed Aurora card shell with header, content, footer, title, and description slots.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2641,8 +2641,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-button"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -2674,7 +2674,7 @@
       "description": "Small tokenized SVG chart surface for operational metrics and registry summaries.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2708,7 +2708,7 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2742,8 +2742,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -2775,7 +2775,7 @@
       "description": "Minimal direction wrapper for LTR and RTL layout previews.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2807,7 +2807,7 @@
       "description": "Hover-triggered detail panel for source metadata and compact previews.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2839,8 +2839,8 @@
       "description": "Grouped input shell with addons for protocol, units, and compact command prefixes.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-input"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-input"
       ],
       "files": [
         {
@@ -2872,7 +2872,7 @@
       "description": "Segmented one-time-code input slots with Aurora control styling.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2904,7 +2904,7 @@
       "description": "Reusable list item with icon, title, description, and action slot.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2936,7 +2936,7 @@
       "description": "Accessible form label matching Aurora control typography.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -2968,7 +2968,7 @@
       "description": "Horizontal application menu bar with compact Aurora menu items.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -3000,7 +3000,7 @@
       "description": "Top-level navigation menu with active border and glow states.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -3032,7 +3032,7 @@
       "description": "Tokenized scroll viewport with Aurora border and scrollbar behavior.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -3064,7 +3064,7 @@
       "description": "Primitive table parts with Aurora 8px table radius and dense headers.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -3096,7 +3096,7 @@
       "description": "Pressed-state toggle button for compact workbench controls.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
@@ -3128,8 +3128,8 @@
       "description": "Grouped toggle container for segmented command choices.",
       "dependencies": [],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-toggle"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-toggle"
       ],
       "files": [
         {
@@ -3163,9 +3163,9 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements",
-        "aurora-attachment"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-attachment"
       ],
       "files": [
         {
@@ -3200,9 +3200,9 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements",
-        "aurora-thinking"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-thinking"
       ],
       "files": [
         {
@@ -3237,8 +3237,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3273,8 +3273,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3309,8 +3309,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3345,8 +3345,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3381,8 +3381,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3417,8 +3417,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3453,8 +3453,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3489,9 +3489,9 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements",
-        "aurora-thinking"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-thinking"
       ],
       "files": [
         {
@@ -3526,8 +3526,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3562,9 +3562,9 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements",
-        "aurora-thinking"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-thinking"
       ],
       "files": [
         {
@@ -3599,8 +3599,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3635,8 +3635,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3671,8 +3671,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3707,8 +3707,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3743,9 +3743,9 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements",
-        "aurora-tool-calls"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-tool-calls"
       ],
       "files": [
         {
@@ -3780,8 +3780,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3816,8 +3816,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3852,8 +3852,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3888,8 +3888,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3924,8 +3924,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3960,8 +3960,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -3996,8 +3996,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4032,8 +4032,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4068,8 +4068,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4104,8 +4104,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4140,8 +4140,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4176,8 +4176,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4212,8 +4212,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4248,8 +4248,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4284,8 +4284,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4320,8 +4320,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4356,8 +4356,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4392,8 +4392,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4428,8 +4428,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4464,8 +4464,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4500,8 +4500,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4536,8 +4536,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4572,8 +4572,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {
@@ -4608,8 +4608,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "aurora-tokens",
-        "aurora-ai-elements"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-ai-elements"
       ],
       "files": [
         {

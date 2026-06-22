@@ -6,7 +6,7 @@
   "description": "Small tokenized SVG chart surface for operational metrics and registry summaries.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

@@ -6,7 +6,7 @@
   "description": "Accessible form label matching Aurora control typography.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

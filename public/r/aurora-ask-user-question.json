@@ -6,9 +6,9 @@
   "description": "Assistant question block with radio, multi-select, or free-text input. Option cards feature hover accent-border glow and active-glow on selection. Supports optional code preview panel per option.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-textarea"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-textarea"
   ],
   "files": [
     {

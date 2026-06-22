@@ -8,14 +8,14 @@
     "lucide-react@^0.487.0"
   ],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-badge",
-    "aurora-button",
-    "aurora-description-list",
-    "aurora-filter-bar",
-    "aurora-sheet",
-    "aurora-stat-card",
-    "aurora-status-indicator"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-badge",
+    "@aurora/aurora-button",
+    "@aurora/aurora-description-list",
+    "@aurora/aurora-filter-bar",
+    "@aurora/aurora-sheet",
+    "@aurora/aurora-stat-card",
+    "@aurora/aurora-status-indicator"
   ],
   "files": [
     {

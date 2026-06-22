@@ -6,7 +6,7 @@
   "description": "Segmented one-time-code input slots with Aurora control styling.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

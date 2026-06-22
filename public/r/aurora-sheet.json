@@ -9,7 +9,7 @@
     "lucide-react@^0.487.0"
   ],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

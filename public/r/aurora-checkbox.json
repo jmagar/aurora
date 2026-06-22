@@ -6,11 +6,11 @@
   "description": "Aurora-styled checkbox and radio group built on button[role=checkbox/radio] patterns. 16px control with accent-primary fill, animated check/dot, focus ring glow, and full keyboard support. Includes RadioGroup + RadioGroupItem exports.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-input",
-    "aurora-radio-group",
-    "aurora-select"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-input",
+    "@aurora/aurora-radio-group",
+    "@aurora/aurora-select"
   ],
   "files": [
     {

@@ -6,8 +6,8 @@
   "description": "Reusable grouped result list with active, empty, metadata, and keyboard-friendly option semantics.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-listbox"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-listbox"
   ],
   "files": [
     {

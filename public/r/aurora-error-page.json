@@ -6,8 +6,8 @@
   "description": "Operator-first error pages for 404 (Not found + mono path + Go home button), 403 (Access denied + contact link), and 500 (Something went wrong + mono incident ID + animated countdown ring with auto-retry). No consumer-app illustrations — uses ghost numeric backdrop instead.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

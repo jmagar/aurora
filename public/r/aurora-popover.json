@@ -6,7 +6,7 @@
   "description": "Lightweight anchored disclosure surface for inline details, previews, and quick editors.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

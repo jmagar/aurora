@@ -6,8 +6,8 @@
   "description": "Single-choice radio group extracted as an independently installable Aurora primitive.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-checkbox"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-checkbox"
   ],
   "files": [
     {

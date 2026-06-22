@@ -6,7 +6,7 @@
   "description": "Hover-triggered detail panel for source metadata and compact previews.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

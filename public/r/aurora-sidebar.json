@@ -6,10 +6,10 @@
   "description": "Zed-like project sidebar with collapsible project groups, session items with relative time, live beacon pulse, active accent border, search input, avatar bottom bar, and icon-only collapsed variant.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-avatar",
-    "aurora-button",
-    "aurora-input"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-avatar",
+    "@aurora/aurora-button",
+    "@aurora/aurora-input"
   ],
   "files": [
     {

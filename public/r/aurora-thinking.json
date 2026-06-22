@@ -6,8 +6,8 @@
   "description": "Reasoning and chain-of-thought disclosure block. Three variants: thinking (streaming text), cot (numbered steps with connector), plan (step list with status icons).",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

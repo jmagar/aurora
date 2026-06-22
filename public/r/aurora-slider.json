@@ -6,7 +6,7 @@
   "description": "Range slider with Aurora accent track, glow thumb, and controlled or uncontrolled value support.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

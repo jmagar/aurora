@@ -6,8 +6,8 @@
   "description": "Browser chrome component with Aurora panel titlebar, three neutral square window dots, address bar with lock icon, reload and share icon buttons. Four variants: browser (full chrome), unfurl-card (link preview with favicon, title, description, domain chip), skeleton (shimmer loading), and error (failed to load).",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

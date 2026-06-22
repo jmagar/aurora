@@ -6,7 +6,7 @@
   "description": "Auto-resizing textarea with Aurora focus glow and control-surface background.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

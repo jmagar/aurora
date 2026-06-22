@@ -8,8 +8,8 @@
     "lucide-react@^0.487.0"
   ],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-input"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-input"
   ],
   "files": [
     {

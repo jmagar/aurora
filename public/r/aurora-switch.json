@@ -8,7 +8,7 @@
     "@radix-ui/react-switch@^1.2.6"
   ],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

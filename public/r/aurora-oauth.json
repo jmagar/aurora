@@ -6,8 +6,8 @@
   "description": "OAuth consent screen with app icon, scope checklist (sensitive scopes highlighted in warn color), and Allow/Deny buttons. Success/callback state with animated SVG check and close-window message. Token management table with token name, scopes chips, created date, last used, and Revoke button.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

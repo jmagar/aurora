@@ -6,8 +6,8 @@
   "description": "Six attachment UI variants: inline rose-tinted chip (with image thumbnail), media grid with hover overlay, tall doc/PDF card with file-type badge and page count, animated audio chip with 5 waveform bars, upload progress tracker with fixed-80px accent-fill track, and drag-and-drop zone.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

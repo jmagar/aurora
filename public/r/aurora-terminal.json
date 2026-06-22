@@ -6,8 +6,8 @@
   "description": "Aurora-native terminal with 38px navy titlebar (Labby mark, session name, status dot, kill/clear/run buttons), full color system using Aurora tokens, compact in-chat variant, and blinking cursor.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

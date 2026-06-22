@@ -6,7 +6,7 @@
   "description": "Horizontal or vertical separator using Aurora border tokens for grouped controls, menus, and dense metadata panels.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

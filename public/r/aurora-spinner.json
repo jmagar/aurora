@@ -6,7 +6,7 @@
   "description": "Compact loading spinner with cyan, rose, and muted tones for asynchronous agent and registry work.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

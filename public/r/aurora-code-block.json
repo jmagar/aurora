@@ -6,9 +6,9 @@
   "description": "Syntax-highlighted code display with Aurora titlebar, copy button, optional line numbers, diff variant, and inline CodeChip export. Supports TypeScript, Rust, Bash, JSON, TOML, diff.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-textarea"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-textarea"
   ],
   "files": [
     {

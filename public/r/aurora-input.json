@@ -6,7 +6,7 @@
   "description": "Text input with Aurora focus glow, leading/trailing adornment slots, and control-surface background.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

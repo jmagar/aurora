@@ -6,7 +6,7 @@
   "description": "Fixed-ratio media wrapper for previews, charts, and embedded surfaces.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

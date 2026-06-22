@@ -6,7 +6,7 @@
   "description": "Keyboard shortcut keycap for command labels, menus, and dense workbench controls.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

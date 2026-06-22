@@ -6,7 +6,7 @@
   "description": "Top-level navigation menu with active border and glow states.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

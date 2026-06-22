@@ -6,8 +6,8 @@
   "description": "Shared Aurora listbox, group, and option row primitives for command palettes, search results, and combobox menus.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

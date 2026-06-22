@@ -6,7 +6,7 @@
   "description": "Primitive table parts with Aurora 8px table radius and dense headers.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

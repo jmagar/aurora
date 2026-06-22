@@ -6,8 +6,8 @@
   "description": "Artifact panel with preview/code tab switcher, copy/download/expand toolbar, language badge, and streaming cursor. Three variants: panel (full-featured), card (compact collapsible in-chat), inline (bare code strip).",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

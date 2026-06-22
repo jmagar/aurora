@@ -6,7 +6,7 @@
   "description": "Composed Aurora card shell with header, content, footer, title, and description slots.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

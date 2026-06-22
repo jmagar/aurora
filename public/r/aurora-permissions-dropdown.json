@@ -6,8 +6,8 @@
   "description": "LLM runtime permission config panel with master toggle, per-tool Allow/Ask/Block segmented controls, state badges, and scrollable tool list. Also exports PermissionChip for compact summary display.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

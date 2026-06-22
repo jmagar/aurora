@@ -6,7 +6,7 @@
   "description": "Tokenized scroll viewport with Aurora border and scrollbar behavior.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

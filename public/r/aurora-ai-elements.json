@@ -8,14 +8,14 @@
     "lucide-react@^0.487.0"
   ],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-avatar",
-    "aurora-badge",
-    "aurora-button",
-    "aurora-native-select",
-    "aurora-separator",
-    "aurora-spinner",
-    "aurora-textarea"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-avatar",
+    "@aurora/aurora-badge",
+    "@aurora/aurora-button",
+    "@aurora/aurora-native-select",
+    "@aurora/aurora-separator",
+    "@aurora/aurora-spinner",
+    "@aurora/aurora-textarea"
   ],
   "files": [
     {

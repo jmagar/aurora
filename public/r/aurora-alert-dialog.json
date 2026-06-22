@@ -6,9 +6,9 @@
   "description": "Confirmation dialog built on the Aurora modal surface for destructive or high-friction decisions.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-dialog"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-dialog"
   ],
   "files": [
     {

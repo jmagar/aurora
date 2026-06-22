@@ -6,7 +6,7 @@
   "description": "Floating toast notifications with Aurora panel surface, status icons, and auto-dismiss.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

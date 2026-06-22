@@ -6,11 +6,11 @@
   "description": "Metric stat card with label, large value, trend indicator, and Aurora panel styling.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-input",
-    "aurora-radio-group",
-    "aurora-select"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-input",
+    "@aurora/aurora-radio-group",
+    "@aurora/aurora-select"
   ],
   "files": [
     {

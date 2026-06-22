@@ -6,7 +6,7 @@
   "description": "Horizontal application menu bar with compact Aurora menu items.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

@@ -6,7 +6,7 @@
   "description": "Reusable list item with icon, title, description, and action slot.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

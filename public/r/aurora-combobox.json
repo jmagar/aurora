@@ -8,9 +8,9 @@
     "lucide-react@^0.487.0"
   ],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-input",
-    "aurora-search-results"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-input",
+    "@aurora/aurora-search-results"
   ],
   "files": [
     {

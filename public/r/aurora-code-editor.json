@@ -6,8 +6,8 @@
   "description": "Display-only code editor panel with title bar (filename, language badge, close button), line numbers, syntax highlighting, minimap column, diff mode (add/remove line backgrounds), error diagnostics (squiggly underlines, gutter icons, error panel), status bar, and a compact variant.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

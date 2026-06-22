@@ -6,10 +6,10 @@
   "description": "Horizontal filter toolbar with search input, select dropdowns, and Aurora button actions.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-input",
-    "aurora-select"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-input",
+    "@aurora/aurora-select"
   ],
   "files": [
     {

@@ -6,7 +6,7 @@
   "description": "Dense workbench toolbar with grouped controls and separators for editors, previews, and inspectors.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

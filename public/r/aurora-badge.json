@@ -8,7 +8,7 @@
     "class-variance-authority@^0.7.1"
   ],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

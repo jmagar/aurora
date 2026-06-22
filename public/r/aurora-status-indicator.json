@@ -6,7 +6,7 @@
   "description": "Live status label with muted Aurora tones for connected, syncing, degraded, offline, and error states.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

@@ -6,7 +6,7 @@
   "description": "Two-pane resizable workbench layout for chat, editor, preview, logs, and inspectors.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {

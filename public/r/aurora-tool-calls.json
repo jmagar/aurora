@@ -6,9 +6,9 @@
   "description": "Condensed, grouped tool call display for AI sessions. Supports running shimmer, completed, and error states with collapsible arg/result panels.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-input"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-input"
   ],
   "files": [
     {

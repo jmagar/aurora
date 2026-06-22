@@ -6,9 +6,9 @@
   "description": "Modal file picker with sidebar navigation (Recent, Documents, Downloads, Project, Uploads), grid and list view modes, search bar, filter chips (All, Images, Documents, Code), drag-drop upload overlay, staged selection chips below the grid, and a multi-select confirm action using --font-sans for all file names.",
   "dependencies": [],
   "registryDependencies": [
-    "aurora-tokens",
-    "aurora-button",
-    "aurora-input"
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
+    "@aurora/aurora-input"
   ],
   "files": [
     {
