@@ -27,8 +27,26 @@ export default function AiBranchDemo() {
               time: "0.6s",
             },
             {
-              content:
-                "The #[derive(Serialize)] macro expands to a trait impl during compilation — no runtime reflection is involved.",
+              content: (
+                <>
+                  The{" "}
+                  <code
+                    style={{
+                      fontFamily: "var(--aurora-font-mono)",
+                      fontSize: "0.9em",
+                      padding: "0.08em 0.36em",
+                      borderRadius: 5,
+                      background:
+                        "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
+                      color: "var(--aurora-accent-strong)",
+                    }}
+                  >
+                    #[derive(Serialize)]
+                  </code>{" "}
+                  macro expands to a trait impl during compilation — no runtime
+                  reflection is involved.
+                </>
+              ),
               model: "sonnet-4",
               time: "0.9s",
             },
