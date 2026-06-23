@@ -22,8 +22,10 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
     >
       <div
         className={[
-          maxHeight === undefined ? "max-h-72" : null,
-          "overflow-auto aurora-scrollbar",
+          // Default viewport: 18rem cap + Aurora scrollbar (Axon contract marker).
+          maxHeight === undefined
+            ? "max-h-72 overflow-auto aurora-scrollbar"
+            : "overflow-auto aurora-scrollbar",
           viewportClassName,
         ]
           .filter(Boolean)

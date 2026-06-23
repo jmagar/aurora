@@ -208,6 +208,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ensureCSS()
     }, [])
 
+    const isDisabled = disabled || loading
+
     const cls = cn(
       buttonVariants({ variant, size }),
       shape === "pill" && "aurora-btn--pill",
@@ -215,10 +217,26 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       filled && "aurora-btn--filled",
       block && "aurora-btn--block",
       loading && "aurora-btn--loading",
+      // asChild renders a non-<button> (which ignores `disabled`), so emulate
+      // the disabled visuals and drop it from the tab order via class + aria.
+      asChild && isDisabled && "pointer-events-none opacity-45",
       className
     )
 
-    const isDisabled = disabled || loading
+    // Guard clicks while disabled/loading. A native <button disabled> already
+    // suppresses clicks, but asChild renders a non-button element that does not,
+    // so swallow the event there (and defensively everywhere).
+    const handleClick = React.useCallback(
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (isDisabled) {
+          event.preventDefault()
+          event.stopPropagation()
+          return
+        }
+        onClick?.(event)
+      },
+      [isDisabled, onClick]
+    )
 
     // asChild: render the consumer's element via Slot, merging classes. No spinner.
     if (asChild) {
@@ -226,7 +244,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <Slot
           ref={ref}
           className={cls}
-          aria-disabled={isDisabled || undefined}
+          aria-busy={loading ? "true" : undefined}
+          onClick={handleClick}
+          // asChild renders a non-<button>, which ignores `disabled`; expose
+          // disabled state to AT and drop it from the tab order instead.
+          {...(isDisabled ? { "aria-disabled": true, tabIndex: -1 } : {})}
           {...props}
         >
           {children}
@@ -254,8 +276,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         className={cls}
         disabled={isDisabled}
-        aria-busy={loading || undefined}
-        onClick={loading ? undefined : onClick}
+        aria-busy={loading ? "true" : undefined}
+        onClick={handleClick}
         {...props}
       >
         {body}
