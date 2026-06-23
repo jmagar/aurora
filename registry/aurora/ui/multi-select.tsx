@@ -212,6 +212,7 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
     },
     ref
   ) => {
+    const listboxId = React.useId()
     const [valueState, setValueState] = React.useState<string[]>(
       defaultValue ?? []
     )
@@ -289,6 +290,7 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
           role="combobox"
           aria-expanded={open}
           aria-haspopup="listbox"
+          aria-controls={listboxId}
           disabled={disabled}
           onClick={() => setOpen(!open)}
           className={cn(
@@ -339,6 +341,7 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
         {/* Panel */}
         {open ? (
           <div
+            id={listboxId}
             role="listbox"
             aria-multiselectable="true"
             className={cn(

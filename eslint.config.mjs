@@ -19,6 +19,12 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
 }, {
   rules: {
     "@next/next/no-img-element": "off",
+    // Allow intentionally-discarded vars/args prefixed with `_`
+    // (e.g. destructure-to-omit non-DOM props before spreading `...rest`).
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+    ],
   },
 }, ...storybook.configs["flat/recommended"]];
 
