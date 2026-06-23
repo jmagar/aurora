@@ -49,7 +49,7 @@ function Row({ label, names }: { label: string; names: OperationName[] }) {
                 color: "var(--aurora-text-muted)",
               }}
             >
-              {n}
+              {n.charAt(0).toUpperCase() + n.slice(1)}
             </span>
           </div>
         ))}
