@@ -40,7 +40,9 @@ export const SECTION_TITLE_OVERRIDES: Record<string, string> = {
 }
 
 export const SECTION_REDIRECTS: Record<string, string> = {
-  queue: "task",
+  // `resizable`/`table` are alias slugs for the same component. `queue` is NOT
+  // an alias of `task` — Queue (processing queue) and Task (checklist) are
+  // distinct components, each with its own demo; redirecting hid Queue entirely.
   resizable: "resizable-panels",
   table: "tables",
 }

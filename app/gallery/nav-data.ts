@@ -112,6 +112,7 @@ export const NAV: NavGroup[] = [
     { label: "Chain of thought", slug: "chain-of-thought" },
     { label: "Plan", slug: "plan" },
     { label: "Task", slug: "task" },
+    { label: "Queue", slug: "queue" },
     { label: "Suggestion", slug: "suggestion" },
     { label: "Code block", slug: "code-block" },
     { label: "Artifact", slug: "artifact" },
