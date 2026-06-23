@@ -7,7 +7,10 @@ import { RangeSlider } from "@/registry/aurora/ui/range-slider"
 // CD dsCard chrome ported as an inline style: the single range track is capped
 // to a comfortable width on the page surface, matching the CD preview padding.
 const row: React.CSSProperties = {
-  maxWidth: "352px",
+  // Fixed width: the slider's track is absolutely positioned, so it needs a
+  // definite-width ancestor (a %-width wrapper collapses inside the shrink-wrap
+  // gallery column). 320px matches the CD preview.
+  width: "320px",
 }
 
 // CD composition (1:1): a single two-thumb range slider at [30, 70], showing the
