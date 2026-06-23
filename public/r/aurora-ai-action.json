@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-ai-action",
+  "title": "Aurora AI Action",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Aurora AI Action — Claude Design parity.",
+  "dependencies": [
+    "lucide-react@^0.487.0"
+  ],
+  "registryDependencies": [
+    "@aurora/aurora-tokens"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/ai/elements/action.tsx",
+      "content": "\"use client\"\n\n/**\n * Aurora Action — a quiet, icon-first action button for AI message affordances\n * (copy / retry / thumbs-up, etc.).\n *\n * Visual values are ported 1:1 from the Claude Design \"Action\" source:\n *  - default: a 10px-radius bordered ghost square (32px) over the control\n *    surface, with a muted icon that lifts to the primary accent on hover.\n *  - icon + text: borderless ghost row (icon + label) — no surface/border.\n *  - pressed: a rose/pink-tinted toggle state (border + surface + icon) used\n *    for affirmative toggles like a thumbs-up.\n *  - size=\"sm\": a tighter 28px square with a smaller hit area.\n *\n * Architecture stays shadcn: typed props, `forwardRef`, `displayName`,\n * `React.memo`, a real `<button>` with proper a11y (`aria-pressed` mirrors the\n * `pressed` toggle; `label` becomes the visible text, otherwise consumers pass\n * `aria-label`). Styling reads `--aurora-*` tokens via an injected `<style>`\n * scoped by a stable class so the registry stays config-free (Tailwind v4) and\n * tokens drive every value. Violet is intentionally not used.\n */\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nconst STYLE_ID = \"aurora-action-styles\"\n\nconst ACTION_CSS = `\n.aurora-action {\n  --aurora-action-size: 32px;\n  --aurora-action-icon: 16px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  box-sizing: border-box;\n  min-width: var(--aurora-action-size);\n  height: var(--aurora-action-size);\n  padding: 0;\n  width: var(--aurora-action-size);\n  border-radius: 10px;\n  border: 1px solid var(--aurora-border-default);\n  background: var(--aurora-control-surface);\n  color: var(--aurora-text-muted);\n  font-family: var(--font-sans, Inter, sans-serif);\n  font-size: var(--aurora-type-control, 13px);\n  font-weight: 600;\n  line-height: 1;\n  cursor: pointer;\n  -webkit-appearance: none;\n  appearance: none;\n  outline: none;\n  transition:\n    color var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease),\n    border-color var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease),\n    background var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease),\n    transform var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease);\n}\n.aurora-action svg {\n  width: var(--aurora-action-icon);\n  height: var(--aurora-action-icon);\n  flex: none;\n}\n.aurora-action:hover:not(:disabled) {\n  color: var(--aurora-accent-primary);\n  border-color: color-mix(in srgb, var(--aurora-accent-primary) 30%, var(--aurora-border-default));\n  background: color-mix(in srgb, var(--aurora-accent-primary) 6%, var(--aurora-control-surface));\n}\n.aurora-action:active:not(:disabled) {\n  transform: translateY(0.5px);\n}\n.aurora-action:focus-visible {\n  border-color: var(--aurora-accent-primary);\n  box-shadow: 0 0 0 3px var(--aurora-focus-ring-strong);\n}\n.aurora-action:disabled {\n  cursor: not-allowed;\n  opacity: 0.55;\n  color: var(--aurora-disabled-text);\n}\n\n/* icon + text: borderless ghost row */\n.aurora-action[data-has-label=\"true\"] {\n  width: auto;\n  padding: 0 10px 0 8px;\n  border-color: transparent;\n  background: transparent;\n}\n.aurora-action[data-has-label=\"true\"]:hover:not(:disabled) {\n  border-color: transparent;\n  background: color-mix(in srgb, var(--aurora-accent-primary) 8%, transparent);\n}\n.aurora-action__label {\n  color: var(--aurora-text-primary);\n  white-space: nowrap;\n}\n\n/* pressed toggle — rose/pink-tinted affirmative state */\n.aurora-action[data-pressed=\"true\"] {\n  color: var(--aurora-accent-pink);\n  border-color: var(--aurora-accent-pink-border);\n  background: var(--aurora-accent-pink-surface);\n}\n.aurora-action[data-pressed=\"true\"]:hover:not(:disabled) {\n  color: var(--aurora-accent-pink-strong);\n  border-color: color-mix(in srgb, var(--aurora-accent-pink) 46%, transparent);\n  background: color-mix(in srgb, var(--aurora-accent-pink) 18%, var(--aurora-panel-medium));\n}\n\n/* small */\n.aurora-action[data-size=\"sm\"] {\n  --aurora-action-size: 28px;\n  --aurora-action-icon: 14px;\n  border-radius: 8px;\n  font-size: 12px;\n}\n.aurora-action[data-size=\"sm\"][data-has-label=\"true\"] {\n  padding: 0 8px 0 6px;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .aurora-action { transition: none; }\n  .aurora-action:active:not(:disabled) { transform: none; }\n}\n`\n\nfunction useActionStyles() {\n  React.useEffect(() => {\n    if (typeof document === \"undefined\") return\n    if (document.getElementById(STYLE_ID)) return\n    const el = document.createElement(\"style\")\n    el.id = STYLE_ID\n    el.textContent = ACTION_CSS\n    document.head.appendChild(el)\n  }, [])\n}\n\nexport interface ActionProps\n  extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  /** Optional visible label, rendered after the icon (icon + text variant). */\n  label?: React.ReactNode\n  /** Toggled / affirmative state — applies the rose-tinted styling + aria-pressed. */\n  pressed?: boolean\n  /** Size scale. */\n  size?: \"default\" | \"sm\"\n}\n\nconst Action = React.forwardRef<HTMLButtonElement, ActionProps>(\n  (\n    {\n      className,\n      children,\n      label,\n      pressed,\n      size = \"default\",\n      type = \"button\",\n      ...props\n    },\n    ref\n  ) => {\n    useActionStyles()\n    const hasLabel = label != null && label !== false\n    return (\n      <button\n        ref={ref}\n        type={type}\n        data-size={size}\n        data-has-label={hasLabel ? \"true\" : undefined}\n        data-pressed={pressed ? \"true\" : undefined}\n        aria-pressed={pressed != null ? pressed : undefined}\n        className={cn(\"aurora-action\", className)}\n        {...props}\n      >\n        {children}\n        {hasLabel ? <span className=\"aurora-action__label\">{label}</span> : null}\n      </button>\n    )\n  }\n)\nAction.displayName = \"Action\"\n\nconst MemoAction = React.memo(Action)\nMemoAction.displayName = \"Action\"\n\nexport { MemoAction as Action }\nexport default MemoAction\n",
+      "type": "registry:component",
+      "target": "@components/aurora/ai/action.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/ai/elements/action.tsx",
+    "installTarget": "@components/aurora/ai/action.tsx"
+  },
+  "categories": [
+    "aurora",
+    "block",
+    "ai"
+  ],
+  "type": "registry:block"
+}

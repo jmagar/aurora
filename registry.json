@@ -1583,7 +1583,7 @@
       "name": "aurora-error-page",
       "type": "registry:block",
       "title": "Aurora Error Page",
-      "description": "Operator-first error pages for 404 (Not found + mono path + Go home button), 403 (Access denied + contact link), and 500 (Something went wrong + mono incident ID + animated countdown ring with auto-retry). No consumer-app illustrations — uses ghost numeric backdrop instead.",
+      "description": "Operator-first error pages for 404 (Not found + mono path + Go home button), 403 (Access denied + contact link), and 500 (Something went wrong + mono incident ID + animated countdown ring with auto-retry). No consumer-app illustrations \u2014 uses ghost numeric backdrop instead.",
       "dependencies": [],
       "registryDependencies": [
         "@aurora/aurora-tokens",
@@ -1651,7 +1651,7 @@
       "name": "aurora-command-palette",
       "type": "registry:block",
       "title": "Aurora Command Palette",
-      "description": "Full-screen command palette with 72% alpha backdrop, centered 560px panel, magnifier search input with ⌘K shortcut hint, sectioned results (Recent, Actions, Skills, Navigate), keyboard shortcut kbd badges, arrow-key navigation, Enter to select, Escape to close, and a useCommandPalette hook that binds ⌘K globally.",
+      "description": "Full-screen command palette with 72% alpha backdrop, centered 560px panel, magnifier search input with \u2318K shortcut hint, sectioned results (Recent, Actions, Skills, Navigate), keyboard shortcut kbd badges, arrow-key navigation, Enter to select, Escape to close, and a useCommandPalette hook that binds \u2318K globally.",
       "dependencies": [],
       "registryDependencies": [
         "@aurora/aurora-tokens",
@@ -4634,6 +4634,798 @@
         "taxonomy": "ai"
       },
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/open-in-chat.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+    },
+    {
+      "name": "aurora-chat-message",
+      "type": "registry:ui",
+      "title": "Aurora ChatMessage",
+      "description": "Aurora ChatMessage \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/chat-message.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/chat-message.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/chat-message.tsx",
+        "installTarget": "@ui/aurora/chat-message.tsx"
+      }
+    },
+    {
+      "name": "aurora-chat-sidebar",
+      "type": "registry:ui",
+      "title": "Aurora ChatSidebar",
+      "description": "Aurora ChatSidebar \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/chat-sidebar.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/chat-sidebar.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/chat-sidebar.tsx",
+        "installTarget": "@ui/aurora/chat-sidebar.tsx"
+      }
+    },
+    {
+      "name": "aurora-color-picker",
+      "type": "registry:ui",
+      "title": "Aurora ColorPicker",
+      "description": "Aurora ColorPicker \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/color-picker.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/color-picker.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/color-picker.tsx",
+        "installTarget": "@ui/aurora/color-picker.tsx"
+      }
+    },
+    {
+      "name": "aurora-component-card",
+      "type": "registry:ui",
+      "title": "Aurora ComponentCard",
+      "description": "Aurora ComponentCard \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/component-card.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/component-card.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/component-card.tsx",
+        "installTarget": "@ui/aurora/component-card.tsx"
+      }
+    },
+    {
+      "name": "aurora-copy-button",
+      "type": "registry:ui",
+      "title": "Aurora CopyButton",
+      "description": "Aurora CopyButton \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/copy-button.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/copy-button.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/copy-button.tsx",
+        "installTarget": "@ui/aurora/copy-button.tsx"
+      }
+    },
+    {
+      "name": "aurora-multi-select",
+      "type": "registry:ui",
+      "title": "Aurora MultiSelect",
+      "description": "Aurora MultiSelect \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/multi-select.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/multi-select.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/multi-select.tsx",
+        "installTarget": "@ui/aurora/multi-select.tsx"
+      }
+    },
+    {
+      "name": "aurora-operation-icon",
+      "type": "registry:ui",
+      "title": "Aurora OperationIcon",
+      "description": "Aurora OperationIcon \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/operation-icon.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/operation-icon.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/operation-icon.tsx",
+        "installTarget": "@ui/aurora/operation-icon.tsx"
+      }
+    },
+    {
+      "name": "aurora-progress-ring",
+      "type": "registry:ui",
+      "title": "Aurora ProgressRing",
+      "description": "Aurora ProgressRing \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/progress-ring.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/progress-ring.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/progress-ring.tsx",
+        "installTarget": "@ui/aurora/progress-ring.tsx"
+      }
+    },
+    {
+      "name": "aurora-range-slider",
+      "type": "registry:ui",
+      "title": "Aurora RangeSlider",
+      "description": "Aurora RangeSlider \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/range-slider.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/range-slider.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/range-slider.tsx",
+        "installTarget": "@ui/aurora/range-slider.tsx"
+      }
+    },
+    {
+      "name": "aurora-rating",
+      "type": "registry:ui",
+      "title": "Aurora Rating",
+      "description": "Aurora Rating \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/rating.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/rating.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/rating.tsx",
+        "installTarget": "@ui/aurora/rating.tsx"
+      }
+    },
+    {
+      "name": "aurora-segmented",
+      "type": "registry:ui",
+      "title": "Aurora Segmented",
+      "description": "Aurora Segmented \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/segmented.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/segmented.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/segmented.tsx",
+        "installTarget": "@ui/aurora/segmented.tsx"
+      }
+    },
+    {
+      "name": "aurora-spotlight",
+      "type": "registry:ui",
+      "title": "Aurora Spotlight",
+      "description": "Aurora Spotlight \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/spotlight.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/spotlight.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/spotlight.tsx",
+        "installTarget": "@ui/aurora/spotlight.tsx"
+      }
+    },
+    {
+      "name": "aurora-status-dot",
+      "type": "registry:ui",
+      "title": "Aurora StatusDot",
+      "description": "Aurora StatusDot \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/status-dot.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/status-dot.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/status-dot.tsx",
+        "installTarget": "@ui/aurora/status-dot.tsx"
+      }
+    },
+    {
+      "name": "aurora-stepper",
+      "type": "registry:ui",
+      "title": "Aurora Stepper",
+      "description": "Aurora Stepper \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/stepper.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/stepper.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/stepper.tsx",
+        "installTarget": "@ui/aurora/stepper.tsx"
+      }
+    },
+    {
+      "name": "aurora-tag-input",
+      "type": "registry:ui",
+      "title": "Aurora TagInput",
+      "description": "Aurora TagInput \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/ui/tag-input.tsx",
+          "type": "registry:ui",
+          "target": "@ui/aurora/tag-input.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "ui",
+        "extension"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "ui",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/ui/tag-input.tsx",
+        "installTarget": "@ui/aurora/tag-input.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-action",
+      "type": "registry:block",
+      "title": "Aurora AI Action",
+      "description": "Aurora AI Action \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/action.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/action.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/action.tsx",
+        "installTarget": "@components/aurora/ai/action.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-actions",
+      "type": "registry:block",
+      "title": "Aurora AI Actions",
+      "description": "Aurora AI Actions \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/actions.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/actions.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/actions.tsx",
+        "installTarget": "@components/aurora/ai/actions.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-ai-image-grid",
+      "type": "registry:block",
+      "title": "Aurora AI AiImageGrid",
+      "description": "Aurora AI AiImageGrid \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/ai-image-grid.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/ai-image-grid.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/ai-image-grid.tsx",
+        "installTarget": "@components/aurora/ai/ai-image-grid.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-branch",
+      "type": "registry:block",
+      "title": "Aurora AI Branch",
+      "description": "Aurora AI Branch \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/branch.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/branch.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/branch.tsx",
+        "installTarget": "@components/aurora/ai/branch.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-loader",
+      "type": "registry:block",
+      "title": "Aurora AI Loader",
+      "description": "Aurora AI Loader \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/loader.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/loader.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/loader.tsx",
+        "installTarget": "@components/aurora/ai/loader.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-message-avatar",
+      "type": "registry:block",
+      "title": "Aurora AI MessageAvatar",
+      "description": "Aurora AI MessageAvatar \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/message-avatar.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/message-avatar.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/message-avatar.tsx",
+        "installTarget": "@components/aurora/ai/message-avatar.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-message-content",
+      "type": "registry:block",
+      "title": "Aurora AI MessageContent",
+      "description": "Aurora AI MessageContent \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/message-content.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/message-content.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/message-content.tsx",
+        "installTarget": "@components/aurora/ai/message-content.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-response",
+      "type": "registry:block",
+      "title": "Aurora AI Response",
+      "description": "Aurora AI Response \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/response.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/response.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/response.tsx",
+        "installTarget": "@components/aurora/ai/response.tsx"
+      }
+    },
+    {
+      "name": "aurora-ai-source",
+      "type": "registry:block",
+      "title": "Aurora AI Source",
+      "description": "Aurora AI Source \u2014 Claude Design parity.",
+      "dependencies": [
+        "lucide-react@^0.487.0"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/ai/elements/source.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/source.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "ai"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/ai/elements/source.tsx",
+        "installTarget": "@components/aurora/ai/source.tsx"
+      }
     }
   ]
 }
