@@ -7,9 +7,15 @@ import { Button } from "@/registry/aurora/ui/button"
 // Shared icons
 // ---------------------------------------------------------------------------
 
-function GenericFileIcon({ color = "var(--aurora-text-muted)" }: { color?: string }) {
+function GenericFileIcon({
+  color = "var(--aurora-text-muted)",
+  size = 16,
+}: {
+  color?: string
+  size?: number
+}) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path
         d="M3 2.5C3 1.95 3.45 1.5 4 1.5H9L13 5.5V13.5C13 14.05 12.55 14.5 12 14.5H4C3.45 14.5 3 14.05 3 13.5V2.5Z"
         stroke={color}
@@ -35,12 +41,11 @@ function PDFIcon() {
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path
         d="M3 2.5C3 1.95 3.45 1.5 4 1.5H9L13 5.5V13.5C13 14.05 12.55 14.5 12 14.5H4C3.45 14.5 3 14.05 3 13.5V2.5Z"
-        stroke="var(--aurora-error)"
+        stroke="var(--aurora-accent-pink)"
         strokeWidth="1.2"
         fill="none"
       />
-      <path d="M9 1.5V5.5H13" stroke="var(--aurora-error)" strokeWidth="1.2" />
-      <text x="4.5" y="11.5" fontSize="4.5" fill="var(--aurora-error)" fontWeight="700" fontFamily="monospace">PDF</text>
+      <path d="M9 1.5V5.5H13" stroke="var(--aurora-accent-pink)" strokeWidth="1.2" />
     </svg>
   )
 }
@@ -104,12 +109,12 @@ export function AttachmentChip({ name, size, thumbnailUrl, onDismiss }: Attachme
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: "6px",
-        padding: showThumb ? "3px 8px 3px 3px" : "4px 8px",
+        gap: "10px",
+        padding: showThumb ? "6px 10px 6px 6px" : "8px 12px",
         background: "color-mix(in srgb, var(--aurora-accent-pink) 8%, var(--aurora-panel-medium))",
-        border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 22%, var(--aurora-border-default))",
-        borderRadius: "10px",
-        maxWidth: "220px",
+        border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 24%, var(--aurora-border-default))",
+        borderRadius: "12px",
+        maxWidth: "240px",
         flexShrink: 0,
       }}
     >
@@ -118,38 +123,39 @@ export function AttachmentChip({ name, size, thumbnailUrl, onDismiss }: Attachme
           src={thumbnailUrl}
           alt={name}
           style={{
-            width: "26px",
-            height: "26px",
-            borderRadius: "7px",
+            width: "30px",
+            height: "30px",
+            borderRadius: "8px",
             objectFit: "cover",
             flexShrink: 0,
           }}
         />
       ) : (
         <span style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
-          <GenericFileIcon color="var(--aurora-accent-pink)" />
+          <GenericFileIcon color="var(--aurora-accent-pink)" size={18} />
         </span>
       )}
 
       <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
         <span
           style={{
-            fontSize: "12px",
-            fontWeight: 500,
+            fontSize: "13px",
+            fontWeight: 600,
             color: "var(--aurora-text-primary)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             fontFamily: "var(--aurora-font-sans)",
+            lineHeight: 1.25,
           }}
         >
           {name}
         </span>
         <span
           style={{
-            fontSize: "10px",
+            fontSize: "11px",
             color: "var(--aurora-text-muted)",
-            lineHeight: 1.2,
+            lineHeight: 1.3,
           }}
         >
           {formatBytes(size)}
@@ -164,19 +170,18 @@ export function AttachmentChip({ name, size, thumbnailUrl, onDismiss }: Attachme
           onClick={onDismiss}
           aria-label={`Remove ${name}`}
           style={{
-            width: 22,
-            height: 22,
+            width: 24,
+            height: 24,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
             marginLeft: 2,
-            borderRadius: 999,
+            borderRadius: 8,
             color: "var(--aurora-text-muted)",
-            background: "color-mix(in srgb, var(--aurora-panel-strong) 82%, transparent)",
           }}
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
           </svg>
         </Button>
@@ -328,12 +333,13 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
   const pdf = isPDF(name)
   const ext = getExt(name).toUpperCase() || "FILE"
 
-  const badgeColor = pdf ? "var(--aurora-error)" : "var(--aurora-accent-primary)"
+  // CD: PDF accent is rose/pink, non-PDF stays cyan.
+  const accent = pdf ? "var(--aurora-accent-pink)" : "var(--aurora-accent-primary)"
   const badgeBg = pdf
-    ? "color-mix(in srgb, var(--aurora-error) 12%, transparent)"
+    ? "color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent)"
     : "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)"
   const badgeBorder = pdf
-    ? "color-mix(in srgb, var(--aurora-error) 30%, transparent)"
+    ? "color-mix(in srgb, var(--aurora-accent-pink) 30%, transparent)"
     : "color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)"
 
   return (
@@ -341,12 +347,12 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "10px",
-        padding: "14px",
-        background: "var(--aurora-panel-medium)",
-        border: "1px solid var(--aurora-border-default)",
-        borderRadius: "var(--aurora-radius-1)",
-        width: "160px",
+        gap: "12px",
+        padding: "16px",
+        background: "color-mix(in srgb, var(--aurora-accent-pink) 5%, var(--aurora-panel-medium))",
+        border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 16%, var(--aurora-border-default))",
+        borderRadius: "var(--aurora-radius-2)",
+        width: "300px",
         position: "relative",
       }}
     >
@@ -359,15 +365,16 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
           aria-label={`Remove ${name}`}
           style={{
             position: "absolute",
-            top: "6px",
-            right: "6px",
-            width: 22,
-            height: 22,
-            fontSize: "14px",
-            lineHeight: 1,
+            top: "10px",
+            right: "10px",
+            width: 26,
+            height: 26,
+            color: "var(--aurora-text-muted)",
           }}
         >
-          ×
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          </svg>
         </Button>
       )}
 
@@ -376,20 +383,20 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
         style={{
           display: "inline-flex",
           alignItems: "center",
-          gap: "5px",
+          gap: "6px",
           alignSelf: "flex-start",
-          padding: "3px 7px",
+          padding: "4px 9px",
           background: badgeBg,
           border: `1px solid ${badgeBorder}`,
-          borderRadius: "8px",
-          fontSize: "10px",
+          borderRadius: "999px",
+          fontSize: "11px",
           fontWeight: 700,
-          color: badgeColor,
-          letterSpacing: "0.06em",
+          color: accent,
+          letterSpacing: "0.08em",
           fontFamily: "var(--aurora-font-mono)",
         }}
       >
-        {pdf ? <PDFIcon /> : <GenericFileIcon color={badgeColor} />}
+        {pdf ? <PDFIcon /> : <GenericFileIcon color={accent} />}
         {ext}
       </div>
 
@@ -399,25 +406,16 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: "56px",
-          background: "var(--aurora-control-surface)",
-          borderRadius: "10px",
-          border: "1px solid var(--aurora-border-default)",
+          height: "100px",
+          background: "color-mix(in srgb, var(--aurora-page-bg) 55%, var(--aurora-control-surface))",
+          borderRadius: "12px",
+          border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 14%, var(--aurora-border-default))",
         }}
       >
-        {pdf ? (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <path d="M6 5C6 3.9 6.9 3 8 3H19L26 10V27C26 28.1 25.1 29 24 29H8C6.9 29 6 28.1 6 27V5Z" stroke="var(--aurora-error)" strokeWidth="1.5" fill="none" />
-            <path d="M19 3V10H26" stroke="var(--aurora-error)" strokeWidth="1.5" />
-            <text x="9" y="22" fontSize="8" fill="var(--aurora-error)" fontWeight="700" fontFamily="monospace">PDF</text>
-          </svg>
-        ) : (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <path d="M6 5C6 3.9 6.9 3 8 3H19L26 10V27C26 28.1 25.1 29 24 29H8C6.9 29 6 28.1 6 27V5Z" stroke="var(--aurora-accent-primary)" strokeWidth="1.5" fill="none" />
-            <path d="M19 3V10H26" stroke="var(--aurora-accent-primary)" strokeWidth="1.5" />
-            <path d="M10 15H22M10 19H18M10 23H20" stroke="var(--aurora-accent-primary)" strokeWidth="1.2" strokeLinecap="round" />
-          </svg>
-        )}
+        <svg width="40" height="40" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M6 5C6 3.9 6.9 3 8 3H19L26 10V27C26 28.1 25.1 29 24 29H8C6.9 29 6 28.1 6 27V5Z" stroke={accent} strokeWidth="1.5" fill="none" />
+          <path d="M19 3V10H26" stroke={accent} strokeWidth="1.5" />
+        </svg>
       </div>
 
       {/* Name */}
@@ -425,8 +423,8 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
         <p
           style={{
             margin: 0,
-            fontSize: "12px",
-            fontWeight: 600,
+            fontSize: "14px",
+            fontWeight: 700,
             color: "var(--aurora-text-primary)",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -440,17 +438,17 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "6px",
-            marginTop: "3px",
+            gap: "8px",
+            marginTop: "4px",
           }}
         >
-          <span style={{ fontSize: "11px", color: "var(--aurora-text-muted)" }}>
+          <span style={{ fontSize: "12px", color: "var(--aurora-text-muted)" }}>
             {formatBytes(size)}
           </span>
-          {pdf && pageCount != null && (
+          {pageCount != null && (
             <>
-              <span style={{ fontSize: "10px", color: "var(--aurora-border-strong)" }}>·</span>
-              <span style={{ fontSize: "11px", color: "var(--aurora-text-muted)" }}>
+              <span style={{ fontSize: "11px", color: "var(--aurora-text-muted)" }}>·</span>
+              <span style={{ fontSize: "12px", color: "var(--aurora-text-muted)" }}>
                 {pageCount} {pageCount === 1 ? "page" : "pages"}
               </span>
             </>
@@ -461,10 +459,23 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
       {onOpen && (
         <Button
           type="button"
-          variant="neutral"
-          size="sm"
+          variant="plain"
+          size="unstyled"
           onClick={onOpen}
-          style={{ fontSize: "11px" }}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            padding: "9px 12px",
+            fontSize: "13px",
+            fontWeight: 600,
+            color: "var(--aurora-text-primary)",
+            background: "transparent",
+            border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 24%, var(--aurora-border-default))",
+            borderRadius: "10px",
+            fontFamily: "var(--aurora-font-sans)",
+          }}
         >
           Open
         </Button>
@@ -480,6 +491,8 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
 export interface AttachmentAudioChipProps {
   title: string
   duration: string
+  /** Compact single-line layout (smaller play button + inline duration) */
+  compact?: boolean
   /** Optional waveform seed — array of 5 amplitudes 0..1 */
   waveform?: [number, number, number, number, number]
 }
@@ -494,9 +507,14 @@ const KEYFRAMES_AUDIO = `
 export function AttachmentAudioChip({
   title,
   duration,
+  compact = false,
   waveform = [0.5, 0.9, 0.6, 0.8, 0.4],
 }: AttachmentAudioChipProps) {
   const [playing, setPlaying] = React.useState(false)
+
+  const btnSize = compact ? 26 : 34
+  const iconSize = compact ? 9 : 11
+  const waveHeight = compact ? 16 : 22
 
   return (
     <>
@@ -505,35 +523,41 @@ export function AttachmentAudioChip({
         style={{
           display: "inline-flex",
           alignItems: "center",
-          gap: "10px",
-          padding: "8px 12px",
+          gap: compact ? "8px" : "12px",
+          padding: compact ? "7px 12px" : "10px 14px",
           background: "color-mix(in srgb, var(--aurora-accent-primary) 7%, var(--aurora-panel-medium))",
-          border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 22%, var(--aurora-border-default))",
-          borderRadius: "var(--aurora-radius-1)",
-          maxWidth: "280px",
+          border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 24%, var(--aurora-border-default))",
+          borderRadius: "12px",
+          maxWidth: "320px",
         }}
       >
-        {/* Play/pause toggle */}
+        {/* Play/pause toggle — circular outline */}
         <Button
           type="button"
-          variant="aurora"
-          size="icon"
+          variant="plain"
+          size="unstyled"
           onClick={() => setPlaying((p) => !p)}
           aria-label={playing ? "Pause" : "Play"}
           style={{
-            width: "28px",
-            height: "28px",
+            width: btnSize,
+            height: btnSize,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
             borderRadius: "50%",
             flexShrink: 0,
+            color: "var(--aurora-accent-primary)",
+            background: "transparent",
+            border: "1.5px solid color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)",
           }}
         >
           {playing ? (
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+            <svg width={iconSize} height={iconSize} viewBox="0 0 10 10" fill="none" aria-hidden="true">
               <rect x="1.5" y="1.5" width="2.5" height="7" rx="0.7" fill="currentColor" />
               <rect x="6" y="1.5" width="2.5" height="7" rx="0.7" fill="currentColor" />
             </svg>
           ) : (
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+            <svg width={iconSize} height={iconSize} viewBox="0 0 10 10" fill="none" aria-hidden="true">
               <path d="M2.5 1.5L8.5 5L2.5 8.5V1.5Z" fill="currentColor" />
             </svg>
           )}
@@ -545,7 +569,7 @@ export function AttachmentAudioChip({
             display: "flex",
             alignItems: "center",
             gap: "2.5px",
-            height: "22px",
+            height: `${waveHeight}px`,
           }}
         >
           {waveform.map((amp, i) => (
@@ -568,22 +592,41 @@ export function AttachmentAudioChip({
         </div>
 
         {/* Info */}
-        <div style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1 }}>
-          <span
-            style={{
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "var(--aurora-text-primary)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              fontFamily: "var(--aurora-font-sans)",
-            }}
-          >
-            {title}
-          </span>
-          <span style={{ fontSize: "10px", color: "var(--aurora-text-muted)" }}>{duration}</span>
-        </div>
+        {compact ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+            <span
+              style={{
+                fontSize: "13px",
+                fontWeight: 600,
+                color: "var(--aurora-text-primary)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                fontFamily: "var(--aurora-font-sans)",
+              }}
+            >
+              {title}
+            </span>
+            <span style={{ fontSize: "11px", color: "var(--aurora-text-muted)", flexShrink: 0 }}>{duration}</span>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1 }}>
+            <span
+              style={{
+                fontSize: "14px",
+                fontWeight: 700,
+                color: "var(--aurora-text-primary)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                fontFamily: "var(--aurora-font-sans)",
+              }}
+            >
+              {title}
+            </span>
+            <span style={{ fontSize: "11px", color: "var(--aurora-text-muted)" }}>{duration}</span>
+          </div>
+        )}
       </div>
     </>
   )
@@ -609,25 +652,25 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "10px",
-        padding: "7px 10px",
+        gap: "12px",
+        padding: "12px 16px",
         background: "var(--aurora-panel-medium)",
         border: "1px solid var(--aurora-border-default)",
-        borderRadius: "10px",
+        borderRadius: "12px",
         width: "100%",
       }}
     >
       {/* Icon */}
       <span style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
-        <GenericFileIcon color={done ? "var(--aurora-success)" : "var(--aurora-accent-primary)"} />
+        <GenericFileIcon color={done ? "var(--aurora-success)" : "var(--aurora-accent-primary)"} size={18} />
       </span>
 
       {/* Name */}
       <span
         style={{
           flex: 1,
-          fontSize: "12px",
-          fontWeight: 500,
+          fontSize: "14px",
+          fontWeight: 600,
           color: "var(--aurora-text-primary)",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -642,9 +685,9 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
       {/* Progress track */}
       <div
         style={{
-          width: "80px",
-          height: "4px",
-          borderRadius: "2px",
+          width: "160px",
+          height: "5px",
+          borderRadius: "3px",
           background: "var(--aurora-control-surface)",
           flexShrink: 0,
           overflow: "hidden",
@@ -655,7 +698,7 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
             height: "100%",
             width: `${clamped}%`,
             background: done ? "var(--aurora-success)" : "var(--aurora-accent-primary)",
-            borderRadius: "2px",
+            borderRadius: "3px",
             transition: "width 0.3s ease-out, background 0.3s",
           }}
         />
@@ -664,10 +707,10 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
       {/* Percentage */}
       <span
         style={{
-          fontSize: "11px",
+          fontSize: "13px",
           color: done ? "var(--aurora-success)" : "var(--aurora-text-muted)",
           fontVariantNumeric: "tabular-nums",
-          width: "34px",
+          width: "40px",
           textAlign: "right",
           flexShrink: 0,
           transition: "color 0.3s",
@@ -679,19 +722,24 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
       {onCancel && !done && (
         <Button
           type="button"
-          variant="ghost"
-          size="icon"
+          variant="plain"
+          size="unstyled"
           onClick={onCancel}
           aria-label="Cancel upload"
           style={{
-            width: 20,
-            height: 20,
-            fontSize: "14px",
-            lineHeight: 1,
+            width: 24,
+            height: 24,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
             flexShrink: 0,
+            borderRadius: 8,
+            color: "var(--aurora-text-muted)",
           }}
         >
-          ×
+          <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          </svg>
         </Button>
       )}
     </div>

@@ -435,7 +435,11 @@ export const ErrorPage = React.forwardRef<HTMLDivElement, ErrorPageProps>(
             width: "100%",
             maxWidth: "480px",
             padding: "48px 32px",
-            background: "var(--aurora-panel-strong)",
+            // Opaque→opaque vertical gradient (lit top, deep base) — matches CD's
+            // panel-strong tier. Both stops are opaque tokens so there is no
+            // translucent-over-opaque seam.
+            background:
+              "linear-gradient(180deg, var(--aurora-panel-strong-top) 0%, var(--aurora-panel-strong) 100%)",
             border: "1px solid var(--aurora-border-default)",
             borderRadius: "var(--aurora-radius-3)",
             boxShadow: "var(--aurora-shadow-strong)",

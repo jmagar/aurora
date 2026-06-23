@@ -4,11 +4,11 @@ import * as React from "react"
 import { Brain, CheckCircle2, ChevronDown, Circle, CircleAlert, ListChecks, ListTree } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
-// Aurora violet tokens represent AI/automation identity.
+// Aurora cyan primary marks AI/automation identity.
 // Do not use for semantic state (success/warn/error) — use the semantic token layer for that.
-const AI_ACCENT        = "var(--aurora-accent-violet)"
+const AI_ACCENT        = "var(--aurora-accent-primary)"
 const PLAN_ROW_BACKGROUND = {
-  inprog: "var(--aurora-accent-violet-surface)",
+  inprog: "var(--aurora-selected-bg)",
   error: "var(--aurora-error-surface)",
 } as const
 

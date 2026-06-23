@@ -128,12 +128,16 @@ function makeRustRules(): Rule[] {
   ]
 }
 
+const BASH_COMMANDS =
+  /\b(npx|npm|pnpm|yarn|bun|node|deno|docker|kubectl|helm|git|cargo|go|make|curl|wget|ssh|scp|rsync|sudo|apt|brew|pip|python|python3)\b/
+
 function makeBashRules(): Rule[] {
   return [
     { regex: /#[^\n]*/, type: "comment" },
     { regex: /"(?:[^"\\]|\\.)*"/, type: "string" },
     { regex: /'[^']*'/, type: "string" },
     { regex: BASH_KEYWORDS, type: "keyword" },
+    { regex: BASH_COMMANDS, type: "string" },
     { regex: /\$[A-Za-z_][A-Za-z0-9_]*|\$\{[^}]*\}/, type: "type" },
     { regex: /\b\d+\b/, type: "number" },
     { regex: /[=<>!|&]+/, type: "operator" },
@@ -242,29 +246,33 @@ function CopyButton({ code }: { code: string }) {
   return (
     <Button
       type="button"
-      variant={copied ? "aurora" : "neutral"}
+      variant="plain"
       size="sm"
       onClick={handleCopy}
       aria-label={copied ? "Copied" : "Copy code"}
       title={copied ? "Copied!" : "Copy to clipboard"}
       style={{
-        gap: "4px",
-        fontSize: "11px",
+        gap: "6px",
+        fontSize: "13px",
+        fontWeight: 600,
+        fontFamily: "var(--aurora-font-sans)",
+        color: copied ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
+        padding: "4px 6px",
         flexShrink: 0,
       }}
     >
       {copied ? (
         <>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             <path d="M2 6L4.5 8.5L10 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Copied
         </>
       ) : (
         <>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <rect x="4" y="1" width="7" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-            <path d="M1 4H3.5V11H8.5V9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <rect x="5" y="1.5" width="7.5" height="8.5" rx="1.75" stroke="currentColor" strokeWidth="1.3" />
+            <path d="M1.5 4.5H4V12.5H9.5V10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Copy
         </>
@@ -316,7 +324,7 @@ export function CodeBlock({
   return (
     <div
       style={{
-        background: "var(--aurora-page-bg)",
+        background: "var(--aurora-panel-strong)",
         border: "1px solid var(--aurora-border-default)",
         borderRadius: "var(--aurora-radius-2)",
         overflow: "hidden",
@@ -329,7 +337,7 @@ export function CodeBlock({
           display: "flex",
           alignItems: "center",
           gap: "10px",
-          padding: "8px 12px",
+          padding: "10px 16px",
           background: "var(--aurora-panel-medium)",
           borderBottom: "1px solid var(--aurora-border-default)",
           boxShadow: "var(--aurora-highlight-medium)",
@@ -340,15 +348,11 @@ export function CodeBlock({
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "5px",
-            fontSize: "12px",
+            fontSize: "14px",
             color: "var(--aurora-text-muted)",
             fontFamily: "var(--aurora-font-mono)",
           }}
         >
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-            <path d="M2.5 9.5L5 6.5L2.5 3.5M6 10H10.5" stroke="var(--aurora-accent-primary)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
           {filename ?? language}
         </span>
 
@@ -363,6 +367,7 @@ export function CodeBlock({
           overflowX: "auto",
           overflowY: "auto",
           maxHeight: "480px",
+          padding: "16px 0",
         }}
       >
         {isDiff ? (
@@ -372,8 +377,8 @@ export function CodeBlock({
               width: "100%",
               borderCollapse: "collapse",
               fontFamily: "var(--aurora-font-mono)",
-              fontSize: "13px",
-              lineHeight: "1.6",
+              fontSize: "15px",
+              lineHeight: "1.7",
             }}
           >
             <tbody>
@@ -402,7 +407,7 @@ export function CodeBlock({
                   )}
                   <td
                     style={{
-                      padding: "0 16px",
+                      padding: "0 20px",
                       whiteSpace: "pre",
                       color: diffLineColor(line.type),
                     }}
@@ -420,8 +425,8 @@ export function CodeBlock({
               width: "100%",
               borderCollapse: "collapse",
               fontFamily: "var(--aurora-font-mono)",
-              fontSize: "13px",
-              lineHeight: "1.6",
+              fontSize: "15px",
+              lineHeight: "1.7",
             }}
           >
             <tbody>
@@ -445,7 +450,7 @@ export function CodeBlock({
                       {i + 1}
                     </td>
                   )}
-                  <td style={{ padding: "0 16px", whiteSpace: "pre" }}>
+                  <td style={{ padding: "0 20px", whiteSpace: "pre" }}>
                     {highlightLine(line, rules)}
                   </td>
                 </tr>

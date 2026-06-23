@@ -1,69 +1,75 @@
 "use client"
 
-import { Button } from "@/registry/aurora/ui/button";
-import React, { useState } from "react"
-import { Sidebar, Project } from "@/registry/aurora/blocks/workspace/sidebar/sidebar"
+import * as React from "react"
+import { Sidebar, type SidebarItem } from "@/registry/aurora/blocks/workspace/sidebar/sidebar"
 
-const PROJECTS: Project[] = [
+// CD icon helper: 17px, stroke 1.6, round caps/joins, currentColor.
+function ic(path: React.ReactNode) {
+  return (
+    <svg
+      width="17"
+      height="17"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {path}
+    </svg>
+  )
+}
+
+const ITEMS: SidebarItem[] = [
   {
-    id: "proj-1",
-    name: "Aurora Gateway",
-    sessions: [
-      {
-        id: "sess-1",
-        title: "Refactor auth middleware",
-        updatedAt: new Date(Date.now() - 3 * 60 * 1000),
-        isLive: true,
-      },
-      {
-        id: "sess-2",
-        title: "Connection pool consolidation",
-        updatedAt: new Date(Date.now() - 28 * 60 * 1000),
-      },
-      {
-        id: "sess-3",
-        title: "Rate limiter implementation",
-        updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      },
-    ],
+    id: "run",
+    label: "Run",
+    section: "Workspace",
+    icon: ic(<path d="m6 3 14 9-14 9V3z" />),
   },
   {
-    id: "proj-2",
-    name: "Design System",
-    sessions: [
-      {
-        id: "sess-4",
-        title: "Token audit & cleanup",
-        updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
-      },
-      {
-        id: "sess-5",
-        title: "Dark mode refinements",
-        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      },
-    ],
+    id: "ask",
+    label: "Ask",
+    icon: ic(<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />),
   },
   {
-    id: "proj-3",
-    name: "Infra / DevOps",
-    sessions: [
-      {
-        id: "sess-6",
-        title: "Production deploy runbook",
-        updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      },
-      {
-        id: "sess-7",
-        title: "Kubernetes HPA tuning",
-        updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      },
-    ],
+    id: "library",
+    label: "Library",
+    badge: "128",
+    icon: ic(
+      <>
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z" />
+      </>,
+    ),
+  },
+  {
+    id: "history",
+    label: "History",
+    section: "Account",
+    icon: ic(
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </>,
+    ),
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: ic(
+      <>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-5l-.3 2.6a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L3 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.6a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.4a7 7 0 0 0 .2-1z" />
+      </>,
+    ),
   },
 ]
 
 export default function SidebarDemo() {
-  const [activeSessionId, setActiveSessionId] = useState("sess-1")
-  const [variant, setVariant] = useState<"expanded" | "icon-only">("expanded")
+  const [activeId, setActiveId] = React.useState("ask")
 
   return (
     <div
@@ -93,76 +99,55 @@ export default function SidebarDemo() {
         >
           Sidebar
         </h2>
-        <div style={{ display: "flex", gap: "6px" }}>
-          {(["expanded", "icon-only"] as const).map((v) => (
-            <Button variant="plain" size="unstyled"
-              key={v}
-              onClick={() => setVariant(v)}
-              style={{
-                padding: "4px 10px",
-                borderRadius: "8px",
-                border: "1px solid var(--aurora-border-default)",
-                background:
-                  variant === v
-                    ? "color-mix(in srgb, var(--aurora-accent-primary) 14%, var(--aurora-control-surface))"
-                    : "var(--aurora-control-surface)",
-                color:
-                  variant === v
-                    ? "var(--aurora-accent-primary)"
-                    : "var(--aurora-text-muted)",
-                fontSize: "11px",
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 0.15s",
-              }}
-            >
-              {v}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Active session indicator */}
-      <p
-        style={{
-          fontSize: "12px",
-          color: "var(--aurora-text-muted)",
-          margin: 0,
-        }}
-      >
-        Active:{" "}
-        <code
+        <span
           style={{
-            fontFamily: "var(--aurora-font-mono)",
-            color: "var(--aurora-accent-primary)",
-            fontSize: "11px",
+            fontSize: "12px",
+            color: "var(--aurora-text-muted)",
           }}
         >
-          {activeSessionId}
-        </code>
-        {" — "}
-        {PROJECTS.flatMap((p) => p.sessions).find((s) => s.id === activeSessionId)?.title}
-      </p>
+          Active:{" "}
+          <code
+            style={{
+              fontFamily: "var(--aurora-font-mono)",
+              color: "var(--aurora-accent-primary)",
+              fontSize: "11px",
+            }}
+          >
+            {activeId}
+          </code>
+        </span>
+      </div>
 
-      {/* Sidebar in a constrained container */}
+      {/* CD dsCard composition: operator nav rail, 300x380 panel */}
       <div
         style={{
-          height: "500px",
+          width: "300px",
+          height: "380px",
           border: "1px solid var(--aurora-border-default)",
           borderRadius: "var(--aurora-radius-2)",
           overflow: "hidden",
           display: "flex",
+          background: "var(--aurora-page-bg)",
           boxShadow: "var(--aurora-shadow-medium)",
         }}
       >
         <Sidebar
-          projects={PROJECTS}
-          activeSessionId={activeSessionId}
-          onSessionSelect={setActiveSessionId}
-          onNewSession={() => alert("New session!")}
-          onSettings={() => alert("Settings!")}
-          variant={variant}
-          userName="J. Magar"
+          defaultActiveId="ask"
+          activeId={activeId}
+          onSelect={setActiveId}
+          brand={
+            <span
+              style={{
+                fontFamily: "var(--aurora-font-display)",
+                fontWeight: 800,
+                fontSize: "15px",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              Axon
+            </span>
+          }
+          items={ITEMS}
         />
 
         {/* Mock main area */}
@@ -174,27 +159,29 @@ export default function SidebarDemo() {
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "column",
-            gap: "8px",
+            gap: "10px",
+            padding: "16px",
           }}
         >
           <div
             style={{
-              width: "40px",
-              height: "40px",
+              width: "44px",
+              height: "44px",
               borderRadius: "50%",
               background:
                 "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
-              border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 24%, transparent)",
+              border:
+                "1px solid color-mix(in srgb, var(--aurora-accent-primary) 24%, transparent)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
-                d="M9 3L16 6.5V11.5L9 15L2 11.5V6.5L9 3Z"
+                d="M12 3 20 7.5v9L12 21 4 16.5v-9L12 3Z"
                 stroke="var(--aurora-accent-primary)"
-                strokeWidth="1.4"
+                strokeWidth="1.5"
                 strokeLinejoin="round"
               />
             </svg>
@@ -204,9 +191,10 @@ export default function SidebarDemo() {
               fontSize: "13px",
               color: "var(--aurora-text-muted)",
               margin: 0,
+              textAlign: "center",
             }}
           >
-            Select a session from the sidebar
+            {ITEMS.find((i) => i.id === activeId)?.label ?? "Select an item"}
           </p>
         </div>
       </div>

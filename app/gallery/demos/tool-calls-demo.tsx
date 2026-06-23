@@ -1,180 +1,81 @@
 "use client"
 
-import React from "react"
-import { ToolCalls, ToolCall } from "@/registry/aurora/blocks/ai/tool-calls/tool-calls"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
+import { ToolCalls, type ToolCall } from "@/registry/aurora/blocks/ai/tool-calls/tool-calls"
 
+// CD-parity composition for the ToolCall block: a grouped agent action timeline.
+// Three consecutive axon.search calls collapse into one group, followed by a
+// running axon.crawl and a failed fs.write — mirroring the Claude Design dsCard.
 const now = new Date()
-const ms = (n: number) => new Date(now.getTime() - n)
+const ago = (start: number, end = 0) => ({
+  startedAt: new Date(now.getTime() - start),
+  ...(end >= 0 ? { completedAt: new Date(now.getTime() - end) } : {}),
+})
 
-const MIXED_CALLS: ToolCall[] = [
+const CALLS: ToolCall[] = [
   {
     id: "tc1",
-    tool: "ReadFile",
-    args: { path: "src/gateway/auth.ts" },
+    tool: "axon.search",
     status: "completed",
-    result: `import { verify } from "jsonwebtoken"\nimport type { Request, Response, NextFunction } from "express"\n\nexport function authMiddleware(req: Request, res: Response, next: NextFunction) {\n  const token = req.headers.authorization?.split(" ")[1]\n  if (!token) return res.status(401).json({ error: "Unauthorized" })\n  try {\n    req.user = verify(token, process.env.JWT_SECRET!) as JWTPayload\n    next()\n  } catch {\n    res.status(403).json({ error: "Invalid token" })\n  }\n}`,
-    startedAt: ms(4200),
-    completedAt: ms(3800),
+    args: { query: "serde derive", top_k: 5 },
+    result: "5 hits · top score 0.82",
+    ...ago(800, 0),
   },
   {
     id: "tc2",
-    tool: "Bash",
-    args: { command: "grep -r 'connectionPool' src/ --include='*.ts' -l" },
+    tool: "axon.search",
     status: "completed",
-    result: "src/db/pool.ts\nsrc/config/database.ts\nsrc/services/query.ts",
-    startedAt: ms(3700),
-    completedAt: ms(3200),
+    args: { query: "derive macro expansion" },
+    result: "4 hits",
+    ...ago(600, 0),
   },
   {
     id: "tc3",
-    tool: "WriteFile",
-    args: {
-      path: "src/config/connection-pool.ts",
-      content:
-        "export interface ConnectionPoolConfig {\n  maxConnections: number\n  idleTimeoutMs: number\n  acquireTimeoutMs: number\n}",
-    },
-    status: "running",
-    startedAt: ms(800),
+    tool: "axon.search",
+    status: "completed",
+    args: { query: "proc-macro" },
+    result: "6 hits",
+    ...ago(700, 0),
   },
   {
     id: "tc4",
-    tool: "Grep",
-    args: { pattern: "new Pool\(", path: "src/", flags: "-r" },
+    tool: "axon.crawl",
+    status: "running",
+    args: { url: "https://docs.rs", depth: 4 },
+    startedAt: new Date(now.getTime() - 4100),
+  },
+  {
+    id: "tc5",
+    tool: "fs.write",
     status: "error",
-    result:
-      "Error: EACCES: permission denied, open 'src/vendor/pg/pool.ts'\nFailed to search in restricted directory.",
-    startedAt: ms(400),
-    completedAt: ms(200),
-  },
-]
-
-const GROUPED_CALLS: ToolCall[] = [
-  {
-    id: "g1",
-    tool: "ReadFile",
-    args: { path: "src/routes/v1/users.ts" },
-    status: "completed",
-    result: "// Users v1 route handler\nexport const usersRouter = Router()\nusersRouter.get('/', listUsers)",
-    startedAt: ms(6000),
-    completedAt: ms(5600),
-  },
-  {
-    id: "g2",
-    tool: "ReadFile",
-    args: { path: "src/routes/v1/sessions.ts" },
-    status: "completed",
-    result: "// Sessions v1 route handler\nexport const sessionsRouter = Router()\nsessionsRouter.post('/create', createSession)",
-    startedAt: ms(5500),
-    completedAt: ms(5100),
-  },
-  {
-    id: "g3",
-    tool: "ReadFile",
-    args: { path: "src/routes/v1/health.ts" },
-    status: "completed",
-    result: "export const healthRouter = Router()\nhealthRouter.get('/', (_, res) => res.json({ status: 'ok' }))",
-    startedAt: ms(5000),
-    completedAt: ms(4600),
+    args: { path: "/etc/hosts" },
+    result: "EACCES: permission denied",
+    ...ago(300, 0),
   },
 ]
 
 export default function ToolCallsDemo() {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "var(--aurora-space-6)",
-        padding: "var(--aurora-space-6) var(--aurora-space-4)",
-        maxWidth: 760,
-      }}
-    >
-      <div
+    <div className="grid gap-6">
+      <GalleryPageIntro
+        eyebrow="AI elements / tool-calls"
+        heading="ToolCall"
+        description="A grouped agent action timeline. Repeated calls to the same tool collapse into a single counted row; each row expands to its structured input and result."
+      />
+      <section
         style={{
-          display: "grid",
-          gap: 6,
-          padding: "14px 16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+          padding: "30px 34px",
           borderRadius: "var(--aurora-radius-2)",
           border: "1px solid var(--aurora-border-strong)",
-          background: "var(--aurora-panel-strong)",
+          background: "var(--aurora-page-bg)",
           boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
         }}
       >
-        <p
-          style={{
-            margin: 0,
-            fontSize: "12px",
-            fontWeight: 600,
-            color: "var(--aurora-text-muted)",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-          }}
-        >
-          Tool vs tool calls
-        </p>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "13px",
-            color: "var(--aurora-text-primary)",
-            lineHeight: 1.6,
-          }}
-        >
-          <strong>Tool</strong> is the single inline invocation. <strong>Tool Calls</strong> is the stacked activity log when a reply runs more than one tool.
-        </p>
-      </div>
-
-      <div style={{ display: "grid", gap: 10 }}>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "12px",
-            fontWeight: 600,
-            color: "var(--aurora-text-muted)",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-          }}
-        >
-          Activity stack
-        </p>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "12px",
-            color: "var(--aurora-text-muted)",
-            lineHeight: 1.55,
-          }}
-        >
-          Compact rows stay collapsed by default and only open when you need the input or output.
-        </p>
-        <ToolCalls calls={MIXED_CALLS} />
-      </div>
-
-      <div style={{ display: "grid", gap: 10 }}>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "12px",
-            fontWeight: 600,
-            color: "var(--aurora-text-muted)",
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-          }}
-        >
-          Repeated calls
-        </p>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "12px",
-            color: "var(--aurora-text-muted)",
-            lineHeight: 1.55,
-          }}
-        >
-          Keep this route when you want to show several related tool runs in sequence, even if the single-tool route stays minimal.
-        </p>
-        <ToolCalls calls={GROUPED_CALLS} />
-      </div>
+        <ToolCalls calls={CALLS} />
+      </section>
     </div>
   )
 }
