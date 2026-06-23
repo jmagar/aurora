@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 import { ButtonGroup } from "@/registry/aurora/ui/button-group"
 
 const heading: React.CSSProperties = {
@@ -54,7 +55,7 @@ export default function ButtonGroupDemo() {
         {views.map((k) => {
           const pressed = view === k
           return (
-            <button
+            <Button variant="plain" size="unstyled"
               key={k}
               type="button"
               aria-pressed={pressed}
@@ -62,7 +63,7 @@ export default function ButtonGroupDemo() {
               style={pressed ? { ...segment, ...segmentActive } : segment}
             >
               {k}
-            </button>
+            </Button>
           )
         })}
       </ButtonGroup>

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/registry/aurora/ui/button"
 import { ToggleGroup } from "@/registry/aurora/ui/toggle-group";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
@@ -57,14 +58,14 @@ function ToggleButton({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       type="button"
       aria-pressed={pressed}
       onClick={() => onToggle(k)}
       style={pressed ? { ...tgBase, ...tgPressed } : tgBase}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 

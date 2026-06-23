@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Button } from "@/registry/aurora/ui/button"
 import { WebPreview } from "@/registry/aurora/blocks/ai/elements/web-preview";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
@@ -60,7 +61,7 @@ export default function AiWebPreviewDemo() {
             >
               Live preview of the generated page
             </p>
-            <button
+            <Button variant="plain" size="unstyled"
               type="button"
               style={{
                 flexShrink: 0,
@@ -80,7 +81,7 @@ export default function AiWebPreviewDemo() {
               }}
             >
               Get started
-            </button>
+            </Button>
           </div>
         </WebPreview>
       </div>

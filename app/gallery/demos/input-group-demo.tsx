@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { InputGroup, InputGroupAddon } from "@/registry/aurora/ui/input-group";
+import { Input } from "@/registry/aurora/ui/input";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
 // CD dsCard chrome: the bare input that sits inside the group's single outline.
@@ -30,13 +31,13 @@ export default function InputGroupDemo() {
         {/* Leading addon — protocol prefix */}
         <InputGroup style={{ height: 40 }}>
           <InputGroupAddon>https://</InputGroupAddon>
-          <input style={bareInputStyle} defaultValue="labby.local:8765" aria-label="Host" />
+          <Input unstyled style={bareInputStyle} defaultValue="labby.local:8765" aria-label="Host" />
         </InputGroup>
 
         {/* Leading + trailing addon — currency amount */}
         <InputGroup style={{ height: 40 }}>
           <InputGroupAddon>$</InputGroupAddon>
-          <input style={bareInputStyle} placeholder="amount" aria-label="Amount" />
+          <Input unstyled style={bareInputStyle} placeholder="amount" aria-label="Amount" />
           <InputGroupAddon
             style={{ borderRight: "none", borderLeft: "1px solid var(--aurora-border-default)" }}
           >

@@ -30,7 +30,6 @@ const COMPONENT_DEMOS: Record<string, React.ComponentType> = {
   "navigation-menu": dynamic(() => import("../demos/navigation-menu-demo")),
   popover: dynamic(() => import("../demos/popover-demo")),
   "radio-group": dynamic(() => import("../demos/radio-group-demo")),
-  resizable: dynamic(() => import("../demos/resizable-demo")),
   "scroll-area": dynamic(() => import("../demos/scroll-area-demo")),
   select: dynamic(() => import("../demos/select-demo")),
   slider: dynamic(() => import("../demos/slider-demo")),

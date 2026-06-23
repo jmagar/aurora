@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 import { Item } from "@/registry/aurora/ui/item"
 
 function Dot({ c }: { c: string }) {
@@ -20,7 +21,7 @@ function Dot({ c }: { c: string }) {
 
 function ActButton({ children }: { children: React.ReactNode }) {
   return (
-    <button
+    <Button variant="plain" size="unstyled"
       type="button"
       style={{
         height: 26,
@@ -34,7 +35,7 @@ function ActButton({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </button>
+    </Button>
   )
 }
 

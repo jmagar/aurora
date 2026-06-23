@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Button } from "@/registry/aurora/ui/button"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { Actions, Action } from "@/registry/aurora/blocks/ai/elements/actions"
 
@@ -92,7 +93,7 @@ function OverflowRow() {
           }}
         >
           {items.map((it, i) => (
-            <button
+            <Button variant="plain" size="unstyled"
               key={i}
               type="button"
               role="menuitem"
@@ -120,7 +121,7 @@ function OverflowRow() {
             >
               <Svg d={it.d} />
               {it.label}
-            </button>
+            </Button>
           ))}
         </div>
       ) : null}

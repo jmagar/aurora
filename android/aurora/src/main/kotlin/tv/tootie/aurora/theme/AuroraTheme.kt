@@ -115,19 +115,19 @@ private val AuroraDarkColorScheme = darkColorScheme(
     onBackground             = AuroraColors.textPrimary,
 
     // Surface & variants
-    surface                  = AuroraColors.panelMedium,
+    surface                  = AuroraColors.panelMediumBase,
     onSurface                = AuroraColors.textPrimary,
     onSurfaceVariant         = AuroraColors.textMuted,
-    surfaceVariant           = AuroraColors.controlSurface,
+    surfaceVariant           = AuroraColors.controlSurfaceBase,
 
     // Surface container hierarchy (darkest → elevated)
     surfaceContainerLowest   = AuroraColors.pageBg,
-    surfaceContainerLow      = AuroraColors.controlSurface,
-    surfaceContainer         = AuroraColors.panelMedium,
-    surfaceContainerHigh     = AuroraColors.panelStrong,
+    surfaceContainerLow      = AuroraColors.controlSurfaceBase,
+    surfaceContainer         = AuroraColors.panelMediumBase,
+    surfaceContainerHigh     = AuroraColors.panelStrongBase,
     surfaceContainerHighest  = AuroraColors.navBg,
     surfaceDim               = AuroraColors.pageBg,
-    surfaceBright            = AuroraColors.panelStrong,
+    surfaceBright            = AuroraColors.panelStrongBase,
 
     // Inverse roles (for snackbars/tooltips; light-mode placeholder until Aurora ships light tokens)
     inverseSurface           = Color(0xFFE8EFF3),
