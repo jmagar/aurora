@@ -11,11 +11,9 @@ const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(({ classN
   <div
     ref={ref}
     role="group"
-    className={cn("inline-flex rounded-[12px] border p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]", orientation === "vertical" ? "flex-col" : "items-center", className)}
+    className={cn("inline-flex", orientation === "vertical" ? "flex-col" : "items-center", className)}
     style={{
-      background: "linear-gradient(180deg, color-mix(in srgb, var(--aurora-panel-strong) 92%, transparent), var(--aurora-control-surface))",
-      borderColor: "var(--aurora-border-strong)",
-      gap: 6,
+      gap: 4,
       ...style,
     }}
     {...props}

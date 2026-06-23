@@ -175,6 +175,34 @@ export const NAV: NavGroup[] = [
   { group: "Themes", items: [
     { label: "Light mode", slug: "lightmode" },
   ]},
+  { group: "AI elements (new)", items: [
+    { label: "Action", slug: "action" },
+    { label: "Actions", slug: "actions" },
+    { label: "AiImageGrid", slug: "ai-image-grid" },
+    { label: "Branch", slug: "branch" },
+    { label: "Loader", slug: "loader" },
+    { label: "MessageAvatar", slug: "message-avatar" },
+    { label: "MessageContent", slug: "message-content" },
+    { label: "Response", slug: "response" },
+    { label: "Source", slug: "source" },
+  ]},
+  { group: "Aurora extensions", items: [
+    { label: "ChatMessage", slug: "chat-message" },
+    { label: "ChatSidebar", slug: "chat-sidebar" },
+    { label: "ColorPicker", slug: "color-picker" },
+    { label: "ComponentCard", slug: "component-card" },
+    { label: "CopyButton", slug: "copy-button" },
+    { label: "MultiSelect", slug: "multi-select" },
+    { label: "OperationIcon", slug: "operation-icon" },
+    { label: "ProgressRing", slug: "progress-ring" },
+    { label: "RangeSlider", slug: "range-slider" },
+    { label: "Rating", slug: "rating" },
+    { label: "Segmented", slug: "segmented" },
+    { label: "Spotlight", slug: "spotlight" },
+    { label: "StatusDot", slug: "status-dot" },
+    { label: "Stepper", slug: "stepper" },
+    { label: "TagInput", slug: "tag-input" },
+  ]},
 ]
 
 export const NAV_SLUG_ALIASES: Record<string, string> = {

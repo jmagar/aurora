@@ -9,7 +9,7 @@ import { Button } from "@/registry/aurora/ui/button"
 
 export interface TerminalLine {
   text: string
-  type?: "command" | "output" | "error" | "warn" | "success" | "muted"
+  type?: "command" | "output" | "error" | "warn" | "success" | "muted" | "info"
 }
 
 export interface TerminalProps {
@@ -141,6 +141,8 @@ function getLineColor(type: TerminalLine["type"]): string {
       return "var(--aurora-warn)"
     case "success":
       return "var(--aurora-success)"
+    case "info":
+      return "var(--aurora-info)"
     case "muted":
       return "var(--aurora-text-muted)"
     case "output":

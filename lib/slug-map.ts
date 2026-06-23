@@ -187,6 +187,32 @@ export const SLUG_TO_REGISTRY: Record<string, string> = {
 
   // Themes
   lightmode: "aurora-tokens",
+  // CD-parity net-new (24)
+  "chat-message": "aurora-chat-message",
+  "chat-sidebar": "aurora-chat-sidebar",
+  "color-picker": "aurora-color-picker",
+  "component-card": "aurora-component-card",
+  "copy-button": "aurora-copy-button",
+  "multi-select": "aurora-multi-select",
+  "operation-icon": "aurora-operation-icon",
+  "progress-ring": "aurora-progress-ring",
+  "range-slider": "aurora-range-slider",
+  "rating": "aurora-rating",
+  "segmented": "aurora-segmented",
+  "spotlight": "aurora-spotlight",
+  "status-dot": "aurora-status-dot",
+  "stepper": "aurora-stepper",
+  "tag-input": "aurora-tag-input",
+  "action": "aurora-ai-action",
+  "actions": "aurora-ai-actions",
+  "ai-image-grid": "aurora-ai-ai-image-grid",
+  "branch": "aurora-ai-branch",
+  "loader": "aurora-ai-loader",
+  "message-avatar": "aurora-ai-message-avatar",
+  "message-content": "aurora-ai-message-content",
+  "response": "aurora-ai-response",
+  "source": "aurora-ai-source",
+
 }
 
 // Resolve a gallery slug to a registry item *name* (no registry.json lookup).

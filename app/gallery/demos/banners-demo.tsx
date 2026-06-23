@@ -2,136 +2,83 @@
 
 import * as React from "react";
 import { Button } from "@/registry/aurora/ui/button";
-import { Banner } from "@/registry/aurora/ui/banner";
+import { Banner, type BannerStatus } from "@/registry/aurora/ui/banner";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
-function ActionLink({ children }: { children: React.ReactNode }) {
-  return (
-    <Button
-      variant="plain"
-      size="unstyled"
-      type="button"
-      style={{
-        fontSize: 12,
-        fontWeight: 600,
-        color: "var(--aurora-accent-primary)",
-        background: "none",
-        border: "none",
-        padding: 0,
-        cursor: "pointer",
-        textDecoration: "underline",
-        textUnderlineOffset: 2,
-      }}
-    >
-      {children}
-    </Button>
-  );
-}
+type BannerItem = {
+  id: number;
+  tone: BannerStatus;
+  title: string;
+  body: string;
+};
+
+const INITIAL: BannerItem[] = [
+  { id: 1, tone: "success", title: "Plex authorized", body: "Token stored. Library sync started." },
+  { id: 2, tone: "warn", title: "Couldn’t reach gateway", body: "Retrying in 4 seconds." },
+  { id: 3, tone: "error", title: "Backend unavailable", body: "502 from edge-3. Check the upstream." },
+];
 
 export default function BannersDemo() {
-  const [dismissed, setDismissed] = React.useState<Record<string, boolean>>({});
+  const [list, setList] = React.useState<BannerItem[]>(INITIAL);
+  const [leaving, setLeaving] = React.useState<number | null>(null);
 
-  function dismiss(id: string) {
-    setDismissed((prev) => ({ ...prev, [id]: true }));
+  function dismiss(id: number) {
+    setLeaving(id);
+    setTimeout(() => {
+      setList((l) => l.filter((b) => b.id !== id));
+      setLeaving(null);
+    }, 200);
   }
-
-  const allDismissed = dismissed["a1-info"] && dismissed["a1-warn"] && dismissed["a1-error"];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
         eyebrow="Feedback"
-        heading="Banners"
-        description="Contextual banners surface system-level notices, warnings, and errors inline. Style A1 (elevated) is used for persistent alerts; Style C (inline tag) fits dense panel headers."
+        heading="Banner"
+        description="Inline status notices. Each banner surfaces a system-level event with a tone-tinted surface, leading status icon, and a dismiss affordance."
       />
 
-      {/* Style A1 — Elevated */}
-      <div>
-        <p className="aurora-demo-label" style={{ marginBottom: 12 }}>
-          Style A1 — Elevated with glow dot &amp; dismiss
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {!dismissed["a1-info"] && (
+      <div className="stack" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {list.map((b) => (
+          <div
+            key={b.id}
+            style={{
+              transition: "opacity 200ms ease, transform 200ms ease",
+              opacity: leaving === b.id ? 0 : 1,
+              transform: leaving === b.id ? "translateX(10px)" : "none",
+            }}
+          >
             <Banner
-              kind="elevated"
-              variant="info"
-              title="Plugin sync in progress"
-              description="Fetching plugin manifests from registry.lab.local — this may take up to 30 seconds."
-              onDismiss={() => dismiss("a1-info")}
-              action={<ActionLink>View plugin registry</ActionLink>}
+              tone={b.tone}
+              title={b.title}
+              description={b.body}
+              onClose={() => dismiss(b.id)}
             />
-          )}
-          {!dismissed["a1-warn"] && (
-            <Banner
-              kind="elevated"
-              variant="warn"
-              title="TLS certificate expiring soon"
-              description="The certificate for production-edge.lab.local expires in 7 days. Renew before it causes a service outage."
-              onDismiss={() => dismiss("a1-warn")}
-              action={<ActionLink>Renew certificate</ActionLink>}
-            />
-          )}
-          {!dismissed["a1-error"] && (
-            <Banner
-              kind="elevated"
-              variant="error"
-              title="Gateway unreachable — us-east-1-gw-02"
-              description="No health-check response for 3 minutes. Automatic failover to us-east-1-gw-03 is active."
-              onDismiss={() => dismiss("a1-error")}
-              action={<ActionLink>View diagnostics</ActionLink>}
-            />
-          )}
-          {allDismissed && (
-            <div
-              style={{
-                padding: "12px 16px",
-                border: "1.5px dashed var(--aurora-border-default)",
-                borderRadius: 14,
-                fontSize: 13,
-                color: "var(--aurora-text-muted)",
-              }}
-            >
-              All banners dismissed.{" "}
-              <Button
-                variant="plain"
-                size="unstyled"
-                type="button"
-                onClick={() => setDismissed({})}
-                style={{ color: "var(--aurora-accent-primary)", background: "none", border: "none", cursor: "pointer", fontSize: 13, padding: 0, fontWeight: 600 }}
-              >
-                Reset
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Style C — Inline tag */}
-      <div>
-        <p className="aurora-demo-label" style={{ marginBottom: 12 }}>
-          Style C — Inline tag
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <Banner
-            kind="tag"
-            variant="info"
-            title="Scheduled maintenance window active"
-            description="Ends at 03:00 UTC"
-          />
-          <Banner
-            kind="tag"
-            variant="warn"
-            title="High CPU on us-west-2-gw-01"
-            description="92% for 8 min"
-            action={<ActionLink>Scale up</ActionLink>}
-          />
-          <Banner
-            kind="tag"
-            variant="error"
-            title="Auth service degraded — token issuance failing"
-            action={<ActionLink>Incident #4412</ActionLink>}
-          />
-        </div>
+          </div>
+        ))}
+        {list.length === 0 && (
+          <Button
+            variant="plain"
+            size="unstyled"
+            type="button"
+            onClick={() => setList(INITIAL)}
+            style={{
+              alignSelf: "flex-start",
+              height: 30,
+              padding: "0 13px",
+              borderRadius: 9,
+              border: "1px solid var(--aurora-border-strong)",
+              background: "var(--aurora-control-surface)",
+              color: "var(--aurora-text-primary)",
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: 13,
+              fontWeight: 560,
+              cursor: "pointer",
+            }}
+          >
+            Replay
+          </Button>
+        )}
       </div>
     </div>
   );

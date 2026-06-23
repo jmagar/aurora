@@ -366,15 +366,15 @@ export function PromptInput({
                 border: "none",
                 cursor: "pointer",
                 textAlign: "left",
-                borderLeft: i === slashIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
-                boxShadow: i === slashIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-violet) 16%, transparent)" : "none",
+                borderLeft: i === slashIndex ? "2px solid var(--axon-orange)" : "2px solid transparent",
+                boxShadow: i === slashIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--axon-orange) 16%, transparent)" : "none",
               }}
             >
               <span
                 style={{
                   fontFamily: "var(--aurora-font-mono)",
                   fontSize: "13px",
-                  color: "var(--aurora-accent-violet)",
+                  color: "var(--axon-orange)",
                   minWidth: "90px",
                 }}
               >
@@ -440,8 +440,8 @@ export function PromptInput({
                   border: "none",
                   cursor: "pointer",
                   textAlign: "left",
-                  borderLeft: i === mentionIndex ? "2px solid var(--aurora-accent-violet)" : "2px solid transparent",
-                  boxShadow: i === mentionIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-violet) 16%, transparent)" : "none",
+                  borderLeft: i === mentionIndex ? "2px solid var(--axon-orange)" : "2px solid transparent",
+                  boxShadow: i === mentionIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--axon-orange) 16%, transparent)" : "none",
                   color: "var(--aurora-text-primary)",
                 }}
               >
@@ -545,11 +545,11 @@ export function PromptInput({
                   alignItems: "center",
                   gap: "4px",
                   padding: "2px 8px 2px 6px",
-                  background: "var(--aurora-accent-violet-surface)",
-                  border: "1px solid var(--aurora-accent-violet-border)",
+                  background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
+                  border: "1px solid color-mix(in srgb, var(--axon-orange) 32%, transparent)",
                   borderRadius: "8px",
                   fontSize: "12px",
-                  color: "var(--aurora-accent-violet)",
+                  color: "var(--axon-orange)",
                   fontWeight: 500,
                 }}
               >
@@ -784,9 +784,9 @@ export function PromptInput({
               gap: "5px",
               fontSize: "11px",
               marginLeft: "2px",
-              color: "var(--aurora-accent-violet)",
-              borderColor: "var(--aurora-accent-violet-border)",
-              background: "var(--aurora-accent-violet-surface)",
+              color: "var(--axon-orange)",
+              borderColor: "color-mix(in srgb, var(--axon-orange) 32%, transparent)",
+              background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
             }}
           >
             <Sparkles size={13} strokeWidth={1.6} aria-hidden />

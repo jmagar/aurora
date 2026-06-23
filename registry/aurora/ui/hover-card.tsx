@@ -26,4 +26,3 @@ export function HoverCard({ trigger, className, children, style, ...props }: Hov
 }
 
 export default HoverCard
-

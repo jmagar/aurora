@@ -4,8 +4,15 @@ import * as React from "react"
 
 const Table = React.forwardRef<HTMLTableElement, React.TableHTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="overflow-x-auto overflow-y-hidden rounded-[8px] border" style={{ borderColor: "var(--aurora-border-default)" }}>
-      <table ref={ref} className={["w-full border-collapse text-left", className].filter(Boolean).join(" ")} {...props} />
+    <div
+      className="overflow-auto rounded-[8px] border"
+      style={{ borderColor: "var(--aurora-border-default)" }}
+    >
+      <table
+        ref={ref}
+        className={["w-full border-collapse text-left aurora-text-control", className].filter(Boolean).join(" ")}
+        {...props}
+      />
     </div>
   )
 )
@@ -14,7 +21,16 @@ Table.displayName = "Table"
 const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>((props, ref) => <thead ref={ref} {...props} />)
 TableHeader.displayName = "TableHeader"
 
-const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>((props, ref) => <tbody ref={ref} {...props} />)
+const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
+  ({ className, ...props }, ref) => (
+    // Zebra striping via documented token (opaque-over-opaque → no gradient seam).
+    <tbody
+      ref={ref}
+      className={["[&>tr:nth-child(even)]:bg-[var(--aurora-subtle-bg)]", className].filter(Boolean).join(" ")}
+      {...props}
+    />
+  )
+)
 TableBody.displayName = "TableBody"
 
 const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
@@ -31,9 +47,10 @@ TableRow.displayName = "TableRow"
 
 const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>>(
   ({ className, style, ...props }, ref) => (
+    // Sticky header: opaque panel fill so rows scroll cleanly beneath it.
     <th
       ref={ref}
-      className={["px-3 py-2 aurora-text-label", className].filter(Boolean).join(" ")}
+      className={["sticky top-0 z-[1] px-3 py-2 aurora-text-label", className].filter(Boolean).join(" ")}
       style={{ background: "var(--aurora-panel-medium)", color: "var(--aurora-text-muted)", ...style }}
       {...props}
     />

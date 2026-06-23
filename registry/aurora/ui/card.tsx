@@ -1,92 +1,98 @@
 "use client"
 
+/**
+ * Aurora Card — the canonical panel. Two tiers (strong / medium), optional
+ * accent edge, optional interactive hover-lift + glow.
+ *
+ * Visual layer matches the Claude Design source (panel gradient, 22/18px radii,
+ * strong shadow, lift-on-hover) ported via an injected stylesheet keyed to
+ * data-attributes. Architecture keeps the shadcn compound parts.
+ */
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
+
+type CardAccent = "cyan" | "rose"
+
+// ─── Visual layer (Claude Design parity) ───────────────────────────────────────
+
+const CSS = `
+.aurora-card { color: var(--aurora-text-primary); border: 1px solid var(--aurora-border-default); box-sizing: border-box; }
+.aurora-card[data-tier="2"] {
+  background: linear-gradient(180deg, var(--aurora-panel-strong-top), var(--aurora-panel-strong));
+  border-color: color-mix(in srgb, var(--aurora-border-default) 55%, var(--aurora-page-bg));
+  border-radius: var(--aurora-radius-3);
+  box-shadow: var(--aurora-shadow-strong), var(--aurora-highlight-strong);
+}
+.aurora-card[data-tier="1"] {
+  background: linear-gradient(180deg, var(--aurora-panel-medium-top), var(--aurora-panel-medium));
+  border-color: color-mix(in srgb, var(--aurora-border-default) 42%, var(--aurora-page-bg));
+  border-radius: var(--aurora-radius-2);
+  box-shadow: var(--aurora-shadow-medium), var(--aurora-highlight-medium);
+}
+.aurora-card[data-accent="cyan"] {
+  border-color: color-mix(in srgb, var(--aurora-accent-primary) 60%, var(--aurora-border-default));
+  box-shadow: var(--aurora-shadow-strong), var(--aurora-highlight-strong), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent), 0 0 20px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent);
+}
+.aurora-card[data-accent="rose"] {
+  border-color: color-mix(in srgb, var(--aurora-accent-pink) 60%, var(--aurora-border-default));
+  box-shadow: var(--aurora-shadow-strong), var(--aurora-highlight-strong), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-pink) 22%, transparent), 0 0 20px color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent);
+}
+.aurora-card[data-interactive="true"] {
+  cursor: pointer;
+  transition: transform 160ms var(--motion-ease-out, ease), box-shadow 160ms var(--motion-ease-out, ease), border-color 160ms var(--motion-ease-out, ease);
+}
+.aurora-card[data-interactive="true"]:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--aurora-accent-primary) 38%, var(--aurora-border-strong));
+  box-shadow: var(--aurora-shadow-strong), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent);
+}
+.aurora-card[data-interactive="true"]:focus-visible {
+  outline: none;
+  box-shadow: var(--aurora-shadow-strong), 0 0 0 3px var(--aurora-focus-ring);
+}
+@media (prefers-reduced-motion: reduce) { .aurora-card[data-interactive="true"] { transition: none; } }
+`
+
+let injected = false
+function ensureCSS() {
+  if (injected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.setAttribute("data-aurora-card", "")
+  el.textContent = CSS
+  document.head.appendChild(el)
+  injected = true
+}
 
 /* ─── Card ────────────────────────────────────────────────────────────────── */
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   /** When true the card becomes a focusable, hoverable interactive tile. */
   interactive?: boolean
+  /** Accent edge for featured / active / highlighted cards. Omit for none. */
+  accent?: CardAccent | false
   /**
-   * Accent colour family for featured / active / highlighted cards.
-   * Pass `false` or omit to render without an accent.
+   * Visual tier. Default (omitted) is Tier-2 — the canonical panel-strong
+   * gradient + strong shadow, matching the Claude Design default Card.
+   * Pass `elevated={false}` for the lighter Tier-1 list/toolbar surface.
    */
-  accent?: "cyan" | "rose" | "violet" | false
-  /** Elevates the card to Tier-2 visual weight (panel-strong background). */
   elevated?: boolean
 }
 
-const ACCENT_TOKEN: Record<"cyan" | "rose" | "violet", string> = {
-  cyan:   "var(--aurora-accent-primary)",
-  rose:   "var(--aurora-accent-pink)",
-  violet: "var(--aurora-accent-violet)",
-}
-
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, style, interactive, accent, elevated, tabIndex, ...props }, ref) => {
-    const accentToken = accent ? ACCENT_TOKEN[accent] : null
-
-    /* ── base background ── */
-    const baseBg = elevated
-      ? "var(--aurora-panel-strong)"
-      : "var(--aurora-panel-medium)"
-
-    /* ── accent overlay: very subtle top-tinted linear-gradient ── */
-    const accentBg = accentToken
-      ? `linear-gradient(180deg, color-mix(in srgb, ${accentToken} 6%, ${baseBg}) 0%, ${baseBg} 40%)`
-      : baseBg
-
-    /* ── accent border + glow box-shadow ── */
-    const baseShadow = elevated
-      ? "var(--aurora-shadow-strong)"
-      : "var(--aurora-shadow-medium)"
-
-    const insetHighlight = elevated
-      ? "var(--aurora-highlight-strong)"
-      : "var(--aurora-highlight-medium)"
-
-    const accentGlow = accentToken
-      ? `0 0 0 1px color-mix(in srgb, ${accentToken} 20%, transparent), 0 0 20px color-mix(in srgb, ${accentToken} 12%, transparent)`
-      : null
-
-    const boxShadow = [baseShadow, insetHighlight, accentGlow]
-      .filter(Boolean)
-      .join(", ")
-
-    const borderColor = accentToken
-      ? `color-mix(in srgb, ${accentToken} 60%, var(--aurora-border-default))`
-      : elevated
-        ? "var(--aurora-border-strong)"
-        : "var(--aurora-border-default)"
+  ({ className, interactive, accent, elevated, tabIndex, ...props }, ref) => {
+    React.useEffect(() => {
+      ensureCSS()
+    }, [])
 
     return (
       <div
         ref={ref}
+        className={cn("aurora-card", className)}
+        data-tier={elevated === false ? "1" : "2"}
+        data-interactive={interactive ? "true" : undefined}
+        data-accent={accent || undefined}
         tabIndex={tabIndex ?? (interactive ? 0 : undefined)}
-        className={cn(
-          "rounded-[8px] border",
-          interactive && [
-            "cursor-pointer",
-            "transition-all duration-150",
-            /* hover: lighten bg + lift shadow */
-            "hover:bg-[color-mix(in_srgb,var(--aurora-hover-bg)_30%,var(--aurora-panel-medium))]",
-            "hover:shadow-[0_4px_16px_color-mix(in_srgb,var(--aurora-accent-primary)_8%,transparent)]",
-            "hover:border-[var(--aurora-border-strong)]",
-            /* focus ring */
-            "focus-visible:outline-none",
-            "focus-visible:ring-2",
-            "focus-visible:ring-[var(--aurora-focus-ring)]",
-            "focus-visible:ring-offset-0",
-          ],
-          className,
-        )}
-        style={{
-          background: accentBg,
-          borderColor,
-          boxShadow,
-          ...style,
-        }}
         {...props}
       />
     )

@@ -9,7 +9,7 @@ function devWarn(message: string): void {
   }
 }
 
-export type CalloutVariant = "info" | "success" | "warn" | "error" | "neutral" | "rose" | "violet"
+export type CalloutVariant = "info" | "success" | "warn" | "error" | "neutral" | "rose"
 
 type ToneTokens = { accent: string; bg: string; border: string; text: string; accentShadow: string; accentInset: string }
 
@@ -61,14 +61,6 @@ const toneMap: Record<CalloutVariant, ToneTokens> = {
     text:        "var(--aurora-accent-pink-strong)",
     accentShadow: "0 0 10px var(--aurora-accent-pink)",
     accentInset:  "inset 3px 0 0 var(--aurora-accent-pink)",
-  },
-  violet: {
-    accent:      "var(--aurora-accent-violet)",
-    bg:          "var(--aurora-accent-violet-surface)",
-    border:      "var(--aurora-accent-violet-border)",
-    text:        "var(--aurora-accent-violet-strong)",
-    accentShadow: "0 0 10px var(--aurora-accent-violet)",
-    accentInset:  "inset 3px 0 0 var(--aurora-accent-violet)",
   },
 }
 

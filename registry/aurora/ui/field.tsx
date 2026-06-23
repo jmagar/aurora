@@ -52,16 +52,16 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
                 className="block"
                 style={{
                   color: "var(--aurora-text-primary)",
-                  fontFamily: "var(--aurora-font-sans)",
-                  fontSize: "var(--aurora-type-body-sm)",
-                  fontWeight: "var(--aurora-weight-label)",
+                  fontFamily: "var(--aurora-font-display)",
+                  fontSize: "15px",
+                  fontWeight: "var(--aurora-weight-heading)",
                   letterSpacing: "var(--aurora-letter-label)",
-                  lineHeight: "var(--aurora-line-ui)",
+                  lineHeight: 1.3,
                 }}
               >
                 {label}
                 {required && (
-                  <span aria-hidden="true" style={{ color: "var(--aurora-error)", marginLeft: 4 }}>
+                  <span aria-hidden="true" style={{ color: "var(--aurora-accent-pink)", marginLeft: 5 }}>
                     *
                   </span>
                 )}
@@ -71,9 +71,10 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
               <p
                 style={{
                   color: "var(--aurora-text-muted)",
-                  fontSize: "var(--aurora-type-caption)",
+                  fontFamily: "var(--aurora-font-sans)",
+                  fontSize: "var(--aurora-type-body)",
                   lineHeight: 1.45,
-                  marginTop: label ? 4 : 0,
+                  marginTop: label ? 5 : 0,
                 }}
               >
                 {description}
@@ -90,10 +91,10 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
               style={{
                 color: "var(--aurora-error)",
                 fontFamily: "var(--aurora-font-sans)",
-                fontSize: "var(--aurora-type-caption)",
-                fontWeight: 560,
+                fontSize: "var(--aurora-type-body-sm)",
+                fontWeight: "var(--aurora-weight-ui)",
                 lineHeight: 1.45,
-                marginTop: 6,
+                marginTop: 8,
               }}
             >
               {error}

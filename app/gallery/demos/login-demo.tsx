@@ -1,105 +1,77 @@
 "use client"
 
 import * as React from "react"
-import { Button } from "@/registry/aurora/ui/button";
-import { Login, LoginMode } from "@/registry/aurora/blocks/auth/login/login"
+import { Login } from "@/registry/aurora/blocks/auth/login/login"
 
-const MODES: { id: LoginMode; label: string }[] = [
-  { id: "password",        label: "Password" },
-  { id: "magic-link-sent", label: "Magic link sent" },
-  { id: "2fa",             label: "2FA / OTP" },
-]
+// GitHub mark — matches the CD dsCard source 1:1
+const GitHubIcon = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.3 1.1 2.9.8.1-.7.3-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.3 4.7-4.6 5 .4.3.7.9.7 1.8v2.6c0 .3.2.6.7.5A10 10 0 0 0 22 12.3C22 6.6 17.5 2 12 2Z" />
+  </svg>
+)
 
 export function LoginDemo() {
-  const [mode, setMode] = React.useState<LoginMode>("password")
   const [lastEvent, setLastEvent] = React.useState<string | null>(null)
 
-  function handleSubmit(data: { email?: string; password?: string; otp?: string }) {
-    if (data.otp) {
-      setLastEvent(`OTP submitted: ${data.otp}`)
-    } else {
-      setLastEvent(`Sign-in attempt — ${data.email ?? "no email"}`)
-    }
-  }
-
-  function handleMagicLink(email: string) {
-    setLastEvent(`Magic link requested for ${email}`)
-    setMode("magic-link-sent")
-  }
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          padding: "16px 24px",
-          borderBottom: "1px solid var(--aurora-border-default)",
-          background: "var(--aurora-panel-strong)",
-          flexWrap: "wrap",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "var(--aurora-font-sans)",
-            fontSize: "12px",
-            fontWeight: 600,
-            color: "var(--aurora-text-muted)",
-            marginRight: "4px",
-          }}
-        >
-          Mode:
-        </span>
-        {MODES.map((m) => {
-          const active = mode === m.id
-          return (
-            <Button variant="plain" size="unstyled"
-              key={m.id}
-              onClick={() => { setMode(m.id); setLastEvent(null) }}
+    <div
+      style={{
+        display: "grid",
+        placeItems: "center",
+        padding: "40px 16px",
+        minHeight: "520px",
+        // Radial cyan wash behind the card, matching the CD dsCard frame
+        backgroundImage:
+          "radial-gradient(700px 420px at 50% -10%, color-mix(in srgb, var(--aurora-accent-primary) 8%, transparent), transparent 60%)",
+      }}
+    >
+      <Login
+        title="Sign in"
+        subtitle="Welcome back to the console."
+        providers={[
+          {
+            label: "Continue with GitHub",
+            icon: GitHubIcon,
+            onClick: () => setLastEvent("Continue with GitHub"),
+          },
+        ]}
+        onSubmit={(data) =>
+          setLastEvent(`Sign-in attempt — ${data.email ?? "no email"}`)
+        }
+        footer={
+          <span>
+            No account?{" "}
+            <a
+              href="#request-access"
+              onClick={(e) => {
+                e.preventDefault()
+                setLastEvent("Request access")
+              }}
               style={{
-                height: "28px",
-                padding: "0 12px",
-                borderRadius: "7px",
-                border: active
-                  ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 35%, transparent)"
-                  : "1px solid var(--aurora-border-default)",
-                background: active
-                  ? "color-mix(in srgb, var(--aurora-accent-primary) 10%, transparent)"
-                  : "transparent",
-                color: active ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)",
-                fontFamily: "var(--aurora-font-sans)",
-                fontSize: "12px",
-                fontWeight: active ? 600 : 500,
-                cursor: "pointer",
+                color: "var(--aurora-accent-primary)",
+                textDecoration: "none",
+                fontWeight: 500,
               }}
             >
-              {m.label}
-            </Button>
-          )
-        })}
-
-        {lastEvent && (
-          <span
-            style={{
-              marginLeft: "auto",
-              fontFamily: "var(--aurora-font-mono)",
-              fontSize: "11px",
-              color: "var(--aurora-success)",
-              maxWidth: "280px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {lastEvent}
+              Request access
+            </a>
           </span>
-        )}
-      </div>
+        }
+      />
 
-      <div style={{ minHeight: "560px", position: "relative" }}>
-        <Login mode={mode} onSubmit={handleSubmit} onMagicLink={handleMagicLink} />
-      </div>
+      {lastEvent && (
+        <span
+          aria-live="polite"
+          style={{
+            marginTop: "16px",
+            fontFamily: "var(--aurora-font-mono)",
+            fontSize: "11px",
+            color: "var(--aurora-success)",
+          }}
+        >
+          {lastEvent}
+        </span>
+      )}
     </div>
   )
 }

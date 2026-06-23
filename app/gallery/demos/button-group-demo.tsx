@@ -3,14 +3,6 @@
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 import { ButtonGroup } from "@/registry/aurora/ui/button-group"
-import { GitBranch, History, Play, RotateCcw } from "lucide-react"
-
-const panel: React.CSSProperties = {
-  background: "var(--aurora-panel-medium)",
-  border: "1px solid var(--aurora-border-default)",
-  borderRadius: "var(--aurora-radius-2)",
-  padding: 24,
-}
 
 const heading: React.CSSProperties = {
   color: "var(--aurora-text-primary)",
@@ -27,56 +19,54 @@ const copy: React.CSSProperties = {
   lineHeight: 1.55,
 }
 
+// CD .gi segment styling (ButtonGroup.dsCard.html) ported as a local component.
+const segment: React.CSSProperties = {
+  height: 28,
+  padding: "0 14px",
+  border: "none",
+  background: "none",
+  color: "var(--aurora-text-muted)",
+  font: "560 13px var(--font-sans)",
+  borderRadius: 7,
+  cursor: "pointer",
+}
+
+const segmentActive: React.CSSProperties = {
+  color: "var(--aurora-accent-strong)",
+  background:
+    "color-mix(in srgb, var(--aurora-accent-primary) 14%, var(--aurora-control-surface))",
+  boxShadow:
+    "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent)",
+}
+
+const views = ["list", "board", "graph"] as const
+
 export default function ButtonGroupDemo() {
+  const [view, setView] = React.useState<(typeof views)[number]>("list")
+
   return (
     <div style={{ display: "grid", gap: 24, padding: 0 }}>
       <div>
         <h2 style={heading}>Button group</h2>
-        <p style={copy}>Grouped command controls for segmented actions, compact run bars, and related toolbar decisions.</p>
+        <p style={copy}>Segmented container with a shared outline for related, mutually exclusive choices.</p>
       </div>
 
-      <section style={panel}>
-        <h3 style={{ ...heading, fontSize: 17 }}>Run mode</h3>
-        <ButtonGroup>
-          <Button variant="aurora" size="sm">
-            <Play className="size-3.5" aria-hidden />
-            Run
-          </Button>
-          <Button variant="neutral" size="sm">
-            Queue
-          </Button>
-          <Button variant="neutral" size="sm">
-            Schedule
-          </Button>
-        </ButtonGroup>
-      </section>
-
-      <section style={panel}>
-        <h3 style={{ ...heading, fontSize: 17 }}>Repository actions</h3>
-        <ButtonGroup>
-          <Button variant="neutral" size="sm">
-            <GitBranch className="size-3.5" aria-hidden />
-            Branch
-          </Button>
-          <Button variant="neutral" size="sm">
-            <RotateCcw className="size-3.5" aria-hidden />
-            Rebase
-          </Button>
-          <Button variant="ghost" size="sm">
-            <History className="size-3.5" aria-hidden />
-            History
-          </Button>
-        </ButtonGroup>
-      </section>
-
-      <section style={panel}>
-        <h3 style={{ ...heading, fontSize: 17 }}>Vertical stack</h3>
-        <ButtonGroup orientation="vertical">
-          <Button variant="aurora" size="sm">Approve</Button>
-          <Button variant="neutral" size="sm">Defer</Button>
-          <Button variant="destructive" size="sm">Reject</Button>
-        </ButtonGroup>
-      </section>
+      <ButtonGroup>
+        {views.map((k) => {
+          const pressed = view === k
+          return (
+            <Button variant="plain" size="unstyled"
+              key={k}
+              type="button"
+              aria-pressed={pressed}
+              onClick={() => setView(k)}
+              style={pressed ? { ...segment, ...segmentActive } : segment}
+            >
+              {k}
+            </Button>
+          )
+        })}
+      </ButtonGroup>
     </div>
   )
 }

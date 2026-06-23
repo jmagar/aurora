@@ -36,8 +36,8 @@ function ensureCheckboxCSS() {
 function CheckIcon({ style }: { style?: React.CSSProperties }) {
   return (
     <svg
-      width="10"
-      height="8"
+      width="11"
+      height="9"
       viewBox="0 0 10 8"
       fill="none"
       aria-hidden="true"
@@ -114,9 +114,9 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      width: 16,
-      height: 16,
-      borderRadius: 4,
+      width: 18,
+      height: 18,
+      borderRadius: 6,
       flexShrink: 0,
       border: checked
         ? "1.5px solid var(--aurora-accent-primary)"
@@ -133,7 +133,7 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
             "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)",
           ].join(", ")
         : checked
-        ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 25%, transparent)"
+        ? "0 0 8px color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 25%, transparent)"
         : "none",
       outline: "none",
       padding: 0,
@@ -142,7 +142,7 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
     const wrapperStyle: React.CSSProperties = {
       display: "inline-flex",
       alignItems: "center",
-      gap: 8,
+      gap: 10,
       cursor: disabled ? "not-allowed" : "pointer",
     }
 

@@ -224,11 +224,17 @@ const SelectItem = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex w-full cursor-default select-none items-center",
-      "rounded-[8px] py-1.5 pl-2 pr-8",
+      "rounded-[10px] py-1.5 pl-2.5 pr-8",
+      "border border-transparent",
       "outline-none transition-colors duration-100",
       "data-[highlighted]:bg-[var(--aurora-hover-bg)] data-[highlighted]:text-[var(--aurora-accent-strong)]",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-45",
       "text-[var(--aurora-text-primary)]",
+      // Selected item — Aurora "selected glow"
+      "[&[data-state=checked]]:text-[var(--aurora-accent-strong)]",
+      "[&[data-state=checked]]:bg-[var(--aurora-selected-bg)]",
+      "[&[data-state=checked]]:border-[color-mix(in_srgb,var(--aurora-accent-primary)_32%,transparent)]",
+      "[&[data-state=checked]]:[box-shadow:var(--aurora-active-glow)]",
       className
     )}
     style={{
@@ -240,7 +246,7 @@ const SelectItem = React.forwardRef<
     }}
     {...props}
   >
-    <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute right-2.5 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
         <CheckIcon className="text-[var(--aurora-accent-primary)]" />
       </SelectPrimitive.ItemIndicator>

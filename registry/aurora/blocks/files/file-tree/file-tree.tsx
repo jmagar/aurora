@@ -50,7 +50,7 @@ export interface FileChipProps {
 
 function FolderIcon({ open }: { open: boolean }) {
   const Icon = open ? FolderOpen : Folder
-  return <Icon className="size-3.5 shrink-0" strokeWidth={1.7} style={{ color: "var(--aurora-warn)" }} aria-hidden />
+  return <Icon className="size-3.5 shrink-0" strokeWidth={1.7} style={{ color: "var(--aurora-text-muted)" }} aria-hidden />
 }
 
 function FileIcon({ language }: { language?: string }) {
@@ -68,10 +68,10 @@ function FileIcon({ language }: { language?: string }) {
       : language === "css" || language === "scss"
       ? "var(--aurora-accent-pink)"
       : language === "json"
-      ? "var(--aurora-warn)"
+      ? "var(--aurora-accent-pink)"
       : language === "md" || language === "markdown"
       ? "var(--aurora-text-muted)"
-      : "var(--aurora-border-strong)"
+      : "var(--aurora-text-muted)"
 
   return <Icon className="size-3.5 shrink-0" strokeWidth={1.65} style={{ color }} aria-hidden />
 }
@@ -288,22 +288,26 @@ function TreeRow({
           gap: "6px",
           paddingLeft: `${8 + depth * 14}px`,
           paddingRight: "8px",
-          height: "28px",
-          borderRadius: 6,
+          height: "30px",
+          borderRadius: 8,
           cursor: "pointer",
           background: isSelected
-            ? "color-mix(in srgb, var(--aurora-accent-primary) 7%, transparent)"
+            ? "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)"
             : hovered
             ? "var(--aurora-hover-bg)"
             : "transparent",
           border: isSelected
-            ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 38%, transparent)"
+            ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)"
             : "1px solid transparent",
-          boxShadow: isSelected ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)" : "none",
-          color: isSelected ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
+          boxShadow: "none",
+          color: isSelected
+            ? "var(--aurora-accent-primary)"
+            : hovered
+            ? "var(--aurora-text-primary)"
+            : "var(--aurora-text-muted)",
           fontFamily: "var(--aurora-font-sans)",
-          fontSize: "13px",
-          fontWeight: isSelected ? 620 : 450,
+          fontSize: "14px",
+          fontWeight: isSelected ? 600 : 450,
           userSelect: "none",
           transition: "background 0.1s, border-color 0.1s, color 0.1s",
           margin: "1px 0",
@@ -399,10 +403,10 @@ export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, 
     <div
       role="tree"
       style={{
-        background: "var(--aurora-panel-medium)",
-        border: "1px solid var(--aurora-border-default)",
-        borderRadius: 8,
-        padding: "6px",
+        background: "transparent",
+        border: "none",
+        borderRadius: 0,
+        padding: "0",
         fontFamily: "var(--aurora-font-sans)",
         overflowY: "auto",
       }}

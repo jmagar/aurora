@@ -5,7 +5,12 @@ import { cn } from "@/lib/utils"
 
 const DescriptionList = React.forwardRef<HTMLDListElement, React.HTMLAttributes<HTMLDListElement>>(
   ({ className, ...props }, ref) => (
-    <dl ref={ref} className={cn("grid gap-0 overflow-hidden rounded-[8px] border", className)} style={{ borderColor: "var(--aurora-border-default)" }} {...props} />
+    <dl
+      ref={ref}
+      className={cn("grid gap-0 overflow-hidden rounded-[var(--aurora-radius-1)] border", className)}
+      style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-medium)" }}
+      {...props}
+    />
   )
 )
 DescriptionList.displayName = "DescriptionList"
@@ -13,20 +18,55 @@ DescriptionList.displayName = "DescriptionList"
 export interface DescriptionItemProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode
   value: React.ReactNode
+  /** Highlight the row with a cyan-tinted surface (active/selected state). */
+  active?: boolean
 }
 
 const DescriptionItem = React.forwardRef<HTMLDivElement, DescriptionItemProps>(
-  ({ className, label, value, ...props }, ref) => (
+  ({ className, label, value, active = false, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("grid grid-cols-[150px_minmax(0,1fr)] gap-4 border-b px-4 py-3 last:border-b-0", className)}
-      style={{ borderColor: "var(--aurora-border-default)" }}
+      className={cn("grid grid-cols-[150px_minmax(0,1fr)] gap-4 border-b px-7 py-[14px] last:border-b-0", className)}
+      style={{
+        borderColor: "var(--aurora-border-default)",
+        background: active ? "var(--aurora-selected-bg)" : undefined,
+      }}
       {...props}
     >
-      <dt style={{ color: "var(--aurora-text-muted)", fontSize: "var(--aurora-type-label)", fontWeight: "var(--aurora-weight-label)", letterSpacing: "var(--aurora-letter-label)", lineHeight: "var(--aurora-line-dense)" }}>
+      <dt
+        className="flex items-center gap-2.5"
+        style={{
+          color: "var(--aurora-text-muted)",
+          fontSize: "var(--aurora-type-label)",
+          fontWeight: "var(--aurora-weight-label)",
+          letterSpacing: "0.06em",
+          lineHeight: "var(--aurora-line-dense)",
+          textTransform: "uppercase",
+        }}
+      >
+        <span
+          aria-hidden="true"
+          style={{
+            display: "inline-block",
+            width: "3px",
+            height: "14px",
+            flexShrink: 0,
+            borderRadius: "9999px",
+            background: "var(--aurora-accent-primary)",
+          }}
+        />
         {label}
       </dt>
-      <dd style={{ color: "var(--aurora-text-primary)", fontSize: "var(--aurora-type-table)", fontWeight: "var(--aurora-weight-body)", lineHeight: 1.42, margin: 0, minWidth: 0 }}>
+      <dd
+        style={{
+          color: "var(--aurora-text-primary)",
+          fontSize: "var(--aurora-type-table)",
+          fontWeight: "var(--aurora-weight-body)",
+          lineHeight: 1.42,
+          margin: 0,
+          minWidth: 0,
+        }}
+      >
         {value}
       </dd>
     </div>

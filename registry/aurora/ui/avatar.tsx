@@ -15,6 +15,7 @@ const sizeMap = {
 
 type AvatarSize = keyof typeof sizeMap
 type AvatarVariant = "default" | "beacon" | "bot" | "status"
+type AvatarShape = "circle" | "square"
 type StatusColor = "online" | "away" | "busy" | "offline"
 
 const statusColorMap: Record<StatusColor, string> = {
@@ -51,7 +52,10 @@ function ensureBeaconKeyframes() {
 // ─── Avatar component ─────────────────────────────────────────────────────────
 
 export interface AvatarProps
-  extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> {
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>,
+    "color"
+  > {
   /** Visual variant */
   variant?: AvatarVariant
   /** Size preset or explicit pixel size */
@@ -60,11 +64,33 @@ export interface AvatarProps
   src?: string
   /** Alt text */
   alt?: string
-  /** Fallback text (initials) */
+  /** Fallback text (initials) — alias for `initials` */
   fallback?: string
-  /** Status dot color — only shown when variant="status" */
+  /**
+   * Initials rendered as the fallback. Drives the tone-tinted surface, ring,
+   * and text color. Takes precedence over `fallback`.
+   */
+  initials?: string
+  /**
+   * Tone — any CSS color (typically an Aurora accent token such as
+   * `var(--aurora-accent-primary)`). Colors the initials, the tinted surface
+   * and the soft tone ring.
+   */
+  tone?: string
+  /**
+   * SVG inner-path markup rendered as a tone-colored glyph instead of initials
+   * (e.g. `<path d="…"/>`). Drawn on a 24×24 viewBox with `currentColor`.
+   */
+  icon?: string
+  /** Circle (default) or rounded square. */
+  shape?: AvatarShape
+  /** Adds an outer focus-style ring in the avatar's tone. */
+  ring?: boolean
+  /** Status dot color — shown when `status` is set or variant="status". */
   status?: StatusColor
 }
+
+const DEFAULT_TONE = "var(--aurora-accent-primary)"
 
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
@@ -78,7 +104,12 @@ const Avatar = React.forwardRef<
       src,
       alt = "",
       fallback,
-      status = "online",
+      initials,
+      tone = DEFAULT_TONE,
+      icon,
+      shape = "circle",
+      ring = false,
+      status,
       style,
       ...props
     },
@@ -86,21 +117,34 @@ const Avatar = React.forwardRef<
   ) => {
     const dims =
       typeof size === "number"
-        ? { wh: size, text: Math.max(9, Math.round(size * 0.34)), statusSize: Math.max(7, Math.round(size * 0.26)), statusOffset: -1 }
+        ? {
+            wh: size,
+            text: Math.max(9, Math.round(size * 0.34)),
+            statusSize: Math.max(7, Math.round(size * 0.26)),
+            statusOffset: -1,
+          }
         : sizeMap[size]
     const isBot = variant === "bot"
     const isBeacon = variant === "beacon"
-    const hasStatus = variant === "status"
+    const isSquare = shape === "square"
+    // Status dot shows whenever a status is explicitly provided OR variant="status".
+    const hasStatus = status != null || variant === "status"
+    const resolvedStatus: StatusColor = status ?? "online"
+    const label = initials ?? fallback ?? alt?.slice(0, 2) ?? "?"
 
     React.useEffect(() => {
       if (isBeacon) ensureBeaconKeyframes()
     }, [isBeacon])
 
-    // Shared ring style for default / status
-    const defaultRing: React.CSSProperties =
+    // Tone-tinted surface + soft tone ring (CD default treatment).
+    const toneSurface = `color-mix(in srgb, ${tone} 15%, var(--aurora-panel-strong))`
+    const toneRing: React.CSSProperties =
       variant === "default" || variant === "status"
         ? {
-            boxShadow: "var(--aurora-active-glow)",
+            boxShadow: [
+              `0 0 0 1px color-mix(in srgb, ${tone} 38%, transparent)`,
+              `0 2px 10px color-mix(in srgb, ${tone} 22%, transparent)`,
+            ].join(", "),
           }
         : {}
 
@@ -116,11 +160,20 @@ const Avatar = React.forwardRef<
         }
       : {}
 
+    // Resolved corner radius (square shape rounds to a soft squircle).
+    const squareRadius = `clamp(8px, ${Math.round(dims.wh * 0.32)}px, var(--aurora-radius-1, 14px))`
+    const radius = isBot
+      ? "var(--aurora-radius-1, 14px)"
+      : isSquare
+        ? squareRadius
+        : "50%"
+
     const rootStyle: React.CSSProperties = {
       width: dims.wh,
       height: dims.wh,
       minWidth: dims.wh,
-      ...defaultRing,
+      borderRadius: radius,
+      ...toneRing,
       ...botStyle,
       ...style,
     }
@@ -140,7 +193,8 @@ const Avatar = React.forwardRef<
                 inset: -4,
                 borderRadius: "50%",
                 border: "2px solid var(--aurora-accent-primary)",
-                animation: "aurora-beacon-ping 1.8s cubic-bezier(0.4,0,0.6,1) infinite",
+                animation:
+                  "aurora-beacon-ping 1.8s cubic-bezier(0.4,0,0.6,1) infinite",
                 pointerEvents: "none",
               }}
             />
@@ -150,7 +204,8 @@ const Avatar = React.forwardRef<
                 position: "absolute",
                 inset: -2,
                 borderRadius: "50%",
-                border: "1.5px solid color-mix(in srgb, var(--aurora-accent-primary) 50%, transparent)",
+                border:
+                  "1.5px solid color-mix(in srgb, var(--aurora-accent-primary) 50%, transparent)",
                 animation: "aurora-beacon-ring 1.8s ease-in-out infinite",
                 pointerEvents: "none",
               }}
@@ -158,12 +213,26 @@ const Avatar = React.forwardRef<
           </>
         )}
 
+        {/* Tone ring (CD `ring` prop) — soft outer ring in the avatar's tone. */}
+        {ring && !isBeacon && (
+          <span
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              inset: -4,
+              borderRadius: radius,
+              border: `1.5px solid color-mix(in srgb, ${tone} 55%, transparent)`,
+              boxShadow: `0 0 12px color-mix(in srgb, ${tone} 30%, transparent)`,
+              pointerEvents: "none",
+            }}
+          />
+        )}
+
         <AvatarPrimitive.Root
           ref={ref}
           className={cn(
             "inline-flex items-center justify-center overflow-hidden",
-            "select-none shrink-0",
-            !isBot && "rounded-full",
+            "select-none shrink-0"
           )}
           style={rootStyle}
           {...props}
@@ -172,21 +241,36 @@ const Avatar = React.forwardRef<
             src={src}
             alt={alt}
             className="h-full w-full object-cover"
-            style={isBot ? { borderRadius: "inherit" } : {}}
+            style={{ borderRadius: "inherit" }}
           />
           <AvatarPrimitive.Fallback
             className={cn(
-              "flex h-full w-full items-center justify-center font-semibold uppercase",
-              "text-[var(--aurora-accent-primary)]",
+              "flex h-full w-full items-center justify-center font-semibold uppercase"
             )}
             style={{
-              background: "var(--aurora-panel-strong)",
+              background: isBot ? "var(--aurora-panel-strong)" : toneSurface,
+              color: tone,
               fontSize: dims.text,
               fontFamily: "var(--aurora-font-sans, Inter, sans-serif)",
             }}
             delayMs={300}
           >
-            {fallback ?? alt?.slice(0, 2) ?? "?"}
+            {icon ? (
+              <svg
+                viewBox="0 0 24 24"
+                width={Math.round(dims.wh * 0.52)}
+                height={Math.round(dims.wh * 0.52)}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.75}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                dangerouslySetInnerHTML={{ __html: icon }}
+              />
+            ) : (
+              label
+            )}
           </AvatarPrimitive.Fallback>
         </AvatarPrimitive.Root>
 
@@ -201,9 +285,9 @@ const Avatar = React.forwardRef<
               width: dims.statusSize,
               height: dims.statusSize,
               borderRadius: "50%",
-              backgroundColor: statusColorMap[status],
+              backgroundColor: statusColorMap[resolvedStatus],
               border: "2px solid var(--aurora-page-bg)",
-              boxShadow: `0 0 4px ${statusColorMap[status]}`,
+              boxShadow: `0 0 4px ${statusColorMap[resolvedStatus]}`,
             }}
           />
         )}
@@ -212,6 +296,85 @@ const Avatar = React.forwardRef<
   }
 )
 Avatar.displayName = "Avatar"
+
+// ─── AvatarGroup ──────────────────────────────────────────────────────────────
+
+export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Maximum number of avatars to render before collapsing into a `+N` chip. */
+  max?: number
+  /** Explicit pixel size applied to every child + the overflow chip. */
+  size?: AvatarSize | number
+  children: React.ReactNode
+}
+
+const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
+  ({ className, max, size = 34, children, style, ...props }, ref) => {
+    const items = React.Children.toArray(children).filter(React.isValidElement)
+    const shown = max != null ? items.slice(0, max) : items
+    const overflow = items.length - shown.length
+    const wh = typeof size === "number" ? size : sizeMap[size].wh
+    // Overlap by ~1/3 of the avatar width (CD overlap).
+    const overlap = Math.round(wh / 3)
+
+    return (
+      <div
+        ref={ref}
+        className={cn("inline-flex items-center", className)}
+        style={{ ...style }}
+        {...props}
+      >
+        {shown.map((child, i) => {
+          const el = child as React.ReactElement<AvatarProps>
+          return (
+            <span
+              key={el.key ?? i}
+              style={{
+                marginLeft: i === 0 ? 0 : -overlap,
+                borderRadius: "50%",
+                // Ring the page bg so overlapping avatars read as separate.
+                boxShadow: "0 0 0 2px var(--aurora-page-bg)",
+                position: "relative",
+                zIndex: shown.length - i,
+              }}
+            >
+              {React.cloneElement(el, { size: el.props.size ?? size })}
+            </span>
+          )
+        })}
+
+        {overflow > 0 && (
+          <span
+            style={{
+              marginLeft: -overlap,
+              width: wh,
+              height: wh,
+              minWidth: wh,
+              borderRadius: "50%",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "var(--aurora-panel-strong)",
+              color: "var(--aurora-text-primary)",
+              fontSize: Math.max(9, Math.round(wh * 0.32)),
+              fontWeight: 600,
+              fontFamily: "var(--aurora-font-sans, Inter, sans-serif)",
+              boxShadow: [
+                "0 0 0 2px var(--aurora-page-bg)",
+                "inset 0 0 0 1px var(--aurora-border-default)",
+              ].join(", "),
+              position: "relative",
+              zIndex: 0,
+            }}
+            aria-label={`${overflow} more`}
+          >
+            +{overflow}
+          </span>
+        )}
+      </div>
+    )
+  }
+)
+AvatarGroup.displayName = "AvatarGroup"
 
 // ─── Sub-components for composable use ───────────────────────────────────────
 
@@ -244,5 +407,5 @@ const AvatarFallback = React.forwardRef<
 ))
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
 
-export { Avatar, AvatarImage, AvatarFallback }
+export { Avatar, AvatarGroup, AvatarImage, AvatarFallback }
 export default Avatar

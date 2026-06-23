@@ -56,7 +56,7 @@ export const Callouts: Story = {
       <Callout variant="warn" title="Review contrast" icon={<CircleAlert className="size-4" />}>
         Use the accessibility panel before publishing newly composed blocks.
       </Callout>
-      <Callout variant="violet" title="Automation" icon={<Sparkles className="size-4" />}>
+      <Callout variant="info" title="Automation" icon={<Sparkles className="size-4" />}>
         Storybook now gives agents a stable surface for visual checks.
       </Callout>
     </div>

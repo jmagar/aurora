@@ -18,18 +18,36 @@
     },
     "panel": {
       "medium": {
-        "$value": "#102330",
-        "$type": "color"
+        "base": {
+          "$value": "#102330",
+          "$type": "color"
+        },
+        "top": {
+          "$value": "#142c3c2e",
+          "$type": "color"
+        }
       },
       "strong": {
-        "$value": "#13293a",
-        "$type": "color"
+        "base": {
+          "$value": "#13293a",
+          "$type": "color"
+        },
+        "top": {
+          "$value": "#173245",
+          "$type": "color"
+        }
       }
     },
     "control": {
       "surface": {
-        "$value": "#0c1a24",
-        "$type": "color"
+        "base": {
+          "$value": "#0c1a24",
+          "$type": "color"
+        },
+        "top": {
+          "$value": "#122838f5",
+          "$type": "color"
+        }
       }
     },
     "hover": {
@@ -302,6 +320,20 @@
       "3": {
         "$value": "22px",
         "$type": "dimension"
+      }
+    },
+    "preview": {
+      "allowed": {
+        "$value": "#00e676",
+        "$type": "color"
+      },
+      "unmatched": {
+        "$value": "#ff9100",
+        "$type": "color"
+      },
+      "highlight": {
+        "$value": "#ffea00",
+        "$type": "color"
       }
     },
     "type": {

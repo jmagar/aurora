@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/registry/aurora/ui/button";
 import {
   Tooltip,
   TooltipTrigger,
@@ -9,198 +8,131 @@ import {
   TooltipProvider,
 } from "@/registry/aurora/ui/tooltip";
 
-function StatusDot({ color }: { color: string }) {
+// ─── CD demo chrome ─────────────────────────────────────────────────────────
+// Ports the dsCard's injected CSS (.ib / .kb / .row / .hint) as inline styles.
+
+function Icon({ d }: { d: string }) {
   return (
-    <span
-      style={{
-        display: "inline-block",
-        width: 10,
-        height: 10,
-        borderRadius: "50%",
-        background: color,
-        boxShadow: `0 0 6px 2px ${color}55`,
-        cursor: "default",
-        flexShrink: 0,
-      }}
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      dangerouslySetInnerHTML={{ __html: d }}
     />
   );
 }
 
-function IconButton({ children, label }: { children: React.ReactNode; label: string }) {
+function IconBox({
+  children,
+  color,
+}: {
+  children: React.ReactNode;
+  color?: string;
+}) {
+  const [hover, setHover] = React.useState(false);
   return (
-    <Button variant="plain" size="unstyled"
-      type="button"
-      aria-label={label}
+    <span
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 32,
-        height: 32,
-        borderRadius: 8,
-        border: "1px solid var(--aurora-border-default)",
-        background: "var(--aurora-control-surface)",
-        color: "var(--aurora-text-muted)",
+        display: "inline-grid",
+        placeItems: "center",
+        width: 34,
+        height: 34,
+        borderRadius: 9,
+        color: color ?? (hover ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)"),
+        background: hover ? "var(--aurora-hover-bg)" : "var(--aurora-control-surface)",
+        border: "1px solid var(--aurora-border-strong)",
         cursor: "pointer",
-        flexShrink: 0,
       }}
     >
       {children}
-    </Button>
+    </span>
   );
 }
 
-function HostnameChip({ name }: { name: string }) {
+function Kbd({ children }: { children: React.ReactNode }) {
   return (
     <span
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        padding: "4px 10px",
-        borderRadius: 8,
-        background: "var(--aurora-control-surface)",
-        border: "1px solid var(--aurora-border-default)",
-        fontFamily: "var(--aurora-font-mono)",
-        fontSize: 12,
-        color: "var(--aurora-accent-pink)",
-        cursor: "default",
+        fontFamily: "var(--font-mono)",
+        fontSize: 10.5,
+        color: "var(--aurora-text-muted)",
+        border: "1px solid var(--aurora-border-strong)",
+        borderRadius: 5,
+        padding: "1px 5px",
+        marginLeft: 7,
       }}
     >
-      {name}
+      {children}
     </span>
   );
 }
 
 export default function TooltipDemo() {
   return (
-    <TooltipProvider>
-      <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-        <div>
-          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-            Overlay
-          </p>
-          <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-            Tooltips
-          </h2>
-          <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-            Hover each element to reveal contextual details. Used throughout Labby for hostnames, status info, and action labels.
-          </p>
+    <TooltipProvider delayDuration={150}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 18,
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 30,
+        }}
+      >
+        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <IconBox>
+                <Icon d='<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>' />
+              </IconBox>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              <span>
+                Restart gateway
+                <Kbd>⌘R</Kbd>
+              </span>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <IconBox>
+                <Icon d='<path d="m4 17 6-6-6-6M12 19h8"/>' />
+              </IconBox>
+            </TooltipTrigger>
+            <TooltipContent side="top">Open terminal</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <IconBox>
+                <Icon d='<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 14H4a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 10 4.6V4a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 2.82 1.18l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 10H20a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>' />
+              </IconBox>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Settings</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <IconBox color="var(--aurora-error)">
+                <Icon d='<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>' />
+              </IconBox>
+            </TooltipTrigger>
+            <TooltipContent side="right">Delete · permanent</TooltipContent>
+          </Tooltip>
         </div>
 
-        <div>
-          <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
-            Status indicators
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <StatusDot color="var(--aurora-success)" />
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top">Gateway online</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <StatusDot color="var(--aurora-warn)" />
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top">Degraded — high latency on us-west-2-gw-01</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <StatusDot color="var(--aurora-error)" />
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top">Offline — no response for 3 min</TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-
-        <div>
-          <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
-            Gateway hostnames
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <HostnameChip name="production-edge.lab.local" />
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">Region: us-east-1 · v3.8.1 · 99.97% uptime</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <HostnameChip name="staging-gw.lab.local" />
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">Region: eu-west-1 · v3.9.0-beta · staging env</TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
-
-        <div>
-          <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
-            Action buttons
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <IconButton label="Copy hostname">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="5" y="5" width="9" height="9" rx="2" />
-                      <path d="M11 5V3a2 2 0 00-2-2H3a2 2 0 00-2 2v6a2 2 0 002 2h2" />
-                    </svg>
-                  </IconButton>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top">Copy hostname</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <IconButton label="Open logs">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M2 4h12M2 8h8M2 12h10" />
-                    </svg>
-                  </IconButton>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top">Open gateway logs</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <IconButton label="Restart gateway">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M13 8A5 5 0 102.5 5.5" />
-                      <polyline points="2 3 2.5 5.5 5 5" />
-                    </svg>
-                  </IconButton>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top">Restart gateway</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span style={{ display: "inline-flex" }}>
-                  <IconButton label="Gateway settings">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="8" cy="8" r="2" />
-                      <path d="M8 1v2M8 13v2M1 8h2M13 8h2" />
-                    </svg>
-                  </IconButton>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="top">Gateway settings</TooltipContent>
-            </Tooltip>
-          </div>
-        </div>
+        <span style={{ fontSize: 12, color: "var(--aurora-text-muted)" }}>
+          Hover or focus any control to reveal its tooltip.
+        </span>
       </div>
     </TooltipProvider>
   );

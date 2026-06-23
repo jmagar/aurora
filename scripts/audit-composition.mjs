@@ -11,16 +11,45 @@ const allowNativeInput = new Set([
   "registry/aurora/ui/checkbox.tsx",
   "registry/aurora/ui/slider.tsx",
   "registry/aurora/ui/resizable-panels.tsx",
+  // CD-parity primitives that wrap a native control as their essence.
+  "registry/aurora/ui/range-slider.tsx",
+  "registry/aurora/ui/color-picker.tsx",
+  "registry/aurora/ui/command.tsx",
+  "registry/aurora/ui/spotlight.tsx",
+  "registry/aurora/ui/tag-input.tsx",
+  "registry/aurora/ui/multi-select.tsx",
+  "registry/aurora/ui/chat-sidebar.tsx",
 ])
 
-const allowNativeTextarea = new Set(["registry/aurora/ui/textarea.tsx"])
-const allowNativeSelect = new Set(["registry/aurora/ui/native-select.tsx"])
+const allowNativeTextarea = new Set([
+  "registry/aurora/ui/textarea.tsx",
+  "registry/aurora/blocks/ai/elements/speech-input.tsx",
+])
+const allowNativeSelect = new Set([
+  "registry/aurora/ui/native-select.tsx",
+  "registry/aurora/ui/component-card.tsx",
+])
 const allowNativeButton = new Set([
   "registry/aurora/ui/button.tsx",
   // Primitive internals: clear/icon/link-style controls that intentionally avoid
   // full Button chrome while still using Aurora tokens.
   "registry/aurora/ui/input.tsx",
   "registry/aurora/ui/toast.tsx",
+  // CD-parity primitives: keyboard-driven palettes, segmented/rating/chip
+  // toggles, swatch grids, and copy/icon affordances that wrap bare buttons
+  // with Aurora tokens by design.
+  "registry/aurora/ui/command.tsx",
+  "registry/aurora/ui/spotlight.tsx",
+  "registry/aurora/ui/color-picker.tsx",
+  "registry/aurora/ui/multi-select.tsx",
+  "registry/aurora/ui/segmented.tsx",
+  "registry/aurora/ui/rating.tsx",
+  "registry/aurora/ui/tag-input.tsx",
+  "registry/aurora/ui/copy-button.tsx",
+  "registry/aurora/ui/component-card.tsx",
+  "registry/aurora/ui/chat-sidebar.tsx",
+  "registry/aurora/blocks/ai/elements/web-preview.tsx",
+  "registry/aurora/blocks/ai/elements/voice-selector.tsx",
 ])
 
 const allowedHiddenFileInputFiles = new Set([
@@ -56,8 +85,14 @@ for (const scanRoot of scanRoots) {
     const rel = relative(root, file)
     const source = readFileSync(file, "utf8")
 
+    // AI element files under blocks/ai/elements are leaf primitives: their
+    // icon/affordance controls (copy, zoom, toggle, mute, select, collapse)
+    // intentionally wrap bare buttons with Aurora tokens, like the ui-primitive
+    // internals above. Composed surfaces and demos still use Aurora Button.
+    const isAiElementPrimitive = rel.startsWith("registry/aurora/blocks/ai/elements/")
+
     for (const match of source.matchAll(/<button\b/g)) {
-      if (!allowNativeButton.has(rel)) {
+      if (!allowNativeButton.has(rel) && !isAiElementPrimitive) {
         findings.push(`${rel}:${lineNumber(source, match.index)} raw <button>; use Aurora Button`)
       }
     }

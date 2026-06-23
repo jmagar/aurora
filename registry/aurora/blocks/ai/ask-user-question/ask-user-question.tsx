@@ -93,18 +93,24 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
     : "var(--aurora-border-default)"
 
   const boxShadow = selected
-    ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)"
+    ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 24%, transparent), 0 2px 6px rgba(0,0,0,0.16)"
     : focused
-    ? "0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)"
+    ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)"
     : hovered
-    ? "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 15%, transparent)"
-    : "none"
+    ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 15%, transparent), 0 2px 6px rgba(0,0,0,0.16)"
+    : "inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 2px rgba(0,0,0,0.18)"
 
-  const background = selected
-    ? "color-mix(in srgb, var(--aurora-accent-primary) 7%, var(--aurora-panel-medium))"
+  // Top-lit panel gradient (CD parity): translucent light top stop over the
+  // opaque panel tier, kept opaque→opaque to avoid the gradient-seam band.
+  const surfaceTop = selected
+    ? "color-mix(in srgb, var(--aurora-accent-primary) 14%, var(--aurora-panel-strong-top))"
+    : "var(--aurora-panel-strong-top)"
+  const surfaceBase = selected
+    ? "color-mix(in srgb, var(--aurora-accent-primary) 8%, var(--aurora-panel-medium))"
     : hovered
     ? "var(--aurora-hover-bg)"
     : "var(--aurora-panel-medium)"
+  const background = `linear-gradient(180deg, ${surfaceTop}, ${surfaceBase} 62%), ${surfaceBase}`
 
   return (
     <Button variant="plain" size="unstyled"
@@ -120,11 +126,11 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
         position: "relative",
         display: "flex",
         alignItems: "flex-start",
-        gap: 12,
+        gap: 16,
         width: "100%",
-        padding: "12px 14px",
+        padding: "18px 20px",
         borderRadius: "var(--aurora-radius-1)",
-        border: `1.5px solid ${borderColor}`,
+        border: `1px solid ${borderColor}`,
         background,
         cursor: "pointer",
         textAlign: "left",
@@ -135,28 +141,14 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
         animation: "aurora-auq-fadein 180ms ease both",
       }}
     >
-      <span
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 10,
-          bottom: 10,
-          width: 3,
-          borderRadius: "0 999px 999px 0",
-          background: "var(--aurora-accent-primary)",
-          opacity: selected ? 1 : hovered ? 0.45 : 0,
-          transition: "opacity 150ms ease",
-        }}
-      />
       {/* Indicator */}
       <div
         style={{
           flexShrink: 0,
-          marginTop: 2,
-          width: 16,
-          height: 16,
-          borderRadius: type === "radio" ? "50%" : 4,
+          marginTop: 1,
+          width: 22,
+          height: 22,
+          borderRadius: type === "radio" ? "50%" : 6,
           border: selected
             ? "1.5px solid var(--aurora-accent-primary)"
             : "1.5px solid var(--aurora-border-strong)",
@@ -170,15 +162,15 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
         {selected && type === "radio" && (
           <span
             style={{
-              width: 6,
-              height: 6,
+              width: 8,
+              height: 8,
               borderRadius: "50%",
               background: "var(--aurora-accent-foreground)",
             }}
           />
         )}
         {selected && type === "multi" && (
-          <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+          <svg width="12" height="10" viewBox="0 0 10 8" fill="none" aria-hidden="true">
             <path
               d="M1.5 4L3.8 6.5L8.5 1.5"
               stroke="var(--aurora-accent-foreground)"
@@ -195,11 +187,11 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
         <p
           style={{
             margin: 0,
-            fontSize: 14,
-            fontWeight: 600,
+            fontSize: 16,
+            fontWeight: 700,
             color: "var(--aurora-text-primary)",
             fontFamily: "var(--aurora-font-sans)",
-            lineHeight: 1.4,
+            lineHeight: 1.35,
           }}
         >
           {option.label}
@@ -207,11 +199,11 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
         {option.description && (
           <p
             style={{
-              margin: "3px 0 0",
-              fontSize: 12,
+              margin: "5px 0 0",
+              fontSize: 15,
               color: "var(--aurora-text-muted)",
               fontFamily: "var(--aurora-font-sans)",
-              lineHeight: 1.55,
+              lineHeight: 1.5,
             }}
           >
             {option.description}
@@ -305,17 +297,21 @@ function SubmitButton({
   return (
     <Button
       type="button"
-      variant="aurora"
-      size="default"
+      variant="neutral"
+      size="lg"
       disabled={disabled}
       onClick={onClick}
       style={{
-        gap: 6,
+        gap: 8,
         alignSelf: "flex-end",
+        background: "transparent",
+        borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 40%, var(--aurora-border-strong))",
+        color: "var(--aurora-text-muted)",
+        boxShadow: "none",
       }}
     >
       {label}
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 12 12" fill="none" aria-hidden="true">
         <path d="M2 6H10M7 3L10 6L7 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </Button>
@@ -364,7 +360,7 @@ export function AskUserQuestion({
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: 14,
+        gap: 18,
         minWidth: 0,
         width: "100%",
         ...style,
@@ -376,11 +372,11 @@ export function AskUserQuestion({
       <p
         style={{
           margin: 0,
-          fontSize: 15,
-          fontWeight: 600,
+          fontSize: 18,
+          fontWeight: 700,
           color: "var(--aurora-text-primary)",
           fontFamily: "var(--aurora-font-sans)",
-          lineHeight: 1.5,
+          lineHeight: 1.4,
         }}
       >
         {question}
@@ -396,7 +392,7 @@ export function AskUserQuestion({
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: 8,
+              gap: 12,
             }}
           >
             {options.map((opt, i) => (

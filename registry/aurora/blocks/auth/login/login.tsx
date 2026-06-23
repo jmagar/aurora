@@ -11,32 +11,27 @@ import { InputOTP } from "@/registry/aurora/ui/input-otp"
 
 export type LoginMode = "password" | "magic-link-sent" | "2fa"
 
-export interface LoginProps {
-  mode?: LoginMode
-  onSubmit?: (data: { email?: string; password?: string; otp?: string }) => void
-  onMagicLink?: (email: string) => void
+export interface LoginProvider {
+  /** Button label, e.g. "Continue with GitHub". */
+  label: string
+  /** Leading icon element (sized ~16px). */
+  icon?: React.ReactNode
+  /** Click handler for this provider. */
+  onClick?: () => void
 }
 
-// ---------------------------------------------------------------------------
-// Labby stacked-plane mark (same as terminal)
-// ---------------------------------------------------------------------------
-
-function LabbyMark({ size = 28 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size * 1.4}
-      viewBox="0 0 10 14"
-      fill="none"
-      aria-hidden
-      style={{ flexShrink: 0 }}
-    >
-      <path d="M5 0L9 2.5L5 5L1 2.5Z" fill="var(--aurora-accent-primary)" opacity="0.95" />
-      <path d="M5 3L9 5.5L5 8L1 5.5Z" fill="var(--aurora-accent-primary)" opacity="0.75" />
-      <path d="M5 6L9 8.5L5 11L1 8.5Z" fill="var(--aurora-accent-primary)" opacity="0.5" />
-      <path d="M5 9L9 11.5L5 14L1 11.5Z" fill="var(--aurora-accent-primary)" opacity="0.28" />
-    </svg>
-  )
+export interface LoginProps {
+  mode?: LoginMode
+  /** Card heading. Defaults to "Sign in". */
+  title?: string
+  /** Muted line under the heading. Defaults to "Welcome back to the console." */
+  subtitle?: string
+  onSubmit?: (data: { email?: string; password?: string; otp?: string }) => void
+  onMagicLink?: (email: string) => void
+  /** SSO / OAuth providers rendered under the "or continue with" divider. */
+  providers?: LoginProvider[]
+  /** Footer content centered under the card (e.g. "No account? Request access"). */
+  footer?: React.ReactNode
 }
 
 // ---------------------------------------------------------------------------
@@ -84,15 +79,15 @@ interface AuroraInputProps {
 
 function AuroraInput({ id, label, type = "text", value, onChange, placeholder, autoComplete, trailing }: AuroraInputProps) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       <label
         htmlFor={id}
         style={{
           fontFamily: "var(--aurora-font-sans)",
-          fontSize: "12px",
-          fontWeight: "var(--aurora-weight-label)" as React.CSSProperties["fontWeight"],
-          letterSpacing: "var(--aurora-letter-label)",
-          color: "var(--aurora-text-muted)",
+          fontSize: "13px",
+          fontWeight: 600,
+          letterSpacing: "var(--aurora-letter-ui)",
+          color: "var(--aurora-text-primary)",
         }}
       >
         {label}
@@ -105,15 +100,66 @@ function AuroraInput({ id, label, type = "text", value, onChange, placeholder, a
         placeholder={placeholder}
         autoComplete={autoComplete}
         endAdornment={trailing}
-        className="h-10 rounded-[10px]"
+        size="lg"
+        className="rounded-[10px]"
       />
     </div>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Style D — Aurora glow border button
+// Divider — "or continue with"
 // ---------------------------------------------------------------------------
+
+function OrDivider({ label }: { label: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        padding: "2px 0",
+      }}
+    >
+      <div style={{ flex: 1, height: "1px", background: "var(--aurora-border-default)" }} />
+      <span
+        style={{
+          fontFamily: "var(--aurora-font-sans)",
+          fontSize: "12px",
+          color: "var(--aurora-text-muted)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {label}
+      </span>
+      <div style={{ flex: 1, height: "1px", background: "var(--aurora-border-default)" }} />
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Provider buttons (SSO / OAuth)
+// ---------------------------------------------------------------------------
+
+function ProviderButtons({ providers }: { providers: LoginProvider[] }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      {providers.map((p, i) => (
+        <Button
+          key={`${p.label}-${i}`}
+          type="button"
+          variant="neutral"
+          size="lg"
+          block
+          iconLeft={p.icon}
+          onClick={p.onClick}
+        >
+          {p.label}
+        </Button>
+      ))}
+    </div>
+  )
+}
 
 // ---------------------------------------------------------------------------
 // OTP input — 6 boxes, auto-advance
@@ -135,7 +181,7 @@ function OtpInput({ onComplete }: { onComplete?: (otp: string) => void }) {
 // Password state view
 // ---------------------------------------------------------------------------
 
-function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
+function PasswordView({ onSubmit, onMagicLink, providers, footer }: LoginProps) {
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
   const [showPw, setShowPw] = React.useState(false)
@@ -143,7 +189,7 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
   return (
     <form
       onSubmit={(e) => { e.preventDefault(); onSubmit?.({ email, password }) }}
-      style={{ display: "contents" }}
+      style={{ display: "flex", flexDirection: "column", gap: "20px" }}
     >
       <AuroraInput
         id="email"
@@ -151,7 +197,7 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
         type="email"
         value={email}
         onChange={setEmail}
-        placeholder="you@example.com"
+        placeholder="operator@labby.io"
         autoComplete="email"
       />
       <AuroraInput
@@ -181,58 +227,61 @@ function PasswordView({ onSubmit, onMagicLink }: LoginProps) {
         }
       />
 
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "-6px" }}>
         <Button variant="plain" size="unstyled"
           type="button"
           style={{
             background: "none",
             border: "none",
             fontFamily: "var(--aurora-font-sans)",
-            fontSize: "12px",
+            fontSize: "14px",
+            fontWeight: 500,
             color: "var(--aurora-accent-primary)",
             cursor: "pointer",
             padding: 0,
-            opacity: 0.8,
           }}
         >
           Forgot password?
         </Button>
       </div>
 
-      <Button type="submit" variant="aurora" size="lg" style={{ width: "100%" }}>
+      <Button type="submit" variant="aurora" size="lg" block>
         Sign in
       </Button>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          padding: "4px 0",
-        }}
-      >
-        <div style={{ flex: 1, height: "1px", background: "var(--aurora-border-default)" }} />
-        <span
+      {(providers && providers.length > 0) ? (
+        <>
+          <OrDivider label="or continue with" />
+          <ProviderButtons providers={providers} />
+        </>
+      ) : (
+        <>
+          <OrDivider label="or" />
+          <Button
+            type="button"
+            variant="neutral"
+            size="lg"
+            block
+            onClick={() => email && onMagicLink?.(email)}
+          >
+            Send magic link
+          </Button>
+        </>
+      )}
+
+      {footer ? (
+        <div
           style={{
             fontFamily: "var(--aurora-font-sans)",
-            fontSize: "12px",
+            fontSize: "14px",
             color: "var(--aurora-text-muted)",
+            textAlign: "center",
+            marginTop: "2px",
           }}
         >
-          or
-        </span>
-        <div style={{ flex: 1, height: "1px", background: "var(--aurora-border-default)" }} />
-      </div>
-
-      <Button
-        type="button"
-        variant="neutral"
-        size="lg"
-        onClick={() => email && onMagicLink?.(email)}
-        style={{ width: "100%" }}
-      >
-        Send magic link
-      </Button>
+          {footer}
+        </div>
+      ) : null}
     </form>
   )
 }
@@ -327,9 +376,9 @@ function TwoFactorView({ onSubmit }: LoginProps) {
         type="button"
         variant="aurora"
         size="lg"
+        block
         disabled={otp.length < 6}
         onClick={() => otp.length === 6 && onSubmit?.({ otp })}
-        style={{ width: "100%" }}
       >
         Verify
       </Button>
@@ -342,105 +391,86 @@ function TwoFactorView({ onSubmit }: LoginProps) {
 // ---------------------------------------------------------------------------
 
 export const Login = React.forwardRef<HTMLDivElement, LoginProps>(
-  function Login({ mode = "password", onSubmit, onMagicLink }, ref) {
-    const title =
-      mode === "magic-link-sent"
+  function Login(
+    { mode = "password", title, subtitle, onSubmit, onMagicLink, providers, footer },
+    ref
+  ) {
+    const heading =
+      title ??
+      (mode === "magic-link-sent"
         ? "Magic link sent"
         : mode === "2fa"
         ? "Two-factor auth"
-        : "Sign in to Aurora"
+        : "Sign in")
 
-    const subtitle =
-      mode === "2fa"
+    const sub =
+      subtitle ??
+      (mode === "2fa"
         ? "Almost there"
         : mode === "magic-link-sent"
-        ? ""
-        : "Welcome back"
+        ? "We just emailed you a link"
+        : "Welcome back to the console.")
 
     return (
       <div
         ref={ref}
         style={{
-          minHeight: "100vh",
+          width: "100%",
+          maxWidth: "420px",
+          // Radial cyan glow at top of the card surface
+          backgroundImage:
+            "radial-gradient(700px 420px at 50% -10%, color-mix(in srgb, var(--aurora-accent-primary) 8%, transparent), transparent 60%)",
+          backgroundColor: "var(--aurora-panel-strong)",
+          border: "1px solid var(--aurora-border-default)",
+          borderRadius: "var(--aurora-radius-3)",
+          padding: "36px 36px 32px",
+          boxShadow: "var(--aurora-shadow-strong)",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "var(--aurora-shell-bg, var(--aurora-page-bg))",
-          padding: "24px",
+          flexDirection: "column",
+          gap: "28px",
+          boxSizing: "border-box",
         }}
       >
-        {/* Card */}
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "380px",
-            background: "var(--aurora-panel-strong)",
-            border: "1px solid var(--aurora-border-default)",
-            borderRadius: "var(--aurora-radius-3)",
-            padding: "36px 32px 32px",
-            boxShadow: "var(--aurora-shadow-strong)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-          }}
-        >
-          {/* Branding */}
+        {/* Heading */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           <div
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "10px",
-              marginBottom: "4px",
+              fontFamily: "var(--aurora-font-display)",
+              fontSize: "30px",
+              fontWeight: 800,
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
+              color: "var(--aurora-text-primary)",
             }}
           >
-            <LabbyMark size={32} />
-            <div style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  fontFamily: "var(--aurora-font-display)",
-                  fontSize: "22px",
-                  fontWeight: 800,
-                  color: "var(--aurora-text-primary)",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                Aurora
-              </div>
-              {subtitle && (
-                <div
-                  style={{
-                    fontFamily: "var(--aurora-font-sans)",
-                    fontSize: "13px",
-                    color: "var(--aurora-text-muted)",
-                    marginTop: "2px",
-                  }}
-                >
-                  {subtitle}
-                </div>
-              )}
-            </div>
+            {heading}
+          </div>
+          {sub && (
             <div
               style={{
                 fontFamily: "var(--aurora-font-sans)",
                 fontSize: "16px",
-                fontWeight: 600,
-                color: "var(--aurora-text-primary)",
+                color: "var(--aurora-text-muted)",
               }}
             >
-              {title}
+              {sub}
             </div>
-          </div>
-
-          {/* Mode content */}
-          {mode === "magic-link-sent" ? (
-            <MagicLinkSentView />
-          ) : mode === "2fa" ? (
-            <TwoFactorView onSubmit={onSubmit} />
-          ) : (
-            <PasswordView onSubmit={onSubmit} onMagicLink={onMagicLink} />
           )}
         </div>
+
+        {/* Mode content */}
+        {mode === "magic-link-sent" ? (
+          <MagicLinkSentView />
+        ) : mode === "2fa" ? (
+          <TwoFactorView onSubmit={onSubmit} />
+        ) : (
+          <PasswordView
+            onSubmit={onSubmit}
+            onMagicLink={onMagicLink}
+            providers={providers}
+            footer={footer}
+          />
+        )}
       </div>
     )
   }

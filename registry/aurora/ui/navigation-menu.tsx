@@ -27,7 +27,8 @@ export const NavigationMenuItem = React.forwardRef<HTMLAnchorElement, Navigation
   ({ active = false, className, style, ...props }, ref) => (
     <a
       ref={ref}
-      className={["rounded-[6px] border px-3 py-1.5 no-underline aurora-text-control", className].filter(Boolean).join(" ")}
+      className={["rounded-[6px] border px-3 py-1.5 no-underline aurora-text-control transition-colors", className].filter(Boolean).join(" ")}
+      aria-current={active ? "page" : undefined}
       style={{
         background: active ? "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)" : "transparent",
         borderColor: active ? "color-mix(in srgb, var(--aurora-accent-primary) 35%, transparent)" : "transparent",

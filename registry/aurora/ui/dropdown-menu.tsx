@@ -240,10 +240,11 @@ const DropdownMenuLabel = React.forwardRef<
     style={{
       color: "var(--aurora-text-muted)",
       fontFamily: "var(--aurora-font-sans)",
-      fontSize: "var(--aurora-type-label)",
+      fontSize: "var(--aurora-type-caption)",
       fontWeight: "var(--aurora-weight-label)",
-      letterSpacing: "var(--aurora-letter-label)",
+      letterSpacing: "0.08em",
       lineHeight: "var(--aurora-line-dense)",
+      textTransform: "uppercase",
       ...style,
     }}
     {...props}

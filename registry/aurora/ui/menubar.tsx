@@ -24,7 +24,10 @@ export const Menubar = React.forwardRef<HTMLDivElement, MenubarProps>(
     <div
       ref={ref}
       role="menubar"
-      className={cn("flex flex-wrap items-center gap-1 rounded-[10px] border p-1.5", className)}
+      className={cn(
+        "flex flex-wrap items-center gap-1 rounded-[var(--aurora-radius-2)] border p-1.5",
+        className
+      )}
       style={{
         background: "var(--aurora-control-surface)",
         borderColor: "var(--aurora-border-default)",
@@ -57,8 +60,8 @@ export const MenubarTrigger = React.forwardRef<HTMLButtonElement, MenubarTrigger
         variant="plain"
         size="unstyled"
         className={cn(
-          "rounded-[8px] px-3 py-1.5 aurora-text-control transition-colors duration-150",
-          "focus-visible:outline-none data-[state=open]:bg-[var(--aurora-hover-bg)]",
+          "rounded-[8px] px-3 py-1.5 aurora-text-control font-semibold transition-colors duration-150",
+          "hover:bg-[var(--aurora-hover-bg)] focus-visible:outline-none data-[state=open]:bg-[var(--aurora-hover-bg)]",
           className
         )}
         style={{

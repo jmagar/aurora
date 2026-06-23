@@ -9,10 +9,11 @@ const Listbox = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
     <div
       ref={ref}
       role="listbox"
-      className={cn("overflow-hidden rounded-[var(--aurora-radius-1)] border p-1", className)}
+      className={cn("overflow-hidden rounded-[var(--aurora-radius-2)] border p-2", className)}
       style={{
         background: "var(--aurora-panel-strong)",
         borderColor: "var(--aurora-border-strong)",
+        boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
         ...style,
       }}
       {...props}
@@ -26,10 +27,10 @@ const ListboxGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
     <div ref={ref} className={cn("py-1", className)} {...props}>
       {heading ? (
         <div
-          className="px-2 py-1.5"
+          className="px-3 pb-2 pt-1"
           style={{
             color: "var(--aurora-text-muted)",
-            fontSize: "var(--aurora-type-label)",
+            fontSize: "var(--aurora-type-body-sm)",
             fontWeight: "var(--aurora-weight-label)",
             letterSpacing: "var(--aurora-letter-label)",
             lineHeight: "var(--aurora-line-dense)",
@@ -59,20 +60,20 @@ const ListboxItem = React.forwardRef<HTMLButtonElement, ListboxItemProps>(
       size="unstyled"
       role="option"
       aria-selected={active}
-      className={cn("grid w-full grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-[8px] px-3 py-2 text-left outline-none transition-colors", className)}
+      className={cn("grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--aurora-radius-1)] px-4 py-3 text-left outline-none transition-colors", className)}
       style={{
         background: active ? "var(--aurora-hover-bg)" : "transparent",
-        border: active ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent)" : "1px solid transparent",
+        border: active ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 32%, transparent)" : "1px solid transparent",
         color: "var(--aurora-text-primary)",
         ...style,
       }}
       {...props}
     >
       <span className="min-w-0">
-        <span className="block truncate" style={{ fontSize: "var(--aurora-type-control)", fontWeight: "var(--aurora-weight-label)", lineHeight: "var(--aurora-line-dense)" }}>{title}</span>
-        {description ? <span className="block truncate" style={{ color: "var(--aurora-text-muted)", fontSize: "var(--aurora-type-label)", fontWeight: "var(--aurora-weight-body)", lineHeight: 1.4 }}>{description}</span> : null}
+        <span className="block truncate" style={{ fontSize: "var(--aurora-type-body)", fontWeight: "var(--aurora-weight-heading)", lineHeight: "var(--aurora-line-dense)" }}>{title}</span>
+        {description ? <span className="mt-1 block truncate" style={{ color: "var(--aurora-text-muted)", fontSize: "var(--aurora-type-control)", fontWeight: "var(--aurora-weight-body)", lineHeight: 1.4 }}>{description}</span> : null}
       </span>
-      {meta ? <span style={{ color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-mono)", fontSize: "var(--aurora-type-caption)", letterSpacing: 0 }}>{meta}</span> : null}
+      {meta ? <span style={{ color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-mono)", fontSize: "var(--aurora-type-control)", letterSpacing: 0 }}>{meta}</span> : null}
     </Button>
   )
 )

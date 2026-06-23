@@ -7,148 +7,76 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
-  ContextMenuLabel,
   ContextMenuShortcut,
 } from "@/registry/aurora/ui/context-menu";
-import { Badge } from "@/registry/aurora/ui/badge";
+
+/**
+ * Gallery demo — Context Menu
+ * Rebuilt 1:1 from the Claude Design `ContextMenu.dsCard` composition:
+ * a cursor-anchored menu opened by right-clicking a dashed area, with
+ * icon + shortcut items and a danger Delete row.
+ */
+
+// dsCard icon helper: 15px, stroke 1.6, currentColor.
+function Icon({ d }: { d: string }) {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      dangerouslySetInnerHTML={{ __html: d }}
+    />
+  );
+}
 
 export default function ContextMenuDemo() {
-  const [lastAction, setLastAction] = React.useState<string | null>(null);
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-      <p
-        style={{
-          fontSize: 11,
-          fontWeight: 600,
-          letterSpacing: "0.14em",
-          textTransform: "uppercase",
-          color: "var(--aurora-text-muted)",
-        }}
-      >
-        Right-click the gateway row
-      </p>
-
-      <ContextMenu>
-        <ContextMenuTrigger asChild>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto auto auto auto",
-              alignItems: "center",
-              gap: 16,
-              padding: "12px 16px",
-              background: "var(--aurora-panel-medium)",
-              border: "1px solid var(--aurora-border-strong)",
-              borderRadius: 8,
-              cursor: "context-menu",
-              userSelect: "none",
-            }}
-          >
-            {/* Gateway name + host */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              <span
-                style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "var(--aurora-text-primary)",
-                }}
-              >
-                production-edge
-              </span>
-              <span
-                style={{
-                  fontFamily: "var(--aurora-font-mono, monospace)",
-                  fontSize: 11,
-                  color: "var(--aurora-text-muted)",
-                }}
-              >
-                prod.lab.local
-              </span>
-            </div>
-
-            <Badge variant="success" dot={true}>
-              Live
-            </Badge>
-
-            <span
-              className="tabular-nums"
-              style={{ fontSize: 13, color: "var(--aurora-text-primary)" }}
-            >
-              1,284 req/min
-            </span>
-
-            <span
-              className="tabular-nums"
-              style={{ fontSize: 13, color: "var(--aurora-text-primary)" }}
-            >
-              42 ms
-            </span>
-
-            <span
-              style={{
-                fontFamily: "var(--aurora-font-mono, monospace)",
-                fontSize: 11,
-                color: "var(--aurora-text-muted)",
-              }}
-            >
-              v2.4.1
-            </span>
-          </div>
-        </ContextMenuTrigger>
-
-        <ContextMenuContent>
-          <ContextMenuLabel>production-edge</ContextMenuLabel>
-
-          <ContextMenuItem onSelect={() => setLastAction("Open")}>
-            Open
-            <ContextMenuShortcut>↵</ContextMenuShortcut>
-          </ContextMenuItem>
-
-          <ContextMenuItem onSelect={() => setLastAction("Inspect")}>
-            Inspect
-            <ContextMenuShortcut>⌘I</ContextMenuShortcut>
-          </ContextMenuItem>
-
-          <ContextMenuItem
-            onSelect={() => {
-              setLastAction("Copy ID");
-            }}
-          >
-            Copy ID
-            <ContextMenuShortcut>⌘C</ContextMenuShortcut>
-          </ContextMenuItem>
-
-          <ContextMenuSeparator />
-
-          <ContextMenuItem onSelect={() => setLastAction("Pin")}>
-            Pin to dashboard
-          </ContextMenuItem>
-
-          <ContextMenuItem onSelect={() => setLastAction("Duplicate")}>
-            Duplicate
-          </ContextMenuItem>
-
-          <ContextMenuSeparator />
-
-          <ContextMenuItem danger onSelect={() => setLastAction("Delete")}>
-            Delete gateway
-            <ContextMenuShortcut>⌫</ContextMenuShortcut>
-          </ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-
-      {lastAction && (
-        <p
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div
           style={{
-            fontSize: 12,
+            height: 192,
+            borderRadius: "var(--radius-2)",
+            border: "1px dashed var(--aurora-border-strong)",
+            display: "grid",
+            placeItems: "center",
             color: "var(--aurora-text-muted)",
-            fontStyle: "italic",
+            fontSize: 13,
+            fontFamily: "var(--aurora-font-sans, var(--font-sans))",
+            background: "var(--aurora-control-surface)",
+            userSelect: "none",
+            cursor: "context-menu",
           }}
         >
-          Last action: <strong style={{ color: "var(--aurora-accent-primary)" }}>{lastAction}</strong>
-        </p>
-      )}
-    </div>
+          Right-click anywhere
+        </div>
+      </ContextMenuTrigger>
+
+      <ContextMenuContent>
+        <ContextMenuItem>
+          <Icon d='<path d="m9 18 6-6-6-6"/>' />
+          Open session
+          <ContextMenuShortcut>↵</ContextMenuShortcut>
+        </ContextMenuItem>
+
+        <ContextMenuItem>
+          <Icon d='<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>' />
+          Rename
+        </ContextMenuItem>
+
+        <ContextMenuSeparator />
+
+        <ContextMenuItem danger>
+          <Icon d='<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>' />
+          Delete
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }

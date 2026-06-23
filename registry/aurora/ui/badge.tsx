@@ -11,59 +11,86 @@ function devWarn(message: string): void {
   }
 }
 
-export type BadgeTone = "info" | "success" | "warn" | "error" | "neutral" | "rose" | "violet"
+// ---------------------------------------------------------------------------
+// Tones
+// ---------------------------------------------------------------------------
+// CD parity: six tone families. `violet` was removed from the system; CD's
+// expressive accents are cyan (primary), rose (secondary), and orange (warn).
 
-type ToneTokens = { text: string; border: string; bg: string; dot: string; dotShadow: string }
+export type BadgeTone =
+  | "info"
+  | "success"
+  | "warn"
+  | "error"
+  | "neutral"
+  | "rose"
+  | "cyan"
+
+/** Fill style — orthogonal to tone. CD parity: soft (default) / solid / outline. */
+export type BadgeFill = "soft" | "solid" | "outline"
+
+type ToneTokens = {
+  /** Base accent — the saturated hue for dot, solid fill, outline border. */
+  accent: string
+  /** Soft-fill text color (light, legible on the tinted surface). */
+  text: string
+  /** Soft-fill border. */
+  border: string
+  /** Soft-fill tinted surface. */
+  bg: string
+  /** Text color used on a bright solid fill (dark, for contrast). */
+  solidText: string
+}
 
 const badgeToneMap: Record<BadgeTone, ToneTokens> = {
   info: {
+    accent:    "var(--aurora-info)",
     text:      "var(--aurora-info-foreground)",
     border:    "var(--aurora-info-border)",
     bg:        "var(--aurora-info-surface)",
-    dot:       "var(--aurora-info)",
-    dotShadow: "0 0 4px var(--aurora-info)",
+    solidText: "var(--aurora-page-bg)",
   },
   success: {
+    accent:    "var(--aurora-success)",
     text:      "var(--aurora-success-foreground)",
     border:    "var(--aurora-success-border)",
     bg:        "var(--aurora-success-surface)",
-    dot:       "var(--aurora-success)",
-    dotShadow: "0 0 4px var(--aurora-success)",
+    solidText: "var(--aurora-page-bg)",
   },
   warn: {
+    accent:    "var(--aurora-warn)",
     text:      "var(--aurora-warn-foreground)",
     border:    "var(--aurora-warn-border)",
     bg:        "var(--aurora-warn-surface)",
-    dot:       "var(--aurora-warn)",
-    dotShadow: "0 0 4px var(--aurora-warn)",
+    solidText: "var(--aurora-page-bg)",
   },
   error: {
+    accent:    "var(--aurora-error)",
     text:      "var(--aurora-error-foreground)",
     border:    "var(--aurora-error-border)",
     bg:        "var(--aurora-error-surface)",
-    dot:       "var(--aurora-error)",
-    dotShadow: "0 0 4px var(--aurora-error)",
+    solidText: "var(--aurora-page-bg)",
   },
   neutral: {
+    accent:    "var(--aurora-neutral)",
     text:      "var(--aurora-neutral-foreground)",
     border:    "var(--aurora-neutral-border)",
     bg:        "var(--aurora-neutral-surface)",
-    dot:       "var(--aurora-neutral)",
-    dotShadow: "0 0 4px var(--aurora-neutral)",
+    solidText: "var(--aurora-page-bg)",
   },
   rose: {
+    accent:    "var(--aurora-accent-pink)",
     text:      "var(--aurora-accent-pink-strong)",
     border:    "var(--aurora-accent-pink-border)",
     bg:        "var(--aurora-accent-pink-surface)",
-    dot:       "var(--aurora-accent-pink)",
-    dotShadow: "0 0 4px var(--aurora-accent-pink)",
+    solidText: "var(--aurora-page-bg)",
   },
-  violet: {
-    text:      "var(--aurora-accent-violet-strong)",
-    border:    "var(--aurora-accent-violet-border)",
-    bg:        "var(--aurora-accent-violet-surface)",
-    dot:       "var(--aurora-accent-violet)",
-    dotShadow: "0 0 4px var(--aurora-accent-violet)",
+  cyan: {
+    accent:    "var(--aurora-accent-primary)",
+    text:      "color-mix(in srgb, var(--aurora-accent-primary) 88%, white)",
+    border:    "color-mix(in srgb, var(--aurora-accent-primary) 34%, transparent)",
+    bg:        "color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-panel-medium))",
+    solidText: "var(--aurora-page-bg)",
   },
 }
 
@@ -107,19 +134,29 @@ function injectPulse() {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function resolveTone(variant: BadgeTone | "default" | undefined): BadgeTone {
-  if (!variant) return "neutral"
-  if (variant === "default") {
-    devWarn('[Aurora Badge] variant="default" is deprecated. Use variant="neutral" instead.')
+const FILL_VALUES = new Set<BadgeFill>(["soft", "solid", "outline"])
+
+function isFillValue(v: string): v is BadgeFill {
+  return FILL_VALUES.has(v as BadgeFill)
+}
+
+function resolveTone(value: BadgeTone | "default" | "violet" | undefined): BadgeTone {
+  if (!value) return "neutral"
+  if (value === "default") {
+    devWarn('[Aurora Badge] tone="default" is deprecated. Use tone="neutral" instead.')
     return "neutral"
   }
-  if (!Object.hasOwn(badgeToneMap, variant)) {
+  if (value === "violet") {
+    devWarn('[Aurora Badge] tone="violet" was removed. Falling back to "cyan".')
+    return "cyan"
+  }
+  if (!Object.hasOwn(badgeToneMap, value)) {
     devWarn(
-      `[Aurora Badge] Unknown variant "${variant}". Valid values: ${Object.keys(badgeToneMap).join(", ")}. Falling back to "neutral".`
+      `[Aurora Badge] Unknown tone "${value}". Valid values: ${Object.keys(badgeToneMap).join(", ")}. Falling back to "neutral".`
     )
     return "neutral"
   }
-  return variant
+  return value
 }
 
 // ---------------------------------------------------------------------------
@@ -127,19 +164,32 @@ function resolveTone(variant: BadgeTone | "default" | undefined): BadgeTone {
 // ---------------------------------------------------------------------------
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Semantic or expressive tone. "default" is a deprecated alias for "neutral". */
-  variant?: BadgeTone | "default"
-  /** Alias for variant — preferred in skill/docs usage: <Badge tone="info"> */
-  tone?: BadgeTone | "default"
+  /**
+   * Color family OR fill style. Accepts a tone ("info" | "success" | "warn" |
+   * "error" | "neutral" | "rose" | "cyan") for backward compatibility, or a
+   * fill keyword ("soft" | "solid" | "outline"). "default"/"violet" are
+   * deprecated tone aliases (→ neutral / cyan). Prefer the explicit `tone` and
+   * `fill` props.
+   */
+  variant?: BadgeTone | BadgeFill | "default" | "violet"
+  /** Color family. <Badge tone="success"> */
+  tone?: BadgeTone | "default" | "violet"
+  /** Fill style: "soft" (default, tinted) | "solid" (bright) | "outline" (transparent). */
+  fill?: BadgeFill
   /** Render a status dot to the left of the label. */
   dot?: boolean
+  /**
+   * Inline leading icon. Pass an SVG `<path>` body string (the `d=`/markup
+   * inside an `<svg viewBox="0 0 24 24">`), or any React node for full control.
+   */
+  icon?: string | React.ReactNode
   /**
    * Animate the dot with a pulse ring — use for "live", "recording", or
    * "connected" indicators. Has no effect when `dot` is false.
    */
   pulse?: boolean
-  /** Visual size. Defaults to "default". */
-  size?: "sm" | "default"
+  /** Visual size. "sm" | "md" (alias "default"). Defaults to "md". */
+  size?: "sm" | "md" | "default"
   /**
    * Typography and radius shape:
    * - "label"  (default) — uppercase mono, 4px radius. Status codes, tech labels.
@@ -165,9 +215,11 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       className,
       variant,
       tone: toneProp,
+      fill: fillProp,
       dot = false,
+      icon,
       pulse = false,
-      size = "default",
+      size = "md",
       shape = "label",
       interactive = false,
       style,
@@ -178,8 +230,17 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     },
     ref
   ) => {
-    const tone = resolveTone(toneProp ?? variant)
-    const { text, border, bg, dot: dotColor, dotShadow } = badgeToneMap[tone]
+    // `variant` is overloaded for backward/CD compat: it may carry either a
+    // fill keyword or a tone. Split it into the two orthogonal axes.
+    const variantFill = variant && isFillValue(variant) ? (variant as BadgeFill) : undefined
+    const variantTone =
+      variant && !isFillValue(variant)
+        ? (variant as BadgeTone | "default" | "violet")
+        : undefined
+
+    const tone = resolveTone(toneProp ?? variantTone)
+    const fill: BadgeFill = fillProp ?? variantFill ?? "soft"
+    const { accent, text, border, bg, solidText } = badgeToneMap[tone]
 
     // Inject pulse keyframes lazily — only when the feature is first used.
     React.useEffect(() => {
@@ -191,8 +252,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     // -----------------------------------------------------------------------
     const isSm = size === "sm"
     const dotSize = isSm ? "4px" : "5px"
-    const badgeRadius =
-      shape === "pill" ? "999px" : "4px"
+    const badgeRadius = shape === "pill" ? "999px" : "4px"
     const badgeFontSize = isSm
       ? "var(--aurora-type-caption)"
       : "var(--aurora-type-micro)"
@@ -205,6 +265,57 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       ? "var(--aurora-font-mono, 'JetBrains Mono', monospace)"
       : "var(--aurora-font-sans, Inter, sans-serif)"
     const letterSpacing = isLabel ? "0.075em" : "0.01em"
+
+    // -----------------------------------------------------------------------
+    // Fill resolution (soft / solid / outline)
+    // -----------------------------------------------------------------------
+    const dotColor = fill === "solid" ? solidText : accent
+    const dotShadow =
+      fill === "solid"
+        ? "0 0 4px color-mix(in srgb, var(--badge-dot-color) 60%, transparent)"
+        : "0 0 4px var(--badge-dot-color)"
+
+    let fillStyle: React.CSSProperties
+    if (fill === "solid") {
+      fillStyle = {
+        background: accent,
+        borderColor: "transparent",
+        color: solidText,
+        // Subtle outer glow so the bright chip reads as "live" against the navy.
+        boxShadow: `0 2px 10px color-mix(in srgb, ${accent} 32%, transparent)`,
+      }
+    } else if (fill === "outline") {
+      fillStyle = {
+        background: "transparent",
+        borderColor: border,
+        color: text,
+      }
+    } else {
+      // soft (default)
+      fillStyle = {
+        background: bg,
+        borderColor: border,
+        color: text,
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // Icon resolution — string path body vs node
+    // -----------------------------------------------------------------------
+    const iconNode: React.ReactNode =
+      typeof icon === "string" ? (
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          width={isSm ? 11 : 12}
+          height={isSm ? 11 : 12}
+          fill="currentColor"
+          style={{ flexShrink: 0 }}
+          dangerouslySetInnerHTML={{ __html: icon }}
+        />
+      ) : (
+        icon ?? null
+      )
 
     // -----------------------------------------------------------------------
     // Interactive keyboard handler
@@ -252,13 +363,11 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         )}
         style={{
           borderRadius: badgeRadius,
-          background: bg,
-          borderColor: border,
-          color: text,
           fontFamily,
           fontSize: badgeFontSize,
           fontWeight: 650,
           letterSpacing,
+          ...fillStyle,
           ...style,
         }}
         {...interactiveProps}
@@ -278,11 +387,12 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
               // Static glow when not pulsing; animation handles it when pulsing.
               boxShadow: pulse ? undefined : dotShadow,
               // CSS custom property consumed by the keyframe so one rule
-              // works across all 7 tones.
+              // works across all tones.
               ["--badge-dot-color" as string]: dotColor,
             }}
           />
         )}
+        {iconNode}
         {children}
       </span>
     )

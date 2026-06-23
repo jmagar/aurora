@@ -4,23 +4,36 @@ import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { Badge } from "@/registry/aurora/ui/badge"
 
-const tableRow: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "16px",
-  padding: "10px 16px",
-  borderBottom: "1px solid var(--aurora-border-default)",
-  fontSize: "13px",
-  fontFamily: "var(--aurora-font-sans)",
-  color: "var(--aurora-text-primary)",
+// CD dsCard demo chrome ported as inline styles.
+const lbl: React.CSSProperties = {
+  fontSize: "10px",
+  fontWeight: 700,
+  letterSpacing: "0.16em",
+  textTransform: "uppercase",
+  color: "var(--aurora-text-muted)",
+  margin: "0 0 12px",
 }
 
-const tableCell: React.CSSProperties = {
-  flex: 1,
-  color: "var(--aurora-text-muted)",
-  fontFamily: "var(--aurora-font-mono)",
-  fontSize: "12px",
+const row: React.CSSProperties = {
+  display: "flex",
+  gap: "10px",
+  alignItems: "center",
+  flexWrap: "wrap",
+  marginBottom: "18px",
 }
+
+// CD re-tints `warn` to its orange tertiary accent within the demo surface,
+// scoped here exactly as the dsCard does (`:root{--aurora-warn:#d97757}`).
+const demoSurface: React.CSSProperties = {
+  ["--aurora-warn" as string]: "#d97757",
+  background: "var(--aurora-page-bg)",
+  color: "var(--aurora-text-primary)",
+  padding: "26px 30px",
+  borderRadius: "var(--aurora-radius-2, 12px)",
+  border: "1px solid var(--aurora-border-default)",
+}
+
+const aiSparkle = '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>'
 
 export default function BadgesDemo() {
   return (
@@ -28,111 +41,32 @@ export default function BadgesDemo() {
       <GalleryPageIntro
         eyebrow="Controls"
         heading="Badge"
-        description="Semantic badges communicate system meaning. Expressive badges carry identity emphasis, not status."
+        description="Semantic badges communicate system meaning. Six tones, three fills, optional live dot and inline icon."
       />
 
-      <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Semantic roles - with dot</div>
-        <div className="aurora-demo-row">
-          <Badge variant="info" dot>Syncing</Badge>
-          <Badge variant="success" dot>Healthy</Badge>
-          <Badge variant="warn" dot>Degraded</Badge>
-          <Badge variant="error" dot>Offline</Badge>
-          <Badge variant="neutral" dot>Queued</Badge>
+      <div style={demoSurface}>
+        <div style={lbl}>Tones · live dot</div>
+        <div style={row}>
+          <Badge tone="success" dot>Healthy</Badge>
+          <Badge tone="warn" dot>Degraded</Badge>
+          <Badge tone="error" dot>Down</Badge>
+          <Badge tone="cyan" dot>Syncing</Badge>
+          <Badge tone="rose" icon={aiSparkle}>AI</Badge>
         </div>
 
-        <div className="aurora-demo-label">Expressive identity</div>
-        <div className="aurora-demo-row">
-          <Badge variant="violet" dot>Automated</Badge>
-          <Badge variant="rose">Escalated</Badge>
+        <div style={lbl}>Fills</div>
+        <div style={row}>
+          <Badge tone="cyan" variant="soft">Soft</Badge>
+          <Badge tone="cyan" variant="solid">Solid</Badge>
+          <Badge tone="cyan" variant="outline">Outline</Badge>
+          <Badge tone="rose" variant="solid">Live</Badge>
         </div>
 
-        <div className="aurora-demo-label">Without dot</div>
-        <div className="aurora-demo-row">
-          <Badge variant="info">Info</Badge>
-          <Badge variant="success">Success</Badge>
-          <Badge variant="warn">Warning</Badge>
-          <Badge variant="error">Error</Badge>
-          <Badge variant="neutral">Neutral</Badge>
-        </div>
-      </div>
-
-      <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Gateway statuses</div>
-        <div className="aurora-demo-row" style={{ marginBottom: 12 }}>
-          <Badge variant="success" dot>Connected</Badge>
-          <Badge variant="warn" dot>Reconnecting</Badge>
-          <Badge variant="error" dot>Unreachable</Badge>
-          <Badge variant="default" dot>Provisioning</Badge>
-        </div>
-
-        <div className="aurora-demo-label">Agent states</div>
-        <div className="aurora-demo-row" style={{ marginBottom: 12 }}>
-          <Badge variant="default" dot>Running</Badge>
-          <Badge variant="success" dot>Completed</Badge>
-          <Badge variant="warn" dot>Waiting</Badge>
-          <Badge variant="error" dot>Failed</Badge>
-          <Badge variant="rose" dot>Escalated</Badge>
-        </div>
-
-        <div className="aurora-demo-label">Environment types</div>
-        <div className="aurora-demo-row">
-          <Badge variant="default">Production</Badge>
-          <Badge variant="success">Staging</Badge>
-          <Badge variant="warn">Preview</Badge>
-          <Badge variant="rose">Development</Badge>
-        </div>
-      </div>
-
-      <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Table context - agents list</div>
-        <div className="aurora-demo-table-scroll">
-          <div
-            style={{
-              border: "1px solid var(--aurora-border-default)",
-              borderRadius: "var(--aurora-radius-1, 10px)",
-              overflow: "hidden",
-              minWidth: 480,
-            }}
-          >
-            <div
-              style={{
-                ...tableRow,
-                background: "var(--aurora-panel-strong)",
-                fontFamily: "var(--aurora-font-mono)",
-                fontSize: "10px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "var(--aurora-text-muted)",
-              }}
-            >
-              <span style={{ flex: 2 }}>Agent</span>
-              <span style={{ flex: 1 }}>Gateway</span>
-              <span style={{ flex: 1 }}>Status</span>
-              <span style={{ flex: 1 }}>Health</span>
-            </div>
-
-            {([
-              { name: "labby-prod-01", gateway: "us-east-1", status: "default" as const, statusLabel: "Running", health: "success" as const, healthLabel: "Healthy" },
-              { name: "labby-staging-02", gateway: "eu-west-1", status: "warn" as const, statusLabel: "Waiting", health: "warn" as const, healthLabel: "Degraded" },
-              { name: "labby-worker-03", gateway: "us-west-2", status: "success" as const, statusLabel: "Completed", health: "success" as const, healthLabel: "Healthy" },
-              { name: "labby-eval-04", gateway: "ap-south-1", status: "error" as const, statusLabel: "Failed", health: "error" as const, healthLabel: "Offline" },
-              { name: "labby-escalate-05", gateway: "us-east-1", status: "rose" as const, statusLabel: "Escalated", health: "warn" as const, healthLabel: "Degraded" },
-            ] as const).map((r) => (
-              <div key={r.name} style={{ ...tableRow, background: "var(--aurora-panel-medium)" }}>
-                <span style={{ flex: 2, color: "var(--aurora-text-primary)", fontFamily: "var(--aurora-font-mono)", fontSize: "12px" }}>
-                  {r.name}
-                </span>
-                <span style={{ ...tableCell, flex: 1 }}>{r.gateway}</span>
-                <span style={{ flex: 1 }}>
-                  <Badge variant={r.status} dot>{r.statusLabel}</Badge>
-                </span>
-                <span style={{ flex: 1 }}>
-                  <Badge variant={r.health}>{r.healthLabel}</Badge>
-                </span>
-              </div>
-            ))}
-          </div>
+        <div style={lbl}>Sizes · labels</div>
+        <div style={{ ...row, marginBottom: 0 }}>
+          <Badge tone="neutral" size="sm" variant="outline">v0.9.4</Badge>
+          <Badge tone="neutral" size="md" variant="outline">v0.9.4</Badge>
+          <Badge tone="cyan" size="sm">Beta</Badge>
         </div>
       </div>
     </div>

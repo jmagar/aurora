@@ -16,7 +16,7 @@ const Collapsible = React.forwardRef<HTMLDetailsElement, CollapsibleProps>(
       <details
         ref={ref}
         open={open}
-        className={cn("group rounded-[8px] border", className)}
+        className={cn("group overflow-hidden rounded-[12px] border", className)}
         style={{ background: "var(--aurora-panel-medium)", borderColor: "var(--aurora-border-default)", ...style }}
         onToggle={(event) => {
           setOpen(event.currentTarget.open)
@@ -24,11 +24,35 @@ const Collapsible = React.forwardRef<HTMLDetailsElement, CollapsibleProps>(
         }}
         {...props}
       >
-        <summary className="grid cursor-pointer list-none grid-cols-[auto_minmax(0,1fr)] items-center gap-2 px-4 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-inset [&::-webkit-details-marker]:hidden">
-          <ChevronRight className="size-3.5 transition-transform group-open:rotate-90" aria-hidden style={{ color: "var(--aurora-text-muted)" }} />
-          <span className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{title}</span>
+        <summary
+          className="grid cursor-pointer list-none grid-cols-[auto_minmax(0,1fr)] items-center gap-3 px-5 py-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-inset [&::-webkit-details-marker]:hidden"
+          style={{
+            fontFamily: "var(--aurora-font-display)",
+            fontSize: "15px",
+            fontWeight: "var(--aurora-weight-heading)",
+            color: "var(--aurora-text-primary)",
+          }}
+        >
+          <ChevronRight
+            className="size-4 transition-transform duration-200 group-open:rotate-90"
+            strokeWidth={2}
+            aria-hidden
+            style={{ color: "var(--aurora-text-muted)" }}
+          />
+          <span className="truncate">{title}</span>
         </summary>
-        <div className="border-t px-4 py-3" style={{ borderColor: "var(--aurora-border-default)" }}>{children}</div>
+        <div
+          className="border-t px-5 pb-4 pt-3"
+          style={{
+            borderColor: "var(--aurora-border-default)",
+            color: "var(--aurora-text-muted)",
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "var(--aurora-type-body)",
+            lineHeight: 1.55,
+          }}
+        >
+          {children}
+        </div>
       </details>
     )
   }

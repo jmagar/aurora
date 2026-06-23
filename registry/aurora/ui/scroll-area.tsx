@@ -4,10 +4,12 @@ import * as React from "react"
 
 export interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
   viewportClassName?: string
+  /** Max height of the scrollable viewport. Number → px. Omit for the default 18rem cap. */
+  maxHeight?: number | string
 }
 
 export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
-  ({ className, viewportClassName, style, children, ...props }, ref) => (
+  ({ className, viewportClassName, style, children, maxHeight, ...props }, ref) => (
     <div
       ref={ref}
       className={["overflow-hidden rounded-[8px] border", className].filter(Boolean).join(" ")}
@@ -18,7 +20,22 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
       }}
       {...props}
     >
-      <div className={["max-h-72 overflow-auto aurora-scrollbar", viewportClassName].filter(Boolean).join(" ")}>
+      <div
+        className={[
+          // Default viewport: 18rem cap + Aurora scrollbar (Axon contract marker).
+          maxHeight === undefined
+            ? "max-h-72 overflow-auto aurora-scrollbar"
+            : "overflow-auto aurora-scrollbar",
+          viewportClassName,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        style={
+          maxHeight === undefined
+            ? undefined
+            : { maxHeight: typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight }
+        }
+      >
         {children}
       </div>
     </div>
@@ -27,4 +44,3 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
 ScrollArea.displayName = "ScrollArea"
 
 export default ScrollArea
-

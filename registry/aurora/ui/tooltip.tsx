@@ -32,9 +32,9 @@ const TooltipContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-50 overflow-hidden rounded-[8px]",
+        "z-50 max-w-[260px] overflow-hidden rounded-[8px]",
         "border px-2.5 py-1.5",
-        "text-xs leading-snug",
+        "text-xs font-medium leading-snug",
         "animate-in fade-in-0 zoom-in-95",
         "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
         "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
@@ -47,7 +47,7 @@ const TooltipContent = React.forwardRef<
         borderColor: "var(--aurora-border-strong)",
         color: "var(--aurora-text-primary)",
         boxShadow:
-          "0 4px 12px rgba(0,0,0,0.22), var(--aurora-highlight-medium)",
+          "0 8px 24px rgba(0,0,0,0.32), var(--aurora-highlight-medium)",
         fontSize: "12px",
         ...style,
       }}
