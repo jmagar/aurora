@@ -1,0 +1,176 @@
+"use client"
+
+import * as React from "react"
+import { cn } from "@/lib/utils"
+
+export interface RatingProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
+  /** Current rating value (controlled). */
+  value?: number
+  /** Initial rating value (uncontrolled). */
+  defaultValue?: number
+  /** Called with the new value when a star is selected. */
+  onChange?: (value: number) => void
+  /** Number of stars. */
+  max?: number
+  /** Pixel size of each star. */
+  size?: number
+  /** Render as a non-interactive display. */
+  readOnly?: boolean
+  /** Disable interaction without the read-only display semantics. */
+  disabled?: boolean
+  /** Accessible label for the group. */
+  "aria-label"?: string
+}
+
+function StarIcon({ size, fill }: { size: number; fill: number }) {
+  // fill: 0..1 fraction of the star that is filled
+  const id = React.useId()
+  const clamped = Math.max(0, Math.min(1, fill))
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      style={{ display: "block", flexShrink: 0 }}
+    >
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="1" y2="0">
+          <stop offset={`${clamped * 100}%`} stopColor="var(--aurora-rating-fill)" />
+          <stop offset={`${clamped * 100}%`} stopColor="var(--aurora-rating-empty)" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M12 2.25l2.955 5.988 6.608.96-4.781 4.661 1.128 6.582L12 17.347l-5.91 3.094 1.128-6.582L2.437 9.198l6.608-.96L12 2.25z"
+        fill={`url(#${id})`}
+        stroke="var(--aurora-rating-stroke)"
+        strokeWidth={1.25}
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
+  (
+    {
+      value,
+      defaultValue = 0,
+      onChange,
+      max = 5,
+      size = 24,
+      readOnly = false,
+      disabled = false,
+      className,
+      style,
+      "aria-label": ariaLabel,
+      ...props
+    },
+    ref
+  ) => {
+    const isControlled = value !== undefined
+    const [internal, setInternal] = React.useState(defaultValue)
+    const current = isControlled ? (value as number) : internal
+    const [hover, setHover] = React.useState<number | null>(null)
+
+    const interactive = !readOnly && !disabled
+    const display = hover ?? current
+
+    const commit = React.useCallback(
+      (next: number) => {
+        if (!interactive) return
+        if (!isControlled) setInternal(next)
+        onChange?.(next)
+      },
+      [interactive, isControlled, onChange]
+    )
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!interactive) return
+      if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+        event.preventDefault()
+        commit(Math.min(max, current + 1))
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+        event.preventDefault()
+        commit(Math.max(0, current - 1))
+      } else if (event.key === "Home") {
+        event.preventDefault()
+        commit(0)
+      } else if (event.key === "End") {
+        event.preventDefault()
+        commit(max)
+      }
+    }
+
+    const label = ariaLabel ?? `Rating: ${current} out of ${max}`
+
+    return (
+      <div
+        ref={ref}
+        role={interactive ? "slider" : "img"}
+        aria-label={label}
+        aria-valuenow={interactive ? current : undefined}
+        aria-valuemin={interactive ? 0 : undefined}
+        aria-valuemax={interactive ? max : undefined}
+        aria-readonly={readOnly || undefined}
+        aria-disabled={disabled || undefined}
+        tabIndex={interactive ? 0 : undefined}
+        onKeyDown={interactive ? onKeyDown : undefined}
+        onMouseLeave={interactive ? () => setHover(null) : undefined}
+        className={cn(
+          "inline-flex items-center focus-visible:outline-none",
+          interactive &&
+            "rounded-[var(--radius-sm,8px)] focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring,var(--aurora-accent-primary))] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--aurora-page-bg)]",
+          className
+        )}
+        style={
+          {
+            gap: Math.max(2, Math.round(size * 0.12)),
+            cursor: interactive ? "pointer" : "default",
+            opacity: disabled ? 0.5 : 1,
+            "--aurora-rating-fill": "var(--aurora-warn)",
+            "--aurora-rating-empty":
+              "color-mix(in srgb, var(--aurora-text-muted) 22%, transparent)",
+            "--aurora-rating-stroke":
+              "color-mix(in srgb, var(--aurora-warn) 40%, transparent)",
+            ...style,
+          } as React.CSSProperties
+        }
+        {...props}
+      >
+        {Array.from({ length: max }, (_, i) => {
+          const index = i + 1
+          const fill = Math.max(0, Math.min(1, display - i))
+          if (!interactive) {
+            return <StarIcon key={index} size={size} fill={fill} />
+          }
+          return (
+            <button
+              key={index}
+              type="button"
+              tabIndex={-1}
+              aria-hidden="true"
+              onMouseEnter={() => setHover(index)}
+              onFocus={() => setHover(index)}
+              onClick={() => commit(index)}
+              className="inline-flex border-0 bg-transparent p-0 transition-transform duration-150 hover:scale-110"
+              style={{
+                lineHeight: 0,
+                cursor: "pointer",
+                transitionTimingFunction:
+                  "var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1))",
+              }}
+            >
+              <StarIcon size={size} fill={fill} />
+            </button>
+          )
+        })}
+      </div>
+    )
+  }
+)
+Rating.displayName = "Rating"
+
+export { Rating }
+export default Rating

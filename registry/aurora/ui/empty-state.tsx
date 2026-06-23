@@ -49,7 +49,7 @@ export const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
               height: 52,
               background: "var(--aurora-control-surface)",
               border: `1px solid var(--aurora-border-strong)`,
-              borderRadius: 12,
+              borderRadius: 14,
               flexShrink: 0,
               color: "var(--aurora-text-muted)",
             }}
