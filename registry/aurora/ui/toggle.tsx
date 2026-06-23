@@ -43,17 +43,20 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
           className
         )}
         style={{
-          // Pressed: solid accent-tinted surface, cyan border + a single hard cyan
-          // ring, and — the key CD detail — accent-strong (cyan) text, not white.
+          // On vs off must read at a glance, so the states diverge hard:
+          //  · On  = lit + raised: stronger accent fill, bright cyan border, a
+          //    hard cyan ring + soft outer glow, accent-strong (cyan) text.
+          //  · Off = recessed + flat: darker surface with an inset shadow so it
+          //    looks pressed-in/inactive, a subtle border, muted text.
           background: isPressed
-            ? "color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-control-surface))"
-            : "var(--aurora-control-surface)",
+            ? "color-mix(in srgb, var(--aurora-accent-primary) 18%, var(--aurora-control-surface))"
+            : "color-mix(in srgb, var(--aurora-control-surface) 86%, #000)",
           borderColor: isPressed
-            ? "color-mix(in srgb, var(--aurora-accent-primary) 42%, var(--aurora-border-strong))"
-            : "var(--aurora-border-strong)",
+            ? "color-mix(in srgb, var(--aurora-accent-primary) 58%, var(--aurora-border-strong))"
+            : "var(--aurora-border-default)",
           boxShadow: isPressed
-            ? "inset 0 1px 0 rgba(255,255,255,0.055), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)"
-            : "inset 0 1px 0 rgba(255,255,255,0.04)",
+            ? "inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 34%, transparent), 0 0 14px color-mix(in srgb, var(--aurora-accent-primary) 26%, transparent)"
+            : "inset 0 1px 3px rgba(0,0,0,0.32)",
           color: isPressed ? "var(--aurora-accent-strong)" : "var(--aurora-text-muted)",
           fontFamily: "var(--aurora-font-sans)",
           // Control tokens resolve to CD's 13px / 560; keep the indirection so the

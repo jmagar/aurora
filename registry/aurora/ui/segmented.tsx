@@ -25,8 +25,8 @@ export interface SegmentedProps
 // a pill container holding option buttons; the selected option lifts onto a
 // tinted cyan fill with a hairline accent ring and accent text.
 const SIZES = {
-  md: { containerPad: 4, height: 34, optionPad: "0 16px", font: 13, radius: 999 },
-  sm: { containerPad: 3, height: 28, optionPad: "0 13px", font: 12, radius: 999 },
+  md: { containerPad: 4, height: 34, optionPad: "0 16px", font: 13, radius: 10, optionRadius: 7 },
+  sm: { containerPad: 3, height: 28, optionPad: "0 13px", font: 12, radius: 9, optionRadius: 6 },
 } as const;
 
 const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
@@ -91,7 +91,7 @@ const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
             height: s.height,
             padding: s.optionPad,
             border: "none",
-            borderRadius: s.radius,
+            borderRadius: s.optionRadius,
             background: selected
               ? "color-mix(in srgb, var(--aurora-accent-primary) 16%, var(--aurora-control-surface))"
               : "transparent",

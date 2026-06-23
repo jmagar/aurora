@@ -97,7 +97,7 @@ function Combobox({ options, value, defaultValue, onValueChange, placeholder = "
       </Button>
 
       {open && (
-        <div className="absolute z-50 mt-2 w-full min-w-[260px]">
+        <div className="absolute z-50 mt-1 w-full min-w-[260px]">
           <Listbox
             className="p-0"
             style={{

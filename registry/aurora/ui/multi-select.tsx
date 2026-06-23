@@ -345,7 +345,7 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
             role="listbox"
             aria-multiselectable="true"
             className={cn(
-              "mt-2 w-full overflow-hidden p-2",
+              "mt-1 w-full overflow-hidden p-2",
               "border border-[var(--aurora-border-strong)]",
               "rounded-[var(--aurora-radius-2)]",
               "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
