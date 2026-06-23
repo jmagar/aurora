@@ -3,7 +3,13 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+/**
+ * Layout-only segmented container. It renders the shared raised surface and
+ * `role="group"`, but does NOT coordinate selection — manage the pressed/active
+ * state of the child controls yourself. (There is no `value`/`onValueChange`.)
+ */
 export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Lay the items in a row (default) or a column. */
   orientation?: "horizontal" | "vertical"
 }
 

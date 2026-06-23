@@ -3,7 +3,14 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+/**
+ * Layout-only segmented container. It renders the shared raised surface and
+ * `role="group"`, but does NOT coordinate selection — manage each child
+ * `Toggle`'s `pressed`/`onPressedChange` yourself. (Unlike Radix ToggleGroup,
+ * there is no `type`/`value`/`onValueChange`.)
+ */
 export interface ToggleGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Lay the items in a row (default) or a column. */
   orientation?: "horizontal" | "vertical"
 }
 

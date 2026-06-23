@@ -56,8 +56,12 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
             : "inset 0 1px 0 rgba(255,255,255,0.04)",
           color: isPressed ? "var(--aurora-accent-strong)" : "var(--aurora-text-muted)",
           fontFamily: "var(--aurora-font-sans)",
-          fontSize: "13px",
-          fontWeight: 560,
+          // Control tokens resolve to CD's 13px / 560; keep the indirection so the
+          // toggle tracks retuning. CD computes the toggle label at letter-spacing
+          // `normal` (not the 0.005em ui token), so pin it explicitly.
+          fontSize: "var(--aurora-type-control)",
+          fontWeight: "var(--aurora-weight-ui)",
+          letterSpacing: "normal",
           ...style,
         }}
         {...props}

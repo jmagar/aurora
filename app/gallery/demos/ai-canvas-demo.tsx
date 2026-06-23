@@ -32,7 +32,8 @@ export default function AiCanvasDemo() {
           ]}
           // Nodes are absolutely positioned (no intrinsic width), so the canvas
           // needs a definite width or it collapses inside the shrink-wrapped
-          // gallery column. minWidth covers the node extent (~500px).
+          // gallery column. minWidth 560 clears the node extent (rightmost node
+          // ends at left:300 + width:168 = 468px) plus the 16px canvas padding.
           style={{ minHeight: 280, width: "100%", minWidth: 560 }}
         >
           <Node title="ingest" description="crawl → fetch" style={{ ...nodeBase, left: 24, top: 96 }} />

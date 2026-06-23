@@ -44,7 +44,9 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
     },
     ref,
   ) {
-    const clamped = Math.max(0, Math.min(100, value));
+    // Guard non-finite input (NaN/Infinity): Math.max/min would propagate NaN
+    // into aria-valuenow and the dash math, so floor it to 0.
+    const clamped = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
     const radius = (size - thickness) / 2;
     const circumference = 2 * Math.PI * radius;
     const dashOffset = circumference * (1 - clamped / 100);
