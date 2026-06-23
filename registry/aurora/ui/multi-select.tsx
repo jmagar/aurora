@@ -301,8 +301,10 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
             "transition-all duration-150 ease-out",
             "focus:outline-none",
             "disabled:pointer-events-none disabled:opacity-45",
+            // When open, square the bottom + drop the bottom border so the panel
+            // flows out of the trigger as one continuous outline (no seam).
             open
-              ? "border-[color-mix(in_srgb,var(--aurora-accent-primary)_55%,transparent)]"
+              ? "rounded-b-none border-b-transparent border-[color-mix(in_srgb,var(--aurora-accent-primary)_55%,transparent)]"
               : "border-[var(--aurora-border-strong)]"
           )}
           style={{
@@ -345,16 +347,19 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
             role="listbox"
             aria-multiselectable="true"
             className={cn(
-              "mt-1 w-full overflow-hidden p-2",
-              "border border-[var(--aurora-border-strong)]",
-              "rounded-[var(--aurora-radius-2)]",
+              "w-full overflow-hidden p-2",
+              "border border-[color-mix(in_srgb,var(--aurora-accent-primary)_55%,transparent)]",
+              // Square top, rounded bottom: the panel is the lower half of one
+              // continuous outline with the trigger (no seam, no cartoon radius).
+              "rounded-b-[var(--aurora-radius-1)] rounded-t-none",
               "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
             )}
             data-state="open"
             style={{
+              // -1px overlaps the trigger's bottom edge so the borders merge.
+              marginTop: -1,
               background: "var(--aurora-panel-strong)",
-              boxShadow:
-                "var(--aurora-shadow-medium), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 8%, transparent)",
+              boxShadow: "var(--aurora-shadow-medium)",
             }}
           >
             {options.map((opt) => (

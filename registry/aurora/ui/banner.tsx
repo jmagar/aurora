@@ -136,7 +136,7 @@ function BannerElevated({
         background: `color-mix(in srgb, ${color} 10%, var(--aurora-panel-strong))`,
         border: `1px solid color-mix(in srgb, ${color} 35%, transparent)`,
         borderRadius: "var(--aurora-radius-2, 18px)",
-        boxShadow: `var(--aurora-shadow-medium), 0 0 16px color-mix(in srgb, ${color} 15%, transparent)`,
+        boxShadow: "var(--aurora-shadow-medium)",
       }}
       {...rest}
     >

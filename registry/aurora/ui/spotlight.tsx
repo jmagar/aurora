@@ -130,7 +130,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
     <div
       ref={ref}
       className={cn("flex flex-col", className)}
-      style={{ gap: "0.85rem", fontFamily: "var(--aurora-font-sans)", color: "var(--aurora-text-primary)" }}
+      style={{ gap: "0.35rem", fontFamily: "var(--aurora-font-sans)", color: "var(--aurora-text-primary)" }}
       {...props}
     >
       {/* Search field */}
