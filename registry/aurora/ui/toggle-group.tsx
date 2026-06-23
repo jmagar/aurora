@@ -13,7 +13,16 @@ const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(({ classN
     role="group"
     className={cn("inline-flex", orientation === "vertical" ? "flex-col" : "items-center", className)}
     style={{
-      gap: 4,
+      // CD ToggleGroup is a segmented control: the items share one raised
+      // panel-strong surface (gradient + recessed hairline + inset highlight),
+      // 6px padding and gap, 12px radius — 1:1 with the dsCard container.
+      gap: 6,
+      padding: 6,
+      borderRadius: 12,
+      border: "1px solid color-mix(in srgb, var(--aurora-panel-strong) 72%, #000)",
+      background:
+        "linear-gradient(180deg, var(--aurora-panel-strong-top), var(--aurora-panel-strong))",
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
       ...style,
     }}
     {...props}

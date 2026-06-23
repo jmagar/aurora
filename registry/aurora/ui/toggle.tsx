@@ -37,24 +37,27 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
         disabled={disabled}
         onClick={handleClick}
         className={cn(
-          "inline-flex h-9 items-center justify-center gap-2 rounded-[10px] border px-3.5 transition-all",
+          // CD Toggle geometry (1:1 with the dsCard render): Aurora-button sizing —
+          // 32px tall, 13px horizontal padding, 9px radius, 7px gap.
+          "inline-flex h-8 items-center justify-center gap-[7px] rounded-[9px] border px-[13px] transition-all",
           className
         )}
         style={{
+          // Pressed: solid accent-tinted surface, cyan border + a single hard cyan
+          // ring, and — the key CD detail — accent-strong (cyan) text, not white.
           background: isPressed
-            ? "linear-gradient(180deg, color-mix(in srgb, var(--aurora-panel-strong) 85%, transparent), color-mix(in srgb, var(--aurora-accent-primary) 16%, var(--aurora-control-surface)))"
-            : "linear-gradient(180deg, color-mix(in srgb, var(--aurora-panel-strong) 92%, transparent), var(--aurora-control-surface))",
+            ? "color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-control-surface))"
+            : "var(--aurora-control-surface)",
           borderColor: isPressed
-            ? "color-mix(in srgb, var(--aurora-accent-primary) 48%, var(--aurora-border-strong))"
-            : "var(--aurora-border-default)",
+            ? "color-mix(in srgb, var(--aurora-accent-primary) 42%, var(--aurora-border-strong))"
+            : "var(--aurora-border-strong)",
           boxShadow: isPressed
-            ? "var(--aurora-highlight-strong), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 16%, transparent), var(--aurora-active-glow)"
-            : "var(--aurora-highlight-medium)",
-          color: isPressed ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
+            ? "inset 0 1px 0 rgba(255,255,255,0.055), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)"
+            : "inset 0 1px 0 rgba(255,255,255,0.04)",
+          color: isPressed ? "var(--aurora-accent-strong)" : "var(--aurora-text-muted)",
           fontFamily: "var(--aurora-font-sans)",
-          fontSize: "var(--aurora-type-control)",
-          fontWeight: "var(--aurora-weight-ui)",
-          letterSpacing: "var(--aurora-letter-ui)",
+          fontSize: "13px",
+          fontWeight: 560,
           ...style,
         }}
         {...props}
