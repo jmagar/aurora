@@ -30,7 +30,10 @@ export default function AiCanvasDemo() {
             { from: 0, to: 1 },
             { from: 0, to: 2 },
           ]}
-          style={{ minHeight: 280 }}
+          // Nodes are absolutely positioned (no intrinsic width), so the canvas
+          // needs a definite width or it collapses inside the shrink-wrapped
+          // gallery column. minWidth covers the node extent (~500px).
+          style={{ minHeight: 280, width: "100%", minWidth: 560 }}
         >
           <Node title="ingest" description="crawl → fetch" style={{ ...nodeBase, left: 24, top: 96 }} />
           <Node title="embed" description="chunk → vector" style={{ ...nodeBase, left: 300, top: 64 }} />

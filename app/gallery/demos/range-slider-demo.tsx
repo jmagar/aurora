@@ -9,8 +9,9 @@ import { RangeSlider } from "@/registry/aurora/ui/range-slider"
 const row: React.CSSProperties = {
   // Fixed width: the slider's track is absolutely positioned, so it needs a
   // definite-width ancestor (a %-width wrapper collapses inside the shrink-wrap
-  // gallery column). 320px matches the CD preview.
-  width: "320px",
+  // gallery column). 480px gives the wide, prominent track CD shows spanning
+  // its preview card.
+  width: "480px",
 }
 
 // CD composition (1:1): a single two-thumb range slider at [30, 70], showing the

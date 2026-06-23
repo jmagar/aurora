@@ -25,21 +25,21 @@ export default function ProgressRingDemo() {
       <div
         style={{
           display: "flex",
-          gap: 24,
+          gap: 28,
           alignItems: "center",
           justifyContent: "center",
           flexWrap: "wrap",
-          padding: 30,
+          padding: 36,
           background: "var(--aurora-page-bg)",
-          border: "1px solid var(--aurora-border)",
+          border: "1px solid var(--aurora-border-default)",
           borderRadius: "var(--radius-2, 18px)",
         }}
       >
         <div>
-          <ProgressRing value={68} />
+          <ProgressRing value={68} size={120} thickness={8} />
         </div>
         <div>
-          <ProgressRing value={92} color="var(--aurora-success)" size={72} />
+          <ProgressRing value={92} color="var(--aurora-success)" size={120} thickness={8} />
           <div style={labelStyle}>Healthy</div>
         </div>
       </div>

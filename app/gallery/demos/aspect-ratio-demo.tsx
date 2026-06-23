@@ -13,7 +13,8 @@ const box: React.CSSProperties = {
   borderRadius: 14,
   color: "var(--aurora-text-muted)",
   fontFamily: "var(--font-mono)",
-  fontSize: 12,
+  fontSize: 15,
+  letterSpacing: "0.08em",
 };
 
 export default function AspectRatioDemo() {
@@ -25,13 +26,14 @@ export default function AspectRatioDemo() {
         description="A fixed-ratio box that keeps content at a constant width-to-height proportion as the container resizes."
       />
 
-      <div style={{ display: "flex", gap: 16 }}>
-        <div style={{ width: 200 }}>
+      {/* CD stacks the two ratios vertically at a prominent size. */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div style={{ width: 360 }}>
           <AspectRatio ratio={16 / 9}>
             <div style={box}>16 : 9</div>
           </AspectRatio>
         </div>
-        <div style={{ width: 120 }}>
+        <div style={{ width: 220 }}>
           <AspectRatio ratio={1}>
             <div style={box}>1 : 1</div>
           </AspectRatio>
