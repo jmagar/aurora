@@ -28,6 +28,9 @@ export interface CodeEditorProps {
   errors?: Diagnostic[]
   variant?: "full" | "compact"
   onClose?: () => void
+  /** Drop the outer border/radius/shadow so the editor sits flush inside a
+   * parent frame (e.g. the CodeWorkspace block). */
+  embedded?: boolean
 }
 
 // ---------------------------------------------------------------------------
@@ -464,7 +467,7 @@ function StatusBar({
 
 export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
   function CodeEditor(
-    { filename, language, code, diff, errors = [], variant = "full", onClose },
+    { filename, language, code, diff, errors = [], variant = "full", onClose, embedded = false },
     ref
   ) {
     const lines = code.split("\n")
@@ -488,11 +491,12 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
           display: "flex",
           flexDirection: "column",
           background: "var(--aurora-bg, var(--aurora-panel-medium))",
-          border: "1px solid var(--aurora-border-default)",
-          borderRadius: "var(--aurora-radius-2)",
+          border: embedded ? "none" : "1px solid var(--aurora-border-default)",
+          borderRadius: embedded ? 0 : "var(--aurora-radius-2)",
           overflow: "hidden",
-          boxShadow: "var(--aurora-shadow-medium)",
+          boxShadow: embedded ? "none" : "var(--aurora-shadow-medium)",
           fontFamily: "var(--aurora-font-mono)",
+          ...(embedded ? { flex: 1, minWidth: 0 } : null),
         }}
       >
         <style>{SQUIGGLE_STYLE}</style>
