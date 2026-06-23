@@ -1,3 +1,228 @@
 "use client"
 
-export { Message, MessageAvatar, MessageContent } from "./core"
+import * as React from "react"
+import { Avatar as AuroraAvatar } from "@/registry/aurora/ui/avatar"
+
+// ─── Types ──────────────────────────────────────────────────────────────────
+
+export interface MessageProps extends React.HTMLAttributes<HTMLElement> {
+  role?: "assistant" | "user" | "system"
+  /** Timestamp shown in the hover-revealed meta row */
+  time?: React.ReactNode
+  /** Action buttons shown in the hover-revealed meta row */
+  actions?: React.ReactNode
+}
+
+export interface MessageAvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
+  label: string
+  tone?: "cyan" | "rose" | "muted"
+  status?: "online" | "away" | "busy" | "offline"
+}
+
+export interface MessageContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  tone?: MessageProps["role"]
+  /** Append a blinking caret to signal an in-progress stream */
+  streaming?: boolean
+}
+
+// ─── Streaming caret keyframes injected once ─────────────────────────────────
+
+const CARET_KEYFRAMES = `
+@keyframes aurora-msg-caret {
+  0%, 45%  { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}`
+
+let caretInjected = false
+
+function ensureCaretKeyframes() {
+  if (caretInjected || typeof document === "undefined") return
+  const style = document.createElement("style")
+  style.textContent = CARET_KEYFRAMES
+  document.head.appendChild(style)
+  caretInjected = true
+}
+
+// ─── Message ─────────────────────────────────────────────────────────────────
+// Turn row: avatar + bubble, with a timestamp/actions meta row revealed on hover.
+
+const Message = React.forwardRef<HTMLElement, MessageProps>(
+  ({ className, role = "assistant", time, actions, style, children, ...props }, ref) => {
+    const isUser = role === "user"
+    const hasMeta = time != null || actions != null
+
+    return (
+      <article
+        ref={ref}
+        className={["group/aurora-msg flex flex-col", className].filter(Boolean).join(" ")}
+        data-role={role}
+        style={{
+          color: "var(--aurora-text-primary)",
+          alignItems: isUser ? "flex-end" : "stretch",
+          ...style,
+        }}
+        {...props}
+      >
+        <div
+          className="flex gap-[10px]"
+          style={{ justifyContent: isUser ? "flex-end" : "flex-start", alignItems: "flex-start" }}
+        >
+          {children}
+        </div>
+        {hasMeta && (
+          <div
+            className="flex items-center gap-[6px] opacity-0 transition-opacity duration-150 ease-out group-hover/aurora-msg:opacity-100"
+            style={{
+              marginTop: 5,
+              justifyContent: isUser ? "flex-end" : "flex-start",
+            }}
+          >
+            {time != null && (
+              <span style={{ fontSize: "10.5px", color: "var(--aurora-text-muted)" }}>{time}</span>
+            )}
+            {actions}
+          </div>
+        )}
+      </article>
+    )
+  }
+)
+Message.displayName = "Message"
+
+// ─── MessageActionButton ──────────────────────────────────────────────────────
+// 24×24 ghost icon button used inside the meta row.
+
+const MessageActionButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, style, type = "button", ...props }, ref) => (
+  <button
+    ref={ref}
+    type={type}
+    className={[
+      "grid h-6 w-6 place-items-center rounded-[6px] border-none bg-transparent",
+      "cursor-pointer text-[var(--aurora-text-muted)] transition-colors",
+      "hover:bg-[var(--aurora-hover-bg)] hover:text-[var(--aurora-text-primary)]",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring-strong)]",
+      className,
+    ]
+      .filter(Boolean)
+      .join(" ")}
+    style={style}
+    {...props}
+  />
+))
+MessageActionButton.displayName = "MessageActionButton"
+
+// ─── MessageAvatar ────────────────────────────────────────────────────────────
+
+const MessageAvatar = React.forwardRef<
+  React.ElementRef<typeof AuroraAvatar>,
+  MessageAvatarProps
+>(({ className, label, tone = "muted", status = "online", style, ...props }, ref) => {
+  const color =
+    tone === "rose"
+      ? "var(--aurora-accent-pink)"
+      : tone === "cyan"
+        ? "var(--aurora-accent-primary)"
+        : "var(--aurora-text-muted)"
+
+  return (
+    <AuroraAvatar
+      ref={ref}
+      variant="status"
+      status={status}
+      size={34}
+      alt={label}
+      fallback={label.slice(0, 2).toUpperCase()}
+      className={className}
+      style={{
+        borderRadius: "50%",
+        border: `1.5px solid color-mix(in srgb, ${color} 30%, var(--aurora-border-default))`,
+        background: `color-mix(in srgb, ${color} 12%, var(--aurora-panel-medium))`,
+        boxShadow: "var(--aurora-highlight-medium)",
+        color: "var(--aurora-accent-pink)",
+        fontFamily: "var(--aurora-font-display)",
+        fontSize: 12,
+        fontWeight: 800,
+        ...style,
+      }}
+      {...props}
+    />
+  )
+})
+MessageAvatar.displayName = "MessageAvatar"
+
+// ─── MessageContent ────────────────────────────────────────────────────────────
+// Bubble tints: neutral panel for assistant/system, cyan-tinted for user.
+
+const bubbleTone = {
+  assistant: {
+    background:
+      "linear-gradient(180deg, var(--aurora-panel-strong), var(--aurora-panel-medium))",
+    borderColor: "var(--aurora-border-default)",
+    shadow:
+      "0 14px 30px color-mix(in srgb, var(--aurora-page-bg) 60%, transparent), var(--aurora-highlight-medium)",
+  },
+  user: {
+    background:
+      "linear-gradient(180deg, color-mix(in srgb, var(--aurora-accent-primary) 13%, var(--aurora-panel-medium)), color-mix(in srgb, var(--aurora-accent-primary) 7%, var(--aurora-panel-medium)))",
+    borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 36%, var(--aurora-border-default))",
+    shadow:
+      "0 14px 30px color-mix(in srgb, var(--aurora-accent-primary) 7%, transparent), var(--aurora-highlight-medium)",
+  },
+  system: {
+    background: "color-mix(in srgb, var(--aurora-text-muted) 8%, var(--aurora-panel-medium))",
+    borderColor: "var(--aurora-border-default)",
+    shadow: "var(--aurora-highlight-medium)",
+  },
+} as const
+
+const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
+  ({ className, style, tone = "assistant", streaming = false, children, ...props }, ref) => {
+    React.useEffect(() => {
+      if (streaming) ensureCaretKeyframes()
+    }, [streaming])
+
+    return (
+      <div
+        ref={ref}
+        className={[
+          "min-w-0 border px-4 py-3 aurora-text-body",
+          tone === "user" ? "rounded-[16px_16px_6px_16px]" : "rounded-[16px_16px_16px_6px]",
+          className,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        style={{
+          background: bubbleTone[tone].background,
+          borderColor: bubbleTone[tone].borderColor,
+          boxShadow: bubbleTone[tone].shadow,
+          lineHeight: "var(--aurora-line-body)",
+          ...style,
+        }}
+        {...props}
+      >
+        {children}
+        {streaming && (
+          <span
+            aria-hidden="true"
+            style={{
+              display: "inline-block",
+              width: 2,
+              height: "1em",
+              marginLeft: 1,
+              verticalAlign: "text-bottom",
+              borderRadius: 1,
+              background: "var(--aurora-accent-pink)",
+              animation: "aurora-msg-caret 1.1s steps(1) infinite",
+            }}
+          />
+        )}
+      </div>
+    )
+  }
+)
+MessageContent.displayName = "MessageContent"
+
+export { Message, MessageActionButton, MessageAvatar, MessageContent }

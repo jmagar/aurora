@@ -60,8 +60,12 @@ const skeletonVariants = cva("aurora-shimmer shrink-0", {
 export interface SkeletonProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof skeletonVariants> {
-  /** Override default width with a Tailwind/inline class */
-  width?: string;
+  /** Override default width with a Tailwind class, or an explicit size (px when numeric). */
+  width?: string | number;
+  /** Explicit height (px when numeric); overrides the variant height. */
+  height?: string | number;
+  /** Render a circular placeholder (avatar / icon). Pairs with `height` for the diameter. */
+  circle?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -69,14 +73,37 @@ export interface SkeletonProps
 // ---------------------------------------------------------------------------
 
 export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
-  function Skeleton({ variant, width, className, ...rest }, ref) {
+  function Skeleton(
+    { variant, width, height, circle, className, style, ...rest },
+    ref,
+  ) {
     React.useEffect(injectShimmer, []);
+
+    // `width` is a Tailwind/utility class escape hatch only when it's a class
+    // token (no digits-with-unit, no %). Explicit sizes go through inline style.
+    const widthIsClass =
+      typeof width === "string" && /[a-z]/i.test(width) && !/[%]/.test(width);
+    const widthClass = widthIsClass ? (width as string) : undefined;
+    const inlineWidth = widthIsClass ? undefined : width;
+
+    const sized: React.CSSProperties = {
+      ...(inlineWidth != null ? { width: inlineWidth } : null),
+      ...(height != null ? { height } : null),
+      ...(circle && height != null ? { width: height } : null),
+      ...style,
+    };
 
     return (
       <div
         ref={ref}
         aria-hidden="true"
-        className={cn(skeletonVariants({ variant }), width, className)}
+        className={cn(
+          skeletonVariants({ variant }),
+          circle && "rounded-full",
+          widthClass,
+          className,
+        )}
+        style={sized}
         {...rest}
       />
     );

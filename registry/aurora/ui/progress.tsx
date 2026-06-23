@@ -71,8 +71,16 @@ type ProgressSize = keyof typeof heightMap
 export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 0–100. If undefined the bar is indeterminate. */
   value?: number
+  /** Force indeterminate (loading) state regardless of value. */
+  indeterminate?: boolean
   /** Color variant */
   variant?: ProgressVariant
+  /**
+   * Free-form fill color escape hatch (any CSS color, e.g.
+   * `var(--aurora-success)`). When set it overrides `variant`'s gradient with
+   * a matching single-tone fill + glow.
+   */
+  tone?: string
   /** Height preset */
   size?: ProgressSize
   /** Show percentage label */
@@ -90,7 +98,9 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
     {
       className,
       value,
+      indeterminate,
       variant = "default",
+      tone,
       size = "default",
       showLabel = false,
       label,
@@ -104,12 +114,20 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
       ensureShimmerKeyframes()
     }, [])
 
-    const isIndeterminate = value === undefined || value === null
-    const clampedValue = isIndeterminate ? 0 : Math.min(Math.max(value, 0), max)
+    const isIndeterminate =
+      indeterminate === true || value === undefined || value === null
+    const clampedValue = isIndeterminate ? 0 : Math.min(Math.max(value ?? 0, 0), max)
     const percentage = isIndeterminate ? 0 : Math.round((clampedValue / max) * 100)
     const height = heightMap[size]
-    const fillStyle = fillStyleMap[variant]
-    const shimmerColor = shimmerColorMap[variant]
+    const fillStyle: React.CSSProperties = tone
+      ? {
+          background: `linear-gradient(90deg, color-mix(in srgb, ${tone} 72%, black) 0%, ${tone} 100%)`,
+          boxShadow: `0 0 8px color-mix(in srgb, ${tone} 40%, transparent)`,
+        }
+      : fillStyleMap[variant]
+    const shimmerColor = tone
+      ? `color-mix(in srgb, ${tone} 22%, transparent)`
+      : shimmerColorMap[variant]
 
     const displayLabel = label ?? `${percentage}%`
 

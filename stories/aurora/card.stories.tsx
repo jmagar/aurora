@@ -60,7 +60,6 @@ export const AccentGrid: Story = {
     <div className="grid w-[680px] grid-cols-3 gap-4">
       <MiniCard accent="cyan" label="Cyan" />
       <MiniCard accent="rose" label="Rose" />
-      <MiniCard accent="violet" label="Violet" />
     </div>
   ),
 }
@@ -74,7 +73,7 @@ function Metric({ label, value }: { label: string; value: string }) {
   )
 }
 
-function MiniCard({ accent, label }: { accent: "cyan" | "rose" | "violet"; label: string }) {
+function MiniCard({ accent, label }: { accent: "cyan" | "rose"; label: string }) {
   return (
     <Card accent={accent} interactive>
       <CardContent>

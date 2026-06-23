@@ -22,10 +22,35 @@ export const Item = React.forwardRef<HTMLDivElement, ItemProps>(
       }}
       {...props}
     >
-      {icon ? <span style={{ color: "var(--aurora-text-muted)" }}>{icon}</span> : <span />}
+      {icon ? <span style={{ color: "var(--aurora-text-muted)", display: "inline-flex" }}>{icon}</span> : <span />}
       <span className="min-w-0">
-        <span className="block truncate aurora-text-control">{title}</span>
-        {description ? <span className="block aurora-text-meta">{description}</span> : null}
+        <span
+          className="block truncate"
+          style={{
+            fontFamily: "var(--aurora-font-display)",
+            fontSize: "15px",
+            fontWeight: 700,
+            lineHeight: 1.2,
+            letterSpacing: "-0.01em",
+            color: "var(--aurora-text-primary)",
+          }}
+        >
+          {title}
+        </span>
+        {description ? (
+          <span
+            className="block truncate"
+            style={{
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "13px",
+              fontWeight: 500,
+              lineHeight: 1.35,
+              color: "var(--aurora-text-muted)",
+            }}
+          >
+            {description}
+          </span>
+        ) : null}
       </span>
       {action ? <span>{action}</span> : null}
     </div>

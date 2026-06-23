@@ -47,7 +47,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     name: "Aurora Neon",
     tool: "Zed editor + icon theme",
     category: "editors",
-    badge: { tone: "violet", label: "neon" },
+    badge: { tone: "info", label: "neon" },
     description:
       "A brighter, electric take on Aurora for Zed — dark + light UI themes plus a full 60-glyph file-icon set.",
     install: "zed: install dev extension",

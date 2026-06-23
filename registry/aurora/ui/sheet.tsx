@@ -18,19 +18,27 @@ export interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof
 }
 
 const sideClass: Record<SheetSide, string> = {
-  left: "left-0 top-0 h-full w-[min(396px,92vw)]",
-  right: "right-0 top-0 h-full w-[min(396px,92vw)]",
-  top: "left-0 top-0 h-[min(360px,80vh)] w-full",
-  bottom: "bottom-0 left-0 h-[min(420px,82vh)] w-full",
+  left: "left-0 top-0 h-full w-[min(396px,92vw)] data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
+  right: "right-0 top-0 h-full w-[min(396px,92vw)] data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
+  top: "left-0 top-0 h-[min(360px,80vh)] w-full data-[state=open]:slide-in-from-top data-[state=closed]:slide-out-to-top",
+  bottom: "bottom-0 left-0 h-[min(420px,82vh)] w-full data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
 }
 
 const SheetContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.Content>, SheetContentProps>(
   ({ className, children, side = "right", style, hideClose = false, ...props }, ref) => (
     <SheetPortal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50" style={{ backgroundColor: "var(--aurora-overlay)" }} />
+      <DialogPrimitive.Overlay
+        className="fixed inset-0 z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+        style={{ backgroundColor: "var(--aurora-overlay)" }}
+      />
       <DialogPrimitive.Content
         ref={ref}
-        className={cn("fixed z-50 flex flex-col overflow-hidden border focus-visible:outline-none", sideClass[side], className)}
+        className={cn(
+          "fixed z-50 flex flex-col overflow-hidden border transition ease-in-out focus-visible:outline-none",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+          sideClass[side],
+          className,
+        )}
         style={{
           background: "var(--aurora-panel-strong)",
           borderColor: "var(--aurora-border-strong)",

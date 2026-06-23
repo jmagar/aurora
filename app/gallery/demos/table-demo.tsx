@@ -12,10 +12,19 @@ import {
   TableRow,
 } from "@/registry/aurora/ui/table"
 
-const section: React.CSSProperties = {
-  display: "grid",
-  gap: 14,
-}
+const mono: React.CSSProperties = { fontFamily: "var(--aurora-font-mono)" }
+
+type Row = { gw: string; code: "200" | "429" | "502"; p99: string }
+
+const rows: Row[] = [
+  { gw: "edge-1", code: "200", p99: "42ms" },
+  { gw: "edge-2", code: "200", p99: "51ms" },
+  { gw: "edge-3", code: "502", p99: "—" },
+  { gw: "edge-4", code: "429", p99: "88ms" },
+]
+
+const codeTone = (code: Row["code"]) =>
+  code === "200" ? "success" : code === "429" ? "warn" : "error"
 
 export default function TableDemo() {
   return (
@@ -23,67 +32,31 @@ export default function TableDemo() {
       <GalleryPageIntro
         eyebrow="Data"
         heading="Table"
-        description="The primitive table is for custom structure and dense read-only layouts. Use Tables when you want sorting and a ready-made data-grid pattern."
+        description="Sticky header, zebra striping, and inline status cells. Use Tables for dense, read-only data with row affordances."
       />
 
-      <div style={section}>
-        <p style={{ margin: 0, fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)" }}>
-          Primitive table example
-        </p>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Service</TableHead>
-              <TableHead>Owner</TableHead>
-              <TableHead>Status</TableHead>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Gateway</TableHead>
+            <TableHead style={{ textAlign: "center" }}>Code</TableHead>
+            <TableHead style={{ textAlign: "right" }}>P99</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((r) => (
+            <TableRow key={r.gw} style={{ cursor: "pointer" }} tabIndex={0}>
+              <TableCell style={mono}>{r.gw}</TableCell>
+              <TableCell style={{ textAlign: "center" }}>
+                <Badge tone={codeTone(r.code)} dot>
+                  {r.code}
+                </Badge>
+              </TableCell>
+              <TableCell style={{ ...mono, textAlign: "right" }}>{r.p99}</TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell>gateway-admin</TableCell>
-              <TableCell>platform</TableCell>
-              <TableCell><Badge variant="success">Live</Badge></TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>policy-engine</TableCell>
-              <TableCell>runtime</TableCell>
-              <TableCell><Badge variant="warn">Draining</Badge></TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>registry-sync</TableCell>
-              <TableCell>tooling</TableCell>
-              <TableCell><Badge>Queued</Badge></TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-
-      <div style={section}>
-        <p style={{ margin: 0, fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)" }}>
-          Compact audit rows
-        </p>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Time</TableHead>
-              <TableHead>Event</TableHead>
-              <TableHead>Actor</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell style={{ fontFamily: "var(--aurora-font-mono)" }}>10:42:18</TableCell>
-              <TableCell>Registry build published</TableCell>
-              <TableCell>copilot</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell style={{ fontFamily: "var(--aurora-font-mono)" }}>10:39:05</TableCell>
-              <TableCell>Wordmark accent updated</TableCell>
-              <TableCell>jacob</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   )
 }

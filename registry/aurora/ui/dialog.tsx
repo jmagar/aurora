@@ -26,12 +26,12 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50",
+      "fixed inset-0 z-50 backdrop-blur-[2px]",
       "data-[state=open]:animate-in data-[state=closed]:animate-out",
       "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
     )}
-    style={{ backgroundColor: "var(--aurora-overlay)" }}
+    style={{ backgroundColor: "rgba(2, 8, 12, 0.62)" }}
     {...props}
   />
 ))
@@ -68,7 +68,7 @@ const DialogContent = React.forwardRef<
         "w-full",
         sizeClasses[size],
         "flex flex-col",
-        "rounded-[var(--aurora-radius-2)]",
+        "rounded-[var(--aurora-radius-3)]",
         "border",
         "focus-visible:outline-none",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
@@ -80,8 +80,10 @@ const DialogContent = React.forwardRef<
         className
       )}
       style={{
-        backgroundColor: "var(--aurora-panel-strong)",
-        borderColor: "var(--aurora-border-strong)",
+        background:
+          "linear-gradient(180deg, var(--aurora-panel-strong-top), var(--aurora-panel-strong))",
+        borderColor:
+          "color-mix(in srgb, var(--aurora-border-default) 55%, var(--aurora-page-bg))",
         boxShadow:
           "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
         ...style,

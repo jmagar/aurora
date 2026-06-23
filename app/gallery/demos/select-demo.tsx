@@ -1,5 +1,53 @@
 "use client"
 
-import { createComponentDemo } from "./parity-demo"
+import * as React from "react"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/registry/aurora/ui/select"
 
-export default createComponentDemo("select")
+const models = [
+  { value: "sonnet", label: "Claude Sonnet" },
+  { value: "opus", label: "Claude Opus" },
+  { value: "gpt4o", label: "GPT-4o" },
+  { value: "local", label: "Local · Qwen3" },
+]
+
+export default function SelectDemo() {
+  return (
+    <div className="grid gap-6">
+      <GalleryPageIntro
+        eyebrow="Components"
+        heading="Select"
+        description="A listbox trigger that opens an overlay of options. The active row carries the Aurora selected glow — an accent tint, border, and soft outer halo — alongside a trailing check."
+      />
+      <section
+        style={{
+          boxSizing: "border-box",
+          padding: "30px 30px",
+          borderRadius: "var(--aurora-radius-2)",
+          border: "1px solid var(--aurora-border-strong)",
+          background: "var(--aurora-page-bg)",
+          color: "var(--aurora-text-primary)",
+        }}
+      >
+        <Select defaultOpen defaultValue="sonnet">
+          <SelectTrigger style={{ maxWidth: 280 }}>
+            <SelectValue placeholder="Select a model" />
+          </SelectTrigger>
+          <SelectContent>
+            {models.map((model) => (
+              <SelectItem key={model.value} value={model.value}>
+                {model.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </section>
+    </div>
+  )
+}

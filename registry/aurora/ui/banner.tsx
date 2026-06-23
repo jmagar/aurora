@@ -8,15 +8,22 @@ import { cn } from "@/lib/utils";
 // Types
 // ---------------------------------------------------------------------------
 
-export type BannerStatus = "warn" | "error" | "info";
+export type BannerStatus = "success" | "warn" | "error" | "info";
 export type BannerStyle = "elevated" | "tag";
 
 export interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: BannerStatus;
+  /**
+   * CD-parity alias for {@link variant}. When provided it takes precedence so
+   * Claude Design compositions can drive tone directly (`success | warn | error`).
+   */
+  tone?: BannerStatus;
   kind?: BannerStyle;
   title?: string;
   description?: string;
   onDismiss?: () => void;
+  /** CD-parity alias for {@link onDismiss}. */
+  onClose?: () => void;
   action?: React.ReactNode;
   children?: React.ReactNode;
 }
@@ -26,41 +33,75 @@ export interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
 // ---------------------------------------------------------------------------
 
 const STATUS_COLOR: Record<BannerStatus, string> = {
-  warn:  "var(--aurora-warn)",
-  error: "var(--aurora-error)",
-  info:  "var(--aurora-accent-primary)",
+  success: "var(--aurora-success)",
+  warn:    "var(--aurora-warn)",
+  error:   "var(--aurora-error)",
+  info:    "var(--aurora-accent-primary)",
 };
 
 const STATUS_LABEL: Record<BannerStatus, string> = {
-  warn:  "Warn",
-  error: "Error",
-  info:  "Info",
+  success: "OK",
+  warn:    "Warn",
+  error:   "Error",
+  info:    "Info",
 };
 
 // ---------------------------------------------------------------------------
-// Keyframe injection (once)
+// Status icons — CD parity (24px line icons, currentColor)
 // ---------------------------------------------------------------------------
 
-const PULSE_ID = "aurora-banner-pulse";
-
-function injectPulseKeyframes() {
-  if (typeof document === "undefined") return;
-  if (document.getElementById(PULSE_ID)) return;
-  const style = document.createElement("style");
-  style.id = PULSE_ID;
-  style.textContent = `
-    @keyframes aurora-dot-pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.45; transform: scale(0.72); }
-    }
-  `;
-  document.head.appendChild(style);
+function StatusIcon({ status }: { status: BannerStatus }) {
+  const common = {
+    width: 20,
+    height: 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+  switch (status) {
+    case "success":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8.5 12 2.5 2.5 4.5-5" />
+        </svg>
+      );
+    case "warn":
+      return (
+        <svg {...common}>
+          <path d="M10.29 3.86 1.82 18a1.5 1.5 0 0 0 1.29 2.25h17.78A1.5 1.5 0 0 0 22.18 18L13.71 3.86a1.5 1.5 0 0 0-2.42 0Z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      );
+    case "error":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <line x1="15" y1="9" x2="9" y2="15" />
+          <line x1="9" y1="9" x2="15" y2="15" />
+        </svg>
+      );
+    case "info":
+    default:
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <line x1="12" y1="16" x2="12" y2="12" />
+          <line x1="12" y1="8" x2="12.01" y2="8" />
+        </svg>
+      );
+  }
 }
 
 // ---------------------------------------------------------------------------
-// Elevated variant — Style A1
-// <div class="banner-elev banner-elev-warn">
-//   <div class="dot"></div>
+// Elevated variant — Style A1 (CD-parity)
+// <div class="banner-elev">
+//   <span class="banner-elev-icon"><StatusIcon/></span>
 //   <div><h4>…</h4><p>…</p></div>
 //   <Button variant="plain" size="unstyled" class="banner-elev-dismiss">×</Button>
 // </div>
@@ -71,13 +112,12 @@ function BannerElevated({
   title,
   description,
   onDismiss,
+  action,
   children,
   className,
   ...rest
-}: Omit<BannerProps, "kind">) {
+}: Omit<BannerProps, "kind" | "tone" | "onClose">) {
   const color = STATUS_COLOR[variant];
-
-  React.useEffect(injectPulseKeyframes, []);
 
   const [visible, setVisible] = React.useState(true);
 
@@ -91,7 +131,7 @@ function BannerElevated({
   return (
     <div
       role="status"
-      className={cn("flex items-center gap-3 rounded-[var(--aurora-radius-2)] px-4 py-3", className)}
+      className={cn("flex items-center gap-3.5 px-4 py-3.5", className)}
       style={{
         background: `color-mix(in srgb, ${color} 10%, var(--aurora-panel-strong))`,
         border: `1px solid color-mix(in srgb, ${color} 35%, transparent)`,
@@ -100,21 +140,25 @@ function BannerElevated({
       }}
       {...rest}
     >
-      {/* 8px glowing dot */}
+      {/* Icon chip — 44px rounded square, tone tint */}
       <span
         aria-hidden
-        className="banner-elev-dot"
+        className="banner-elev-icon"
         style={{
-          display: "inline-block",
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          background: color,
-          boxShadow: `0 0 8px ${color}`,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 44,
+          height: 44,
           flexShrink: 0,
-          animation: "aurora-dot-pulse 2s ease-in-out infinite",
+          borderRadius: 12,
+          color,
+          background: `color-mix(in srgb, ${color} 16%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${color} 32%, transparent)`,
         }}
-      />
+      >
+        <StatusIcon status={variant} />
+      </span>
 
       {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -124,7 +168,7 @@ function BannerElevated({
               margin: 0,
               fontFamily: "var(--aurora-font-sans)",
               fontSize: "var(--aurora-type-control)",
-              fontWeight: "var(--aurora-weight-label)",
+              fontWeight: 700,
               lineHeight: "var(--aurora-line-ui)",
               color: "var(--aurora-text-primary)",
             }}
@@ -148,6 +192,7 @@ function BannerElevated({
           </p>
         )}
         {children}
+        {action && <div style={{ marginTop: 8 }}>{action}</div>}
       </div>
 
       {/* Dismiss × button */}
@@ -158,6 +203,7 @@ function BannerElevated({
           onClick={handleDismiss}
           className="banner-elev-dismiss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:rounded-[4px]"
           style={{
+            alignSelf: "flex-start",
             marginLeft: "auto",
             flexShrink: 0,
             background: "none",
@@ -171,7 +217,7 @@ function BannerElevated({
             transition: "color 0.15s",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = color;
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--aurora-text-primary)";
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLButtonElement).style.color = "var(--aurora-text-muted)";
@@ -199,7 +245,7 @@ function BannerTag({
   children,
   className,
   ...rest
-}: Omit<BannerProps, "kind" | "onDismiss">) {
+}: Omit<BannerProps, "kind" | "onDismiss" | "tone" | "onClose">) {
   const color = STATUS_COLOR[variant];
   const label = STATUS_LABEL[variant];
 
@@ -261,18 +307,24 @@ function BannerTag({
 
 export function Banner({
   variant = "info",
+  tone,
   kind: bannerStyle = "elevated",
   title,
   description,
   onDismiss,
+  onClose,
+  action,
   children,
   className,
   ...rest
 }: BannerProps) {
+  const status = tone ?? variant;
+  const dismiss = onDismiss ?? onClose;
+
   if (bannerStyle === "tag") {
     return (
       <BannerTag
-        variant={variant}
+        variant={status}
         title={title}
         description={description}
         className={className}
@@ -285,10 +337,11 @@ export function Banner({
 
   return (
     <BannerElevated
-      variant={variant}
+      variant={status}
       title={title}
       description={description}
-      onDismiss={onDismiss}
+      onDismiss={dismiss}
+      action={action}
       className={className}
       {...rest}
     >

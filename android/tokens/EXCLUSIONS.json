@@ -4,6 +4,26 @@
   "note": "These tokens cannot be represented as Color/Dp/number in Kotlin Compose. Handle manually in AuroraTheme.kt or AuroraBrushes.kt.",
   "excluded": [
     {
+      "name": "--aurora-tint-medium",
+      "rawValue": "30%",
+      "reason": "complex-value"
+    },
+    {
+      "name": "--aurora-tint-soft",
+      "rawValue": "18%",
+      "reason": "complex-value"
+    },
+    {
+      "name": "--aurora-tint-strong",
+      "rawValue": "40%",
+      "reason": "complex-value"
+    },
+    {
+      "name": "--aurora-tint-subtle",
+      "rawValue": "12%",
+      "reason": "complex-value"
+    },
+    {
       "name": "--aurora-font-display",
       "rawValue": "'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
       "reason": "font-family"

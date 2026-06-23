@@ -33,18 +33,19 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      // layout
-      "relative inline-flex items-center gap-1.5 px-3 pb-2.5 pt-1",
+      // layout (CD: symmetric 9px vertical, 12px horizontal)
+      "relative inline-flex items-center gap-1.5 px-3 py-[9px]",
       "select-none cursor-pointer",
       "transition-colors duration-150 focus-visible:outline-none",
       // resting state
       "text-[var(--aurora-text-muted)] hover:text-[var(--aurora-text-primary)]",
-      // bottom-border indicator (pseudo element via after:)
-      "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px]",
-      "after:rounded-t-full after:bg-transparent after:transition-colors after:duration-150",
-      // active state
-      "data-[state=active]:text-[var(--aurora-accent-primary)]",
+      // glowing accent underline indicator (CD: inset 8px, sits on the border, soft glow)
+      "after:absolute after:bottom-[-1px] after:left-2 after:right-2 after:h-[2px]",
+      "after:rounded-full after:bg-transparent after:transition-colors after:duration-150",
+      // active state (CD: text goes primary, indicator lights up cyan + glow)
+      "data-[state=active]:text-[var(--aurora-text-primary)]",
       "data-[state=active]:after:bg-[var(--aurora-accent-primary)]",
+      "data-[state=active]:after:[box-shadow:0_0_8px_var(--aurora-accent-primary)]",
       className
     )}
     style={{

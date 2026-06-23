@@ -61,7 +61,7 @@ export const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentPro
       <div
         ref={ref}
         role="dialog"
-        className={cn("absolute z-50 mt-2 w-72 rounded-[var(--aurora-radius-1)] border p-4", className)}
+        className={cn("absolute z-50 mt-2 min-w-64 rounded-[12px] border p-4", className)}
         style={{
           insetInlineStart: align === "start" ? 0 : undefined,
           insetInlineEnd: align === "end" ? 0 : undefined,
@@ -69,7 +69,7 @@ export const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentPro
           transform: align === "center" ? "translateX(-50%)" : undefined,
           background: "var(--aurora-panel-strong)",
           borderColor: "var(--aurora-border-strong)",
-          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-medium)",
+          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
           color: "var(--aurora-text-primary)",
           ...style,
         }}

@@ -2,8 +2,25 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
-import { Clock3, GitBranch, Plus, Send, Trash2 } from "lucide-react"
+import { Plus, Send, Settings } from "lucide-react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
+
+/* Mirrors the Claude Design Button preview 1:1 — 8 intents · 4 sizes ·
+   icons / loading / icon-only · states / block — rendered with the registry Button. */
+
+function AsyncButton() {
+  const [loading, setLoading] = React.useState(false)
+  const run = () => {
+    if (loading) return
+    setLoading(true)
+    setTimeout(() => setLoading(false), 1400)
+  }
+  return (
+    <Button variant="rose" loading={loading} onClick={run} iconLeft={<Send className="size-3.5" aria-hidden />}>
+      Send message
+    </Button>
+  )
+}
 
 export default function ButtonsDemo() {
   return (
@@ -11,111 +28,50 @@ export default function ButtonsDemo() {
       <GalleryPageIntro
         eyebrow="Controls"
         heading="Button"
-        description="Operator-grade action controls with restrained surfaces, crisp borders, and low-noise focus states."
+        description="Operator-grade action controls — lit-outline border + glow, never a flooded fill. Eight intents, four sizes, icons, loading, pulse, and block."
       />
 
       <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Variants</div>
+        <div className="aurora-demo-label">Intents</div>
         <div className="aurora-demo-row">
+          <Button variant="aurora">Deploy now</Button>
           <Button variant="aurora">Add gateway</Button>
           <Button variant="neutral">Cancel</Button>
+          <Button variant="success">Apply</Button>
+          <Button variant="warn">Force redeploy</Button>
           <Button variant="rose">Send message</Button>
           <Button variant="ghost">View logs</Button>
-          <Button variant="destructive">Delete environment</Button>
+          <Button variant="destructive">Delete</Button>
         </div>
       </div>
 
       <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Sizes — aurora variant</div>
+        <div className="aurora-demo-label">Sizes</div>
         <div className="aurora-demo-row aurora-demo-row--end">
-          <Button variant="aurora" size="sm">Deploy agent</Button>
-          <Button variant="aurora" size="default">Deploy agent</Button>
-          <Button variant="aurora" size="lg">Deploy agent</Button>
+          <Button variant="aurora" size="sm">Deploy</Button>
+          <Button variant="aurora">Deploy</Button>
+          <Button variant="aurora" size="lg">Deploy</Button>
         </div>
       </div>
 
       <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Sizes — neutral variant</div>
-        <div className="aurora-demo-row aurora-demo-row--end">
-          <Button variant="neutral" size="sm">Cancel</Button>
-          <Button variant="neutral" size="default">Cancel</Button>
-          <Button variant="neutral" size="lg">Cancel</Button>
-        </div>
-      </div>
-
-      <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Common action pairings</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <div>
-            <div className="aurora-demo-label" style={{ marginBottom: "8px" }}>Gateway provisioning</div>
-            <div className="aurora-demo-row">
-              <Button variant="aurora">Provision gateway</Button>
-              <Button variant="neutral">Configure later</Button>
-            </div>
-          </div>
-          <div className="aurora-demo-divider" />
-          <div>
-            <div className="aurora-demo-label" style={{ marginBottom: "8px" }}>Environment management</div>
-            <div className="aurora-demo-row">
-              <Button variant="aurora">Create environment</Button>
-              <Button variant="neutral">Import config</Button>
-              <Button variant="ghost">View template</Button>
-            </div>
-          </div>
-          <div className="aurora-demo-divider" />
-          <div>
-            <div className="aurora-demo-label" style={{ marginBottom: "8px" }}>Destructive flows</div>
-            <div className="aurora-demo-row">
-              <Button variant="destructive">Terminate agent</Button>
-              <Button variant="neutral">Keep running</Button>
-            </div>
-          </div>
-          <div className="aurora-demo-divider" />
-          <div>
-            <div className="aurora-demo-label" style={{ marginBottom: "8px" }}>Agent actions</div>
-            <div className="aurora-demo-row">
-              <Button variant="rose">Escalate to human</Button>
-              <Button variant="ghost">View trace</Button>
-              <Button variant="neutral">Pause agent</Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="aurora-demo-section">
-        <div className="aurora-demo-label">Disabled states</div>
+        <div className="aurora-demo-label">Icons · loading · icon-only</div>
         <div className="aurora-demo-row">
-          <Button variant="aurora" disabled>Add gateway</Button>
-          <Button variant="neutral" disabled>Cancel</Button>
-          <Button variant="rose" disabled>Send message</Button>
-          <Button variant="ghost" disabled>View logs</Button>
-          <Button variant="destructive" disabled>Delete environment</Button>
+          <Button variant="aurora" iconLeft={<Plus className="size-3.5" aria-hidden />}>Add gateway</Button>
+          <AsyncButton />
+          <Button variant="success">Apply</Button>
+          <Button variant="neutral" size="icon" aria-label="Settings"><Settings className="size-4" aria-hidden /></Button>
         </div>
       </div>
 
       <div className="aurora-demo-section">
-        <div className="aurora-demo-label">With icons</div>
-        <div className="aurora-demo-row">
-          <Button variant="aurora">
-            <Plus className="size-3.5" aria-hidden />
-            New agent
-          </Button>
-          <Button variant="neutral">
-            <GitBranch className="size-3.5" aria-hidden />
-            Deploy
-          </Button>
-          <Button variant="ghost">
-            <Clock3 className="size-3.5" aria-hidden />
-            View history
-          </Button>
-          <Button variant="rose">
-            <Send className="size-3.5" aria-hidden />
-            Send update
-          </Button>
-          <Button variant="destructive">
-            <Trash2 className="size-3.5" aria-hidden />
-            Disconnect
-          </Button>
+        <div className="aurora-demo-label">States · block</div>
+        <div className="aurora-demo-row" style={{ alignItems: "flex-start" }}>
+          <Button variant="aurora" pulse>Pulse</Button>
+          <Button variant="aurora" disabled>Disabled</Button>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <Button variant="aurora" block>Block · full width</Button>
+          </div>
         </div>
       </div>
     </div>

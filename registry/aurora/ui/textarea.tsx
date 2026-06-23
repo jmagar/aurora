@@ -6,8 +6,12 @@ import { cn } from "@/lib/utils"
 export type TextareaState = "error" | "warn" | "success"
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  /** Auto-grow to fit content up to maxRows */
+  /** Auto-grow to fit content. */
   autoResize?: boolean
+  /** Alias for {@link autoResize} — auto-grow the field to fit its content. */
+  autoGrow?: boolean
+  /** Show a live character counter pinned to the bottom-right. Pairs with `maxLength`. */
+  showCount?: boolean
   /** Validation state. Sets border color and glow ring using Aurora status tokens. */
   state?: TextareaState
   /** Convenience alias for state="error". When both are set, `state` wins. */
@@ -42,10 +46,33 @@ function stateFocusShadow(color: string): string {
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, autoResize = false, style, state: stateProp, error, onChange, ...props }, ref) => {
+  (
+    {
+      className,
+      autoResize = false,
+      autoGrow = false,
+      showCount = false,
+      style,
+      state: stateProp,
+      error,
+      onChange,
+      defaultValue,
+      value,
+      maxLength,
+      ...props
+    },
+    ref
+  ) => {
     const internalRef = React.useRef<HTMLTextAreaElement | null>(null)
+    const grows = autoResize || autoGrow
     const effectiveState: TextareaState | undefined = stateProp ?? (error ? "error" : undefined)
     const tokens = effectiveState ? STATE_TOKENS[effectiveState] : null
+
+    // Track length for the live counter (uncontrolled or controlled).
+    const isControlled = value !== undefined
+    const initial = String(value ?? defaultValue ?? "").length
+    const [count, setCount] = React.useState(initial)
+    const length = isControlled ? String(value ?? "").length : count
 
     // Merge external ref with internal ref
     const setRef = React.useCallback(
@@ -57,18 +84,28 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       [ref]
     )
 
+    const resize = React.useCallback(() => {
+      const el = internalRef.current
+      if (!grows || !el) return
+      el.style.height = "auto"
+      el.style.height = `${el.scrollHeight}px`
+    }, [grows])
+
+    // Size to content on mount (covers defaultValue) and when value changes.
+    React.useLayoutEffect(() => {
+      resize()
+    }, [resize, value])
+
     const handleChange = React.useCallback(
       (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (autoResize && internalRef.current) {
-          internalRef.current.style.height = "auto"
-          internalRef.current.style.height = `${internalRef.current.scrollHeight}px`
-        }
+        if (grows) resize()
+        if (!isControlled) setCount(e.currentTarget.value.length)
         onChange?.(e)
       },
-      [autoResize, onChange]
+      [grows, resize, isControlled, onChange]
     )
 
-    return (
+    const textarea = (
       <textarea
         ref={setRef}
         className={cn(
@@ -90,8 +127,10 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           "focus-visible:outline-none",
           // Disabled
           "disabled:pointer-events-none disabled:opacity-45 disabled:cursor-not-allowed",
-          // Auto-resize overrides manual resize
-          autoResize && "resize-none overflow-hidden",
+          // Auto-grow overrides manual resize
+          grows && "resize-none overflow-hidden",
+          // Reserve room for the counter chip
+          showCount && "pb-7",
           className
         )}
         style={{
@@ -104,6 +143,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           boxShadow: tokens ? stateRestShadow(tokens.ring) : "var(--aurora-highlight-medium)",
           ...style,
         }}
+        defaultValue={defaultValue}
+        value={value}
+        maxLength={maxLength}
         onFocus={(e) => {
           e.currentTarget.style.borderColor = tokens?.border ?? "var(--aurora-border-strong)"
           e.currentTarget.style.boxShadow = tokens
@@ -123,6 +165,27 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         onChange={handleChange}
         {...props}
       />
+    )
+
+    if (!showCount) return textarea
+
+    return (
+      <div className="relative w-full">
+        {textarea}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-2.5 right-3 select-none tabular-nums"
+          style={{
+            fontFamily: "var(--aurora-font-mono)",
+            fontSize: "11px",
+            fontWeight: 500,
+            letterSpacing: "var(--aurora-letter-ui)",
+            color: "var(--aurora-text-muted)",
+          }}
+        >
+          {maxLength != null ? `${length}/${maxLength}` : length}
+        </span>
+      </div>
     )
   }
 )

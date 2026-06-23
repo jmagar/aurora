@@ -4,140 +4,112 @@ import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import {
   Menubar,
-  MenubarCheckboxItem,
   MenubarContent,
   MenubarItem,
-  MenubarLabel,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
   MenubarSeparator,
   MenubarShortcut,
   MenubarTrigger,
 } from "@/registry/aurora/ui/menubar"
 
-const panel: React.CSSProperties = {
-  display: "grid",
-  gap: 16,
-  padding: 18,
-  borderRadius: 16,
-  border: "1px solid var(--aurora-border-default)",
-  background: "var(--aurora-panel-medium)",
+const brand: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 7,
+  padding: "0 8px 0 4px",
+  fontWeight: 800,
+  fontFamily: "var(--font-display)",
+  fontSize: 13.5,
+  letterSpacing: "-0.02em",
+  color: "var(--aurora-text-primary)",
 }
 
-const note: React.CSSProperties = {
-  margin: 0,
-  fontSize: 12,
-  lineHeight: 1.55,
-  color: "var(--aurora-text-muted)",
+const brandDot: React.CSSProperties = {
+  width: 7,
+  height: 7,
+  borderRadius: 999,
+  background: "var(--aurora-accent-primary)",
+  boxShadow: "0 0 6px var(--aurora-accent-primary)",
+}
+
+const divider: React.CSSProperties = {
+  width: 1,
+  height: 18,
+  background: "var(--aurora-border-default)",
+  margin: "0 2px",
 }
 
 export default function MenubarDemo() {
-  const [lastAction, setLastAction] = React.useState("Opened the deploy workspace")
-  const [showActivity, setShowActivity] = React.useState(true)
-  const [showLineNumbers, setShowLineNumbers] = React.useState(true)
-  const [density, setDensity] = React.useState("comfortable")
-
   return (
     <div style={{ display: "grid", gap: 28 }}>
       <GalleryPageIntro
         eyebrow="Navigation"
         heading="Menubar"
-        description="A functional desktop-style command surface. Each trigger opens a real menu, updates state, and shows the kind of command grouping the component is meant to handle."
+        description="App menu bar with a brand mark and dropdown menus."
       />
 
-      <div style={panel}>
-        <Menubar>
-          <MenubarMenu>
-            <MenubarTrigger>File</MenubarTrigger>
-            <MenubarContent>
-              <MenubarLabel>Workspace</MenubarLabel>
-              <MenubarItem onSelect={() => setLastAction("Created a new workspace")}>
-                New workspace
-                <MenubarShortcut>⌘N</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem onSelect={() => setLastAction("Duplicated the current view")}>
-                Duplicate view
-                <MenubarShortcut>⇧⌘D</MenubarShortcut>
-              </MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem onSelect={() => setLastAction("Exported a registry snapshot")}>
-                Export snapshot
-              </MenubarItem>
-              <MenubarItem danger onSelect={() => setLastAction("Queued the environment for deletion")}>
-                Delete environment
-              </MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
+      <Menubar>
+        <span style={brand}>
+          <span style={brandDot} />
+          labby
+        </span>
+        <span style={divider} />
 
-          <MenubarMenu>
-            <MenubarTrigger>View</MenubarTrigger>
-            <MenubarContent>
-              <MenubarLabel>Display</MenubarLabel>
-              <MenubarCheckboxItem checked={showActivity} onCheckedChange={(checked) => setShowActivity(Boolean(checked))}>
-                Activity sidebar
-              </MenubarCheckboxItem>
-              <MenubarCheckboxItem checked={showLineNumbers} onCheckedChange={(checked) => setShowLineNumbers(Boolean(checked))}>
-                Line numbers
-              </MenubarCheckboxItem>
-              <MenubarSeparator />
-              <MenubarLabel>Density</MenubarLabel>
-              <MenubarRadioGroup value={density} onValueChange={setDensity}>
-                <MenubarRadioItem value="comfortable">Comfortable</MenubarRadioItem>
-                <MenubarRadioItem value="compact">Compact</MenubarRadioItem>
-                <MenubarRadioItem value="dense">Dense</MenubarRadioItem>
-              </MenubarRadioGroup>
-            </MenubarContent>
-          </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger>File</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              New session
+              <MenubarShortcut>⌘N</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>
+              Open…
+              <MenubarShortcut>⌘O</MenubarShortcut>
+            </MenubarItem>
+            <MenubarSeparator />
+            <MenubarItem>
+              Quit
+              <MenubarShortcut>⌘Q</MenubarShortcut>
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
 
-          <MenubarMenu>
-            <MenubarTrigger>Run</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem onSelect={() => setLastAction("Started linting the registry")}>
-                Run lint
-                <MenubarShortcut>⌘R</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem onSelect={() => setLastAction("Opened the CI logs")}>
-                Open CI logs
-              </MenubarItem>
-              <MenubarItem onSelect={() => setLastAction("Published a preview deployment")}>
-                Publish preview
-              </MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger>Edit</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              Undo
+              <MenubarShortcut>⌘Z</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>
+              Redo
+              <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
 
-          <MenubarMenu>
-            <MenubarTrigger>Help</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem onSelect={() => setLastAction("Opened the component guidelines")}>
-                Component guidelines
-              </MenubarItem>
-              <MenubarItem onSelect={() => setLastAction("Opened keyboard shortcuts")}>
-                Keyboard shortcuts
-              </MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-        </Menubar>
+        <MenubarMenu>
+          <MenubarTrigger>View</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              Terminal
+              <MenubarShortcut>⌘`</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>Logs</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
 
-        <div
-          style={{
-            display: "grid",
-            gap: 10,
-            padding: 16,
-            borderRadius: 14,
-            background: "var(--aurora-control-surface)",
-            border: "1px solid var(--aurora-border-default)",
-          }}
-        >
-          <p style={{ margin: 0, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--aurora-text-muted)", fontWeight: 600 }}>
-            Current state
-          </p>
-          <p style={{ margin: 0, fontSize: 14, color: "var(--aurora-text-primary)", fontWeight: 600 }}>{lastAction}</p>
-          <p style={note}>
-            Activity sidebar: {showActivity ? "On" : "Off"} · Line numbers: {showLineNumbers ? "On" : "Off"} · Density: {density}
-          </p>
-        </div>
-      </div>
+        <MenubarMenu>
+          <MenubarTrigger>Help</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>Docs</MenubarItem>
+            <MenubarItem>
+              Keyboard shortcuts
+              <MenubarShortcut>?</MenubarShortcut>
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
     </div>
   )
 }

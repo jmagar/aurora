@@ -43,7 +43,8 @@ export const Variants: Story = {
       <Button variant="aurora">Aurora</Button>
       <Button variant="neutral">Neutral</Button>
       <Button variant="rose">Rose</Button>
-      <Button variant="violet">Violet</Button>
+      <Button variant="success">Success</Button>
+      <Button variant="warn">Warn</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="destructive">Destructive</Button>
     </div>
@@ -55,7 +56,7 @@ export const SizesAndIcons: Story = {
     <div className="flex flex-wrap items-center gap-3">
       <Button size="sm"><Save className="size-3.5" />Save</Button>
       <Button><Download className="size-4" />Export</Button>
-      <Button size="lg" variant="violet"><Settings className="size-4" />Configure</Button>
+      <Button size="lg" variant="aurora"><Settings className="size-4" />Configure</Button>
       <Button size="icon" aria-label="Settings"><Settings className="size-4" /></Button>
     </div>
   ),

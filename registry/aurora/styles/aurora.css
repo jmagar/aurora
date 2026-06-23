@@ -9,7 +9,9 @@
   --aurora-bg:            var(--aurora-page-bg);
   --aurora-nav-bg:        #07111a;
   --aurora-panel-medium:  #102330;
+  --aurora-panel-medium-top: rgba(20, 44, 60, 0.18);
   --aurora-panel-strong:  #13293a;
+  --aurora-panel-strong-top: #173245;
   --aurora-control-surface: #0c1a24;
   --aurora-hover-bg:      #17364b;
   --aurora-surface-raised: linear-gradient(180deg, rgba(18, 40, 56, 0.96), rgba(12, 27, 38, 0.98));
@@ -112,6 +114,66 @@
   --aurora-radius-2: 18px;
   --aurora-radius-3: 22px;
 
+  /* Motion — Aurora easing (matches Claude Design source) */
+  --motion-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-duration-instant: 100ms;
+  --motion-duration-fast:    160ms;
+  --motion-duration-medium:  240ms;
+  --motion-duration-slow:    360ms;
+
+  /* Tertiary accent — Axon orange (async / heavy jobs). Replaces violet. */
+  --axon-orange:        #ff9645;
+  --axon-orange-strong: #ffb474;
+  --axon-orange-deep:   #c96a1c;
+
+  /* Raised control-surface top stop (Claude Design parity) */
+  --aurora-control-surface-top: rgba(18, 40, 56, 0.96);
+
+  /* Tints — named alpha scale */
+  --aurora-tint-subtle: 12%;
+  --aurora-tint-soft:   18%;
+  --aurora-tint-medium: 30%;
+  --aurora-tint-strong: 40%;
+
+  /* Spacing scale */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3: 10px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+
+  /* Z-index layers */
+  --z-sidebar: 30;
+  --z-popover: 40;
+  --z-modal:   50;
+  --z-toast:   60;
+
+  /* Line heights (Claude Design token names) */
+  --lh-display-tight: 1.04;
+  --lh-display:       1.16;
+  --lh-body:          1.55;
+  --lh-dense:         1.40;
+
+  /* Unprefixed radius aliases — Claude Design components reference these */
+  --radius-1: var(--aurora-radius-1);
+  --radius-2: var(--aurora-radius-2);
+  --radius-3: var(--aurora-radius-3);
+  --radius-pill: 999px;
+
+  /* Unprefixed font aliases — Claude Design components reference these.
+     --font-mono intentionally resolves to the repo's JetBrains Mono stack. */
+  --font-display: var(--aurora-font-display);
+  --font-sans:    var(--aurora-font-sans);
+  --font-mono:    var(--aurora-font-mono);
+
+  /* Live-preview palette — restricted scope (exposure-policy editor) */
+  --aurora-preview-allowed:   #00e676;
+  --aurora-preview-unmatched: #ff9100;
+  --aurora-preview-highlight: #ffea00;
+
   /* Typography */
   --aurora-font-display: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --aurora-font-sans:    'Inter', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -177,8 +239,14 @@
   --aurora-bg:             var(--aurora-page-bg);
   --aurora-nav-bg:         #e4f0f5;
   --aurora-panel-medium:   #ffffff;
+  --aurora-panel-medium-top: rgba(255, 255, 255, 0.5);
   --aurora-panel-strong:   #f8fbfc;
+  --aurora-panel-strong-top: #ffffff;
   --aurora-control-surface: #edf5f8;
+  --aurora-control-surface-top: rgba(215, 232, 239, 0.96);
+  --axon-orange:        #e0731a;
+  --axon-orange-strong: #c25f10;
+  --axon-orange-deep:   #a8540e;
   --aurora-hover-bg:       #dceef4;
   --aurora-surface-raised: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(237, 245, 248, 0.98));
   --aurora-border-default: #b8d0da;

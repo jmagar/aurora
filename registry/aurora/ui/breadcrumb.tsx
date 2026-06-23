@@ -7,7 +7,7 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { ChevronRight, Dot } from "lucide-react"
+import { ChevronRight, Dot, MoreHorizontal } from "lucide-react"
 import { Badge } from "./badge"
 import { cn } from "@/lib/utils"
 
@@ -139,8 +139,11 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, BreadcrumbPageProps>(
   ({ className, badge, children, style, ...props }, ref) => {
     const variant = React.useContext(BreadcrumbVariantContext)
 
+    // CD spec: the current/active crumb is a bordered pill chip with a
+    // brighter, semibold label — links stay plain muted text with chevrons.
     const baseClass = cn(
-      variant === "default" && "aurora-text-control",
+      variant === "default" &&
+        "inline-flex items-center gap-1.5 rounded-[8px] border px-2.5 py-1 text-[13px] font-semibold",
       variant === "mono" && "aurora-text-code",
       variant === "pill-trail" &&
         "aurora-text-control inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5",
@@ -157,7 +160,12 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, BreadcrumbPageProps>(
           }
         : variant === "mono"
         ? { color: "var(--aurora-accent-primary)", ...style }
-        : { color: "var(--aurora-text-primary)", ...style }
+        : {
+            color: "var(--aurora-text-primary)",
+            backgroundColor: "var(--aurora-control-surface)",
+            borderColor: "var(--aurora-border-default)",
+            ...style,
+          }
 
     return (
       <span
@@ -179,6 +187,26 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, BreadcrumbPageProps>(
   }
 )
 BreadcrumbPage.displayName = "BreadcrumbPage"
+
+// ─── BreadcrumbEllipsis (collapsed-trail indicator) ───────────────────────────
+
+const BreadcrumbEllipsis = React.forwardRef<
+  HTMLSpanElement,
+  React.ComponentPropsWithoutRef<"span">
+>(({ className, ...props }, ref) => (
+  <span
+    ref={ref}
+    role="presentation"
+    aria-hidden="true"
+    className={cn("inline-flex size-5 items-center justify-center", className)}
+    style={{ color: "var(--aurora-text-muted)" }}
+    {...props}
+  >
+    <MoreHorizontal className="size-4" aria-hidden />
+    <span className="sr-only">More</span>
+  </span>
+))
+BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis"
 
 // ─── BreadcrumbSeparator ──────────────────────────────────────────────────────
 
@@ -226,4 +254,5 @@ export {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
+  BreadcrumbEllipsis,
 }

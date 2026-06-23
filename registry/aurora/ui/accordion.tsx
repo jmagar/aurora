@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronRight } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface AccordionProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -17,7 +17,7 @@ export interface AccordionItemProps extends Omit<React.HTMLAttributes<HTMLDetail
 const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("overflow-hidden rounded-[8px] border", className)}
+    className={cn("overflow-hidden rounded-[12px] border", className)}
     style={{
       background: "var(--aurora-panel-medium)",
       borderColor: "var(--aurora-border-default)",
@@ -47,28 +47,36 @@ const AccordionItem = React.forwardRef<HTMLDetailsElement, AccordionItemProps>(
         {...props}
       >
         <summary
-          className="grid cursor-pointer list-none grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--aurora-hover-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0 [&::-webkit-details-marker]:hidden"
+          className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 px-5 py-3.5 transition-colors hover:bg-[var(--aurora-hover-bg)] group-open:bg-[var(--aurora-subtle-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0 [&::-webkit-details-marker]:hidden"
           style={{
-            color: "var(--aurora-text-primary)",
-            fontFamily: "var(--aurora-font-sans)",
-            fontSize: "var(--aurora-type-control)",
-            fontWeight: "var(--aurora-weight-label)",
+            fontFamily: "var(--aurora-font-display)",
+            fontSize: "15px",
+            fontWeight: "var(--aurora-weight-heading)",
+            color: open ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
           }}
         >
-          <ChevronRight
-            className="size-3.5 transition-transform group-open:rotate-90"
-            strokeWidth={1.8}
-            style={{ color: "var(--aurora-text-muted)" }}
-            aria-hidden
-          />
           <span className="truncate">{title}</span>
           {meta ? (
             <span className="truncate aurora-text-meta" style={{ maxWidth: 160 }}>
               {meta}
             </span>
           ) : null}
+          <ChevronDown
+            className="size-4 transition-transform duration-200 group-open:-rotate-180"
+            strokeWidth={2}
+            style={{ color: open ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)" }}
+            aria-hidden
+          />
         </summary>
-        <div className="border-t px-4 py-3" style={{ borderColor: "var(--aurora-border-default)" }}>
+        <div
+          className="px-5 pb-4 pt-1"
+          style={{
+            color: "var(--aurora-text-muted)",
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "var(--aurora-type-body)",
+            lineHeight: 1.55,
+          }}
+        >
           {children}
         </div>
       </details>

@@ -1,190 +1,69 @@
 "use client"
 
 import * as React from "react"
-import { Avatar } from "@/registry/aurora/ui/avatar"
+import { Avatar, AvatarGroup } from "@/registry/aurora/ui/avatar"
 
-const section: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "20px",
-  padding: "clamp(16px, 4vw, 32px)",
-  background: "var(--aurora-panel-medium)",
-  border: "1px solid var(--aurora-border-default)",
-  borderRadius: "var(--aurora-radius-2)",
-}
+// ─── CD dsCard chrome (ported as inline styles) ──────────────────────────────
 
-const row: React.CSSProperties = {
-  display: "flex",
-  flexWrap: "wrap",
-  alignItems: "center",
-  gap: "16px",
-}
-
-const groupLabel: React.CSSProperties = {
-  fontSize: "11px",
-  fontFamily: "var(--aurora-font-mono)",
-  color: "var(--aurora-text-muted)",
-  letterSpacing: "0.08em",
+const lbl: React.CSSProperties = {
+  fontSize: "10px",
+  fontWeight: 700,
+  letterSpacing: "0.16em",
   textTransform: "uppercase",
-  marginBottom: "4px",
-}
-
-const heading: React.CSSProperties = {
-  fontSize: "18px",
-  fontFamily: "var(--aurora-font-display)",
-  fontWeight: 600,
-  color: "var(--aurora-text-primary)",
-  marginBottom: "4px",
-}
-
-const subheading: React.CSSProperties = {
-  fontSize: "13px",
   color: "var(--aurora-text-muted)",
-  fontFamily: "var(--aurora-font-sans)",
-  marginBottom: "24px",
+  margin: "0 0 12px",
 }
 
-function AvatarWithLabel({ children, caption }: { children: React.ReactNode; caption: string }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {children}
-      <span style={{
-        fontSize: "11px",
-        fontFamily: "var(--aurora-font-mono)",
-        color: "var(--aurora-text-muted)",
-        textAlign: "center",
-        marginTop: "6px",
-      }}>{caption}</span>
-    </div>
-  )
+const rowStyle: React.CSSProperties = {
+  display: "flex",
+  gap: "12px",
+  alignItems: "center",
+  marginBottom: "18px",
 }
+
+// CD tone order: cyan, pink, teal/success, sand/warn.
+const tones = [
+  "var(--aurora-accent-primary)",
+  "var(--aurora-accent-pink)",
+  "var(--aurora-success)",
+  "var(--aurora-warn)",
+]
+
+// CD shield icon path.
+const SHIELD_ICON = '<path d="M12 2 5 7v5c0 4 3 6.5 7 8 4-1.5 7-4 7-8V7Z"/>'
 
 export default function AvatarDemo() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px", padding: 0 }}>
-      <div>
-        <h2 style={heading}>Avatar</h2>
-        <p style={subheading}>
-          User and agent avatars across sizes and variants. Supports initials fallback, status indicators, beacon pulse, and bot styling.
-        </p>
+    <div
+      style={{
+        background: "var(--aurora-page-bg)",
+        color: "var(--aurora-text-primary)",
+        boxSizing: "border-box",
+        padding: "30px",
+        borderRadius: "var(--aurora-radius-2)",
+        border: "1px solid var(--aurora-border-default)",
+      }}
+    >
+      <div className="lbl" style={lbl}>
+        Status · ring · icon · square
+      </div>
+      <div style={rowStyle}>
+        <Avatar initials="JM" tone={tones[0]} status="online" />
+        <Avatar initials="AX" tone={tones[1]} status="busy" ring />
+        <Avatar initials="LB" tone={tones[2]} status="away" />
+        <Avatar icon={SHIELD_ICON} tone={tones[0]} />
+        <Avatar initials="SQ" tone={tones[1]} shape="square" />
       </div>
 
-      <div style={section}>
-        <div style={groupLabel}>Sizes — sm / md / lg / xl</div>
-        <div style={{ ...row, alignItems: "flex-end" }}>
-          <AvatarWithLabel caption="sm">
-            <Avatar size="sm" fallback="JM" alt="Jordan M" />
-          </AvatarWithLabel>
-          <AvatarWithLabel caption="md">
-            <Avatar size="md" fallback="JM" alt="Jordan M" />
-          </AvatarWithLabel>
-          <AvatarWithLabel caption="lg">
-            <Avatar size="lg" fallback="JM" alt="Jordan M" />
-          </AvatarWithLabel>
-          <AvatarWithLabel caption="xl">
-            <Avatar size="xl" fallback="JM" alt="Jordan M" />
-          </AvatarWithLabel>
-        </div>
+      <div className="lbl" style={lbl}>
+        Group · overflow
       </div>
-
-      <div style={section}>
-        <div style={groupLabel}>Initials fallback — team members</div>
-        <div style={row}>
-          {[
-            { initials: "JM", name: "Jordan Magar" },
-            { initials: "AS", name: "Aria Santos" },
-            { initials: "KL", name: "Kai Lin" },
-            { initials: "RP", name: "Rohan Patel" },
-            { initials: "EM", name: "Elena Marsh" },
-            { initials: "DK", name: "Dev Kapoor" },
-          ].map(({ initials, name }) => (
-            <AvatarWithLabel key={initials} caption={initials}>
-              <Avatar size="md" fallback={initials} alt={name} />
-            </AvatarWithLabel>
+      <div style={{ ...rowStyle, marginBottom: 0 }}>
+        <AvatarGroup max={4} size={34}>
+          {["JM", "AX", "LB", "OP", "RS", "ML"].map((x, i) => (
+            <Avatar key={i} initials={x} tone={tones[i % 4]} />
           ))}
-        </div>
-      </div>
-
-      <div style={section}>
-        <div style={groupLabel}>Status variant — online / away / busy / offline</div>
-        <div style={row}>
-          {(["online", "away", "busy", "offline"] as const).map((status) => (
-            <AvatarWithLabel key={status} caption={status}>
-              <Avatar size="md" variant="status" status={status} fallback={status.slice(0, 2).toUpperCase()} alt={status} />
-            </AvatarWithLabel>
-          ))}
-        </div>
-
-        <div style={groupLabel}>Large status avatars</div>
-        <div style={row}>
-          {(["online", "away", "busy", "offline"] as const).map((status) => (
-            <AvatarWithLabel key={status} caption={status}>
-              <Avatar size="lg" variant="status" status={status} fallback={status.slice(0, 2).toUpperCase()} alt={status} />
-            </AvatarWithLabel>
-          ))}
-        </div>
-      </div>
-
-      <div style={section}>
-        <div style={groupLabel}>Beacon variant — active / live agent indicator</div>
-        <div style={{ ...row, alignItems: "flex-end" }}>
-          {(["sm", "md", "lg", "xl"] as const).map((size) => (
-            <AvatarWithLabel key={size} caption={`${size} beacon`}>
-              <Avatar size={size} variant="beacon" fallback="LB" alt="Labby Agent" />
-            </AvatarWithLabel>
-          ))}
-        </div>
-      </div>
-
-      <div style={section}>
-        <div style={groupLabel}>Bot variant — agents and AI workers</div>
-        <div style={{ ...row, alignItems: "flex-end" }}>
-          {(["sm", "md", "lg", "xl"] as const).map((size) => (
-            <AvatarWithLabel key={size} caption={`${size} bot`}>
-              <Avatar size={size} variant="bot" fallback="LB" alt="Labby" />
-            </AvatarWithLabel>
-          ))}
-        </div>
-      </div>
-
-      <div style={section}>
-        <div style={groupLabel}>Team panel — Labby workspace</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-          {[
-            { name: "Jordan Magar", role: "Gateway Admin", initials: "JM", status: "online" as const },
-            { name: "Aria Santos", role: "Agent Operator", initials: "AS", status: "away" as const },
-            { name: "Kai Lin", role: "Environment Eng", initials: "KL", status: "online" as const },
-            { name: "Rohan Patel", role: "Security Lead", initials: "RP", status: "busy" as const },
-            { name: "Elena Marsh", role: "ML Researcher", initials: "EM", status: "offline" as const },
-          ].map((member) => (
-            <div
-              key={member.name}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "8px 12px",
-                borderRadius: "var(--aurora-radius-1)",
-              }}
-            >
-              <Avatar
-                size="md"
-                variant="status"
-                status={member.status}
-                fallback={member.initials}
-                alt={member.name}
-              />
-              <div>
-                <div style={{ fontSize: "13px", fontWeight: 500, color: "var(--aurora-text-primary)", fontFamily: "var(--aurora-font-sans)" }}>
-                  {member.name}
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-mono)" }}>
-                  {member.role}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        </AvatarGroup>
       </div>
     </div>
   )

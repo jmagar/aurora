@@ -168,7 +168,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "collapsible":
       return <Collapsible title="Sync diagnostics" defaultOpen><p className="aurora-text-body" style={{ margin: 0 }}>Registry index refreshed 18 seconds ago.</p></Collapsible>
     case "date-picker":
-      return <DatePicker label="Maintenance window" defaultValue="2026-05-10" />
+      return <DatePicker label="Maintenance window" defaultValue={new Date("2026-05-10")} />
     case "direction":
       return <Direction dir="rtl" className="rounded-[8px] border p-3 aurora-text-body" style={{ borderColor: "var(--aurora-border-default)" }}>RTL layout sample</Direction>
     case "drawer":
@@ -297,7 +297,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
           <Callout title="Agent queued" variant="neutral">
             Waiting for an available runner slot.
           </Callout>
-          <Callout title="Agent automation available" variant="violet">
+          <Callout title="Agent automation available" variant="info">
             This workflow can now execute unattended.
           </Callout>
         </div>
