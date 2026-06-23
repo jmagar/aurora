@@ -39,8 +39,8 @@ export interface SpotlightProps
 }
 
 const SIZES = {
-  md: { height: "3.25rem", radius: "var(--aurora-radius-2)", icon: 18, type: "1.05rem", pad: "0 1.05rem", gap: "0.75rem" },
-  lg: { height: "4rem", radius: "var(--aurora-radius-3)", icon: 22, type: "1.5rem", pad: "0 1.4rem", gap: "1rem" },
+  md: { height: "2.5rem", radius: "var(--aurora-radius-2)", icon: 16, type: "0.9rem", pad: "0 0.85rem", gap: "0.6rem" },
+  lg: { height: "3rem", radius: "var(--aurora-radius-3)", icon: 18, type: "1.05rem", pad: "0 1.05rem", gap: "0.7rem" },
 } as const
 
 const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spotlight(
@@ -187,7 +187,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
           className="overflow-y-auto"
           style={{
             maxHeight: "20rem",
-            padding: "0.65rem",
+            padding: "0.4rem",
             borderRadius: "var(--aurora-radius-3)",
             border: "1px solid var(--aurora-border-strong)",
             background:
@@ -210,10 +210,10 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
               <div key={group} style={{ marginBottom: "0.25rem" }}>
                 <div
                   style={{
-                    padding: "0.7rem 0.85rem 0.35rem",
+                    padding: "0.5rem 0.6rem 0.25rem",
                     color: "var(--aurora-text-muted)",
                     fontFamily: "var(--aurora-font-sans)",
-                    fontSize: "0.78rem",
+                    fontSize: "0.7rem",
                     fontWeight: "var(--aurora-weight-label)",
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
@@ -235,8 +235,8 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
                       onClick={() => commit(item)}
                       className="relative flex w-full items-center text-left transition-colors duration-150 focus-visible:outline-none"
                       style={{
-                        gap: "1rem",
-                        padding: "0.85rem 1rem",
+                        gap: "0.7rem",
+                        padding: "0.5rem 0.65rem",
                         borderRadius: "var(--aurora-radius-2)",
                         border: isActive
                           ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)"
@@ -254,8 +254,8 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
                           aria-hidden
                           className="inline-flex shrink-0 items-center justify-center"
                           style={{
-                            width: "2.4rem",
-                            height: "2.4rem",
+                            width: "1.85rem",
+                            height: "1.85rem",
                             borderRadius: "var(--aurora-radius-1)",
                             border: "1px solid var(--aurora-border-strong)",
                             background: isActive
@@ -275,7 +275,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
                           style={{
                             color: "var(--aurora-text-primary)",
                             fontFamily: "var(--aurora-font-sans)",
-                            fontSize: "1.15rem",
+                            fontSize: "0.92rem",
                             fontWeight: "var(--aurora-weight-body)",
                             lineHeight: 1.3,
                           }}
