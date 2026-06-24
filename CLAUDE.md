@@ -99,6 +99,8 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
   run `pnpm registry:build` so `public/r/*.json` stays in sync.
 - **Token changes are cross-platform.** Edits to `registry/aurora/styles/aurora.css`
   must be followed by `pnpm tokens:generate` to refresh Android outputs.
+  Note: the Android token pipeline exports the **dark theme only** — light-mode
+  tokens are not yet exported (see `scripts/export-aurora-tokens.mjs`).
 - **Themes mirror the tokens.** Everything under `themes/` (`editors/`, `browser/`,
   `shell/`) hand-authors the Aurora palette in each tool's native format (excluded
   from the Next build, TS, and eslint). They are canonical here; `~` configs are
