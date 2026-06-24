@@ -61,6 +61,15 @@ data class SessionItem(
     val cwd: String,
     val updatedAt: Long,
     val isLive: Boolean = false,
+    /**
+     * Server-reported thread run status. One of "active", "paused", "idle", or "closed".
+     * Drives the sidebar status indicator tone:
+     *   active → Online (cyan pulsing dot)
+     *   paused → Away (amber)
+     *   idle   → no indicator (thread loaded but not running)
+     *   closed → no indicator (thread unloaded from server memory)
+     */
+    val threadStatus: String = "idle",
 )
 
 data class ProjectGroup(
@@ -372,10 +381,10 @@ private fun SessionRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        if (session.isLive) {
-            AuroraStatusIndicator(tone = AuroraStatusTone.Online, dotSize = 6.dp)
-        } else {
-            Spacer(Modifier.size(6.dp))
+        when (session.threadStatus) {
+            "active" -> AuroraStatusIndicator(tone = AuroraStatusTone.Online, dotSize = 6.dp)
+            "paused" -> AuroraStatusIndicator(tone = AuroraStatusTone.Syncing, dotSize = 6.dp)
+            else     -> Spacer(Modifier.size(6.dp))
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
