@@ -493,7 +493,20 @@ fun ChatScreen(
 
             AuroraPromptInput(
                 value = input,
-                onValueChange = { input = it },
+                onValueChange = { newInput ->
+                    input = newInput
+                    // Drop any structured item whose trigger token is no longer in the
+                    // input text — prevents stale @mentions / /commands from being sent
+                    // after the user edits or clears the inserted token.
+                    selectedItems = selectedItems.filter { item ->
+                        val trigger = when (item) {
+                            is SelectedItem.Command -> "/${item.name}"
+                            is SelectedItem.Mention -> "@${item.name}"
+                            is SelectedItem.Skill   -> "@${item.name}"
+                        }
+                        newInput.contains(trigger)
+                    }
+                },
                 onSend = {
                     val pending = pendingSkillInvocation
                     if (s.editingMessage != null) {
