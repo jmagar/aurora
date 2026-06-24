@@ -104,7 +104,7 @@ const sectionLabel: React.CSSProperties = {
 };
 
 export default function ComponentCardDemo() {
-  const [i, setI] = React.useState(0);
+  const [i, setI] = React.useState(2);
   const cur = ENTRIES[i];
   const cmp = ENTRIES[(i + 1) % ENTRIES.length];
 
