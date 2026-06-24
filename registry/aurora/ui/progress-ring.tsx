@@ -28,25 +28,22 @@ export interface ProgressRingProps
   children?: React.ReactNode;
 }
 
-export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
-  function ProgressRing(
-    {
-      value,
-      size = 80,
-      thickness = 6,
-      color = "var(--aurora-accent-primary)",
-      trackColor = "color-mix(in srgb, var(--aurora-border-default) 70%, transparent)",
-      hideLabel = false,
-      children,
-      className,
-      style,
-      ...props
-    },
+export function ProgressRing(
+  {
     ref,
-  ) {
-    // Guard non-finite input (NaN/Infinity): Math.max/min would propagate NaN
-    // into aria-valuenow and the dash math, so floor it to 0.
-    const clamped = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+    value,
+    size = 80,
+    thickness = 6,
+    color = "var(--aurora-accent)",
+    trackColor = "color-mix(in srgb, var(--aurora-border) 70%, transparent)",
+    hideLabel = false,
+    children,
+    className,
+    style,
+    ...props
+  }: ProgressRingProps & { ref?: React.Ref<HTMLDivElement> },
+) {
+    const clamped = Math.max(0, Math.min(100, value));
     const radius = (size - thickness) / 2;
     const circumference = 2 * Math.PI * radius;
     const dashOffset = circumference * (1 - clamped / 100);
@@ -109,9 +106,6 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
         )}
       </div>
     );
-  },
-);
-
-ProgressRing.displayName = "ProgressRing";
+}
 
 export default ProgressRing;

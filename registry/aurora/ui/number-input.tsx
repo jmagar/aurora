@@ -17,7 +17,6 @@ import * as React from "react"
 import { Minus, Plus } from "lucide-react"
 import { Button } from "./button"
 import { Input } from "./input"
-import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 export interface NumberInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "defaultValue" | "onChange" | "size"> {
@@ -83,10 +82,17 @@ const CSS = `
 }
 `
 
-function ensureCSS() { injectOnce("aurora-number-input", CSS) }
+let injected = false
+function ensureCSS() {
+  if (injected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.setAttribute("data-aurora-number-input", "")
+  el.textContent = CSS
+  document.head.appendChild(el)
+  injected = true
+}
 
-const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
-  ({ value, defaultValue = 0, min, max, step = 1, onValueChange, className, ...props }, ref) => {
+function NumberInput({ ref, value, defaultValue = 0, min, max, step = 1, onValueChange, className, ...props }: NumberInputProps & { ref?: React.Ref<HTMLInputElement> }) {
     React.useEffect(() => {
       ensureCSS()
     }, [])
@@ -145,9 +151,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
         </Button>
       </div>
     )
-  }
-)
-NumberInput.displayName = "NumberInput"
+}
 
 export { NumberInput }
 export default NumberInput

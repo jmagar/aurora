@@ -27,10 +27,10 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__brand {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 14px 10px;
+  gap: 10px;
+  padding: 18px 18px 14px;
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.01em;
@@ -44,8 +44,8 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__head {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0 12px 10px;
+  gap: 12px;
+  padding: 0 18px 14px;
 }
 
 /* New chat button */
@@ -53,10 +53,10 @@ const CHAT_SIDEBAR_CSS = `
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
-  padding: 9px 14px;
-  border-radius: 9px;
+  padding: 14px 16px;
+  border-radius: var(--radius-1, 14px);
   border: 1px solid color-mix(in srgb, var(--aurora-accent-primary) 42%, transparent);
   background: linear-gradient(
     180deg,
@@ -65,12 +65,12 @@ const CHAT_SIDEBAR_CSS = `
   );
   color: var(--aurora-text-primary);
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent),
-    0 4px 12px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent);
+    0 8px 18px color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent);
   transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
 .aurora-chat-sidebar__new:hover {
@@ -96,7 +96,7 @@ const CHAT_SIDEBAR_CSS = `
 }
 .aurora-chat-sidebar__search-icon {
   position: absolute;
-  left: 12px;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--aurora-text-muted);
@@ -105,13 +105,13 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__search-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 8px 12px 8px 36px;
-  border-radius: 9px;
+  padding: 12px 14px 12px 44px;
+  border-radius: var(--radius-1, 14px);
   border: 1px solid var(--aurora-border-default);
   background: var(--aurora-control-surface);
   color: var(--aurora-text-primary);
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.2;
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
@@ -129,15 +129,15 @@ const CHAT_SIDEBAR_CSS = `
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 2px 8px 8px;
+  padding: 4px 12px 12px;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 .aurora-chat-sidebar__bucket {
-  padding: 10px 6px 4px;
+  padding: 14px 8px 6px;
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.08em;
@@ -147,16 +147,16 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__thread {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
   box-sizing: border-box;
-  padding: 7px 10px;
-  border-radius: 8px;
+  padding: 11px 12px;
+  border-radius: var(--radius-1, 14px);
   border: 1px solid transparent;
   background: transparent;
   color: var(--aurora-text-muted);
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.25;
   text-align: left;
@@ -197,9 +197,9 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__footer {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: 0 0 auto;
-  padding: 10px 12px;
+  padding: 12px 16px;
   border-top: 1px solid var(--aurora-border-default);
   background: var(--aurora-page-bg);
 }
@@ -208,14 +208,14 @@ const CHAT_SIDEBAR_CSS = `
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill, 999px);
   border: 1px solid color-mix(in srgb, var(--aurora-accent-primary) 48%, transparent);
   background: color-mix(in srgb, var(--aurora-accent-primary) 14%, var(--aurora-panel-medium));
   color: var(--aurora-accent-strong);
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.02em;
@@ -223,13 +223,13 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__user {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   min-width: 0;
   flex: 1 1 auto;
 }
 .aurora-chat-sidebar__user-name {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.2;
   color: var(--aurora-text-primary);
@@ -239,7 +239,7 @@ const CHAT_SIDEBAR_CSS = `
 }
 .aurora-chat-sidebar__user-plan {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1.2;
   color: var(--aurora-text-muted);
@@ -249,10 +249,10 @@ const CHAT_SIDEBAR_CSS = `
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   padding: 0;
-  border-radius: 7px;
+  border-radius: var(--radius-1, 14px);
   border: 1px solid transparent;
   background: transparent;
   color: var(--aurora-text-muted);
@@ -288,8 +288,8 @@ function useChatSidebarStyles() {
 function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="18"
+      height="18"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -308,8 +308,8 @@ function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
 function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="18"
+      height="18"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -328,8 +328,8 @@ function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
 function ThreadIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="18"
+      height="18"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -407,22 +407,21 @@ export interface ChatSidebarProps
 /*  Component                                                                 */
 /* -------------------------------------------------------------------------- */
 
-const ChatSidebar = React.forwardRef<HTMLElement, ChatSidebarProps>(
-  function ChatSidebar(
-    {
-      brand,
-      threads = [],
-      defaultActiveId,
-      activeId: controlledActiveId,
-      onSelectThread,
-      onNewChat,
-      searchPlaceholder = "Search conversations...",
-      user,
-      className,
-      ...props
-    },
+function ChatSidebar(
+  {
+    brand,
+    threads = [],
+    defaultActiveId,
+    activeId: controlledActiveId,
+    onSelectThread,
+    onNewChat,
+    searchPlaceholder = "Search conversations...",
+    user,
+    className,
     ref,
-  ) {
+    ...props
+  }: ChatSidebarProps & { ref?: React.Ref<HTMLElement> },
+) {
     useChatSidebarStyles()
 
     const isControlled = controlledActiveId != null
@@ -538,10 +537,7 @@ const ChatSidebar = React.forwardRef<HTMLElement, ChatSidebarProps>(
         ) : null}
       </nav>
     )
-  },
-)
-
-ChatSidebar.displayName = "ChatSidebar"
+}
 
 export { ChatSidebar }
 export default ChatSidebar

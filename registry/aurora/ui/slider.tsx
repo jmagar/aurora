@@ -89,43 +89,40 @@ const SLIDER_CSS = `
 }
 `
 
-const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
-  ({ className, value, defaultValue = 0, min = 0, max = 100, step = 1, tone, onValueChange, style, ...props }, ref) => {
-    const controlled = value !== undefined
-    const [internalValue, setInternalValue] = React.useState(defaultValue)
-    const current = controlled ? value : internalValue
-    const percent = max === min ? 0 : ((current - min) / (max - min)) * 100
+function Slider({ ref, className, value, defaultValue = 0, min = 0, max = 100, step = 1, tone, onValueChange, style, ...props }: SliderProps & { ref?: React.Ref<HTMLInputElement> }) {
+  const controlled = value !== undefined
+  const [internalValue, setInternalValue] = React.useState(defaultValue)
+  const current = controlled ? value : internalValue
+  const percent = max === min ? 0 : ((current - min) / (max - min)) * 100
 
-    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-      const next = Number(event.target.value)
-      if (!controlled) setInternalValue(next)
-      onValueChange?.(next)
-    }
-
-    return (
-      <>
-        <style>{SLIDER_CSS}</style>
-        <input
-          ref={ref}
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={current}
-          onChange={handleChange}
-          className={cn("aurora-slider-cd", className)}
-          style={{
-            ["--aurora-slider-value" as string]: `${percent}%`,
-            ...(tone ? { ["--aurora-slider-tone" as string]: tone } : {}),
-            ...style,
-          }}
-          {...props}
-        />
-      </>
-    )
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const next = Number(event.target.value)
+    if (!controlled) setInternalValue(next)
+    onValueChange?.(next)
   }
-)
-Slider.displayName = "Slider"
+
+  return (
+    <>
+      <style>{SLIDER_CSS}</style>
+      <input
+        ref={ref}
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={current}
+        onChange={handleChange}
+        className={cn("aurora-slider-cd", className)}
+        style={{
+          ["--aurora-slider-value" as string]: `${percent}%`,
+          ...(tone ? { ["--aurora-slider-tone" as string]: tone } : {}),
+          ...style,
+        }}
+        {...props}
+      />
+    </>
+  )
+}
 
 export { Slider }
 export default Slider

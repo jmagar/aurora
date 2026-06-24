@@ -268,20 +268,19 @@ export interface ColorPickerProps
 
 const DEFAULT_COLOR = "#29b6f6"
 
-const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
-  (
-    {
-      className,
-      label,
-      value,
-      defaultValue = DEFAULT_COLOR,
-      colors,
-      onValueChange,
-      style,
-      ...props
-    },
-    ref
-  ) => {
+function ColorPicker(
+  {
+    className,
+    label,
+    value,
+    defaultValue = DEFAULT_COLOR,
+    colors,
+    onValueChange,
+    style,
+    ref,
+    ...props
+  }: ColorPickerProps & { ref?: React.Ref<HTMLDivElement> }
+) {
     const controlled = value !== undefined
 
     // Internal source of truth is HSV so dragging on the SV plane at v=0/s=0
@@ -298,6 +297,7 @@ const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
       if (!controlled) return
       const next = hexToHsv(value ?? DEFAULT_COLOR)
       if (next) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHsv(next)
         setDraft(value ?? DEFAULT_COLOR)
       }
@@ -410,6 +410,7 @@ const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
           aria-valuemax={100}
           aria-valuenow={Math.round(hsv.v * 100)}
           aria-valuetext={`saturation ${Math.round(hsv.s * 100)}%, brightness ${Math.round(hsv.v * 100)}%`}
+          // eslint-disable-next-line react-hooks/refs
           onPointerDown={makeDragHandler(pointerToSv)}
           onKeyDown={onSvKeyDown}
           style={{
@@ -436,6 +437,7 @@ const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
           aria-valuemin={0}
           aria-valuemax={360}
           aria-valuenow={Math.round(hsv.h)}
+          // eslint-disable-next-line react-hooks/refs
           onPointerDown={makeDragHandler((x) => pointerToHue(x))}
           onKeyDown={onHueKeyDown}
         >
@@ -487,9 +489,7 @@ const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
         ) : null}
       </div>
     )
-  }
-)
-ColorPicker.displayName = "ColorPicker"
+}
 
 export { ColorPicker }
 export default ColorPicker

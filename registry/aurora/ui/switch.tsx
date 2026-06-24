@@ -76,14 +76,11 @@ function ensureSwitchCSS() {
 // ─── Component ──────────────────────────────────────────────────────────────────
 
 export interface SwitchProps
-  extends React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root> {
+  extends React.ComponentProps<typeof SwitchPrimitive.Root> {
   size?: SwitchSize
 }
 
-const Switch = React.forwardRef<
-  React.ElementRef<typeof SwitchPrimitive.Root>,
-  SwitchProps
->(({ className, size = "default", style, ...props }, ref) => {
+function Switch({ ref, className, size = "default", style, ...props }: SwitchProps & { ref?: React.Ref<React.ElementRef<typeof SwitchPrimitive.Root>> }) {
   React.useEffect(() => {
     ensureSwitchCSS()
   }, [])
@@ -120,8 +117,7 @@ const Switch = React.forwardRef<
       />
     </SwitchPrimitive.Root>
   )
-})
-Switch.displayName = "Switch"
+}
 
 export { Switch }
 export default Switch

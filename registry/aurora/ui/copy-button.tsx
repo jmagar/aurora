@@ -15,7 +15,6 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 // ─── Visual layer (ported from Claude Design) ──────────────────────────────────
 
@@ -53,7 +52,15 @@ const CSS = `
 .aurora-copy-btn__icon svg { display: block; }
 `
 
-function ensureCSS() { injectOnce("aurora-copy-button", CSS) }
+let injected = false
+function ensureCSS() {
+  if (injected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.setAttribute("data-aurora-copy-button", "")
+  el.textContent = CSS
+  document.head.appendChild(el)
+  injected = true
+}
 
 // ─── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -110,22 +117,21 @@ export interface CopyButtonProps
   onCopy?: (value: string) => void
 }
 
-const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
-  (
-    {
-      value,
-      label,
-      copiedLabel = "Copied",
-      timeout = 2000,
-      onCopy,
-      className,
-      onClick,
-      disabled,
-      "aria-label": ariaLabel,
-      ...props
-    },
-    ref
-  ) => {
+function CopyButton(
+  {
+    ref,
+    value,
+    label,
+    copiedLabel = "Copied",
+    timeout = 2000,
+    onCopy,
+    className,
+    onClick,
+    disabled,
+    "aria-label": ariaLabel,
+    ...props
+  }: CopyButtonProps & { ref?: React.Ref<HTMLButtonElement> }
+) {
     const [copied, setCopied] = React.useState(false)
     const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -205,9 +211,7 @@ const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
         </span>
       </button>
     )
-  }
-)
-CopyButton.displayName = "CopyButton"
+}
 
 export { CopyButton }
 export default CopyButton

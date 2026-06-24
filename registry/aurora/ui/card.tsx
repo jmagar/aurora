@@ -11,7 +11,6 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 type CardAccent = "cyan" | "rose"
 
@@ -55,7 +54,15 @@ const CSS = `
 @media (prefers-reduced-motion: reduce) { .aurora-card[data-interactive="true"] { transition: none; } }
 `
 
-function ensureCSS() { injectOnce("aurora-card", CSS) }
+let injected = false
+function ensureCSS() {
+  if (injected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.setAttribute("data-aurora-card", "")
+  el.textContent = CSS
+  document.head.appendChild(el)
+  injected = true
+}
 
 /* ─── Card ────────────────────────────────────────────────────────────────── */
 
@@ -72,8 +79,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   elevated?: boolean
 }
 
-const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, interactive, accent, elevated, tabIndex, ...props }, ref) => {
+function Card({ className, interactive, accent, elevated, tabIndex, ref, ...props }: CardProps & { ref?: React.Ref<HTMLDivElement> }) {
     React.useEffect(() => {
       ensureCSS()
     }, [])
@@ -89,23 +95,20 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         {...props}
       />
     )
-  },
-)
-Card.displayName = "Card"
+}
 
 /* ─── CardHeader ──────────────────────────────────────────────────────────── */
 
-const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, style, ...props }, ref) => (
+function CardHeader({ className, style, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       className={cn("border-b px-4 py-3", className)}
       style={{ borderColor: "var(--aurora-border-default)", ...style }}
       {...props}
     />
-  ),
-)
-CardHeader.displayName = "CardHeader"
+  )
+}
 
 /* ─── CardTitle ───────────────────────────────────────────────────────────── */
 
@@ -114,54 +117,48 @@ interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p"
 }
 
-const CardTitle = React.forwardRef<HTMLElement, CardTitleProps>(
-  ({ className, style, as: Tag = "h3", ...props }, ref) => (
+function CardTitle({ className, style, as: Tag = "h3", ref, ...props }: CardTitleProps & { ref?: React.Ref<HTMLElement> }) {
+  return (
     <Tag
       ref={ref as React.Ref<HTMLHeadingElement>}
       className={cn("aurora-text-section", className)}
       style={{ color: "var(--aurora-text-primary)", ...style }}
       {...props}
     />
-  ),
-)
-CardTitle.displayName = "CardTitle"
+  )
+}
 
 /* ─── CardDescription ─────────────────────────────────────────────────────── */
 
-const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
-  ({ className, style, ...props }, ref) => (
+function CardDescription({ className, style, ref, ...props }: React.HTMLAttributes<HTMLParagraphElement> & { ref?: React.Ref<HTMLParagraphElement> }) {
+  return (
     <p
       ref={ref}
       className={cn("aurora-text-body-sm", className)}
       style={{ color: "var(--aurora-text-muted)", marginTop: "4px", ...style }}
       {...props}
     />
-  ),
-)
-CardDescription.displayName = "CardDescription"
+  )
+}
 
 /* ─── CardContent ─────────────────────────────────────────────────────────── */
 
-const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("px-4 py-3", className)} {...props} />
-  ),
-)
-CardContent.displayName = "CardContent"
+function CardContent({ className, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return <div ref={ref} className={cn("px-4 py-3", className)} {...props} />
+}
 
 /* ─── CardFooter ──────────────────────────────────────────────────────────── */
 
-const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, style, ...props }, ref) => (
+function CardFooter({ className, style, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       className={cn("border-t px-4 py-3", className)}
       style={{ borderColor: "var(--aurora-border-default)", ...style }}
       {...props}
     />
-  ),
-)
-CardFooter.displayName = "CardFooter"
+  )
+}
 
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 export default Card

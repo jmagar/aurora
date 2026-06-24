@@ -13,64 +13,58 @@ import { cn } from "@/lib/utils"
 
 const Tabs = TabsPrimitive.Root
 
-const TabsList = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, style, ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    className={cn("flex max-w-full items-end gap-1 overflow-x-auto overflow-y-hidden border-b", className)}
-    style={{ borderColor: "var(--aurora-border-default)", ...style }}
-    {...props}
-  />
-))
-TabsList.displayName = TabsPrimitive.List.displayName
+function TabsList({ ref, className, style, ...props }: React.ComponentProps<typeof TabsPrimitive.List> & { ref?: React.Ref<React.ComponentRef<typeof TabsPrimitive.List>> }) {
+  return (
+    <TabsPrimitive.List
+      ref={ref}
+      className={cn("flex max-w-full items-end gap-1 overflow-x-auto overflow-y-hidden border-b", className)}
+      style={{ borderColor: "var(--aurora-border-default)", ...style }}
+      {...props}
+    />
+  )
+}
 
-const TabsTrigger = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      // layout (CD: symmetric 9px vertical, 12px horizontal)
-      "relative inline-flex items-center gap-1.5 px-3 py-[9px]",
-      "select-none cursor-pointer",
-      "transition-colors duration-150 focus-visible:outline-none",
-      // resting state
-      "text-[var(--aurora-text-muted)] hover:text-[var(--aurora-text-primary)]",
-      // glowing accent underline indicator (CD: inset 8px, sits on the border, soft glow)
-      "after:absolute after:bottom-[-1px] after:left-2 after:right-2 after:h-[2px]",
-      "after:rounded-full after:bg-transparent after:transition-colors after:duration-150",
-      // active state (CD: text goes primary, indicator lights up cyan + glow)
-      "data-[state=active]:text-[var(--aurora-text-primary)]",
-      "data-[state=active]:after:bg-[var(--aurora-accent-primary)]",
-      "data-[state=active]:after:[box-shadow:0_0_8px_var(--aurora-accent-primary)]",
-      className
-    )}
-    style={{
-      fontFamily: "var(--aurora-font-sans)",
-      fontSize: "var(--aurora-type-body-sm)",
-      fontWeight: "var(--aurora-weight-ui)",
-      letterSpacing: "var(--aurora-letter-ui)",
-      lineHeight: "var(--aurora-line-ui)",
-    }}
-    {...props}
-  />
-))
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
+function TabsTrigger({ ref, className, ...props }: React.ComponentProps<typeof TabsPrimitive.Trigger> & { ref?: React.Ref<React.ComponentRef<typeof TabsPrimitive.Trigger>> }) {
+  return (
+    <TabsPrimitive.Trigger
+      ref={ref}
+      className={cn(
+        // layout (CD: symmetric 9px vertical, 12px horizontal)
+        "relative inline-flex items-center gap-1.5 px-3 py-[9px]",
+        "select-none cursor-pointer",
+        "transition-colors duration-150 focus-visible:outline-none",
+        // resting state
+        "text-[var(--aurora-text-muted)] hover:text-[var(--aurora-text-primary)]",
+        // glowing accent underline indicator (CD: inset 8px, sits on the border, soft glow)
+        "after:absolute after:bottom-[-1px] after:left-2 after:right-2 after:h-[2px]",
+        "after:rounded-full after:bg-transparent after:transition-colors after:duration-150",
+        // active state (CD: text goes primary, indicator lights up cyan + glow)
+        "data-[state=active]:text-[var(--aurora-text-primary)]",
+        "data-[state=active]:after:bg-[var(--aurora-accent-primary)]",
+        "data-[state=active]:after:[box-shadow:0_0_8px_var(--aurora-accent-primary)]",
+        className
+      )}
+      style={{
+        fontFamily: "var(--aurora-font-sans)",
+        fontSize: "var(--aurora-type-body-sm)",
+        fontWeight: "var(--aurora-weight-ui)",
+        letterSpacing: "var(--aurora-letter-ui)",
+        lineHeight: "var(--aurora-line-ui)",
+      }}
+      {...props}
+    />
+  )
+}
 
-const TabsContent = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Content
-    ref={ref}
-    className={cn("mt-4 focus-visible:outline-none", className)}
-    {...props}
-  />
-))
-TabsContent.displayName = TabsPrimitive.Content.displayName
+function TabsContent({ ref, className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content> & { ref?: React.Ref<React.ComponentRef<typeof TabsPrimitive.Content>> }) {
+  return (
+    <TabsPrimitive.Content
+      ref={ref}
+      className={cn("mt-4 focus-visible:outline-none", className)}
+      {...props}
+    />
+  )
+}
 
 // ─── Pill Group ───────────────────────────────────────────────────────────────
 
@@ -86,59 +80,55 @@ TabsContent.displayName = TabsPrimitive.Content.displayName
  * Note: PillGroup renders only the TabsList, not TabsContent.
  * Pair with TabsContent outside PillGroup if panel switching is needed.
  */
-export type PillGroupProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
+export type PillGroupProps = React.ComponentProps<typeof TabsPrimitive.Root>
 
-const PillGroup = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.Root>,
-  PillGroupProps
->(({ className, children, style, ...props }, ref) => (
-  <TabsPrimitive.Root ref={ref} {...props}>
-    <TabsPrimitive.List
+function PillGroup({ ref, className, children, style, ...props }: PillGroupProps & { ref?: React.Ref<React.ComponentRef<typeof TabsPrimitive.Root>> }) {
+  return (
+    <TabsPrimitive.Root ref={ref} {...props}>
+      <TabsPrimitive.List
+        className={cn(
+          "inline-flex max-w-full items-center gap-1 overflow-x-auto overflow-y-hidden rounded-full border p-1",
+          className
+        )}
+        style={{
+          backgroundColor: "var(--aurora-control-surface)",
+          borderColor: "var(--aurora-border-default)",
+          ...style,
+        }}
+      >
+        {children}
+      </TabsPrimitive.List>
+    </TabsPrimitive.Root>
+  )
+}
+
+function PillTrigger({ ref, className, ...props }: React.ComponentProps<typeof TabsPrimitive.Trigger> & { ref?: React.Ref<React.ComponentRef<typeof TabsPrimitive.Trigger>> }) {
+  return (
+    <TabsPrimitive.Trigger
+      ref={ref}
       className={cn(
-        "inline-flex max-w-full items-center gap-1 overflow-x-auto overflow-y-hidden rounded-full border p-1",
+        "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5",
+        "select-none cursor-pointer",
+        "transition-all duration-150 focus-visible:outline-none",
+        // resting
+        "text-[var(--aurora-text-muted)] hover:text-[var(--aurora-text-primary)]",
+        // active — bg + accent text + active-glow
+        "data-[state=active]:text-[var(--aurora-accent-primary)]",
+        "[&[data-state=active]]:bg-[var(--aurora-panel-strong)]",
+        "[&[data-state=active]]:[box-shadow:var(--aurora-active-glow)]",
         className
       )}
       style={{
-        backgroundColor: "var(--aurora-control-surface)",
-        borderColor: "var(--aurora-border-default)",
-        ...style,
+        fontFamily: "var(--aurora-font-sans)",
+        fontSize: "var(--aurora-type-body-sm)",
+        fontWeight: "var(--aurora-weight-ui)",
+        letterSpacing: "var(--aurora-letter-ui)",
+        lineHeight: "var(--aurora-line-ui)",
       }}
-    >
-      {children}
-    </TabsPrimitive.List>
-  </TabsPrimitive.Root>
-))
-PillGroup.displayName = "PillGroup"
-
-const PillTrigger = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5",
-      "select-none cursor-pointer",
-      "transition-all duration-150 focus-visible:outline-none",
-      // resting
-      "text-[var(--aurora-text-muted)] hover:text-[var(--aurora-text-primary)]",
-      // active — bg + accent text + active-glow
-      "data-[state=active]:text-[var(--aurora-accent-primary)]",
-      "[&[data-state=active]]:bg-[var(--aurora-panel-strong)]",
-      "[&[data-state=active]]:[box-shadow:var(--aurora-active-glow)]",
-      className
-    )}
-    style={{
-      fontFamily: "var(--aurora-font-sans)",
-      fontSize: "var(--aurora-type-body-sm)",
-      fontWeight: "var(--aurora-weight-ui)",
-      letterSpacing: "var(--aurora-letter-ui)",
-      lineHeight: "var(--aurora-line-ui)",
-    }}
-    {...props}
-  />
-))
-PillTrigger.displayName = "PillTrigger"
+      {...props}
+    />
+  )
+}
 
 export {
   Tabs,

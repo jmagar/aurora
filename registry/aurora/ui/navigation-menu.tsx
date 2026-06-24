@@ -7,8 +7,8 @@ export interface NavigationMenuItemProps extends React.AnchorHTMLAttributes<HTML
   active?: boolean
 }
 
-export const NavigationMenu = React.forwardRef<HTMLElement, NavigationMenuProps>(
-  ({ className, style, ...props }, ref) => (
+export function NavigationMenu({ className, style, ref, ...props }: NavigationMenuProps & { ref?: React.Ref<HTMLElement> }) {
+  return (
     <nav
       ref={ref}
       className={["flex flex-wrap items-center gap-1 rounded-[8px] border p-1", className].filter(Boolean).join(" ")}
@@ -20,11 +20,10 @@ export const NavigationMenu = React.forwardRef<HTMLElement, NavigationMenuProps>
       {...props}
     />
   )
-)
-NavigationMenu.displayName = "NavigationMenu"
+}
 
-export const NavigationMenuItem = React.forwardRef<HTMLAnchorElement, NavigationMenuItemProps>(
-  ({ active = false, className, style, ...props }, ref) => (
+export function NavigationMenuItem({ active = false, className, style, ref, ...props }: NavigationMenuItemProps & { ref?: React.Ref<HTMLAnchorElement> }) {
+  return (
     <a
       ref={ref}
       className={["rounded-[6px] border px-3 py-1.5 no-underline aurora-text-control transition-colors", className].filter(Boolean).join(" ")}
@@ -39,7 +38,6 @@ export const NavigationMenuItem = React.forwardRef<HTMLAnchorElement, Navigation
       {...props}
     />
   )
-)
-NavigationMenuItem.displayName = "NavigationMenuItem"
+}
 
 export default NavigationMenu

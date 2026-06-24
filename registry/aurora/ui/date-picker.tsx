@@ -56,20 +56,19 @@ const triggerFormatter = new Intl.DateTimeFormat(undefined, {
  * holding a self-contained month grid. The selected day is a cyan-filled, glowing
  * pill; "today" is a cyan-outlined cell. Reads only `--aurora-*` tokens.
  */
-export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
-  (
-    {
-      className,
-      label,
-      value,
-      defaultValue,
-      onChange,
-      defaultOpen = false,
-      placeholder = "Select date",
-      ...props
-    },
-    ref
-  ) => {
+export function DatePicker(
+  {
+    ref,
+    className,
+    label,
+    value,
+    defaultValue,
+    onChange,
+    defaultOpen = false,
+    placeholder = "Select date",
+    ...props
+  }: DatePickerProps & { ref?: React.Ref<HTMLDivElement> }
+) {
     const isControlled = value !== undefined
     const [internalValue, setInternalValue] = React.useState<Date | undefined>(defaultValue)
     const selected = isControlled ? value : internalValue
@@ -270,8 +269,6 @@ export const DatePicker = React.forwardRef<HTMLDivElement, DatePickerProps>(
         ) : null}
       </div>
     )
-  }
-)
-DatePicker.displayName = "DatePicker"
+}
 
 export default DatePicker

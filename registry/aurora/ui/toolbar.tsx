@@ -3,8 +3,8 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-const Toolbar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, style, ...props }, ref) => (
+function Toolbar({ ref, className, style, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       role="toolbar"
@@ -18,18 +18,14 @@ const Toolbar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
       {...props}
     />
   )
-)
-Toolbar.displayName = "Toolbar"
+}
 
-const ToolbarGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("flex items-center gap-1.5", className)} {...props} />
-  )
-)
-ToolbarGroup.displayName = "ToolbarGroup"
+function ToolbarGroup({ ref, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return <div ref={ref} className={cn("flex items-center gap-1.5", className)} {...props} />
+}
 
-const ToolbarSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, style, ...props }, ref) => (
+function ToolbarSeparator({ ref, className, style, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       role="separator"
@@ -39,7 +35,6 @@ const ToolbarSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
       {...props}
     />
   )
-)
-ToolbarSeparator.displayName = "ToolbarSeparator"
+}
 
 export { Toolbar, ToolbarGroup, ToolbarSeparator }

@@ -88,8 +88,8 @@ interface MultiSelectChipProps {
   disabled?: boolean
 }
 
-const MultiSelectChip = React.forwardRef<HTMLSpanElement, MultiSelectChipProps>(
-  ({ label, onRemove, disabled }, ref) => (
+function MultiSelectChip({ label, onRemove, disabled, ref }: MultiSelectChipProps & { ref?: React.Ref<HTMLSpanElement> }) {
+  return (
     <span
       ref={ref}
       className={cn(
@@ -130,8 +130,7 @@ const MultiSelectChip = React.forwardRef<HTMLSpanElement, MultiSelectChipProps>(
       </button>
     </span>
   )
-)
-MultiSelectChip.displayName = "MultiSelectChip"
+}
 
 // ─── Option row (checkbox item) ───────────────────────────────────────────────
 
@@ -141,8 +140,8 @@ interface MultiSelectItemProps {
   onToggle: () => void
 }
 
-const MultiSelectItem = React.forwardRef<HTMLDivElement, MultiSelectItemProps>(
-  ({ option, selected, onToggle }, ref) => (
+function MultiSelectItem({ option, selected, onToggle, ref }: MultiSelectItemProps & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       role="option"
@@ -190,193 +189,186 @@ const MultiSelectItem = React.forwardRef<HTMLDivElement, MultiSelectItemProps>(
       <span className="truncate">{option.label}</span>
     </div>
   )
-)
-MultiSelectItem.displayName = "MultiSelectItem"
+}
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
-const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
-  (
-    {
-      className,
-      options,
-      value: valueProp,
-      defaultValue,
-      onValueChange,
-      open: openProp,
-      defaultOpen,
-      onOpenChange,
-      placeholder = "Select…",
-      disabled,
-      ...props
+function MultiSelect(
+  {
+    className,
+    options,
+    value: valueProp,
+    defaultValue,
+    onValueChange,
+    open: openProp,
+    defaultOpen,
+    onOpenChange,
+    placeholder = "Select…",
+    disabled,
+    ref,
+    ...props
+  }: MultiSelectProps & { ref?: React.Ref<HTMLDivElement> }
+) {
+  const listboxId = React.useId()
+  const [valueState, setValueState] = React.useState<string[]>(
+    defaultValue ?? []
+  )
+  const value = valueProp ?? valueState
+  const setValue = React.useCallback(
+    (next: string[]) => {
+      if (valueProp === undefined) setValueState(next)
+      onValueChange?.(next)
     },
-    ref
-  ) => {
-    const listboxId = React.useId()
-    const [valueState, setValueState] = React.useState<string[]>(
-      defaultValue ?? []
-    )
-    const value = valueProp ?? valueState
-    const setValue = React.useCallback(
-      (next: string[]) => {
-        if (valueProp === undefined) setValueState(next)
-        onValueChange?.(next)
-      },
-      [valueProp, onValueChange]
-    )
+    [valueProp, onValueChange]
+  )
 
-    const [openState, setOpenState] = React.useState<boolean>(
-      defaultOpen ?? false
-    )
-    const open = openProp ?? openState
-    const setOpen = React.useCallback(
-      (next: boolean) => {
-        if (openProp === undefined) setOpenState(next)
-        onOpenChange?.(next)
-      },
-      [openProp, onOpenChange]
-    )
+  const [openState, setOpenState] = React.useState<boolean>(
+    defaultOpen ?? false
+  )
+  const open = openProp ?? openState
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      if (openProp === undefined) setOpenState(next)
+      onOpenChange?.(next)
+    },
+    [openProp, onOpenChange]
+  )
 
-    const containerRef = React.useRef<HTMLDivElement>(null)
-    React.useImperativeHandle(ref, () => containerRef.current as HTMLDivElement)
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  React.useImperativeHandle(ref, () => containerRef.current as HTMLDivElement)
 
-    // Close on outside click
-    React.useEffect(() => {
-      if (!open) return
-      const onDocClick = (e: MouseEvent) => {
-        if (
-          containerRef.current &&
-          !containerRef.current.contains(e.target as Node)
-        ) {
-          setOpen(false)
-        }
+  // Close on outside click
+  React.useEffect(() => {
+    if (!open) return
+    const onDocClick = (e: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false)
       }
-      document.addEventListener("mousedown", onDocClick)
-      return () => document.removeEventListener("mousedown", onDocClick)
-    }, [open, setOpen])
+    }
+    document.addEventListener("mousedown", onDocClick)
+    return () => document.removeEventListener("mousedown", onDocClick)
+  }, [open, setOpen])
 
-    const toggle = React.useCallback(
-      (val: string) => {
-        setValue(
-          value.includes(val)
-            ? value.filter((v) => v !== val)
-            : [...value, val]
-        )
-      },
-      [value, setValue]
-    )
+  const toggle = React.useCallback(
+    (val: string) => {
+      setValue(
+        value.includes(val)
+          ? value.filter((v) => v !== val)
+          : [...value, val]
+      )
+    },
+    [value, setValue]
+  )
 
-    const remove = React.useCallback(
-      (val: string) => {
-        setValue(value.filter((v) => v !== val))
-      },
-      [value, setValue]
-    )
+  const remove = React.useCallback(
+    (val: string) => {
+      setValue(value.filter((v) => v !== val))
+    },
+    [value, setValue]
+  )
 
-    const selectedOptions = value
-      .map((v) => options.find((o) => o.value === v))
-      .filter((o): o is MultiSelectOption => Boolean(o))
+  const selectedOptions = value
+    .map((v) => options.find((o) => o.value === v))
+    .filter((o): o is MultiSelectOption => Boolean(o))
 
-    return (
-      <div
-        ref={containerRef}
-        className={cn("relative w-full", className)}
-        style={{ fontFamily: "var(--aurora-font-sans)" }}
-        {...props}
+  return (
+    <div
+      ref={containerRef}
+      className={cn("relative w-full", className)}
+      style={{ fontFamily: "var(--aurora-font-sans)" }}
+      {...props}
+    >
+      {/* Trigger */}
+      <button
+        type="button"
+        role="combobox"
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-controls={listboxId}
+        disabled={disabled}
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "flex w-full items-center justify-between gap-2",
+          "min-h-[44px] px-3 py-2",
+          "border rounded-[var(--aurora-radius-1)]",
+          "text-left text-[var(--aurora-text-primary)]",
+          "transition-all duration-150 ease-out",
+          "focus:outline-none",
+          "disabled:pointer-events-none disabled:opacity-45",
+          // When open, square the bottom + drop the bottom border so the panel
+          // flows out of the trigger as one continuous outline (no seam).
+          open
+            ? "rounded-b-none border-b-transparent border-[color-mix(in_srgb,var(--aurora-accent-primary)_55%,transparent)]"
+            : "border-[var(--aurora-border-strong)]"
+        )}
+        style={{
+          background: "var(--aurora-control-surface)",
+          boxShadow: open
+            ? "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)"
+            : "none",
+        }}
       >
-        {/* Trigger */}
-        <button
-          type="button"
-          role="combobox"
-          aria-expanded={open}
-          aria-haspopup="listbox"
-          aria-controls={listboxId}
-          disabled={disabled}
-          onClick={() => setOpen(!open)}
-          className={cn(
-            "flex w-full items-center justify-between gap-2",
-            "min-h-[44px] px-3 py-2",
-            "border rounded-[var(--aurora-radius-1)]",
-            "text-left text-[var(--aurora-text-primary)]",
-            "transition-all duration-150 ease-out",
-            "focus:outline-none",
-            "disabled:pointer-events-none disabled:opacity-45",
-            // When open, square the bottom + drop the bottom border so the panel
-            // flows out of the trigger as one continuous outline (no seam).
-            open
-              ? "rounded-b-none border-b-transparent border-[color-mix(in_srgb,var(--aurora-accent-primary)_55%,transparent)]"
-              : "border-[var(--aurora-border-strong)]"
+        <span className="flex flex-1 flex-wrap items-center gap-2">
+          {selectedOptions.length === 0 ? (
+            <span
+              className="text-[var(--aurora-text-muted)]"
+              style={{
+                fontSize: "var(--aurora-type-body-sm)",
+                fontWeight: "var(--aurora-weight-ui)",
+                letterSpacing: "var(--aurora-letter-ui)",
+              }}
+            >
+              {placeholder}
+            </span>
+          ) : (
+            selectedOptions.map((opt) => (
+              <MultiSelectChip
+                key={opt.value}
+                label={opt.label}
+                disabled={disabled}
+                onRemove={() => remove(opt.value)}
+              />
+            ))
           )}
+        </span>
+        <ChevronDown className="shrink-0 text-[var(--aurora-text-muted)]" />
+      </button>
+
+      {/* Panel */}
+      {open ? (
+        <div
+          id={listboxId}
+          role="listbox"
+          aria-multiselectable="true"
+          className={cn(
+            "mt-2 w-full overflow-hidden p-2",
+            "border border-[var(--aurora-border-strong)]",
+            "rounded-[var(--aurora-radius-2)]",
+            "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+          )}
+          data-state="open"
           style={{
-            background: "var(--aurora-control-surface)",
-            boxShadow: open
-              ? "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent)"
-              : "none",
+            background: "var(--aurora-panel-strong)",
+            boxShadow:
+              "var(--aurora-shadow-medium), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 8%, transparent)",
           }}
         >
-          <span className="flex flex-1 flex-wrap items-center gap-2">
-            {selectedOptions.length === 0 ? (
-              <span
-                className="text-[var(--aurora-text-muted)]"
-                style={{
-                  fontSize: "var(--aurora-type-body-sm)",
-                  fontWeight: "var(--aurora-weight-ui)",
-                  letterSpacing: "var(--aurora-letter-ui)",
-                }}
-              >
-                {placeholder}
-              </span>
-            ) : (
-              selectedOptions.map((opt) => (
-                <MultiSelectChip
-                  key={opt.value}
-                  label={opt.label}
-                  disabled={disabled}
-                  onRemove={() => remove(opt.value)}
-                />
-              ))
-            )}
-          </span>
-          <ChevronDown className="shrink-0 text-[var(--aurora-text-muted)]" />
-        </button>
-
-        {/* Panel */}
-        {open ? (
-          <div
-            id={listboxId}
-            role="listbox"
-            aria-multiselectable="true"
-            className={cn(
-              "w-full overflow-hidden p-2",
-              "border border-[color-mix(in_srgb,var(--aurora-accent-primary)_55%,transparent)]",
-              // Square top, rounded bottom: the panel is the lower half of one
-              // continuous outline with the trigger (no seam, no cartoon radius).
-              "rounded-b-[var(--aurora-radius-1)] rounded-t-none",
-              "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
-            )}
-            data-state="open"
-            style={{
-              // -1px overlaps the trigger's bottom edge so the borders merge.
-              marginTop: -1,
-              background: "var(--aurora-panel-strong)",
-              boxShadow: "var(--aurora-shadow-medium)",
-            }}
-          >
-            {options.map((opt) => (
-              <MultiSelectItem
-                key={opt.value}
-                option={opt}
-                selected={value.includes(opt.value)}
-                onToggle={() => toggle(opt.value)}
-              />
-            ))}
-          </div>
-        ) : null}
-      </div>
-    )
-  }
-)
-MultiSelect.displayName = "MultiSelect"
+          {options.map((opt) => (
+            <MultiSelectItem
+              key={opt.value}
+              option={opt}
+              selected={value.includes(opt.value)}
+              onToggle={() => toggle(opt.value)}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  )
+}
 
 // ─── Exports ──────────────────────────────────────────────────────────────────
 

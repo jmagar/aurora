@@ -3,8 +3,8 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-const DescriptionList = React.forwardRef<HTMLDListElement, React.HTMLAttributes<HTMLDListElement>>(
-  ({ className, ...props }, ref) => (
+function DescriptionList({ ref, className, ...props }: React.HTMLAttributes<HTMLDListElement> & { ref?: React.Ref<HTMLDListElement> }) {
+  return (
     <dl
       ref={ref}
       className={cn("grid gap-0 overflow-hidden rounded-[var(--aurora-radius-1)] border", className)}
@@ -12,8 +12,7 @@ const DescriptionList = React.forwardRef<HTMLDListElement, React.HTMLAttributes<
       {...props}
     />
   )
-)
-DescriptionList.displayName = "DescriptionList"
+}
 
 export interface DescriptionItemProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode
@@ -22,8 +21,8 @@ export interface DescriptionItemProps extends React.HTMLAttributes<HTMLDivElemen
   active?: boolean
 }
 
-const DescriptionItem = React.forwardRef<HTMLDivElement, DescriptionItemProps>(
-  ({ className, label, value, active = false, ...props }, ref) => (
+function DescriptionItem({ ref, className, label, value, active = false, ...props }: DescriptionItemProps & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       className={cn("grid grid-cols-[150px_minmax(0,1fr)] gap-4 border-b px-7 py-[14px] last:border-b-0", className)}
@@ -71,7 +70,6 @@ const DescriptionItem = React.forwardRef<HTMLDivElement, DescriptionItemProps>(
       </dd>
     </div>
   )
-)
-DescriptionItem.displayName = "DescriptionItem"
+}
 
 export { DescriptionList, DescriptionItem }

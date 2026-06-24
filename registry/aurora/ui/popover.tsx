@@ -52,8 +52,7 @@ export interface PopoverContentProps extends React.HTMLAttributes<HTMLDivElement
   align?: "start" | "center" | "end"
 }
 
-export const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentProps>(
-  ({ className, align = "start", style, ...props }, ref) => {
+export function PopoverContent({ ref, className, align = "start", style, ...props }: PopoverContentProps & { ref?: React.Ref<HTMLDivElement> }) {
     const ctx = React.useContext(PopoverContext)
     if (!ctx?.open) return null
 
@@ -76,9 +75,7 @@ export const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentPro
         {...props}
       />
     )
-  }
-)
-PopoverContent.displayName = "PopoverContent"
+}
 
 export function PopoverAnchor({ children, className }: { children: React.ReactNode; className?: string }) {
   return <div className={cn("relative inline-block", className)}>{children}</div>

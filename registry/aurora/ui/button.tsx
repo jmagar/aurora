@@ -7,14 +7,13 @@
  * Visual layer is ported verbatim from the Claude Design source (injected once,
  * reads only `--aurora-*` tokens) so it renders pixel-identical in dark + `.light`.
  * Architecture stays shadcn: `Slot`/`asChild`, `cva` `buttonVariants`, `VariantProps`,
- * `React.memo`, `forwardRef`.
+ * `React.memo`.
  */
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
-import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 export type ButtonVariant =
   | "aurora"
@@ -118,7 +117,15 @@ const CSS = `
 .aurora-btn__icon { display: inline-flex; align-items: center; flex-shrink: 0; }
 `
 
-function ensureCSS() { injectOnce("aurora-button", CSS) }
+let injected = false
+function ensureCSS() {
+  if (injected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.setAttribute("data-aurora-button", "")
+  el.textContent = CSS
+  document.head.appendChild(el)
+  injected = true
+}
 
 // ─── cva (class selection + buttonVariants export) ─────────────────────────────
 
@@ -176,109 +183,104 @@ export interface ButtonProps
   asChild?: boolean
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      variant = "neutral",
-      size = "default",
-      pulse = false,
-      filled = false,
-      loading = false,
-      block = false,
-      shape = "default",
-      iconLeft,
-      iconRight,
-      asChild = false,
-      className,
-      children,
-      disabled,
-      onClick,
-      ...props
+function Button({
+  ref,
+  variant = "neutral",
+  size = "default",
+  pulse = false,
+  filled = false,
+  loading = false,
+  block = false,
+  shape = "default",
+  iconLeft,
+  iconRight,
+  asChild = false,
+  className,
+  children,
+  disabled,
+  onClick,
+  ...props
+}: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }) {
+  React.useEffect(() => {
+    ensureCSS()
+  }, [])
+
+  const isDisabled = disabled || loading
+
+  const cls = cn(
+    buttonVariants({ variant, size }),
+    shape === "pill" && "aurora-btn--pill",
+    pulse && !loading && "aurora-btn--pulse",
+    filled && "aurora-btn--filled",
+    block && "aurora-btn--block",
+    loading && "aurora-btn--loading",
+    // asChild renders a non-<button> (which ignores `disabled`), so emulate
+    // the disabled visuals and drop it from the tab order via class + aria.
+    asChild && isDisabled && "pointer-events-none opacity-45",
+    className
+  )
+
+  // Guard clicks while disabled/loading. A native <button disabled> already
+  // suppresses clicks, but asChild renders a non-button element that does not,
+  // so swallow the event there (and defensively everywhere).
+  const handleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (isDisabled) {
+        event.preventDefault()
+        event.stopPropagation()
+        return
+      }
+      onClick?.(event)
     },
-    ref
-  ) => {
-    React.useEffect(() => {
-      ensureCSS()
-    }, [])
+    [isDisabled, onClick]
+  )
 
-    const isDisabled = disabled || loading
-
-    const cls = cn(
-      buttonVariants({ variant, size }),
-      shape === "pill" && "aurora-btn--pill",
-      pulse && !loading && "aurora-btn--pulse",
-      filled && "aurora-btn--filled",
-      block && "aurora-btn--block",
-      loading && "aurora-btn--loading",
-      // asChild renders a non-<button> (which ignores `disabled`), so emulate
-      // the disabled visuals and drop it from the tab order via class + aria.
-      asChild && isDisabled && "pointer-events-none opacity-45",
-      className
-    )
-
-    // Guard clicks while disabled/loading. A native <button disabled> already
-    // suppresses clicks, but asChild renders a non-button element that does not,
-    // so swallow the event there (and defensively everywhere).
-    const handleClick = React.useCallback(
-      (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (isDisabled) {
-          event.preventDefault()
-          event.stopPropagation()
-          return
-        }
-        onClick?.(event)
-      },
-      [isDisabled, onClick]
-    )
-
-    // asChild: render the consumer's element via Slot, merging classes. No spinner.
-    if (asChild) {
-      return (
-        <Slot
-          ref={ref}
-          className={cls}
-          aria-busy={loading ? "true" : undefined}
-          onClick={handleClick}
-          // asChild renders a non-<button>, which ignores `disabled`; expose
-          // disabled state to AT and drop it from the tab order instead.
-          {...(isDisabled ? { "aria-disabled": true, tabIndex: -1 } : {})}
-          {...props}
-        >
-          {children}
-        </Slot>
-      )
-    }
-
-    const body = loading ? (
-      <>
-        <span className="aurora-btn__spinner" aria-hidden="true" />
-        {size !== "icon" && children ? (
-          <span style={{ opacity: 0 }}>{children}</span>
-        ) : null}
-      </>
-    ) : (
-      <>
-        {iconLeft ? <span className="aurora-btn__icon">{iconLeft}</span> : null}
-        {children}
-        {iconRight ? <span className="aurora-btn__icon">{iconRight}</span> : null}
-      </>
-    )
-
+  // asChild: render the consumer's element via Slot, merging classes. No spinner.
+  if (asChild) {
     return (
-      <button
+      <Slot
         ref={ref}
         className={cls}
-        disabled={isDisabled}
         aria-busy={loading ? "true" : undefined}
         onClick={handleClick}
+        // asChild renders a non-<button>, which ignores `disabled`; expose
+        // disabled state to AT and drop it from the tab order instead.
+        {...(isDisabled ? { "aria-disabled": true, tabIndex: -1 } : {})}
         {...props}
       >
-        {body}
-      </button>
+        {children}
+      </Slot>
     )
   }
-)
-Button.displayName = "Button"
+
+  const body = loading ? (
+    <>
+      <span className="aurora-btn__spinner" aria-hidden="true" />
+      {size !== "icon" && children ? (
+        <span style={{ opacity: 0 }}>{children}</span>
+      ) : null}
+    </>
+  ) : (
+    <>
+      {iconLeft ? <span className="aurora-btn__icon">{iconLeft}</span> : null}
+      {children}
+      {iconRight ? <span className="aurora-btn__icon">{iconRight}</span> : null}
+    </>
+  )
+
+  return (
+    <button
+      ref={ref}
+      className={cls}
+      disabled={isDisabled}
+      aria-busy={loading ? "true" : undefined}
+      onClick={handleClick}
+      {...props}
+    >
+      {body}
+    </button>
+  )
+}
 
 const MemoButton = React.memo(Button)
 MemoButton.displayName = "Button"

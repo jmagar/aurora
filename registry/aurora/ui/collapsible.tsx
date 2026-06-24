@@ -9,8 +9,7 @@ export interface CollapsibleProps extends Omit<React.HTMLAttributes<HTMLDetailsE
   defaultOpen?: boolean
 }
 
-const Collapsible = React.forwardRef<HTMLDetailsElement, CollapsibleProps>(
-  ({ className, title, children, defaultOpen = false, style, onToggle, ...props }, ref) => {
+function Collapsible({ className, title, children, defaultOpen = false, style, onToggle, ref, ...props }: CollapsibleProps & { ref?: React.Ref<HTMLDetailsElement> }) {
     const [open, setOpen] = React.useState(defaultOpen)
     return (
       <details
@@ -55,9 +54,7 @@ const Collapsible = React.forwardRef<HTMLDetailsElement, CollapsibleProps>(
         </div>
       </details>
     )
-  }
-)
-Collapsible.displayName = "Collapsible"
+}
 
 export { Collapsible }
 export default Collapsible

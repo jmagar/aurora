@@ -135,42 +135,23 @@ function TileCard({
   preview,
   thumbHeight = 104,
   onOpen,
-  index = 0,
-  total = 1,
-  onPrev,
-  onNext,
   className,
   style,
   forwardedRef,
   // discard non-DOM / variant-only props so they never reach the <div>
   variant: _variant,
+  index: _index,
+  total: _total,
   siblings: _siblings,
+  onPrev: _onPrev,
+  onNext: _onNext,
   onJump: _onJump,
   comparePreview: _comparePreview,
   compareName: _compareName,
   ...rest
 }: ComponentCardProps & {
-  forwardedRef: React.ForwardedRef<HTMLDivElement>;
+  forwardedRef?: React.Ref<HTMLDivElement>;
 }) {
-  const hasNav = onPrev != null || onNext != null;
-  const atStart = index <= 0;
-  const atEnd = index >= total - 1;
-
-  const tileNavBtn: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 26,
-    height: 26,
-    flexShrink: 0,
-    borderRadius: 7,
-    border: "1px solid var(--aurora-border-strong)",
-    background: "var(--aurora-control-surface)",
-    color: "var(--aurora-text-primary)",
-    cursor: "pointer",
-    padding: 0,
-  };
-
   return (
     <div
       ref={forwardedRef}
@@ -220,73 +201,43 @@ function TileCard({
           >
             {name}
           </span>
-
-          {/* Trailing affordances: prev/next nav + open button */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-            {hasNav && (
-              <>
-                <button
-                  type="button"
-                  onClick={onPrev}
-                  disabled={atStart}
-                  aria-label="Previous component"
-                  style={{ ...tileNavBtn, opacity: atStart ? 0.4 : 1, cursor: atStart ? "not-allowed" : "pointer" }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M15 6 9 12l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={onNext}
-                  disabled={atEnd}
-                  aria-label="Next component"
-                  style={{ ...tileNavBtn, opacity: atEnd ? 0.4 : 1, cursor: atEnd ? "not-allowed" : "pointer" }}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="m9 6 6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-              </>
-            )}
-            {onOpen && (
-              <button
-                type="button"
-                onClick={onOpen}
-                aria-label={`Open ${name}`}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 26,
-                  height: 26,
-                  flexShrink: 0,
-                  border: "none",
-                  background: "transparent",
-                  color: "var(--aurora-accent-primary)",
-                  cursor: "pointer",
-                  padding: 0,
-                  borderRadius: 8,
-                }}
+          {onOpen && (
+            <button
+              type="button"
+              onClick={onOpen}
+              aria-label={`Open ${name}`}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 26,
+                height: 26,
+                flexShrink: 0,
+                border: "none",
+                background: "transparent",
+                color: "var(--aurora-accent-primary)",
+                cursor: "pointer",
+                padding: 0,
+                borderRadius: 8,
+              }}
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
               >
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden
-                >
-                  <path
-                    d="M7 17 17 7M9 7h8v8"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            )}
-          </div>
+                <path
+                  d="M7 17 17 7M9 7h8v8"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          )}
         </div>
 
         {blurb != null && (
@@ -335,7 +286,7 @@ function ViewerCard({
   onOpen: _onOpen,
   ...rest
 }: ComponentCardProps & {
-  forwardedRef: React.ForwardedRef<HTMLDivElement>;
+  forwardedRef?: React.Ref<HTMLDivElement>;
 }) {
   const [comparing, setComparing] = React.useState(false);
   const selectId = React.useId();
@@ -563,16 +514,12 @@ function StageLabel({ children }: { children?: React.ReactNode }) {
 // Public component
 // ---------------------------------------------------------------------------
 
-export const ComponentCard = React.forwardRef<HTMLDivElement, ComponentCardProps>(
-  function ComponentCard(props, ref) {
-    const { variant = "tile" } = props;
-    if (variant === "viewer") {
-      return <ViewerCard {...props} forwardedRef={ref} />;
-    }
-    return <TileCard {...props} forwardedRef={ref} />;
-  },
-);
-
-ComponentCard.displayName = "ComponentCard";
+export function ComponentCard(props: ComponentCardProps & { ref?: React.Ref<HTMLDivElement> }) {
+  const { ref, variant = "tile" } = props;
+  if (variant === "viewer") {
+    return <ViewerCard {...props} forwardedRef={ref} />;
+  }
+  return <TileCard {...props} forwardedRef={ref} />;
+}
 
 export default ComponentCard;

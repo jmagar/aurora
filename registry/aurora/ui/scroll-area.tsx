@@ -8,8 +8,8 @@ export interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
   maxHeight?: number | string
 }
 
-export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
-  ({ className, viewportClassName, style, children, maxHeight, ...props }, ref) => (
+export function ScrollArea({ ref, className, viewportClassName, style, children, maxHeight, ...props }: ScrollAreaProps & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       className={["overflow-hidden rounded-[8px] border", className].filter(Boolean).join(" ")}
@@ -40,7 +40,6 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
       </div>
     </div>
   )
-)
-ScrollArea.displayName = "ScrollArea"
+}
 
 export default ScrollArea

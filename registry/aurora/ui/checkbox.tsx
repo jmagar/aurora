@@ -72,19 +72,18 @@ export interface CheckboxProps {
   className?: string
 }
 
-const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
-  (
-    {
-      checked: controlledChecked,
-      defaultChecked = false,
-      onCheckedChange,
-      disabled = false,
-      children,
-      id,
-      className,
-    },
-    ref
-  ) => {
+function Checkbox(
+  {
+    checked: controlledChecked,
+    defaultChecked = false,
+    onCheckedChange,
+    disabled = false,
+    children,
+    id,
+    className,
+    ref,
+  }: CheckboxProps & { ref?: React.Ref<HTMLButtonElement> }
+) {
     React.useEffect(() => {
       ensureCheckboxCSS()
     }, [])
@@ -187,9 +186,7 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         )}
       </label>
     )
-  }
-)
-Checkbox.displayName = "Checkbox"
+}
 
 // ---------------------------------------------------------------------------
 // RadioGroup + RadioGroupItem
@@ -260,8 +257,7 @@ export interface RadioGroupItemProps {
   className?: string
 }
 
-const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(
-  ({ value, disabled: itemDisabled, children, id, className }, ref) => {
+function RadioGroupItem({ value, disabled: itemDisabled, children, id, className, ref }: RadioGroupItemProps & { ref?: React.Ref<HTMLButtonElement> }) {
     React.useEffect(() => {
       ensureCheckboxCSS()
     }, [])
@@ -366,9 +362,7 @@ const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(
         )}
       </label>
     )
-  }
-)
-RadioGroupItem.displayName = "RadioGroupItem"
+}
 
 // ---------------------------------------------------------------------------
 // Exports

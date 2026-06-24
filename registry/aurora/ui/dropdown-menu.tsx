@@ -45,16 +45,58 @@ const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
 
 // ─── Content ──────────────────────────────────────────────────────────────────
 
-const DropdownMenuContent = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 6, style, ...props }, ref) => (
-  <DropdownMenuPrimitive.Portal>
-    <DropdownMenuPrimitive.Content
+function DropdownMenuContent({ ref, className, sideOffset = 6, style, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+  return (
+    <DropdownMenuPrimitive.Portal>
+      <DropdownMenuPrimitive.Content
+        ref={ref}
+        sideOffset={sideOffset}
+        className={cn(
+          "z-50 min-w-[10rem] overflow-hidden rounded-[var(--aurora-radius-1)] border p-1",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
+          "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          "duration-150",
+          className
+        )}
+        style={{ ...menuContentStyle, ...style }}
+        {...props}
+      />
+    </DropdownMenuPrimitive.Portal>
+  )
+}
+
+// ─── Sub trigger ─────────────────────────────────────────────────────────────
+
+function DropdownMenuSubTrigger({ ref, className, inset, children, style, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & { inset?: boolean }) {
+  return (
+    <DropdownMenuPrimitive.SubTrigger
       ref={ref}
-      sideOffset={sideOffset}
       className={cn(
-        "z-50 min-w-[10rem] overflow-hidden rounded-[var(--aurora-radius-1)] border p-1",
+        menuItemBase,
+        "data-[state=open]:bg-[var(--aurora-hover-bg)]",
+        inset && "pl-8",
+        className
+      )}
+      style={{ ...menuTextStyle, color: "var(--aurora-text-primary)", ...style }}
+      {...props}
+    >
+      {children}
+      <ChevronRight className="ml-auto size-4 opacity-60" aria-hidden />
+    </DropdownMenuPrimitive.SubTrigger>
+  )
+}
+
+// ─── Sub content ─────────────────────────────────────────────────────────────
+
+function DropdownMenuSubContent({ ref, className, style, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
+  return (
+    <DropdownMenuPrimitive.SubContent
+      ref={ref}
+      className={cn(
+        "z-50 min-w-[8rem] overflow-hidden rounded-[var(--aurora-radius-1)] border p-1",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -66,58 +108,8 @@ const DropdownMenuContent = React.forwardRef<
       style={{ ...menuContentStyle, ...style }}
       {...props}
     />
-  </DropdownMenuPrimitive.Portal>
-))
-DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
-
-// ─── Sub trigger ─────────────────────────────────────────────────────────────
-
-const DropdownMenuSubTrigger = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.SubTrigger>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
-    inset?: boolean
-  }
->(({ className, inset, children, style, ...props }, ref) => (
-  <DropdownMenuPrimitive.SubTrigger
-    ref={ref}
-    className={cn(
-      menuItemBase,
-      "data-[state=open]:bg-[var(--aurora-hover-bg)]",
-      inset && "pl-8",
-      className
-    )}
-    style={{ ...menuTextStyle, color: "var(--aurora-text-primary)", ...style }}
-    {...props}
-  >
-    {children}
-    <ChevronRight className="ml-auto size-4 opacity-60" aria-hidden />
-  </DropdownMenuPrimitive.SubTrigger>
-))
-DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName
-
-// ─── Sub content ─────────────────────────────────────────────────────────────
-
-const DropdownMenuSubContent = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.SubContent>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
->(({ className, style, ...props }, ref) => (
-  <DropdownMenuPrimitive.SubContent
-    ref={ref}
-    className={cn(
-      "z-50 min-w-[8rem] overflow-hidden rounded-[var(--aurora-radius-1)] border p-1",
-      "data-[state=open]:animate-in data-[state=closed]:animate-out",
-      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-      "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
-      "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      "duration-150",
-      className
-    )}
-    style={{ ...menuContentStyle, ...style }}
-    {...props}
-  />
-))
-DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName
+  )
+}
 
 // ─── MenuItem ─────────────────────────────────────────────────────────────────
 
@@ -128,144 +120,132 @@ export interface DropdownMenuItemProps
   danger?: boolean
 }
 
-const DropdownMenuItem = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.Item>,
-  DropdownMenuItemProps
->(({ className, inset, danger, style, ...props }, ref) => (
-  <DropdownMenuPrimitive.Item
-    ref={ref}
-    className={cn(
-      menuItemBase,
-      "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
-      danger
-        ? "hover:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)] data-[highlighted]:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)]"
-        : "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
-      inset && "pl-8",
-      className
-    )}
-    style={{
-      color: danger ? "var(--aurora-error)" : "var(--aurora-text-primary)",
-      ...menuTextStyle,
-      ...style,
-    }}
-    {...props}
-  />
-))
-DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
+function DropdownMenuItem({ ref, className, inset, danger, style, ...props }: DropdownMenuItemProps & { ref?: React.Ref<React.ComponentRef<typeof DropdownMenuPrimitive.Item>> }) {
+  return (
+    <DropdownMenuPrimitive.Item
+      ref={ref}
+      className={cn(
+        menuItemBase,
+        "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
+        danger
+          ? "hover:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)] data-[highlighted]:bg-[color-mix(in_srgb,var(--aurora-error)_10%,transparent)]"
+          : "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
+        inset && "pl-8",
+        className
+      )}
+      style={{
+        color: danger ? "var(--aurora-error)" : "var(--aurora-text-primary)",
+        ...menuTextStyle,
+        ...style,
+      }}
+      {...props}
+    />
+  )
+}
 
 // ─── CheckboxItem ─────────────────────────────────────────────────────────────
 
-const DropdownMenuCheckboxItem = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.CheckboxItem>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem>
->(({ className, children, checked, style, ...props }, ref) => (
-  <DropdownMenuPrimitive.CheckboxItem
-    ref={ref}
-    className={cn(
-      menuItemBase,
-      "pl-8",
-      "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
-      "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
-      "data-[state=checked]:font-semibold",
-      className
-    )}
-    style={{
-      color: checked
-        ? "var(--aurora-accent-primary)"
-        : "var(--aurora-text-primary)",
-      ...menuTextStyle,
-      ...style,
-    }}
-    checked={checked}
-    {...props}
-  >
-    <span className="absolute left-2 flex size-3.5 items-center justify-center">
-      <DropdownMenuPrimitive.ItemIndicator>
-        <Check className="size-3.5" aria-hidden />
-      </DropdownMenuPrimitive.ItemIndicator>
-    </span>
-    {children}
-  </DropdownMenuPrimitive.CheckboxItem>
-))
-DropdownMenuCheckboxItem.displayName = DropdownMenuPrimitive.CheckboxItem.displayName
+function DropdownMenuCheckboxItem({ ref, className, children, checked, style, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) {
+  return (
+    <DropdownMenuPrimitive.CheckboxItem
+      ref={ref}
+      className={cn(
+        menuItemBase,
+        "pl-8",
+        "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
+        "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
+        "data-[state=checked]:font-semibold",
+        className
+      )}
+      style={{
+        color: checked
+          ? "var(--aurora-accent-primary)"
+          : "var(--aurora-text-primary)",
+        ...menuTextStyle,
+        ...style,
+      }}
+      checked={checked}
+      {...props}
+    >
+      <span className="absolute left-2 flex size-3.5 items-center justify-center">
+        <DropdownMenuPrimitive.ItemIndicator>
+          <Check className="size-3.5" aria-hidden />
+        </DropdownMenuPrimitive.ItemIndicator>
+      </span>
+      {children}
+    </DropdownMenuPrimitive.CheckboxItem>
+  )
+}
 
 // ─── RadioItem ────────────────────────────────────────────────────────────────
 
-const DropdownMenuRadioItem = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.RadioItem>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
->(({ className, children, style, ...props }, ref) => (
-  <DropdownMenuPrimitive.RadioItem
-    ref={ref}
-    className={cn(
-      menuItemBase,
-      "pl-8",
-      "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
-      "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
-      "data-[state=checked]:font-semibold",
-      className
-    )}
-    style={{ ...menuTextStyle, color: "var(--aurora-text-primary)", ...style }}
-    {...props}
-  >
-    <span className="absolute left-2 flex size-3.5 items-center justify-center">
-      <DropdownMenuPrimitive.ItemIndicator>
-        <Circle
-          className="size-2 fill-current"
-          style={{ color: "var(--aurora-accent-primary)" }}
-          aria-hidden
-        />
-      </DropdownMenuPrimitive.ItemIndicator>
-    </span>
-    {children}
-  </DropdownMenuPrimitive.RadioItem>
-))
-DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName
+function DropdownMenuRadioItem({ ref, className, children, style, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) {
+  return (
+    <DropdownMenuPrimitive.RadioItem
+      ref={ref}
+      className={cn(
+        menuItemBase,
+        "pl-8",
+        "data-[disabled]:pointer-events-none data-[disabled]:opacity-40",
+        "hover:bg-[var(--aurora-hover-bg)] data-[highlighted]:bg-[var(--aurora-hover-bg)]",
+        "data-[state=checked]:font-semibold",
+        className
+      )}
+      style={{ ...menuTextStyle, color: "var(--aurora-text-primary)", ...style }}
+      {...props}
+    >
+      <span className="absolute left-2 flex size-3.5 items-center justify-center">
+        <DropdownMenuPrimitive.ItemIndicator>
+          <Circle
+            className="size-2 fill-current"
+            style={{ color: "var(--aurora-accent-primary)" }}
+            aria-hidden
+          />
+        </DropdownMenuPrimitive.ItemIndicator>
+      </span>
+      {children}
+    </DropdownMenuPrimitive.RadioItem>
+  )
+}
 
 // ─── Label ────────────────────────────────────────────────────────────────────
 
-const DropdownMenuLabel = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.Label>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
-    inset?: boolean
-  }
->(({ className, inset, style, ...props }, ref) => (
-  <DropdownMenuPrimitive.Label
-    ref={ref}
-    className={cn(
-      "px-2 py-1.5",
-      inset && "pl-8",
-      className
-    )}
-    style={{
-      color: "var(--aurora-text-muted)",
-      fontFamily: "var(--aurora-font-sans)",
-      fontSize: "var(--aurora-type-caption)",
-      fontWeight: "var(--aurora-weight-label)",
-      letterSpacing: "0.08em",
-      lineHeight: "var(--aurora-line-dense)",
-      textTransform: "uppercase",
-      ...style,
-    }}
-    {...props}
-  />
-))
-DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName
+function DropdownMenuLabel({ ref, className, inset, style, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & { inset?: boolean }) {
+  return (
+    <DropdownMenuPrimitive.Label
+      ref={ref}
+      className={cn(
+        "px-2 py-1.5",
+        inset && "pl-8",
+        className
+      )}
+      style={{
+        color: "var(--aurora-text-muted)",
+        fontFamily: "var(--aurora-font-sans)",
+        fontSize: "var(--aurora-type-caption)",
+        fontWeight: "var(--aurora-weight-label)",
+        letterSpacing: "0.08em",
+        lineHeight: "var(--aurora-line-dense)",
+        textTransform: "uppercase",
+        ...style,
+      }}
+      {...props}
+    />
+  )
+}
 
 // ─── Separator ────────────────────────────────────────────────────────────────
 
-const DropdownMenuSeparator = React.forwardRef<
-  React.ComponentRef<typeof DropdownMenuPrimitive.Separator>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
->(({ className, style, ...props }, ref) => (
-  <DropdownMenuPrimitive.Separator
-    ref={ref}
-    className={cn("-mx-1 my-1 h-px", className)}
-    style={{ backgroundColor: "var(--aurora-border-default)", ...style }}
-    {...props}
-  />
-))
-DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
+function DropdownMenuSeparator({ ref, className, style, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
+  return (
+    <DropdownMenuPrimitive.Separator
+      ref={ref}
+      className={cn("-mx-1 my-1 h-px", className)}
+      style={{ backgroundColor: "var(--aurora-border-default)", ...style }}
+      {...props}
+    />
+  )
+}
 
 // ─── Shortcut ─────────────────────────────────────────────────────────────────
 

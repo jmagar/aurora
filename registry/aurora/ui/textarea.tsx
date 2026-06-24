@@ -45,24 +45,23 @@ function stateFocusShadow(color: string): string {
   ].join(", ")
 }
 
-const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  (
-    {
-      className,
-      autoResize = false,
-      autoGrow = false,
-      showCount = false,
-      style,
-      state: stateProp,
-      error,
-      onChange,
-      defaultValue,
-      value,
-      maxLength,
-      ...props
-    },
-    ref
-  ) => {
+function Textarea(
+  {
+    ref,
+    className,
+    autoResize = false,
+    autoGrow = false,
+    showCount = false,
+    style,
+    state: stateProp,
+    error,
+    onChange,
+    defaultValue,
+    value,
+    maxLength,
+    ...props
+  }: TextareaProps & { ref?: React.Ref<HTMLTextAreaElement> }
+) {
     const internalRef = React.useRef<HTMLTextAreaElement | null>(null)
     const grows = autoResize || autoGrow
     const effectiveState: TextareaState | undefined = stateProp ?? (error ? "error" : undefined)
@@ -187,9 +186,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         </span>
       </div>
     )
-  }
-)
-Textarea.displayName = "Textarea"
+}
 
 export { Textarea }
 export default Textarea

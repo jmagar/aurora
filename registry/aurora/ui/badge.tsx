@@ -209,196 +209,191 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 // Badge
 // ---------------------------------------------------------------------------
 
-const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  (
-    {
-      className,
-      variant,
-      tone: toneProp,
-      fill: fillProp,
-      dot = false,
-      icon,
-      pulse = false,
-      size = "md",
-      shape = "label",
-      interactive = false,
-      style,
-      children,
-      onClick,
-      onKeyDown,
-      ...props
-    },
-    ref
-  ) => {
-    // `variant` is overloaded for backward/CD compat: it may carry either a
-    // fill keyword or a tone. Split it into the two orthogonal axes.
-    const variantFill = variant && isFillValue(variant) ? (variant as BadgeFill) : undefined
-    const variantTone =
-      variant && !isFillValue(variant)
-        ? (variant as BadgeTone | "default" | "violet")
-        : undefined
+function Badge({
+  ref,
+  className,
+  variant,
+  tone: toneProp,
+  fill: fillProp,
+  dot = false,
+  icon,
+  pulse = false,
+  size = "md",
+  shape = "label",
+  interactive = false,
+  style,
+  children,
+  onClick,
+  onKeyDown,
+  ...props
+}: BadgeProps & { ref?: React.Ref<HTMLSpanElement> }) {
+  // `variant` is overloaded for backward/CD compat: it may carry either a
+  // fill keyword or a tone. Split it into the two orthogonal axes.
+  const variantFill = variant && isFillValue(variant) ? (variant as BadgeFill) : undefined
+  const variantTone =
+    variant && !isFillValue(variant)
+      ? (variant as BadgeTone | "default" | "violet")
+      : undefined
 
-    const tone = resolveTone(toneProp ?? variantTone)
-    const fill: BadgeFill = fillProp ?? variantFill ?? "soft"
-    const { accent, text, border, bg, solidText } = badgeToneMap[tone]
+  const tone = resolveTone(toneProp ?? variantTone)
+  const fill: BadgeFill = fillProp ?? variantFill ?? "soft"
+  const { accent, text, border, bg, solidText } = badgeToneMap[tone]
 
-    // Inject pulse keyframes lazily — only when the feature is first used.
-    React.useEffect(() => {
-      if (pulse && dot) injectPulse()
-    }, [pulse, dot])
+  // Inject pulse keyframes lazily — only when the feature is first used.
+  React.useEffect(() => {
+    if (pulse && dot) injectPulse()
+  }, [pulse, dot])
 
-    // -----------------------------------------------------------------------
-    // Size tokens
-    // -----------------------------------------------------------------------
-    const isSm = size === "sm"
-    const dotSize = isSm ? "4px" : "5px"
-    const badgeRadius = shape === "pill" ? "999px" : "4px"
-    const badgeFontSize = isSm
-      ? "var(--aurora-type-caption)"
-      : "var(--aurora-type-micro)"
+  // -----------------------------------------------------------------------
+  // Size tokens
+  // -----------------------------------------------------------------------
+  const isSm = size === "sm"
+  const dotSize = isSm ? "4px" : "5px"
+  const badgeRadius = shape === "pill" ? "999px" : "4px"
+  const badgeFontSize = isSm
+    ? "var(--aurora-type-caption)"
+    : "var(--aurora-type-micro)"
 
-    // -----------------------------------------------------------------------
-    // Shape tokens
-    // -----------------------------------------------------------------------
-    const isLabel = shape === "label"
-    const fontFamily = isLabel
-      ? "var(--aurora-font-mono, 'JetBrains Mono', monospace)"
-      : "var(--aurora-font-sans, Inter, sans-serif)"
-    const letterSpacing = isLabel ? "0.075em" : "0.01em"
+  // -----------------------------------------------------------------------
+  // Shape tokens
+  // -----------------------------------------------------------------------
+  const isLabel = shape === "label"
+  const fontFamily = isLabel
+    ? "var(--aurora-font-mono, 'JetBrains Mono', monospace)"
+    : "var(--aurora-font-sans, Inter, sans-serif)"
+  const letterSpacing = isLabel ? "0.075em" : "0.01em"
 
-    // -----------------------------------------------------------------------
-    // Fill resolution (soft / solid / outline)
-    // -----------------------------------------------------------------------
-    const dotColor = fill === "solid" ? solidText : accent
-    const dotShadow =
-      fill === "solid"
-        ? "0 0 4px color-mix(in srgb, var(--badge-dot-color) 60%, transparent)"
-        : "0 0 4px var(--badge-dot-color)"
+  // -----------------------------------------------------------------------
+  // Fill resolution (soft / solid / outline)
+  // -----------------------------------------------------------------------
+  const dotColor = fill === "solid" ? solidText : accent
+  const dotShadow =
+    fill === "solid"
+      ? "0 0 4px color-mix(in srgb, var(--badge-dot-color) 60%, transparent)"
+      : "0 0 4px var(--badge-dot-color)"
 
-    let fillStyle: React.CSSProperties
-    if (fill === "solid") {
-      fillStyle = {
-        background: accent,
-        borderColor: "transparent",
-        color: solidText,
-        // Subtle outer glow so the bright chip reads as "live" against the navy.
-        boxShadow: `0 2px 10px color-mix(in srgb, ${accent} 32%, transparent)`,
-      }
-    } else if (fill === "outline") {
-      fillStyle = {
-        background: "transparent",
-        borderColor: border,
-        color: text,
-      }
-    } else {
-      // soft (default)
-      fillStyle = {
-        background: bg,
-        borderColor: border,
-        color: text,
-      }
+  let fillStyle: React.CSSProperties
+  if (fill === "solid") {
+    fillStyle = {
+      background: accent,
+      borderColor: "transparent",
+      color: solidText,
+      // Subtle outer glow so the bright chip reads as "live" against the navy.
+      boxShadow: `0 2px 10px color-mix(in srgb, ${accent} 32%, transparent)`,
     }
-
-    // -----------------------------------------------------------------------
-    // Icon resolution — string path body vs node
-    // -----------------------------------------------------------------------
-    const iconNode: React.ReactNode =
-      typeof icon === "string" ? (
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          width={isSm ? 11 : 12}
-          height={isSm ? 11 : 12}
-          fill="currentColor"
-          style={{ flexShrink: 0 }}
-          dangerouslySetInnerHTML={{ __html: icon }}
-        />
-      ) : (
-        icon ?? null
-      )
-
-    // -----------------------------------------------------------------------
-    // Interactive keyboard handler
-    // -----------------------------------------------------------------------
-    const handleKeyDown = React.useCallback(
-      (e: React.KeyboardEvent<HTMLSpanElement>) => {
-        onKeyDown?.(e)
-        if (interactive && onClick && (e.key === "Enter" || e.key === " ")) {
-          e.preventDefault()
-          onClick(e as unknown as React.MouseEvent<HTMLSpanElement>)
-        }
-      },
-      [interactive, onClick, onKeyDown]
-    )
-
-    // -----------------------------------------------------------------------
-    // Derived accessibility attributes
-    // -----------------------------------------------------------------------
-    const interactiveProps = interactive
-      ? {
-          tabIndex: 0,
-          role: onClick ? ("button" as const) : undefined,
-          onKeyDown: handleKeyDown,
-          onClick,
-        }
-      : { onClick }
-
-    return (
-      <span
-        ref={ref}
-        className={cn(
-          "inline-flex items-center gap-1.5 leading-none border whitespace-nowrap",
-          // Size
-          isSm ? "px-1.5 py-0" : "px-2 py-0.5",
-          // Shape: uppercase only for "label"
-          isLabel && "uppercase",
-          // Interactive
-          interactive && [
-            "cursor-pointer",
-            "transition-[box-shadow,filter,transform] duration-150",
-            "hover:brightness-125",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)]",
-          ],
-          className
-        )}
-        style={{
-          borderRadius: badgeRadius,
-          fontFamily,
-          fontSize: badgeFontSize,
-          fontWeight: 650,
-          letterSpacing,
-          ...fillStyle,
-          ...style,
-        }}
-        {...interactiveProps}
-        {...props}
-      >
-        {dot && (
-          <span
-            aria-hidden="true"
-            className={cn(pulse && "aurora-badge-dot--pulse")}
-            style={{
-              display: "inline-block",
-              width: dotSize,
-              height: dotSize,
-              borderRadius: "50%",
-              backgroundColor: dotColor,
-              flexShrink: 0,
-              // Static glow when not pulsing; animation handles it when pulsing.
-              boxShadow: pulse ? undefined : dotShadow,
-              // CSS custom property consumed by the keyframe so one rule
-              // works across all tones.
-              ["--badge-dot-color" as string]: dotColor,
-            }}
-          />
-        )}
-        {iconNode}
-        {children}
-      </span>
-    )
+  } else if (fill === "outline") {
+    fillStyle = {
+      background: "transparent",
+      borderColor: border,
+      color: text,
+    }
+  } else {
+    // soft (default)
+    fillStyle = {
+      background: bg,
+      borderColor: border,
+      color: text,
+    }
   }
-)
-Badge.displayName = "Badge"
+
+  // -----------------------------------------------------------------------
+  // Icon resolution — string path body vs node
+  // -----------------------------------------------------------------------
+  const iconNode: React.ReactNode =
+    typeof icon === "string" ? (
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width={isSm ? 11 : 12}
+        height={isSm ? 11 : 12}
+        fill="currentColor"
+        style={{ flexShrink: 0 }}
+        dangerouslySetInnerHTML={{ __html: icon }}
+      />
+    ) : (
+      icon ?? null
+    )
+
+  // -----------------------------------------------------------------------
+  // Interactive keyboard handler
+  // -----------------------------------------------------------------------
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLSpanElement>) => {
+      onKeyDown?.(e)
+      if (interactive && onClick && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault()
+        onClick(e as unknown as React.MouseEvent<HTMLSpanElement>)
+      }
+    },
+    [interactive, onClick, onKeyDown]
+  )
+
+  // -----------------------------------------------------------------------
+  // Derived accessibility attributes
+  // -----------------------------------------------------------------------
+  const interactiveProps = interactive
+    ? {
+        tabIndex: 0,
+        role: onClick ? ("button" as const) : undefined,
+        onKeyDown: handleKeyDown,
+        onClick,
+      }
+    : { onClick }
+
+  return (
+    <span
+      ref={ref}
+      className={cn(
+        "inline-flex items-center gap-1.5 leading-none border whitespace-nowrap",
+        // Size
+        isSm ? "px-1.5 py-0" : "px-2 py-0.5",
+        // Shape: uppercase only for "label"
+        isLabel && "uppercase",
+        // Interactive
+        interactive && [
+          "cursor-pointer",
+          "transition-[box-shadow,filter,transform] duration-150",
+          "hover:brightness-125",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)]",
+        ],
+        className
+      )}
+      style={{
+        borderRadius: badgeRadius,
+        fontFamily,
+        fontSize: badgeFontSize,
+        fontWeight: 650,
+        letterSpacing,
+        ...fillStyle,
+        ...style,
+      }}
+      {...interactiveProps}
+      {...props}
+    >
+      {dot && (
+        <span
+          aria-hidden="true"
+          className={cn(pulse && "aurora-badge-dot--pulse")}
+          style={{
+            display: "inline-block",
+            width: dotSize,
+            height: dotSize,
+            borderRadius: "50%",
+            backgroundColor: dotColor,
+            flexShrink: 0,
+            // Static glow when not pulsing; animation handles it when pulsing.
+            boxShadow: pulse ? undefined : dotShadow,
+            // CSS custom property consumed by the keyframe so one rule
+            // works across all tones.
+            ["--badge-dot-color" as string]: dotColor,
+          }}
+        />
+      )}
+      {iconNode}
+      {children}
+    </span>
+  )
+}
 
 export { Badge }
 export default Badge

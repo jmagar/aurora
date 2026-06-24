@@ -13,22 +13,19 @@ export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: "vertical" | "horizontal"
 }
 
-const Field = React.forwardRef<HTMLDivElement, FieldProps>(
-  (
-    {
-      className,
-      children,
-      label,
-      description,
-      error,
-      required,
-      disabled,
-      htmlFor,
-      orientation = "vertical",
-      ...props
-    },
-    ref
-  ) => {
+function Field({
+  ref,
+  className,
+  children,
+  label,
+  description,
+  error,
+  required,
+  disabled,
+  htmlFor,
+  orientation = "vertical",
+  ...props
+}: FieldProps & { ref?: React.Ref<HTMLDivElement> }) {
     const invalid = Boolean(error)
 
     return (
@@ -103,9 +100,7 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
         </div>
       </div>
     )
-  }
-)
-Field.displayName = "Field"
+}
 
 export { Field }
 export default Field

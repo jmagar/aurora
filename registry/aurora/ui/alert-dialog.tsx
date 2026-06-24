@@ -34,7 +34,6 @@ import * as React from "react"
 import { AlertTriangle, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/registry/aurora/ui/button"
-import { injectOnce } from "@/registry/aurora/lib/inject-once"
 import {
   Dialog,
   DialogBody,
@@ -116,7 +115,15 @@ const CSS = `
 }
 `
 
-function ensureCSS() { injectOnce("aurora-alert-dialog", CSS) }
+let injected = false
+function ensureCSS() {
+  if (injected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.setAttribute("data-aurora-alert-dialog", "")
+  el.textContent = CSS
+  document.head.appendChild(el)
+  injected = true
+}
 
 // ─── Prop-driven CD-parity card ────────────────────────────────────────────────
 
@@ -138,55 +145,50 @@ export interface AlertDialogCardProps
   onCancel?: () => void
 }
 
-const AlertDialogCard = React.forwardRef<HTMLDivElement, AlertDialogCardProps>(
-  (
-    {
-      className,
-      title,
-      description,
-      destructive = true,
-      confirmLabel = "Confirm",
-      cancelLabel = "Cancel",
-      onConfirm,
-      onCancel,
-      ...props
-    },
-    ref
-  ) => {
-    React.useEffect(() => {
-      ensureCSS()
-    }, [])
+function AlertDialogCard({
+  ref,
+  className,
+  title,
+  description,
+  destructive = true,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  onConfirm,
+  onCancel,
+  ...props
+}: AlertDialogCardProps & { ref?: React.Ref<HTMLDivElement> }) {
+  React.useEffect(() => {
+    ensureCSS()
+  }, [])
 
-    const Icon = destructive ? AlertTriangle : Info
+  const Icon = destructive ? AlertTriangle : Info
 
-    return (
-      <div
-        ref={ref}
-        role="alertdialog"
-        aria-modal="false"
-        className={cn("aurora-alert", !destructive && "aurora-alert--info", className)}
-        {...props}
-      >
-        <span className="aurora-alert__icon" aria-hidden>
-          <Icon className="size-5" />
-        </span>
-        <div className="aurora-alert__main">
-          {title ? <h2 className="aurora-alert__title">{title}</h2> : null}
-          {description ? <p className="aurora-alert__desc">{description}</p> : null}
-          <div className="aurora-alert__footer">
-            <Button variant="neutral" onClick={onCancel}>
-              {cancelLabel}
-            </Button>
-            <Button variant={destructive ? "rose" : "aurora"} onClick={onConfirm}>
-              {confirmLabel}
-            </Button>
-          </div>
+  return (
+    <div
+      ref={ref}
+      role="alertdialog"
+      aria-modal="false"
+      className={cn("aurora-alert", !destructive && "aurora-alert--info", className)}
+      {...props}
+    >
+      <span className="aurora-alert__icon" aria-hidden>
+        <Icon className="size-5" />
+      </span>
+      <div className="aurora-alert__main">
+        {title ? <h2 className="aurora-alert__title">{title}</h2> : null}
+        {description ? <p className="aurora-alert__desc">{description}</p> : null}
+        <div className="aurora-alert__footer">
+          <Button variant="neutral" onClick={onCancel}>
+            {cancelLabel}
+          </Button>
+          <Button variant={destructive ? "rose" : "aurora"} onClick={onConfirm}>
+            {confirmLabel}
+          </Button>
         </div>
       </div>
-    )
-  }
-)
-AlertDialogCard.displayName = "AlertDialogCard"
+    </div>
+  )
+}
 
 // ─── Polymorphic root ──────────────────────────────────────────────────────────
 // When `title` (or `description`) is supplied, render the CD-parity inline card.

@@ -13,8 +13,14 @@ export interface FilterSearchProps
   onClear?: () => void;
 }
 
-export const FilterSearch = React.forwardRef<HTMLInputElement, FilterSearchProps>(
-  function FilterSearch({ className, onClear, value, onChange, ...rest }, ref) {
+export function FilterSearch({
+  ref,
+  className,
+  onClear,
+  value,
+  onChange,
+  ...rest
+}: FilterSearchProps & { ref?: React.Ref<HTMLInputElement> }) {
     return (
       <div className="relative flex flex-1 items-center">
         {/* Search icon */}
@@ -83,10 +89,7 @@ export const FilterSearch = React.forwardRef<HTMLInputElement, FilterSearchProps
         ) : null}
       </div>
     );
-  },
-);
-
-FilterSearch.displayName = "FilterSearch";
+}
 
 // ---------------------------------------------------------------------------
 // FilterTag — accent tinted pill
@@ -97,8 +100,13 @@ export interface FilterTagProps extends React.HTMLAttributes<HTMLSpanElement> {
   onRemove?: () => void;
 }
 
-export const FilterTag = React.forwardRef<HTMLSpanElement, FilterTagProps>(
-  function FilterTag({ children, onRemove, className, ...rest }, ref) {
+export function FilterTag({
+  ref,
+  children,
+  onRemove,
+  className,
+  ...rest
+}: FilterTagProps & { ref?: React.Ref<HTMLSpanElement> }) {
     return (
       <span
         ref={ref}
@@ -143,17 +151,19 @@ export const FilterTag = React.forwardRef<HTMLSpanElement, FilterTagProps>(
         )}
       </span>
     );
-  },
-);
-
-FilterTag.displayName = "FilterTag";
+}
 
 // ---------------------------------------------------------------------------
 // FilterTagRose — rose/pink tinted pill
 // ---------------------------------------------------------------------------
 
-export const FilterTagRose = React.forwardRef<HTMLSpanElement, FilterTagProps>(
-  function FilterTagRose({ children, onRemove, className, ...rest }, ref) {
+export function FilterTagRose({
+  ref,
+  children,
+  onRemove,
+  className,
+  ...rest
+}: FilterTagProps & { ref?: React.Ref<HTMLSpanElement> }) {
     return (
       <span
         ref={ref}
@@ -198,10 +208,7 @@ export const FilterTagRose = React.forwardRef<HTMLSpanElement, FilterTagProps>(
         )}
       </span>
     );
-  },
-);
-
-FilterTagRose.displayName = "FilterTagRose";
+}
 
 // ---------------------------------------------------------------------------
 // FilterBar — main container
@@ -213,11 +220,14 @@ export interface FilterBarProps extends React.HTMLAttributes<HTMLDivElement> {
   showClearAll?: boolean;
 }
 
-export const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
-  function FilterBar(
-    { children, onClearAll, showClearAll = false, className, ...rest },
-    ref,
-  ) {
+export function FilterBar({
+  ref,
+  children,
+  onClearAll,
+  showClearAll = false,
+  className,
+  ...rest
+}: FilterBarProps & { ref?: React.Ref<HTMLDivElement> }) {
     return (
       <div
         ref={ref}
@@ -262,7 +272,4 @@ export const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
         )}
       </div>
     );
-  },
-);
-
-FilterBar.displayName = "FilterBar";
+}

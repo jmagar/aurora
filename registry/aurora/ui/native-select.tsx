@@ -8,8 +8,8 @@ export interface NativeSelectProps extends React.SelectHTMLAttributes<HTMLSelect
   placeholder?: string
 }
 
-const NativeSelect = React.forwardRef<HTMLSelectElement, NativeSelectProps>(
-  ({ className, style, children, placeholder, disabled, onFocus, onBlur, ...props }, ref) => (
+function NativeSelect({ className, style, children, placeholder, disabled, onFocus, onBlur, ref, ...props }: NativeSelectProps & { ref?: React.Ref<HTMLSelectElement> }) {
+  return (
     <span className="relative inline-flex w-full items-center">
       <select
         {...props}
@@ -63,8 +63,7 @@ const NativeSelect = React.forwardRef<HTMLSelectElement, NativeSelectProps>(
       />
     </span>
   )
-)
-NativeSelect.displayName = "NativeSelect"
+}
 
 export { NativeSelect }
 export default NativeSelect

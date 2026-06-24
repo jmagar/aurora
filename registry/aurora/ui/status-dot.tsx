@@ -109,49 +109,44 @@ export interface StatusDotProps
   label?: React.ReactNode;
 }
 
-const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
-  function StatusDot(
-    { status = "neutral", pulse = false, label, className, style, ...props },
-    ref
-  ) {
-    React.useEffect(() => {
-      injectStyles();
-    }, []);
+function StatusDot(
+  { ref, status = "neutral", pulse = false, label, className, style, ...props }: StatusDotProps & { ref?: React.Ref<HTMLSpanElement> }
+) {
+  React.useEffect(() => {
+    injectStyles();
+  }, []);
 
-    const color = STATUS_COLOR[status] ?? STATUS_COLOR.neutral;
-    const roleLabel = STATUS_ROLE_LABEL[status] ?? STATUS_ROLE_LABEL.neutral;
+  const color = STATUS_COLOR[status] ?? STATUS_COLOR.neutral;
+  const roleLabel = STATUS_ROLE_LABEL[status] ?? STATUS_ROLE_LABEL.neutral;
 
-    return (
+  return (
+    <span
+      ref={ref}
+      className={cn(
+        "inline-flex items-center gap-[10px] font-[var(--font-sans)] text-[13px] leading-none text-[var(--aurora-text-primary)]",
+        className
+      )}
+      style={style}
+      {...props}
+    >
       <span
-        ref={ref}
+        aria-hidden="true"
         className={cn(
-          "inline-flex items-center gap-[10px] font-[var(--font-sans)] text-[13px] leading-none text-[var(--aurora-text-primary)]",
-          className
+          "aurora-status-dot",
+          pulse && "aurora-status-dot--pulse"
         )}
-        style={style}
-        {...props}
-      >
-        <span
-          aria-hidden="true"
-          className={cn(
-            "aurora-status-dot",
-            pulse && "aurora-status-dot--pulse"
-          )}
-          style={{ ["--status-dot-color" as string]: color }}
-        />
-        {label != null && (
-          <span className="inline-flex items-center">
-            {/* Status word for assistive tech; the visible label carries the rest. */}
-            <span className="sr-only">{roleLabel}: </span>
-            <span>{label}</span>
-          </span>
-        )}
-      </span>
-    );
-  }
-);
-
-StatusDot.displayName = "StatusDot";
+        style={{ ["--status-dot-color" as string]: color }}
+      />
+      {label != null && (
+        <span className="inline-flex items-center">
+          {/* Status word for assistive tech; the visible label carries the rest. */}
+          <span className="sr-only">{roleLabel}: </span>
+          <span>{label}</span>
+        </span>
+      )}
+    </span>
+  );
+}
 
 export { StatusDot };
 export default StatusDot;

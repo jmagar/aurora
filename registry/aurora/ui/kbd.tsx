@@ -58,31 +58,28 @@ const variantStyle: Record<KbdVariant, React.CSSProperties> = {
   },
 }
 
-const Kbd = React.forwardRef<HTMLElement, KbdProps>(
-  ({ className, style, variant = "raised", unstyled = false, ...props }, ref) => {
-    if (unstyled) {
-      return <kbd ref={ref} className={className} {...props} />
-    }
-
-    return (
-      <kbd
-        ref={ref}
-        className={cn("inline-flex min-w-5 items-center justify-center rounded-[5px] px-1.5", className)}
-        style={{
-          fontFamily: "var(--aurora-font-mono)",
-          fontSize: 11,
-          fontWeight: 600,
-          height: 20,
-          lineHeight: 1,
-          ...variantStyle[variant],
-          ...style,
-        }}
-        {...props}
-      />
-    )
+function Kbd({ className, style, variant = "raised", unstyled = false, ref, ...props }: KbdProps & { ref?: React.Ref<HTMLElement> }) {
+  if (unstyled) {
+    return <kbd ref={ref} className={className} {...props} />
   }
-)
-Kbd.displayName = "Kbd"
+
+  return (
+    <kbd
+      ref={ref}
+      className={cn("inline-flex min-w-5 items-center justify-center rounded-[5px] px-1.5", className)}
+      style={{
+        fontFamily: "var(--aurora-font-mono)",
+        fontSize: 11,
+        fontWeight: 600,
+        height: 20,
+        lineHeight: 1,
+        ...variantStyle[variant],
+        ...style,
+      }}
+      {...props}
+    />
+  )
+}
 
 export { Kbd }
 export default Kbd

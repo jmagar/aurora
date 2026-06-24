@@ -152,47 +152,44 @@ const CheckIcon = () => (
   </svg>
 );
 
-export const Stepper = React.forwardRef<HTMLOListElement, StepperProps>(
-  ({ steps, current = 0, className, ...props }, ref) => {
-    useStepperStyle();
-    return (
-      <ol
-        ref={ref}
-        className={cn("aurora-stepper", className)}
-        {...props}
-      >
-        {steps.map((step, i) => {
-          // `current` is 0-based (CD semantics); compare against the 0-based index.
-          const status = statusFor(i, current);
-          return (
-            <li
-              key={`${step.label}-${i}`}
-              className="aurora-stepper__step"
-              data-status={status}
-              aria-current={status === "active" ? "step" : undefined}
-            >
-              <span className="aurora-stepper__node">
-                {status === "complete" ? (
-                  <CheckIcon />
-                ) : (
-                  <span aria-hidden="true">{i + 1}</span>
-                )}
-              </span>
-              <span className="aurora-stepper__text">
-                <span className="aurora-stepper__label">{step.label}</span>
-                {step.description ? (
-                  <span className="aurora-stepper__description">
-                    {step.description}
-                  </span>
-                ) : null}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
-    );
-  },
-);
-Stepper.displayName = "Stepper";
+export function Stepper({ ref, steps, current = 0, className, ...props }: StepperProps & { ref?: React.Ref<HTMLOListElement> }) {
+  useStepperStyle();
+  return (
+    <ol
+      ref={ref}
+      className={cn("aurora-stepper", className)}
+      {...props}
+    >
+      {steps.map((step, i) => {
+        // `current` is 0-based (CD semantics); compare against the 0-based index.
+        const status = statusFor(i, current);
+        return (
+          <li
+            key={`${step.label}-${i}`}
+            className="aurora-stepper__step"
+            data-status={status}
+            aria-current={status === "active" ? "step" : undefined}
+          >
+            <span className="aurora-stepper__node">
+              {status === "complete" ? (
+                <CheckIcon />
+              ) : (
+                <span aria-hidden="true">{i + 1}</span>
+              )}
+            </span>
+            <span className="aurora-stepper__text">
+              <span className="aurora-stepper__label">{step.label}</span>
+              {step.description ? (
+                <span className="aurora-stepper__description">
+                  {step.description}
+                </span>
+              ) : null}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
 
 export default Stepper;

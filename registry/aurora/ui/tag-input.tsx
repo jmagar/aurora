@@ -26,21 +26,20 @@ export interface TagInputProps
  * plus an inline text field. Press Enter (or comma) to add the current value
  * as a chip; press Backspace on an empty field to remove the last chip.
  */
-const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
-  (
-    {
-      className,
-      value,
-      defaultValue,
-      onValueChange,
-      placeholder = "Add tag…",
-      disabled = false,
-      style,
-      onKeyDown,
-      ...props
-    },
-    ref
-  ) => {
+function TagInput(
+  {
+    ref,
+    className,
+    value,
+    defaultValue,
+    onValueChange,
+    placeholder = "Add tag…",
+    disabled = false,
+    style,
+    onKeyDown,
+    ...props
+  }: TagInputProps & { ref?: React.Ref<HTMLInputElement> }
+) {
     const isControlled = value !== undefined
     const [internalTags, setInternalTags] = React.useState<string[]>(
       defaultValue ?? []
@@ -182,9 +181,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
         />
       </div>
     )
-  }
-)
-TagInput.displayName = "TagInput"
+}
 
 export interface TagChipProps {
   label: string
@@ -193,56 +190,53 @@ export interface TagChipProps {
 }
 
 /** A single removable chip rendered inside TagInput. */
-const TagChip = React.forwardRef<HTMLSpanElement, TagChipProps>(
-  ({ label, disabled, onRemove }, ref) => {
-    return (
-      <span
-        ref={ref}
-        data-slot="tag-chip"
+function TagChip({ ref, label, disabled, onRemove }: TagChipProps & { ref?: React.Ref<HTMLSpanElement> }) {
+  return (
+    <span
+      ref={ref}
+      data-slot="tag-chip"
+      className={cn(
+        "inline-flex items-center gap-1.5",
+        "border",
+        "rounded-[var(--aurora-radius-1)]",
+        "pl-2.5 pr-1.5 py-1",
+        "select-none"
+      )}
+      style={{
+        borderColor:
+          "color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)",
+        background:
+          "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
+        color: "var(--aurora-accent-primary)",
+        fontFamily: "var(--aurora-font-sans)",
+        fontSize: "var(--aurora-type-body-sm)",
+        fontWeight: 560,
+        letterSpacing: "var(--aurora-letter-ui)",
+        lineHeight: 1,
+      }}
+    >
+      {label}
+      <button
+        type="button"
+        aria-label={`Remove ${label}`}
+        tabIndex={-1}
+        disabled={disabled}
         className={cn(
-          "inline-flex items-center gap-1.5",
-          "border",
-          "rounded-[var(--aurora-radius-1)]",
-          "pl-2.5 pr-1.5 py-1",
-          "select-none"
+          "flex h-4 w-4 items-center justify-center rounded-full",
+          "transition-colors duration-100",
+          "hover:bg-[color-mix(in_srgb,var(--aurora-accent-primary)_22%,transparent)]",
+          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-focus-ring)]",
+          "disabled:pointer-events-none"
         )}
-        style={{
-          borderColor:
-            "color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)",
-          background:
-            "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
-          color: "var(--aurora-accent-primary)",
-          fontFamily: "var(--aurora-font-sans)",
-          fontSize: "var(--aurora-type-body-sm)",
-          fontWeight: 560,
-          letterSpacing: "var(--aurora-letter-ui)",
-          lineHeight: 1,
-        }}
+        style={{ color: "var(--aurora-accent-primary)" }}
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={onRemove}
       >
-        {label}
-        <button
-          type="button"
-          aria-label={`Remove ${label}`}
-          tabIndex={-1}
-          disabled={disabled}
-          className={cn(
-            "flex h-4 w-4 items-center justify-center rounded-full",
-            "transition-colors duration-100",
-            "hover:bg-[color-mix(in_srgb,var(--aurora-accent-primary)_22%,transparent)]",
-            "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-focus-ring)]",
-            "disabled:pointer-events-none"
-          )}
-          style={{ color: "var(--aurora-accent-primary)" }}
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={onRemove}
-        >
-          <X size={12} strokeWidth={2} aria-hidden="true" />
-        </button>
-      </span>
-    )
-  }
-)
-TagChip.displayName = "TagChip"
+        <X size={12} strokeWidth={2} aria-hidden="true" />
+      </button>
+    </span>
+  )
+}
 
 export { TagInput, TagChip }
 export default TagInput

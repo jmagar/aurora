@@ -11,7 +11,7 @@
   "files": [
     {
       "path": "registry/aurora/ui/direction.tsx",
-      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport interface DirectionProps extends React.HTMLAttributes<HTMLDivElement> {\n  dir?: \"ltr\" | \"rtl\"\n}\n\nexport const Direction = React.forwardRef<HTMLDivElement, DirectionProps>(\n  ({ dir = \"ltr\", ...props }, ref) => <div ref={ref} dir={dir} {...props} />\n)\nDirection.displayName = \"Direction\"\n\nexport default Direction\n\n",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\n\nexport interface DirectionProps extends React.HTMLAttributes<HTMLDivElement> {\n  dir?: \"ltr\" | \"rtl\"\n}\n\nexport function Direction({ ref, dir = \"ltr\", ...props }: DirectionProps & { ref?: React.Ref<HTMLDivElement> }) {\n  return <div ref={ref} dir={dir} {...props} />\n}\n\nexport default Direction\n\n",
       "type": "registry:ui",
       "target": "@ui/aurora/direction.tsx"
     }

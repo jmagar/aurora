@@ -6,10 +6,9 @@ export interface DirectionProps extends React.HTMLAttributes<HTMLDivElement> {
   dir?: "ltr" | "rtl"
 }
 
-export const Direction = React.forwardRef<HTMLDivElement, DirectionProps>(
-  ({ dir = "ltr", ...props }, ref) => <div ref={ref} dir={dir} {...props} />
-)
-Direction.displayName = "Direction"
+export function Direction({ ref, dir = "ltr", ...props }: DirectionProps & { ref?: React.Ref<HTMLDivElement> }) {
+  return <div ref={ref} dir={dir} {...props} />
+}
 
 export default Direction
 

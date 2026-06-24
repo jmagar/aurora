@@ -121,22 +121,17 @@ const DrawerTrigger = DialogPrimitive.Trigger
 const DrawerClose = DialogPrimitive.Close
 const DrawerPortal = DialogPrimitive.Portal
 
-const DrawerOverlay = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay ref={ref} className={cn("aurora-drawer-overlay", className)} {...props} />
-))
-DrawerOverlay.displayName = "DrawerOverlay"
+function DrawerOverlay({ ref, className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+  return <DialogPrimitive.Overlay ref={ref} className={cn("aurora-drawer-overlay", className)} {...props} />
+}
 
-const DrawerHandle = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+function DrawerHandle({ ref, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div ref={ref} className={cn("aurora-drawer-handle-row", className)} {...props}>
       <div aria-hidden="true" className="aurora-drawer-handle" />
     </div>
   )
-)
-DrawerHandle.displayName = "DrawerHandle"
+}
 
 export interface DrawerContentProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
@@ -144,28 +139,26 @@ export interface DrawerContentProps
   showHandle?: boolean
 }
 
-const DrawerContent = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Content>,
-  DrawerContentProps
->(({ className, children, showHandle = true, ...props }, ref) => (
-  <DrawerPortal>
-    <DrawerStyles />
-    <DrawerOverlay />
-    <DialogPrimitive.Content ref={ref} className={cn("aurora-drawer-content", className)} {...props}>
-      {showHandle ? <DrawerHandle /> : null}
-      {children}
-    </DialogPrimitive.Content>
-  </DrawerPortal>
-))
-DrawerContent.displayName = "DrawerContent"
+function DrawerContent({ ref, className, children, showHandle = true, ...props }: DrawerContentProps & { ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>> }) {
+  return (
+    <DrawerPortal>
+      <DrawerStyles />
+      <DrawerOverlay />
+      <DialogPrimitive.Content ref={ref} className={cn("aurora-drawer-content", className)} {...props}>
+        {showHandle ? <DrawerHandle /> : null}
+        {children}
+      </DialogPrimitive.Content>
+    </DrawerPortal>
+  )
+}
 
 export interface DrawerHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Render the bottom divider beneath the header. Defaults to true. */
   divider?: boolean
 }
 
-const DrawerHeader = React.forwardRef<HTMLDivElement, DrawerHeaderProps>(
-  ({ className, divider = true, ...props }, ref) => (
+function DrawerHeader({ ref, className, divider = true, ...props }: DrawerHeaderProps & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       data-divider={divider ? "true" : "false"}
@@ -173,35 +166,25 @@ const DrawerHeader = React.forwardRef<HTMLDivElement, DrawerHeaderProps>(
       {...props}
     />
   )
-)
-DrawerHeader.displayName = "DrawerHeader"
+}
 
-const DrawerTitle = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title ref={ref} className={cn("aurora-drawer-title", className)} {...props} />
-))
-DrawerTitle.displayName = "DrawerTitle"
+function DrawerTitle({ ref, className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
+  return <DialogPrimitive.Title ref={ref} className={cn("aurora-drawer-title", className)} {...props} />
+}
 
-const DrawerDescription = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
-    ref={ref}
-    className={cn("aurora-drawer-description", className)}
-    {...props}
-  />
-))
-DrawerDescription.displayName = "DrawerDescription"
-
-const DrawerBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("aurora-drawer-body", className)} {...props} />
+function DrawerDescription({ ref, className, ...props }: React.ComponentProps<typeof DialogPrimitive.Description>) {
+  return (
+    <DialogPrimitive.Description
+      ref={ref}
+      className={cn("aurora-drawer-description", className)}
+      {...props}
+    />
   )
-)
-DrawerBody.displayName = "DrawerBody"
+}
+
+function DrawerBody({ ref, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return <div ref={ref} className={cn("aurora-drawer-body", className)} {...props} />
+}
 
 export interface DrawerProps
   extends Omit<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>, "children"> {
@@ -224,8 +207,8 @@ export interface DrawerProps
  * into a bottom sheet with header + body. For full control, use the compound
  * parts (DrawerContent, DrawerHeader, …) directly.
  */
-const Drawer = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.Content>, DrawerProps>(
-  ({ title, description, showHandle = true, trigger, children, className, ...rootProps }, ref) => (
+function Drawer({ ref, title, description, showHandle = true, trigger, children, className, ...rootProps }: DrawerProps & { ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>> }) {
+  return (
     <DrawerRoot {...rootProps}>
       {trigger ? <DrawerTrigger asChild>{trigger}</DrawerTrigger> : null}
       <DrawerContent ref={ref} showHandle={showHandle} className={className}>
@@ -239,8 +222,7 @@ const Drawer = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.Conten
       </DrawerContent>
     </DrawerRoot>
   )
-)
-Drawer.displayName = "Drawer"
+}
 
 export {
   Drawer,

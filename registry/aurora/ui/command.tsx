@@ -54,9 +54,8 @@ function Kbd({ children, className }: { children: React.ReactNode; className?: s
   )
 }
 
-const Command = React.forwardRef<HTMLDivElement, CommandProps>(function Command(
-  { items, placeholder = "Type a command or search…", defaultOpen = false, emptyMessage = "No results found.", onSelect, className, ...props },
-  ref,
+function Command(
+  { ref, items, placeholder = "Type a command or search…", defaultOpen = false, emptyMessage = "No results found.", onSelect, className, ...props }: CommandProps & { ref?: React.Ref<HTMLDivElement> },
 ) {
   const [open, setOpen] = React.useState(defaultOpen)
   const [query, setQuery] = React.useState("")
@@ -389,9 +388,7 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>(function Command(
       </div>
     </div>
   )
-})
-
-Command.displayName = "Command"
+}
 
 function SearchIcon({ size = 22 }: { size?: number }) {
   return (

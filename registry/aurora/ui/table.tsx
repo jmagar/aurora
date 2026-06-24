@@ -2,8 +2,8 @@
 
 import * as React from "react"
 
-const Table = React.forwardRef<HTMLTableElement, React.TableHTMLAttributes<HTMLTableElement>>(
-  ({ className, ...props }, ref) => (
+function Table({ ref, className, ...props }: React.TableHTMLAttributes<HTMLTableElement> & { ref?: React.Ref<HTMLTableElement> }) {
+  return (
     <div
       className="overflow-auto rounded-[8px] border"
       style={{ borderColor: "var(--aurora-border-default)" }}
@@ -15,14 +15,14 @@ const Table = React.forwardRef<HTMLTableElement, React.TableHTMLAttributes<HTMLT
       />
     </div>
   )
-)
-Table.displayName = "Table"
+}
 
-const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>((props, ref) => <thead ref={ref} {...props} />)
-TableHeader.displayName = "TableHeader"
+function TableHeader({ ref, ...props }: React.HTMLAttributes<HTMLTableSectionElement> & { ref?: React.Ref<HTMLTableSectionElement> }) {
+  return <thead ref={ref} {...props} />
+}
 
-const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
-  ({ className, ...props }, ref) => (
+function TableBody({ ref, className, ...props }: React.HTMLAttributes<HTMLTableSectionElement> & { ref?: React.Ref<HTMLTableSectionElement> }) {
+  return (
     // Zebra striping via documented token (opaque-over-opaque → no gradient seam).
     <tbody
       ref={ref}
@@ -30,11 +30,10 @@ const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes
       {...props}
     />
   )
-)
-TableBody.displayName = "TableBody"
+}
 
-const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
-  ({ className, style, ...props }, ref) => (
+function TableRow({ ref, className, style, ...props }: React.HTMLAttributes<HTMLTableRowElement> & { ref?: React.Ref<HTMLTableRowElement> }) {
+  return (
     <tr
       ref={ref}
       className={["border-b last:border-b-0 transition-colors duration-100 hover:bg-[var(--aurora-hover-bg)]", className].filter(Boolean).join(" ")}
@@ -42,11 +41,10 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
       {...props}
     />
   )
-)
-TableRow.displayName = "TableRow"
+}
 
-const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>>(
-  ({ className, style, ...props }, ref) => (
+function TableHead({ ref, className, style, ...props }: React.ThHTMLAttributes<HTMLTableCellElement> & { ref?: React.Ref<HTMLTableCellElement> }) {
+  return (
     // Sticky header: opaque panel fill so rows scroll cleanly beneath it.
     <th
       ref={ref}
@@ -55,11 +53,10 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
       {...props}
     />
   )
-)
-TableHead.displayName = "TableHead"
+}
 
-const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<HTMLTableCellElement>>(
-  ({ className, style, ...props }, ref) => (
+function TableCell({ ref, className, style, ...props }: React.TdHTMLAttributes<HTMLTableCellElement> & { ref?: React.Ref<HTMLTableCellElement> }) {
+  return (
     <td
       ref={ref}
       className={["px-3 py-2 aurora-text-control", className].filter(Boolean).join(" ")}
@@ -67,8 +64,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
       {...props}
     />
   )
-)
-TableCell.displayName = "TableCell"
+}
 
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow }
 export default Table

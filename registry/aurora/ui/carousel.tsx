@@ -9,14 +9,13 @@
  * gradient never bands). Reads only `--aurora-*` tokens.
  *
  * Architecture stays Aurora: the Aurora `Button` (neutral icon variant) drives
- * the controls, `CarouselItem` is a `forwardRef` with `displayName`, and the
+ * the controls, `CarouselItem` accepts a ref prop (React 19 style), and the
  * `title`/HTML props/escape-hatch API is preserved.
  */
 
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
-import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 const CSS = `
 .aurora-carousel { display: grid; gap: 14px; }
@@ -38,16 +37,8 @@ const CSS = `
   scroll-snap-type: x mandatory;
   padding-bottom: 4px;
   scrollbar-width: thin;
-  /* Constrain visible area to ~2 slides so there is always something to scroll */
-  max-width: 100%;
-  width: 100%;
 }
-.aurora-carousel__slide {
-  min-width: 240px;
-  max-width: 240px;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-}
+.aurora-carousel__slide { min-width: 240px; scroll-snap-align: start; }
 .aurora-carousel__item {
   position: relative;
   border-radius: 8px;
@@ -60,7 +51,15 @@ const CSS = `
 }
 `
 
-function ensureCSS() { injectOnce("aurora-carousel", CSS) }
+let injected = false
+function ensureCSS() {
+  if (injected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.setAttribute("data-aurora-carousel", "")
+  el.textContent = CSS
+  document.head.appendChild(el)
+  injected = true
+}
 
 export interface CarouselProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   title?: React.ReactNode
@@ -78,7 +77,7 @@ export function Carousel({ title, className, children, style, ...props }: Carous
   }
 
   return (
-    <section className={["aurora-carousel", className].filter(Boolean).join(" ")} style={{ overflow: "hidden", ...style }} {...props}>
+    <section className={["aurora-carousel", className].filter(Boolean).join(" ")} style={style} {...props}>
       <div className="aurora-carousel__head">
         {title ? <h3 className="aurora-carousel__title">{title}</h3> : <span />}
         <div className="aurora-carousel__controls">
@@ -99,21 +98,18 @@ export function Carousel({ title, className, children, style, ...props }: Carous
   )
 }
 
-export const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => {
-    React.useEffect(() => {
-      ensureCSS()
-    }, [])
+export function CarouselItem({ className, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  React.useEffect(() => {
+    ensureCSS()
+  }, [])
 
-    return (
-      <div
-        ref={ref}
-        className={["aurora-carousel__item", className].filter(Boolean).join(" ")}
-        {...props}
-      />
-    )
-  }
-)
-CarouselItem.displayName = "CarouselItem"
+  return (
+    <div
+      ref={ref}
+      className={["aurora-carousel__item", className].filter(Boolean).join(" ")}
+      {...props}
+    />
+  )
+}
 
 export default Carousel

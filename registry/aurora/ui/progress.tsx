@@ -93,23 +93,22 @@ export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
-  (
-    {
-      className,
-      value,
-      indeterminate,
-      variant = "default",
-      tone,
-      size = "default",
-      showLabel = false,
-      label,
-      max = 100,
-      style,
-      ...props
-    },
-    ref
-  ) => {
+function Progress(
+  {
+    ref,
+    className,
+    value,
+    indeterminate,
+    variant = "default",
+    tone,
+    size = "default",
+    showLabel = false,
+    label,
+    max = 100,
+    style,
+    ...props
+  }: ProgressProps & { ref?: React.Ref<HTMLDivElement> }
+) {
     React.useEffect(() => {
       ensureShimmerKeyframes()
     }, [])
@@ -203,9 +202,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         </div>
       </div>
     )
-  }
-)
-Progress.displayName = "Progress"
+}
 
 export { Progress }
 export default Progress

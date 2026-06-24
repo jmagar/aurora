@@ -36,31 +36,29 @@ export interface SpotlightProps
   emptyMessage?: string
   /** Fired when an item is activated (Enter or click). */
   onSelect?: (item: SpotlightItem) => void
-  /** Seed query to show the results panel pre-opened (e.g. in gallery demos). */
+  /** Initial value for the search query. */
   defaultQuery?: string
 }
 
 const SIZES = {
-  md: { height: "2.5rem", radius: "var(--aurora-radius-2)", icon: 16, type: "0.9rem", pad: "0 0.85rem", gap: "0.6rem" },
-  lg: { height: "3rem", radius: "var(--aurora-radius-3)", icon: 18, type: "1.05rem", pad: "0 1.05rem", gap: "0.7rem" },
+  md: { height: "3.25rem", radius: "var(--aurora-radius-2)", icon: 18, type: "1.05rem", pad: "0 1.05rem", gap: "0.75rem" },
+  lg: { height: "4rem", radius: "var(--aurora-radius-3)", icon: 22, type: "1.5rem", pad: "0 1.4rem", gap: "1rem" },
 } as const
 
-const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spotlight(
-  {
-    items,
-    placeholder = "Search…",
-    size = "md",
-    autoFocus = false,
-    openOnFocus = false,
-    shortcut,
-    emptyMessage = "No results found.",
-    onSelect,
-    defaultQuery = "",
-    className,
-    ...props
-  },
+function Spotlight({
   ref,
-) {
+  items,
+  placeholder = "Search…",
+  size = "md",
+  autoFocus = false,
+  openOnFocus = false,
+  shortcut,
+  emptyMessage = "No results found.",
+  onSelect,
+  defaultQuery = "",
+  className,
+  ...props
+}: SpotlightProps & { ref?: React.Ref<HTMLDivElement> }) {
   const s = SIZES[size]
   const [query, setQuery] = React.useState(defaultQuery)
   const [focused, setFocused] = React.useState(false)
@@ -133,7 +131,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
     <div
       ref={ref}
       className={cn("flex flex-col", className)}
-      style={{ gap: "0.35rem", fontFamily: "var(--aurora-font-sans)", color: "var(--aurora-text-primary)" }}
+      style={{ gap: "0.85rem", fontFamily: "var(--aurora-font-sans)", color: "var(--aurora-text-primary)" }}
       {...props}
     >
       {/* Search field */}
@@ -190,7 +188,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
           className="overflow-y-auto"
           style={{
             maxHeight: "20rem",
-            padding: "0.4rem",
+            padding: "0.65rem",
             borderRadius: "var(--aurora-radius-3)",
             border: "1px solid var(--aurora-border-strong)",
             background:
@@ -213,10 +211,10 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
               <div key={group} style={{ marginBottom: "0.25rem" }}>
                 <div
                   style={{
-                    padding: "0.5rem 0.6rem 0.25rem",
+                    padding: "0.7rem 0.85rem 0.35rem",
                     color: "var(--aurora-text-muted)",
                     fontFamily: "var(--aurora-font-sans)",
-                    fontSize: "0.7rem",
+                    fontSize: "0.78rem",
                     fontWeight: "var(--aurora-weight-label)",
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
@@ -238,8 +236,8 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
                       onClick={() => commit(item)}
                       className="relative flex w-full items-center text-left transition-colors duration-150 focus-visible:outline-none"
                       style={{
-                        gap: "0.7rem",
-                        padding: "0.5rem 0.65rem",
+                        gap: "1rem",
+                        padding: "0.85rem 1rem",
                         borderRadius: "var(--aurora-radius-2)",
                         border: isActive
                           ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)"
@@ -257,8 +255,8 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
                           aria-hidden
                           className="inline-flex shrink-0 items-center justify-center"
                           style={{
-                            width: "1.85rem",
-                            height: "1.85rem",
+                            width: "2.4rem",
+                            height: "2.4rem",
                             borderRadius: "var(--aurora-radius-1)",
                             border: "1px solid var(--aurora-border-strong)",
                             background: isActive
@@ -278,7 +276,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
                           style={{
                             color: "var(--aurora-text-primary)",
                             fontFamily: "var(--aurora-font-sans)",
-                            fontSize: "0.92rem",
+                            fontSize: "1.15rem",
                             fontWeight: "var(--aurora-weight-body)",
                             lineHeight: 1.3,
                           }}
@@ -324,9 +322,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
       ) : null}
     </div>
   )
-})
-
-Spotlight.displayName = "Spotlight"
+}
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return (

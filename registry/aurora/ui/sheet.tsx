@@ -12,7 +12,7 @@ const SheetPortal = DialogPrimitive.Portal
 
 type SheetSide = "left" | "right" | "top" | "bottom"
 
-export interface SheetContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+export interface SheetContentProps extends React.ComponentProps<typeof DialogPrimitive.Content> {
   side?: SheetSide
   hideClose?: boolean
 }
@@ -24,8 +24,8 @@ const sideClass: Record<SheetSide, string> = {
   bottom: "bottom-0 left-0 h-[min(420px,82vh)] w-full data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
 }
 
-const SheetContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.Content>, SheetContentProps>(
-  ({ className, children, side = "right", style, hideClose = false, ...props }, ref) => (
+function SheetContent({ ref, className, children, side = "right", style, hideClose = false, ...props }: SheetContentProps & { ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>> }) {
+  return (
     <SheetPortal>
       <DialogPrimitive.Overlay
         className="fixed inset-0 z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
@@ -64,46 +64,44 @@ const SheetContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.
       </DialogPrimitive.Content>
     </SheetPortal>
   )
-)
-SheetContent.displayName = "SheetContent"
+}
 
-const SheetHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("border-b px-6 py-5 pr-16", className)} style={{ borderColor: "var(--aurora-border-default)" }} {...props} />
-))
-SheetHeader.displayName = "SheetHeader"
+function SheetHeader({ ref, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
+    <div ref={ref} className={cn("border-b px-6 py-5 pr-16", className)} style={{ borderColor: "var(--aurora-border-default)" }} {...props} />
+  )
+}
 
-const SheetBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("min-h-0 flex-1 overflow-y-auto px-6 py-5", className)} {...props} />
-))
-SheetBody.displayName = "SheetBody"
+function SheetBody({ ref, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
+    <div ref={ref} className={cn("min-h-0 flex-1 overflow-y-auto px-6 py-5", className)} {...props} />
+  )
+}
 
-const SheetFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("border-t px-6 py-4", className)} style={{ borderColor: "var(--aurora-border-default)" }} {...props} />
-))
-SheetFooter.displayName = "SheetFooter"
+function SheetFooter({ ref, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
+    <div ref={ref} className={cn("border-t px-6 py-4", className)} style={{ borderColor: "var(--aurora-border-default)" }} {...props} />
+  )
+}
 
-const SheetTitle = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ style, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    style={{ color: "var(--aurora-text-primary)", ...style }}
-    {...props}
-  />
-))
-SheetTitle.displayName = "SheetTitle"
+function SheetTitle({ ref, style, ...props }: React.ComponentProps<typeof DialogPrimitive.Title> & { ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Title>> }) {
+  return (
+    <DialogPrimitive.Title
+      ref={ref}
+      style={{ color: "var(--aurora-text-primary)", ...style }}
+      {...props}
+    />
+  )
+}
 
-const SheetDescription = React.forwardRef<
-  React.ComponentRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(({ style, ...props }, ref) => (
-  <DialogPrimitive.Description
-    ref={ref}
-    style={{ color: "var(--aurora-text-muted)", ...style }}
-    {...props}
-  />
-))
-SheetDescription.displayName = "SheetDescription"
+function SheetDescription({ ref, style, ...props }: React.ComponentProps<typeof DialogPrimitive.Description> & { ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Description>> }) {
+  return (
+    <DialogPrimitive.Description
+      ref={ref}
+      style={{ color: "var(--aurora-text-muted)", ...style }}
+      {...props}
+    />
+  )
+}
 
 export { Sheet, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetBody, SheetFooter, SheetTitle, SheetDescription }

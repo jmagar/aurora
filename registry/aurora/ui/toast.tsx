@@ -99,84 +99,81 @@ export interface ToastProps {
   onDismiss: (id: string) => void;
 }
 
-export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
-  function Toast({ item, onDismiss }, ref) {
-    const status: ToastStatus = item.status ?? "info";
-    const dismissColor = DISMISS_COLOR[status];
+export function Toast({ ref, item, onDismiss }: ToastProps & { ref?: React.Ref<HTMLDivElement> }) {
+  const status: ToastStatus = item.status ?? "info";
+  const dismissColor = DISMISS_COLOR[status];
 
-    return (
-      <div
-        ref={ref}
-        role={status === "error" || status === "warn" ? "alert" : "status"}
-        aria-live={status === "error" || status === "warn" ? "assertive" : "polite"}
-        className="aurora-toast-enter pointer-events-auto flex items-start gap-3 rounded-[var(--aurora-radius-1)] px-4 py-3.5"
+  return (
+    <div
+      ref={ref}
+      role={status === "error" || status === "warn" ? "alert" : "status"}
+      aria-live={status === "error" || status === "warn" ? "assertive" : "polite"}
+      className="aurora-toast-enter pointer-events-auto flex items-start gap-3 rounded-[var(--aurora-radius-1)] px-4 py-3.5"
+      style={{
+        maxWidth: 400,
+        width: "100%",
+        background: "var(--aurora-panel-strong)",
+        border: "1px solid var(--aurora-border-strong)",
+        boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-medium)",
+      }}
+    >
+      {/* Status icon */}
+      <span
+        aria-hidden
         style={{
-          maxWidth: 400,
-          width: "100%",
-          background: "var(--aurora-panel-strong)",
-          border: "1px solid var(--aurora-border-strong)",
-          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-medium)",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          width: 22,
+          height: 22,
         }}
       >
-        {/* Status icon */}
-        <span
-          aria-hidden
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            width: 22,
-            height: 22,
-          }}
-        >
-          <StatusIcon status={status} />
-        </span>
+        <StatusIcon status={status} />
+      </span>
 
-        {/* Content */}
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          {item.title && (
-            <ToastTitle>{item.title}</ToastTitle>
-          )}
-          {item.description && (
-            <ToastDescription>{item.description}</ToastDescription>
-          )}
-          {item.action && (
-            <button
-              type="button"
-              onClick={item.action.onClick}
-              style={{
-                fontSize: "var(--aurora-type-body-sm)",
-                fontFamily: "var(--aurora-font-sans)",
-                fontWeight: 650,
-                color: "var(--aurora-accent-primary)",
-                background: "none",
-                border: "none",
-                padding: "2px 0",
-                cursor: "pointer",
-                alignSelf: "flex-start",
-              }}
-            >
-              {item.action.label}
-            </button>
-          )}
-        </div>
-
-        {/* Dismiss x - colored by status */}
-        <Button variant="plain" size="unstyled"
-          type="button"
-          aria-label="Dismiss notification"
-          onClick={() => onDismiss(item.id)}
-          style={{ color: dismissColor }}
-          className="shrink-0 rounded p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1"
-        >
-          <X size={13} strokeWidth={1.8} aria-hidden="true" />
-        </Button>
+      {/* Content */}
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        {item.title && (
+          <ToastTitle>{item.title}</ToastTitle>
+        )}
+        {item.description && (
+          <ToastDescription>{item.description}</ToastDescription>
+        )}
+        {item.action && (
+          <button
+            type="button"
+            onClick={item.action.onClick}
+            style={{
+              fontSize: "var(--aurora-type-body-sm)",
+              fontFamily: "var(--aurora-font-sans)",
+              fontWeight: 650,
+              color: "var(--aurora-accent-primary)",
+              background: "none",
+              border: "none",
+              padding: "2px 0",
+              cursor: "pointer",
+              alignSelf: "flex-start",
+            }}
+          >
+            {item.action.label}
+          </button>
+        )}
       </div>
-    );
-  },
-);
-Toast.displayName = "Toast";
+
+      {/* Dismiss x - colored by status */}
+      <Button variant="plain" size="unstyled"
+        type="button"
+        aria-label="Dismiss notification"
+        onClick={() => onDismiss(item.id)}
+        style={{ color: dismissColor }}
+        className="shrink-0 rounded p-0.5 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1"
+      >
+        <X size={13} strokeWidth={1.8} aria-hidden="true" />
+      </Button>
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Sub-components

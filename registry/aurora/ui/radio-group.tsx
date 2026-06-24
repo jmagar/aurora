@@ -93,8 +93,7 @@ export interface RadioGroupItemProps {
   className?: string
 }
 
-const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(
-  ({ value, disabled: itemDisabled, children, id, className }, ref) => {
+function RadioGroupItem({ ref, value, disabled: itemDisabled, children, id, className }: RadioGroupItemProps & { ref?: React.Ref<HTMLButtonElement> }) {
     React.useEffect(() => {
       ensureRadioGroupCSS()
     }, [])
@@ -199,9 +198,7 @@ const RadioGroupItem = React.forwardRef<HTMLButtonElement, RadioGroupItemProps>(
         )}
       </label>
     )
-  }
-)
-RadioGroupItem.displayName = "RadioGroupItem"
+}
 
 // ---------------------------------------------------------------------------
 // Exports

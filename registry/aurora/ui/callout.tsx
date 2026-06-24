@@ -70,8 +70,7 @@ export interface CalloutProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   icon?: React.ReactNode
 }
 
-const Callout = React.forwardRef<HTMLDivElement, CalloutProps>(
-  ({ className, variant = "info", title, icon, children, style, ...props }, ref) => {
+function Callout({ className, variant = "info", title, icon, children, style, ref, ...props }: CalloutProps & { ref?: React.Ref<HTMLDivElement> }) {
     const safeVariant: CalloutVariant = Object.hasOwn(toneMap, variant) ? variant : "info"
     if (safeVariant !== variant) {
       devWarn(`[Aurora Callout] Unknown variant "${variant}". Falling back to "info".`)
@@ -118,9 +117,7 @@ const Callout = React.forwardRef<HTMLDivElement, CalloutProps>(
         </div>
       </div>
     )
-  }
-)
-Callout.displayName = "Callout"
+}
 
 export { Callout }
 export default Callout

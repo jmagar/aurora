@@ -18,7 +18,6 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 // ─── Tones ───────────────────────────────────────────────────────────────────
 
@@ -97,7 +96,15 @@ const CSS = `
 }
 `
 
-function ensureCSS() { injectOnce("aurora-operation-icon", CSS) }
+let injected = false
+function ensureCSS() {
+  if (injected || typeof document === "undefined") return
+  const el = document.createElement("style")
+  el.setAttribute("data-aurora-operation-icon", "")
+  el.textContent = CSS
+  document.head.appendChild(el)
+  injected = true
+}
 
 // ─── Glyphs ────────────────────────────────────────────────────────────────────
 // Each glyph draws on a 24×24 grid with currentColor strokes.
@@ -258,20 +265,19 @@ export interface OperationIconProps
   decorative?: boolean
 }
 
-const OperationIcon = React.forwardRef<HTMLSpanElement, OperationIconProps>(
-  (
-    {
-      name,
-      size = 24,
-      tone,
-      decorative = false,
-      className,
-      style,
-      "aria-label": ariaLabel,
-      ...props
-    },
-    ref
-  ) => {
+function OperationIcon(
+  {
+    ref,
+    name,
+    size = 24,
+    tone,
+    decorative = false,
+    className,
+    style,
+    "aria-label": ariaLabel,
+    ...props
+  }: OperationIconProps & { ref?: React.Ref<HTMLSpanElement> }
+) {
     React.useEffect(() => {
       ensureCSS()
     }, [])
@@ -299,9 +305,7 @@ const OperationIcon = React.forwardRef<HTMLSpanElement, OperationIconProps>(
         {Glyph ? <Glyph size={size} /> : null}
       </span>
     )
-  }
-)
-OperationIcon.displayName = "OperationIcon"
+}
 
 export { OperationIcon, TONE_BY_NAME, GLYPHS }
 export default OperationIcon
