@@ -34,6 +34,7 @@ import * as React from "react"
 import { AlertTriangle, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/registry/aurora/ui/button"
+import { injectOnce } from "@/registry/aurora/lib/inject-once"
 import {
   Dialog,
   DialogBody,
@@ -115,15 +116,7 @@ const CSS = `
 }
 `
 
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-alert-dialog", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+function ensureCSS() { injectOnce("aurora-alert-dialog", CSS) }
 
 // ─── Prop-driven CD-parity card ────────────────────────────────────────────────
 

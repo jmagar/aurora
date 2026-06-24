@@ -168,6 +168,7 @@ export const SLUG_TO_REGISTRY: Record<string, string> = {
   "file-picker": "aurora-file-picker",
   "file-tree": "aurora-file-tree",
   "code-editor": "aurora-code-editor",
+  "code-workspace": "aurora-code-workspace",
   "web-preview": "aurora-web-preview",
   "aspect-ratio": "aurora-aspect-ratio",
   card: "aurora-card",
@@ -176,7 +177,8 @@ export const SLUG_TO_REGISTRY: Record<string, string> = {
   image: "aurora-ai-image",
   item: "aurora-item",
   "resizable-panels": "aurora-resizable-panels",
-  resizable: "aurora-resizable-panels",
+  // `resizable` redirects to `resizable-panels` via SECTION_REDIRECTS in
+  // registry-meta.ts — no slug-map alias needed; the redirect fires first.
   "scroll-area": "aurora-scroll-area",
 
   // Auth & errors

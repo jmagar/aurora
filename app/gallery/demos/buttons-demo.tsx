@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
-import { Plus, Send, Settings } from "lucide-react"
+import { Plus, Send, Settings, Trash2, RefreshCw, Copy, Download } from "lucide-react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 
 /* Mirrors the Claude Design Button preview 1:1 — 8 intents · 4 sizes ·
@@ -61,6 +61,19 @@ export default function ButtonsDemo() {
           <AsyncButton />
           <Button variant="success">Apply</Button>
           <Button variant="neutral" size="icon" aria-label="Settings"><Settings className="size-4" aria-hidden /></Button>
+        </div>
+      </div>
+
+      <div className="aurora-demo-section">
+        <div className="aurora-demo-label">Icon only</div>
+        <div className="aurora-demo-row">
+          <Button variant="aurora" size="icon" aria-label="Add"><Plus className="size-4" aria-hidden /></Button>
+          <Button variant="rose" size="icon" aria-label="Send"><Send className="size-4" aria-hidden /></Button>
+          <Button variant="neutral" size="icon" aria-label="Settings"><Settings className="size-4" aria-hidden /></Button>
+          <Button variant="ghost" size="icon" aria-label="Copy"><Copy className="size-4" aria-hidden /></Button>
+          <Button variant="ghost" size="icon" aria-label="Refresh"><RefreshCw className="size-4" aria-hidden /></Button>
+          <Button variant="ghost" size="icon" aria-label="Download"><Download className="size-4" aria-hidden /></Button>
+          <Button variant="destructive" size="icon" aria-label="Delete"><Trash2 className="size-4" aria-hidden /></Button>
         </div>
       </div>
 

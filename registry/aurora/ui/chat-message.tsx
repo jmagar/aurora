@@ -28,17 +28,17 @@ const CHAT_MESSAGE_CSS = `
 .aurora-chat-message__head {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 .aurora-chat-message__avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 28px;
+  height: 28px;
   flex: 0 0 auto;
-  border-radius: var(--radius-1, 14px);
+  border-radius: 8px;
   background: var(--aurora-panel-strong);
   border: 1px solid var(--aurora-border-default);
   color: var(--aurora-accent-pink);
@@ -46,19 +46,19 @@ const CHAT_MESSAGE_CSS = `
 .aurora-chat-message__meta {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
 }
 .aurora-chat-message__author {
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.2;
   color: var(--aurora-text-primary);
 }
 .aurora-chat-message__time {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   line-height: 1.2;
   color: var(--aurora-text-muted);
@@ -68,9 +68,9 @@ const CHAT_MESSAGE_CSS = `
 .aurora-chat-message__bubble {
   position: relative;
   max-width: 100%;
-  padding: 16px 20px;
-  border-radius: var(--radius-2, 18px);
-  font-size: 17px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
   line-height: 1.5;
   border: 1px solid transparent;
   box-sizing: border-box;
@@ -108,8 +108,8 @@ const CHAT_MESSAGE_CSS = `
 .aurora-chat-message__citations {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 6px;
+  margin-top: 7px;
 }
 .aurora-chat-message[data-role="user"] .aurora-chat-message__citations {
   justify-content: flex-end;
@@ -117,13 +117,13 @@ const CHAT_MESSAGE_CSS = `
 .aurora-chat-message__citation {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 6px 12px;
-  border-radius: var(--radius-1, 14px);
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 8px;
   border: 1px solid var(--aurora-border-default);
   background: var(--aurora-control-surface);
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   line-height: 1;
   color: var(--aurora-text-muted);
@@ -158,8 +158,8 @@ function useChatMessageStyles() {
 function ShieldIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="20"
-      height="20"
+      width="14"
+      height="14"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

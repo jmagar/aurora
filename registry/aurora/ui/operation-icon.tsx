@@ -18,6 +18,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 // ─── Tones ───────────────────────────────────────────────────────────────────
 
@@ -96,15 +97,7 @@ const CSS = `
 }
 `
 
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-operation-icon", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+function ensureCSS() { injectOnce("aurora-operation-icon", CSS) }
 
 // ─── Glyphs ────────────────────────────────────────────────────────────────────
 // Each glyph draws on a 24×24 grid with currentColor strokes.

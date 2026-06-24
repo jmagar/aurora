@@ -44,7 +44,7 @@ export interface MessageProps extends React.HTMLAttributes<HTMLElement> {
 
 export interface MessageAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string
-  tone?: "cyan" | "rose" | "muted" | "violet"
+  tone?: "cyan" | "rose" | "muted" | "orange"
 }
 
 export interface SourcesProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
@@ -485,7 +485,7 @@ const Message = React.forwardRef<HTMLElement, MessageProps>(({ className, role =
 Message.displayName = "Message"
 
 const MessageAvatar = React.forwardRef<React.ElementRef<typeof AuroraAvatar>, MessageAvatarProps>(
-  ({ className, label, tone = "violet", style, ...props }, ref) => {
+  ({ className, label, tone = "orange", style, ...props }, ref) => {
     const color =
       tone === "rose"
         ? "var(--aurora-accent-pink)"
@@ -493,7 +493,7 @@ const MessageAvatar = React.forwardRef<React.ElementRef<typeof AuroraAvatar>, Me
           ? "var(--aurora-text-muted)"
           : tone === "cyan"
             ? "var(--aurora-accent-primary)"
-            : "var(--aurora-accent-violet)"
+            : "var(--axon-orange)"
 
     return (
       <AuroraAvatar
@@ -522,9 +522,9 @@ MessageAvatar.displayName = "MessageAvatar"
 
 const bubbleTone = {
   assistant: {
-    background: "linear-gradient(180deg, var(--aurora-accent-violet-surface), color-mix(in srgb, var(--aurora-accent-violet) 6%, var(--aurora-panel-medium)))",
-    borderColor: "color-mix(in srgb, var(--aurora-accent-violet) 38%, var(--aurora-border-default))",
-    shadow: "0 14px 30px color-mix(in srgb, var(--aurora-accent-violet) 8%, transparent), var(--aurora-highlight-medium)",
+    background: "linear-gradient(180deg, color-mix(in srgb, var(--axon-orange) 10%, var(--aurora-panel-medium)), color-mix(in srgb, var(--axon-orange) 5%, var(--aurora-panel-medium)))",
+    borderColor: "color-mix(in srgb, var(--axon-orange) 30%, var(--aurora-border-default))",
+    shadow: "0 14px 30px color-mix(in srgb, var(--axon-orange) 7%, transparent), var(--aurora-highlight-medium)",
   },
   user: {
     background: "linear-gradient(180deg, color-mix(in srgb, var(--aurora-accent-primary) 13%, var(--aurora-panel-medium)), color-mix(in srgb, var(--aurora-accent-primary) 7%, var(--aurora-panel-medium)))",
@@ -640,8 +640,8 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(({ className, t
             className="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-3 rounded-[10px] border px-2 py-2"
             style={{
               color: tone.color,
-              borderColor: task.status === "running" ? "var(--aurora-accent-violet-border)" : "transparent",
-              background: task.status === "running" ? "var(--aurora-accent-violet-surface)" : "transparent",
+              borderColor: task.status === "running" ? "color-mix(in srgb, var(--axon-orange) 30%, transparent)" : "transparent",
+              background: task.status === "running" ? "color-mix(in srgb, var(--axon-orange) 10%, var(--aurora-panel-medium))" : "transparent",
             }}
           >
             <span className="mt-0.5">{tone.icon}</span>
@@ -671,8 +671,8 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ classN
           key={result.name}
           className="grid grid-cols-[minmax(0,1fr)_72px_96px] items-start gap-3 rounded-[10px] border px-2 py-1.5"
           style={{
-            borderColor: result.status === "running" ? "var(--aurora-accent-violet-border)" : "transparent",
-            background: result.status === "running" ? "var(--aurora-accent-violet-surface)" : "transparent",
+            borderColor: result.status === "running" ? "color-mix(in srgb, var(--axon-orange) 30%, transparent)" : "transparent",
+            background: result.status === "running" ? "color-mix(in srgb, var(--axon-orange) 10%, var(--aurora-panel-medium))" : "transparent",
           }}
         >
           <span className="truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)", paddingTop: 4 }}>{result.name}</span>
@@ -850,7 +850,7 @@ const Conversation = React.forwardRef<HTMLDivElement, ConversationProps>(
       style={{
         ...panelStyle(style),
         background: [
-          "radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--aurora-accent-violet) 10%, transparent), transparent 34%)",
+          "radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--axon-orange) 10%, transparent), transparent 34%)",
           "linear-gradient(180deg, color-mix(in srgb, var(--aurora-panel-strong) 96%, transparent), var(--aurora-panel-medium))",
         ].join(", "),
         maxHeight: 520,
@@ -866,7 +866,7 @@ const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
   ({ models, value, defaultValue, onValueChange, label = "Model", name, disabled, required, triggerId, triggerLabel, className, style, ...props }, ref) => (
     <div ref={ref} className={className} style={style} {...props}>
       <SelectorCard
-        icon={<Sparkles className="size-3.5" aria-hidden style={{ color: "var(--aurora-accent-violet)" }} />}
+        icon={<Sparkles className="size-3.5" aria-hidden style={{ color: "var(--axon-orange)" }} />}
         title={label}
         description="Select a model for this conversation."
         values={models}
@@ -939,7 +939,7 @@ Suggestion.displayName = "Suggestion"
 const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
   ({ name, role, status = "idle", className, style, ...props }, ref) => (
     <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <Bot className="size-[18px]" aria-hidden style={{ color: "var(--aurora-accent-violet)" }} />
+      <Bot className="size-[18px]" aria-hidden style={{ color: "var(--axon-orange)" }} />
       <span className="min-w-0">
         <span className="block truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{name}</span>
         {role ? <span className="block aurora-text-meta">{role}</span> : null}
@@ -1169,7 +1169,7 @@ const VoiceSelector = React.forwardRef<HTMLDivElement, VoiceSelectorProps>(
   ({ voices, value, defaultValue, onValueChange, name, disabled, required, triggerId, triggerLabel, ...props }, ref) => (
     <div ref={ref} {...props}>
       <SelectorCard
-        icon={<Sparkles className="size-3.5" aria-hidden style={{ color: "var(--aurora-accent-violet)" }} />}
+        icon={<Sparkles className="size-3.5" aria-hidden style={{ color: "var(--axon-orange)" }} />}
         title="Voice"
         description="Select a voice for audio output."
         values={voices}
@@ -1234,7 +1234,7 @@ Node.displayName = "Node"
 const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
   ({ title, className, children, style, ...props }, ref) => (
     <aside ref={ref} className={["grid gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      {title ? <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Sparkles className="size-3.5 shrink-0" aria-hidden style={{ color: "var(--aurora-accent-violet)" }} />{title}</div> : null}
+      {title ? <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Sparkles className="size-3.5 shrink-0" aria-hidden style={{ color: "var(--axon-orange)" }} />{title}</div> : null}
       {children}
     </aside>
   )

@@ -33,10 +33,12 @@ import tv.tootie.aurora.app.ui.sidebar.SessionsSidebar
 import tv.tootie.aurora.app.ui.sidebar.SidebarViewModel
 import tv.tootie.aurora.app.ui.startup.StartupState
 import tv.tootie.aurora.app.ui.startup.StartupViewModel
+import tv.tootie.aurora.app.ui.threads.ThreadListScreen
 
 sealed class Screen(val route: String) {
     object Startup : Screen("startup")
     object Login   : Screen("login")
+    object Threads : Screen("threads")
     object Chat    : Screen("chat/{threadId}") {
         fun go(id: String) = "chat/$id"
         const val NEW = "chat/new"
@@ -131,6 +133,27 @@ fun CodexNavHost() {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     },
+                )
+            }
+            composable(Screen.Threads.route) {
+                ThreadListScreen(
+                    onNewThread = {
+                        sidebarVm.setCurrentThread(null)
+                        nav.navigate(Screen.Chat.NEW) {
+                            popUpTo(Screen.Threads.route) { inclusive = false }
+                            launchSingleTop = true
+                        }
+                    },
+                    onSettings = { nav.navigate(Screen.Settings.route) },
+                    onThreadClick = { id ->
+                        sidebarVm.setActiveSession(id)
+                        sidebarVm.setCurrentThread(id)
+                        nav.navigate(Screen.Chat.go(id)) {
+                            popUpTo(Screen.Threads.route) { inclusive = false }
+                            launchSingleTop = true
+                        }
+                    },
+                    vm = sidebarVm,
                 )
             }
             composable(Screen.Chat.route) { back ->

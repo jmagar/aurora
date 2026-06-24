@@ -563,13 +563,17 @@ fun ChatScreen(
         val denyDecision = approval.availableDecisions.getOrElse(1) { "decline" }
         val allowLabel = allowDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
         val denyLabel = denyDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
-        val descParts = listOfNotNull(approval.reason, approval.command)
-        val description = descParts.joinToString("\n\n").ifBlank {
-            if (approval.type == "command") "A command is requesting approval." else "File changes are requesting approval."
+        val (title, fallback) = when (approval.type) {
+            "command" -> "Allow command?" to "A command is requesting approval."
+            "fileChange" -> "Allow file changes?" to "File changes are requesting approval."
+            "permissions" -> "Allow additional permissions?" to "The agent is requesting expanded sandbox permissions."
+            else -> "Allow action?" to "An action is requesting approval."
         }
+        val descParts = listOfNotNull(approval.reason, approval.command)
+        val description = descParts.joinToString("\n\n").ifBlank { fallback }
         AuroraPermissionPrompt(
             onDismissRequest = { },
-            title = if (approval.type == "command") "Allow command?" else "Allow file changes?",
+            title = title,
             description = description,
             onAllow = { vm.approveToolCall(allowDecision) },
             allowLabel = allowLabel,

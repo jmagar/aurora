@@ -14,6 +14,7 @@ import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 export type ButtonVariant =
   | "aurora"
@@ -117,15 +118,7 @@ const CSS = `
 .aurora-btn__icon { display: inline-flex; align-items: center; flex-shrink: 0; }
 `
 
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-button", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+function ensureCSS() { injectOnce("aurora-button", CSS) }
 
 // ─── cva (class selection + buttonVariants export) ─────────────────────────────
 

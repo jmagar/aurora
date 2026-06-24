@@ -359,7 +359,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 pendingAttachments = attachments
                 pendingImages = images
                 val model = settings.model.first()
-                repo.startThread(model)
+                repo.startThread(model, effort = _state.value.selectedEffort)
             } else {
                 repo.startTurn(tid, text,
                     attachments = attachments,
@@ -484,7 +484,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 pendingAttachments = listOf(SelectedItem.Skill(skillName, skillPath))
                 pendingImages = images
                 val model = settings.model.first()
-                repo.startThread(model)
+                repo.startThread(model, effort = _state.value.selectedEffort)
             } else {
                 repo.startTurn(
                     threadId = tid,
@@ -604,6 +604,49 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         val cwd = threadObj["cwd"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                         val name = threadObj["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                         _state.update { it.copy(threadId = tid, msgs = emptyList(), cwd = cwd, threadName = name) }
+                        // Fetch full item history now that we have a valid threadId.
+                        repo.readThread(tid)
+                    }
+                    return
+                }
+
+                if (event.originKind == RequestKind.ThreadRead) {
+                    if (msg.error != null) {
+                        // History fetch failed — not fatal; the thread is still resumed, just
+                        // no prior messages will be shown. Log silently; do not surface to user.
+                        android.util.Log.w("ChatViewModel", "thread/read failed: ${msg.error.message}")
+                        return
+                    }
+                    // result.items[] — each item is a JsonObject with `type` and `role`/`content`
+                    val items = result?.get("items")?.jsonArray ?: return
+                    val history = items.mapNotNull { el ->
+                        val obj = el as? JsonObject ?: return@mapNotNull null
+                        val role = obj["role"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
+                        // Reconstruct content: may be a plain string or an array of parts
+                        val contentEl = obj["content"] ?: return@mapNotNull null
+                        val text = when {
+                            contentEl is kotlinx.serialization.json.JsonPrimitive -> contentEl.contentOrNull ?: ""
+                            contentEl is kotlinx.serialization.json.JsonArray -> {
+                                contentEl.mapNotNull { part ->
+                                    (part as? JsonObject)?.get("text")?.jsonPrimitive?.contentOrNull
+                                }.joinToString("")
+                            }
+                            else -> return@mapNotNull null
+                        }
+                        val msgRole = when (role) {
+                            "user" -> MsgRole.User
+                            "assistant" -> MsgRole.Assistant
+                            else -> return@mapNotNull null
+                        }
+                        val id = obj["id"]?.jsonPrimitive?.contentOrNull ?: System.currentTimeMillis().toString()
+                        ChatMsg(id, msgRole, text.sanitizeForDisplay())
+                    }
+                    if (history.isNotEmpty()) {
+                        _state.update { s ->
+                            // Only restore if msgs is still empty — avoids stomping a turn that
+                            // arrived in the narrow window between resume and the read response.
+                            if (s.msgs.isEmpty()) s.copy(msgs = history) else s
+                        }
                     }
                     return
                 }
@@ -880,6 +923,103 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     ))))
                 }
             }
+
+            // Agent is requesting additional sandbox permissions (filesystem paths or network).
+            // Params: itemId, reason, permissionProfile { readPaths, writePaths, networkEnabled }.
+            // The response uses the same sendApproval path as command/fileChange approvals.
+            "item/permissions/requestApproval" -> {
+                val rawId = normalizeServerId(event.msg.id ?: return)
+                val profile = params?.get("permissionProfile")?.jsonObject
+                val readPaths = profile?.get("readPaths")?.jsonArray
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() }
+                    ?: emptyList()
+                val writePaths = profile?.get("writePaths")?.jsonArray
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() }
+                    ?: emptyList()
+                val networkEnabled = profile?.get("networkEnabled")?.jsonPrimitive
+                    ?.content?.toBooleanStrictOrNull()
+                val reasonBase = params?.get("reason")?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay()
+                // Build a human-readable summary of what is being requested.
+                val permLines = buildList {
+                    if (readPaths.isNotEmpty()) add("Read: ${readPaths.joinToString(", ")}")
+                    if (writePaths.isNotEmpty()) add("Write: ${writePaths.joinToString(", ")}")
+                    if (networkEnabled == true) add("Network access")
+                }
+                val reason = listOfNotNull(reasonBase, permLines.joinToString("\n").ifBlank { null })
+                    .joinToString("\n\n").ifBlank { null }
+                val decisions = params?.get("availableDecisions")?.jsonArray
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")
+                _state.update { s ->
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                        itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
+                        rawServerId = rawId,
+                        type = "permissions",
+                        reason = reason,
+                        availableDecisions = decisions,
+                    ))))
+                }
+            }
+            // Legacy command-execution approval (older codex-app-server versions).
+            // Params: command, workingDirectory?, sandboxPolicy?, reason?, availableDecisions?.
+            // Response path is identical to item/commandExecution/requestApproval.
+            "execCommandApproval" -> {
+                val rawId = normalizeServerId(event.msg.id ?: return)
+                val command = params?.get("command")?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay() ?: ""
+                val workDir = params?.get("workingDirectory")?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay()
+                val sandboxPolicy = params?.get("sandboxPolicy")?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay()
+                val reason = listOfNotNull(
+                    params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay(),
+                    workDir?.let { "Working directory: $it" },
+                    sandboxPolicy?.let { "Sandbox policy: $it" },
+                ).joinToString("\n").ifBlank { null }
+                val decisions = params?.get("availableDecisions")?.jsonArray
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")
+                _state.update { s ->
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                        itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
+                        rawServerId = rawId,
+                        type = "command",
+                        command = command,
+                        reason = reason,
+                        availableDecisions = decisions,
+                    ))))
+                }
+            }
+
+            // Legacy file-patch approval (older codex-app-server versions).
+            // Params: callId, conversationId, fileChanges (path → {before,after}), grantRoot?, reason?.
+            // Correlates with patchApplyBeginEvent/patchApplyEndEvent notifications.
+            // Response path is identical to item/fileChange/requestApproval.
+            "applyPatchApproval" -> {
+                val rawId = normalizeServerId(event.msg.id ?: return)
+                val explicitReason = params?.get("reason")?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay()
+                val fileChanges = params?.get("fileChanges")?.jsonObject
+                val changedPaths = fileChanges?.keys
+                    ?.map { it.sanitizeForDisplay() }
+                    ?.sorted()
+                    ?: emptyList()
+                val grantRoot = params?.get("grantRoot")?.jsonPrimitive?.content
+                    ?.toBooleanStrictOrNull()
+                val reason = listOfNotNull(
+                    explicitReason,
+                    if (changedPaths.isNotEmpty()) "Files: ${changedPaths.joinToString(", ")}" else null,
+                    if (grantRoot == true) "Requires root access" else null,
+                ).joinToString("\n").ifBlank { null }
+                _state.update { s ->
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                        itemId = params?.get("callId")?.jsonPrimitive?.contentOrNull ?: "",
+                        rawServerId = rawId,
+                        type = "fileChange",
+                        reason = reason,
+                    ))))
+                }
+            }
+
             "serverRequest/resolved" -> {
                 // Extract the resolved request ID if the server provides it; otherwise clear all
                 val resolvedId = params?.get("id")
@@ -887,6 +1027,33 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                             else ApprovalEvent.Resolved(normalizeServerId(resolvedId))
                 _state.update { s ->
                     s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, event))
+                }
+            }
+
+            // Server requests the client to supply fresh ChatGPT auth tokens.
+            // Triggered when the server receives a 401 upstream mid-session.
+            // We respond synchronously with whatever tokens are stored; if none
+            // are available the session cannot continue and we surface an error.
+            "account/chatgptAuthTokens/refresh" -> {
+                val requestId = msg.id ?: run {
+                    android.util.Log.w("ChatViewModel", "account/chatgptAuthTokens/refresh: missing request id — cannot respond")
+                    return
+                }
+                viewModelScope.launch {
+                    val accessToken = settings.accessToken.first()
+                    val accountId = settings.chatgptAccountId.first()
+                    if (accessToken == null || accountId == null) {
+                        android.util.Log.w("ChatViewModel", "account/chatgptAuthTokens/refresh: no stored tokens — cannot refresh")
+                        _state.update { it.copy(error = "Session expired: ChatGPT token refresh required but no tokens are stored. Please sign in again.") }
+                        return@launch
+                    }
+                    val sent = repo.respondAuthTokensRefresh(requestId, accessToken, accountId)
+                    if (!sent) {
+                        android.util.Log.w("ChatViewModel", "account/chatgptAuthTokens/refresh: WebSocket send failed")
+                        _state.update { it.copy(error = "Token refresh failed — connection lost. Please reconnect.") }
+                    }
+                    // On success the server will resume the upstream request transparently.
+                    // No UI state change needed — the session continues without interruption.
                 }
             }
         }

@@ -422,19 +422,21 @@ export const ErrorPage = React.forwardRef<HTMLDivElement, ErrorPageProps>(
       <div
         ref={ref}
         style={{
-          minHeight: "100vh",
+          // Flex-center within a natural height — no min-height so the gallery
+          // demo wrapper controls the bounding box. The card stays near the top
+          // rather than being pushed halfway down an unconstrained band.
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           background: "var(--aurora-shell-bg, var(--aurora-page-bg))",
-          padding: "32px 24px",
+          padding: "24px 20px",
         }}
       >
         <div
           style={{
             width: "100%",
             maxWidth: "480px",
-            padding: "48px 32px",
+            padding: "36px 28px",
             // Opaque→opaque vertical gradient (lit top, deep base) — matches CD's
             // panel-strong tier. Both stops are opaque tokens so there is no
             // translucent-over-opaque seam.

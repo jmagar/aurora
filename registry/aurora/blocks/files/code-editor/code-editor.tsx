@@ -37,51 +37,208 @@ export interface CodeEditorProps {
 // Token colors (Aurora palette)
 // ---------------------------------------------------------------------------
 
-type TokenType = "keyword" | "string" | "comment" | "number" | "operator" | "type" | "function" | "plain"
+type TokenType =
+  | "keyword"    // control flow, declarations — orange
+  | "type"       // PascalCase types, primitives — cyan-strong
+  | "string"     // string literals — success/teal
+  | "comment"    // inline + block comments — muted
+  | "number"     // numeric literals — warn/amber
+  | "function"   // call sites — accent-primary/cyan
+  | "macro"      // Rust #[attr] / #! macros — rose/pink
+  | "operator"   // punctuation, operators — accent-strong
+  | "plain"      // everything else — primary text
 
 const TOKEN_COLORS: Record<TokenType, string> = {
-  keyword:  "var(--aurora-accent-primary)",
-  string:   "var(--aurora-accent-pink)",
+  keyword:  "var(--axon-orange, #ff9645)",
+  type:     "var(--aurora-accent-strong, #67cbfa)",
+  string:   "var(--aurora-success, #7dd3c7)",
   comment:  "var(--aurora-text-muted)",
   number:   "var(--aurora-warn)",
-  operator: "var(--aurora-accent-strong)",
-  type:     "var(--aurora-code-type)",
-  function: "var(--aurora-code-function)",
+  function: "var(--aurora-accent-primary)",
+  macro:    "var(--aurora-accent-pink, #f9a8c4)",
+  operator: "var(--aurora-text-muted)",
   plain:    "var(--aurora-text-primary)",
 }
 
 interface Token { type: TokenType; text: string }
 
 // ---------------------------------------------------------------------------
-// Tiny tokenizer (same approach as code-block)
+// Shared tokenizer utilities
 // ---------------------------------------------------------------------------
 
-function tokenizeLine(line: string, lang: string): Token[] {
-  if (lang === "typescript" || lang === "tsx" || lang === "javascript" || lang === "jsx") {
-    return tokenizeTS(line)
-  }
-  if (lang === "css" || lang === "scss") return tokenizeCSS(line)
-  if (lang === "json") return tokenizeJSON(line)
-  if (lang === "bash" || lang === "sh") return tokenizeBash(line)
-  return [{ type: "plain", text: line }]
+function mergeAdjacentPlain(tokens: Token[]): Token[] {
+  return tokens.reduce<Token[]>((acc, tok) => {
+    const prev = acc[acc.length - 1]
+    if (prev && prev.type === "plain" && tok.type === "plain") {
+      prev.text += tok.text
+    } else {
+      acc.push({ ...tok })
+    }
+    return acc
+  }, [])
 }
 
-function tokenizeTS(line: string): Token[] {
-  const keywords = /\b(const|let|var|function|return|import|export|from|type|interface|extends|implements|class|new|if|else|for|while|do|switch|case|break|continue|async|await|try|catch|finally|throw|typeof|instanceof|in|of|default|null|undefined|true|false|void|never|any|string|number|boolean|object|readonly|private|public|protected|static|abstract|enum|namespace|declare|as|is)\b/
+/** Advance `rest` by `n` chars, appending a token. Returns new rest. */
+function eat(result: Token[], rest: string, n: number, type: TokenType): string {
+  result.push({ type, text: rest.slice(0, n) })
+  return rest.slice(n)
+}
+
+// ---------------------------------------------------------------------------
+// Language tokenizers
+// ---------------------------------------------------------------------------
+
+const RUST_KEYWORDS = /^(as|async|await|break|const|continue|crate|dyn|else|enum|extern|false|fn|for|if|impl|in|let|loop|match|mod|move|mut|pub|ref|return|self|Self|static|struct|super|trait|true|type|unsafe|use|where|while|abstract|become|box|do|final|macro|override|priv|try|typeof|unsized|virtual|yield)\b/
+const RUST_TYPES    = /^(bool|char|f32|f64|i8|i16|i32|i64|i128|isize|str|u8|u16|u32|u64|u128|usize|String|Vec|Option|Result|Box|Arc|Rc|Cell|RefCell|HashMap|HashSet|BTreeMap|BTreeSet|Mutex|RwLock|Pin|Cow)\b/
+const RUST_BUILTIN  = /^(println|print|eprintln|eprint|format|vec|panic|assert|assert_eq|assert_ne|todo|unimplemented|unreachable|dbg|write|writeln|concat|include|env|cfg|derive|allow|warn|deny|forbid|deprecated|must_use|inline|test|cfg_attr)\b/
+
+function tokenizeRust(line: string): Token[] {
   const result: Token[] = []
   let rest = line
+
+  while (rest.length > 0) {
+    // Block comment
+    if (rest.startsWith("/*")) {
+      const end = rest.indexOf("*/", 2)
+      const len = end === -1 ? rest.length : end + 2
+      rest = eat(result, rest, len, "comment")
+      continue
+    }
+    // Line comment (// and //!)
+    if (rest.startsWith("//")) { result.push({ type: "comment", text: rest }); break }
+
+    // Rust attribute / macro: #[...] or #![...]
+    if (rest.startsWith("#[") || rest.startsWith("#![")) {
+      const close = rest.indexOf("]")
+      const len = close === -1 ? rest.length : close + 1
+      rest = eat(result, rest, len, "macro")
+      continue
+    }
+
+    // String (double-quoted, raw r"..." r#"..."# handled partially)
+    if (rest[0] === '"') {
+      let i = 1
+      while (i < rest.length) {
+        if (rest[i] === '\\') { i += 2; continue }
+        if (rest[i] === '"') { i++; break }
+        i++
+      }
+      rest = eat(result, rest, i, "string")
+      continue
+    }
+    // Char literal
+    if (rest[0] === "'") {
+      let i = 1
+      while (i < rest.length) {
+        if (rest[i] === '\\') { i += 2; continue }
+        if (rest[i] === "'") { i++; break }
+        i++
+      }
+      // Distinguish char literals from lifetime params (short 'a, 'static etc.)
+      const snippet = rest.slice(0, i)
+      rest = eat(result, rest, i, snippet.length <= 3 || snippet.includes('\\') ? "string" : "plain")
+      continue
+    }
+
+    // Macro call: name! (before keyword/type matching so vec!/println! etc. colour correctly)
+    const macroCallMatch = rest.match(/^([A-Za-z_][A-Za-z0-9_]*)!/)
+    if (macroCallMatch) {
+      rest = eat(result, rest, macroCallMatch[1].length, "macro")
+      // leave the '!' as operator on next iteration
+      continue
+    }
+
+    // Keywords
+    const kwMatch = rest.match(RUST_KEYWORDS)
+    if (kwMatch) { rest = eat(result, rest, kwMatch[0].length, "keyword"); continue }
+
+    // Built-in types
+    const typeMatch = rest.match(RUST_TYPES)
+    if (typeMatch) { rest = eat(result, rest, typeMatch[0].length, "type"); continue }
+
+    // PascalCase identifiers → type
+    const pascalMatch = rest.match(/^[A-Z][A-Za-z0-9_]*/)
+    if (pascalMatch) { rest = eat(result, rest, pascalMatch[0].length, "type"); continue }
+
+    // Function call: ident(
+    const fnCallMatch = rest.match(/^([a-z_][A-Za-z0-9_]*)(?=\s*\()/)
+    if (fnCallMatch) { rest = eat(result, rest, fnCallMatch[0].length, "function"); continue }
+
+    // Builtin macros (without !) treated as functions
+    const builtinMatch = rest.match(RUST_BUILTIN)
+    if (builtinMatch) { rest = eat(result, rest, builtinMatch[0].length, "function"); continue }
+
+    // Numbers: hex, binary, octal, float, int (with optional suffix/underscores)
+    const numMatch = rest.match(/^(?:0x[0-9a-fA-F_]+|0b[01_]+|0o[0-7_]+|\d[\d_]*(?:\.\d[\d_]*)?(?:[eE][+-]?\d+)?(?:_?[a-z0-9]*)?)/)
+    if (numMatch && /\d/.test(numMatch[0][0])) { rest = eat(result, rest, numMatch[0].length, "number"); continue }
+
+    // Operators and punctuation
+    const opMatch = rest.match(/^(?:->|=>|::|\.\.=?|&&|\|\||[+\-*/%&|^~<>=!?.,:;@#{}()[\]])/)
+    if (opMatch) { rest = eat(result, rest, opMatch[0].length, "operator"); continue }
+
+    result.push({ type: "plain", text: rest[0] }); rest = rest.slice(1)
+  }
+  return mergeAdjacentPlain(result)
+}
+
+const TS_KEYWORDS = /^(const|let|var|function|return|import|export|from|as|type|interface|extends|implements|class|new|if|else|for|while|do|switch|case|break|continue|async|await|try|catch|finally|throw|typeof|instanceof|in|of|default|null|undefined|true|false|void|never|any|string|number|boolean|object|readonly|private|public|protected|static|abstract|enum|namespace|declare|satisfies|using|keyof|infer|is|override)\b/
+
+function tokenizeTS(line: string): Token[] {
+  const result: Token[] = []
+  let rest = line
+
   while (rest.length > 0) {
     if (rest.startsWith("//")) { result.push({ type: "comment", text: rest }); break }
-    const strMatch = rest.match(/^(['"`])(?:\\.|(?!\1)[^\\])*\1/)
-    if (strMatch) { result.push({ type: "string", text: strMatch[0] }); rest = rest.slice(strMatch[0].length); continue }
-    const kwMatch = rest.match(keywords)
-    if (kwMatch && rest.startsWith(kwMatch[0])) { result.push({ type: "keyword", text: kwMatch[0] }); rest = rest.slice(kwMatch[0].length); continue }
-    const numMatch = rest.match(/^\b\d+(\.\d+)?\b/)
-    if (numMatch) { result.push({ type: "number", text: numMatch[0] }); rest = rest.slice(numMatch[0].length); continue }
-    const fnMatch = rest.match(/^([A-Za-z_$][A-Za-z0-9_$]*)(?=\s*\()/)
-    if (fnMatch) { result.push({ type: "function", text: fnMatch[0] }); rest = rest.slice(fnMatch[0].length); continue }
-    const typeMatch = rest.match(/^[A-Z][A-Za-z0-9_$]*/)
-    if (typeMatch) { result.push({ type: "type", text: typeMatch[0] }); rest = rest.slice(typeMatch[0].length); continue }
+    if (rest.startsWith("/*")) {
+      const end = rest.indexOf("*/", 2)
+      const len = end === -1 ? rest.length : end + 2
+      rest = eat(result, rest, len, "comment")
+      continue
+    }
+
+    // Template literal (simplified — no nested ${} colouring)
+    if (rest[0] === '`') {
+      let i = 1
+      while (i < rest.length) {
+        if (rest[i] === '\\') { i += 2; continue }
+        if (rest[i] === '`') { i++; break }
+        i++
+      }
+      rest = eat(result, rest, i, "string")
+      continue
+    }
+    // String
+    if (rest[0] === '"' || rest[0] === "'") {
+      const q = rest[0]
+      let i = 1
+      while (i < rest.length) {
+        if (rest[i] === '\\') { i += 2; continue }
+        if (rest[i] === q) { i++; break }
+        i++
+      }
+      rest = eat(result, rest, i, "string")
+      continue
+    }
+
+    const kwMatch = rest.match(TS_KEYWORDS)
+    if (kwMatch) { rest = eat(result, rest, kwMatch[0].length, "keyword"); continue }
+
+    // PascalCase → type
+    const pascalMatch = rest.match(/^[A-Z][A-Za-z0-9_$]*/)
+    if (pascalMatch) { rest = eat(result, rest, pascalMatch[0].length, "type"); continue }
+
+    // Function call
+    const fnCallMatch = rest.match(/^([A-Za-z_$][A-Za-z0-9_$]*)(?=\s*\()/)
+    if (fnCallMatch) { rest = eat(result, rest, fnCallMatch[0].length, "function"); continue }
+
+    // Number
+    const numMatch = rest.match(/^\b\d+(\.\d+)?([eE][+-]?\d+)?\b/)
+    if (numMatch) { rest = eat(result, rest, numMatch[0].length, "number"); continue }
+
+    // Operator
+    const opMatch = rest.match(/^(?:===?|!==?|&&|\|\||=>|\?\?|[+\-*/%&|^~<>=!?.,:;@#{}()[\]])/)
+    if (opMatch) { rest = eat(result, rest, opMatch[0].length, "operator"); continue }
+
     result.push({ type: "plain", text: rest[0] }); rest = rest.slice(1)
   }
   return mergeAdjacentPlain(result)
@@ -100,19 +257,21 @@ function tokenizeCSS(line: string): Token[] {
     const colonIdx = rest.indexOf(":")
     result.push({ type: "operator", text: rest.slice(0, colonIdx + 1) })
     const value = rest.slice(colonIdx + 1)
-    const numMatch = value.match(/[\d.]+(?:px|em|rem|%|vh|vw)?/)
+    const numMatch = value.match(/[\d.]+(?:px|em|rem|%|vh|vw|ch|ex|dvh|dvw)?/)
     if (numMatch) {
-      const before = value.slice(0, value.indexOf(numMatch[0]))
-      if (before) result.push({ type: "plain", text: before })
+      const idx = value.indexOf(numMatch[0])
+      if (idx > 0) result.push({ type: "plain", text: value.slice(0, idx) })
       result.push({ type: "number", text: numMatch[0] })
-      const after = value.slice(value.indexOf(numMatch[0]) + numMatch[0].length)
+      const after = value.slice(idx + numMatch[0].length)
       if (after) result.push({ type: "plain", text: after })
     } else {
       result.push({ type: "string", text: value })
     }
     return result
   }
-  result.push({ type: "plain", text: rest })
+  // Selector-like line
+  if (rest.match(/^[.#:[\w-]/)) result.push({ type: "type", text: rest })
+  else result.push({ type: "plain", text: rest })
   return result
 }
 
@@ -126,44 +285,80 @@ function tokenizeJSON(line: string): Token[] {
       result.push({ type: isKey ? "keyword" : "string", text: strMatch[0] })
       rest = rest.slice(strMatch[0].length); continue
     }
-    const numMatch = rest.match(/^-?\d+(\.\d+)?/)
+    const numMatch = rest.match(/^-?\d+(\.\d+)?([eE][+-]?\d+)?/)
     if (numMatch) { result.push({ type: "number", text: numMatch[0] }); rest = rest.slice(numMatch[0].length); continue }
     const kwMatch = rest.match(/^(true|false|null)/)
-    if (kwMatch) { result.push({ type: "operator", text: kwMatch[0] }); rest = rest.slice(kwMatch[0].length); continue }
+    if (kwMatch) { result.push({ type: "keyword", text: kwMatch[0] }); rest = rest.slice(kwMatch[0].length); continue }
     result.push({ type: "plain", text: rest[0] }); rest = rest.slice(1)
   }
   return mergeAdjacentPlain(result)
 }
 
 function tokenizeBash(line: string): Token[] {
-  if (line.trimStart().startsWith("#")) return [{ type: "comment", text: line }]
+  const trimmed = line.trimStart()
+  if (trimmed.startsWith("#")) return [{ type: "comment", text: line }]
   const result: Token[] = []
   let rest = line
-  const cmdMatch = rest.match(/^\s*([a-z][\w.-]*)/)
-  if (cmdMatch) {
-    if (cmdMatch[1]) { result.push({ type: "function", text: cmdMatch[0] }); rest = rest.slice(cmdMatch[0].length) }
+
+  // Leading indent
+  const indentLen = line.length - trimmed.length
+  if (indentLen > 0) { result.push({ type: "plain", text: line.slice(0, indentLen) }); rest = trimmed }
+
+  // Shell keywords
+  const kwMatch = rest.match(/^(if|then|else|elif|fi|for|while|do|done|case|esac|in|function|return|local|export|readonly|declare|source|\.|echo|cd|ls|rm|cp|mv|mkdir|touch|grep|sed|awk|find|cat|head|tail|sort|uniq|wc|cut|tr|xargs|chmod|chown|curl|wget|git|npm|pnpm|yarn|cargo|rustc|node|python|pip|make|sudo)\b/)
+  if (kwMatch) { rest = eat(result, rest, kwMatch[0].length, "keyword"); }
+
+  // Walk remaining characters
+  while (rest.length > 0) {
+    // String
+    if (rest[0] === '"' || rest[0] === "'") {
+      const q = rest[0]
+      let i = 1
+      while (i < rest.length) {
+        if (rest[i] === '\\') { i += 2; continue }
+        if (rest[i] === q) { i++; break }
+        i++
+      }
+      rest = eat(result, rest, i, "string")
+      continue
+    }
+    // Variable $VAR or ${VAR}
+    if (rest[0] === '$') {
+      const varMatch = rest.match(/^\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/)
+      if (varMatch) { rest = eat(result, rest, varMatch[0].length, "type"); continue }
+    }
+    // Flags --foo / -f
+    const flagMatch = rest.match(/^--?[A-Za-z][\w-]*/)
+    if (flagMatch) { rest = eat(result, rest, flagMatch[0].length, "macro"); continue }
+    // Numbers
+    const numMatch = rest.match(/^\b\d+\b/)
+    if (numMatch) { rest = eat(result, rest, numMatch[0].length, "number"); continue }
+
+    result.push({ type: "plain", text: rest[0] }); rest = rest.slice(1)
   }
-  const flagsMatch = rest.match(/(--?[\w-]+)/)
-  if (flagsMatch) {
-    const idx = rest.indexOf(flagsMatch[0])
-    result.push({ type: "plain", text: rest.slice(0, idx) })
-    result.push({ type: "keyword", text: flagsMatch[0] })
-    rest = rest.slice(idx + flagsMatch[0].length)
-  }
-  if (rest) result.push({ type: "plain", text: rest })
-  return result
+  return mergeAdjacentPlain(result)
 }
 
-function mergeAdjacentPlain(tokens: Token[]): Token[] {
-  return tokens.reduce<Token[]>((acc, tok) => {
-    const prev = acc[acc.length - 1]
-    if (prev && prev.type === "plain" && tok.type === "plain") {
-      prev.text += tok.text
-    } else {
-      acc.push({ ...tok })
-    }
-    return acc
-  }, [])
+// ---------------------------------------------------------------------------
+// Top-level dispatcher
+// ---------------------------------------------------------------------------
+
+function tokenizeLine(line: string, lang: string): Token[] {
+  switch (lang) {
+    case "rust": case "rs":
+      return tokenizeRust(line)
+    case "typescript": case "tsx": case "javascript": case "jsx": case "ts": case "js":
+      return tokenizeTS(line)
+    case "css": case "scss":
+      return tokenizeCSS(line)
+    case "json":
+      return tokenizeJSON(line)
+    case "bash": case "sh": case "zsh":
+      return tokenizeBash(line)
+    default:
+      // Best-effort: try TS tokenizer for unknown langs (handles most C-family syntax gracefully)
+      return tokenizeTS(line)
+  }
 }
 
 // ---------------------------------------------------------------------------

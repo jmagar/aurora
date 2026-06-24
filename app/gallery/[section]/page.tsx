@@ -134,16 +134,14 @@ const DEMOS: Record<string, React.ComponentType> = {
   ...COMPONENT_DEMOS,
   ...AI_DEMOS,
   ...AI_CANONICAL_DEMOS,
-  tokens:      dynamic(() => import("../demos/colors-demo")),
+  // Alias slugs (tokens, button, badge, …) are in SECTION_REDIRECTS and
+  // redirect to their canonical slug — they don't need a static render here.
   colors:      dynamic(() => import("../demos/colors-demo")),
   type:        dynamic(() => import("../demos/type-demo")),
-  typography:  dynamic(() => import("../demos/type-demo")),
   spacing:     dynamic(() => import("../demos/spacing-demo")),
   brand:       dynamic(() => import("../demos/brand-demo")),
-  button:      dynamic(() => import("../demos/buttons-demo")),
   buttons:     dynamic(() => import("../demos/buttons-demo")),
   "button-group": dynamic(() => import("../demos/button-group-demo")),
-  badge:       dynamic(() => import("../demos/badges-demo")),
   badges:      dynamic(() => import("../demos/badges-demo")),
   switch:      dynamic(() => import("../demos/switch-demo")),
   avatar:      dynamic(() => import("../demos/avatar-demo")),
@@ -151,30 +149,22 @@ const DEMOS: Record<string, React.ComponentType> = {
   spinner:     dynamic(() => import("../demos/spinner-demo")),
   separator:   dynamic(() => import("../demos/separator-demo")),
   forms:       dynamic(() => import("../demos/forms-demo")),
-  checkbox:    dynamic(() => import("../demos/checkboxes-demo")),
   checkboxes:  dynamic(() => import("../demos/checkboxes-demo")),
   tabs:        dynamic(() => import("../demos/tabs-demo")),
-  banner:      dynamic(() => import("../demos/banners-demo")),
   banners:     dynamic(() => import("../demos/banners-demo")),
-  toast:       dynamic(() => import("../demos/toasts-demo")),
   toasts:      dynamic(() => import("../demos/toasts-demo")),
   tooltip:     dynamic(() => import("../demos/tooltip-demo")),
-  "empty-state": dynamic(() => import("../demos/empty-demo")),
   empty:       dynamic(() => import("../demos/empty-demo")),
   skeleton:    dynamic(() => import("../demos/skeleton-demo")),
   breadcrumb:  dynamic(() => import("../demos/breadcrumb-demo")),
   pagination:  dynamic(() => import("../demos/pagination-demo")),
-  "stat-card": dynamic(() => import("../demos/stats-demo")),
   stats:       dynamic(() => import("../demos/stats-demo")),
   tables:      dynamic(() => import("../demos/tables-demo")),
-  "filter-bar": dynamic(() => import("../demos/filters-demo")),
   filters:     dynamic(() => import("../demos/filters-demo")),
   marketplace: dynamic(() => import("../demos/marketplace-demo")),
   "new-components": dynamic(() => import("../demos/new-components-demo")),
-  dialog:      dynamic(() => import("../demos/modals-demo")),
   modals:      dynamic(() => import("../demos/modals-demo")),
   accordion:   dynamic(() => import("../demos/accordion-demo")),
-  "dropdown-menu": dynamic(() => import("../demos/dropdowns-demo")),
   dropdowns:   dynamic(() => import("../demos/dropdowns-demo")),
   "context-menu": dynamic(() => import("../demos/context-menu-demo")),
   "prompt-input": dynamic(() => import("../demos/prompt-input-demo")),
@@ -193,16 +183,41 @@ const DEMOS: Record<string, React.ComponentType> = {
   "file-picker":  dynamic(() => import("../demos/file-picker-demo")),
   "file-tree":    dynamic(() => import("../demos/file-tree-demo")),
   "code-editor":  dynamic(() => import("../demos/code-editor-demo")),
+  "code-workspace": dynamic(() => import("../demos/code-workspace-demo")),
   "web-preview":  dynamic(() => import("../demos/web-preview-demo")),
   "share-dialog": dynamic(() => import("../demos/share-dialog-demo")),
   login:          dynamic(() => import("../demos/login-demo")),
   oauth:          dynamic(() => import("../demos/oauth-demo")),
-  "error-page":   dynamic(() => import("../demos/error-pages-demo")),
   "error-pages":  dynamic(() => import("../demos/error-pages-demo")),
   lightmode:      dynamic(() => import("../demos/lightmode-demo")),
 }
 
 export function generateStaticParams() {
+  // Build-time assertion: every DEMOS key that is not a redirect alias must
+  // resolve to registry meta, otherwise the rendered page silently renders
+  // without an install strip and there is no warning anywhere near the cause.
+  //
+  // Redirect keys (SECTION_REDIRECTS) are intentional aliases that never render
+  // a full page — they are exempt. All other keys must be in the registry.
+  const unmapped: string[] = []
+  for (const slug of Object.keys(DEMOS)) {
+    if (slug in SECTION_REDIRECTS) continue
+    if (getRegistryMeta(slug) === null) unmapped.push(slug)
+  }
+  if (unmapped.length > 0) {
+    const msg =
+      `[aurora/gallery] ${unmapped.length} DEMOS slug(s) have no registry meta — ` +
+      `these pages will render without an install strip:\n` +
+      unmapped.map((s) => `  • ${s}`).join("\n") +
+      `\nAdd each to lib/slug-map.ts or registry.json to fix.`
+    if (process.env.NODE_ENV === "production") {
+      // Fail the build so the issue is caught before deployment.
+      throw new Error(msg)
+    } else {
+      console.warn(msg)
+    }
+  }
+
   return Object.keys(DEMOS).map((section) => ({ section }))
 }
 

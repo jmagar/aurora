@@ -18,7 +18,7 @@ export const toneColor: Record<StatusTone, { color: string; shadow: string }> = 
   degraded:   { color: "var(--aurora-warn)",           shadow: "0 0 10px var(--aurora-warn)" },
   offline:    { color: "var(--aurora-neutral)",        shadow: "0 0 10px var(--aurora-neutral)" },
   error:      { color: "var(--aurora-error)",          shadow: "0 0 10px var(--aurora-error)" },
-  automating: { color: "var(--aurora-accent-violet)",  shadow: "0 0 10px var(--aurora-accent-violet)" },
+  automating: { color: "var(--axon-orange)",  shadow: "0 0 10px var(--axon-orange)" },
 }
 
 // queued and offline use --aurora-neutral-foreground so labels don't compete visually with the dot

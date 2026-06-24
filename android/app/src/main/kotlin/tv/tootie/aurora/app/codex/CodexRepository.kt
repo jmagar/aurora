@@ -45,6 +45,7 @@ public enum class RequestKind {
     Thread,        // thread/list
     ThreadStart,   // thread/start — response goes to turnEventsFlow, not threadsFlow
     ThreadResume,  // thread/resume
+    ThreadRead,    // thread/read — fetch full item history for history restore
     Steer,         // turn/steer
     GoalSet,       // thread/goal/set
     GoalGet,       // thread/goal/get
@@ -213,8 +214,8 @@ class CodexRepository {
 
     // --- Request helpers ---------------------------------------------------
 
-    fun startThread(model: String?): Int {
-        val id = client?.startThread(model) ?: return -1
+    fun startThread(model: String?, effort: String? = null): Int {
+        val id = client?.startThread(model, effort) ?: return -1
         pendingKinds[id.toString()] = RequestKind.ThreadStart  // response goes to turnEventsFlow
         return id
     }
@@ -263,6 +264,20 @@ class CodexRepository {
         return key
     }
 
+    /**
+     * Fetch the full item history for [threadId].
+     *
+     * The response is routed through [turnEventsFlow] with [RequestKind.ThreadRead] so
+     * [ChatViewModel] can reconstruct prior messages from `result.items[]`.
+     * Returns the request key, or "-1" if the client is not connected.
+     */
+    fun readThread(threadId: String): String {
+        val rawId = client?.readThread(threadId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ThreadRead
+        return key
+    }
+
     fun steerTurn(threadId: String, text: String, expectedTurnId: String): String {
         val rawId = client?.steerTurn(threadId, text, expectedTurnId) ?: return "-1"
         val key = rawId.toString()
@@ -300,6 +315,19 @@ class CodexRepository {
 
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean =
         client?.sendApproval(rawServerId, decision) ?: false
+
+    /**
+     * Respond to an `account/chatgptAuthTokens/refresh` server request.
+     *
+     * [requestId] is the raw [JsonElement] id from the server's inbound request — it is
+     * echoed back verbatim so the server can correlate the response. Returns `true` if
+     * the frame was queued, `false` if the client is not connected.
+     */
+    fun respondAuthTokensRefresh(
+        requestId: JsonElement,
+        accessToken: String,
+        chatgptAccountId: String,
+    ): Boolean = client?.respondAuthTokensRefresh(requestId, accessToken, chatgptAccountId) ?: false
 
     fun interrupt(threadId: String) {
         client?.interrupt(threadId)

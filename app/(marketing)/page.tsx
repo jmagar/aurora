@@ -59,7 +59,14 @@ const STATS: [string, string, string][] = [
 ]
 
 function byId(id: string): AuroraTheme {
-  return AURORA_THEMES.find((t) => t.id === id) ?? AURORA_THEMES[0]
+  const theme = AURORA_THEMES.find((t) => t.id === id)
+  if (!theme) {
+    throw new Error(
+      `Unknown theme id "${id}" in BENTO — add it to lib/themes.ts or fix the id string. ` +
+      `Known ids: ${AURORA_THEMES.map((t) => t.id).join(", ")}`
+    )
+  }
+  return theme
 }
 const BENTO = [
   { theme: byId("zed"), big: true },

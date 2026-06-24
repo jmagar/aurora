@@ -40,11 +40,31 @@ export const SECTION_TITLE_OVERRIDES: Record<string, string> = {
 }
 
 export const SECTION_REDIRECTS: Record<string, string> = {
-  // `resizable`/`table` are alias slugs for the same component. `queue` is NOT
-  // an alias of `task` — Queue (processing queue) and Task (checklist) are
-  // distinct components, each with its own demo; redirecting hid Queue entirely.
+  // Alias slugs that point at the same demo as a canonical slug.
+  // These redirect instead of generating a duplicate static page at build.
+  // `queue` is intentionally NOT here — Queue and Task are distinct components.
   resizable: "resizable-panels",
   table: "tables",
+  // Foundations
+  tokens: "colors",
+  typography: "type",
+  // Controls
+  button: "buttons",
+  badge: "badges",
+  // Form elements
+  checkbox: "checkboxes",
+  // Feedback
+  banner: "banners",
+  toast: "toasts",
+  "empty-state": "empty",
+  // Data
+  "stat-card": "stats",
+  "filter-bar": "filters",
+  // Overlays
+  dialog: "modals",
+  "dropdown-menu": "dropdowns",
+  // Content / errors
+  "error-page": "error-pages",
 }
 
 export function formatSectionTitle(section: string) {

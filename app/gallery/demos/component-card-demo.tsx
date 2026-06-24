@@ -138,8 +138,26 @@ export default function ComponentCardDemo() {
               gap: 14,
             }}
           >
-            <ComponentCard {...ENTRIES[0]} thumbHeight={104} onOpen={() => {}} />
-            <ComponentCard {...ENTRIES[1]} thumbHeight={104} onOpen={() => {}} />
+            {/* First tile: current entry with prev/next cycling through all entries */}
+            <ComponentCard
+              {...cur}
+              thumbHeight={104}
+              index={i}
+              total={ENTRIES.length}
+              onPrev={i > 0 ? () => setI((n) => Math.max(0, n - 1)) : undefined}
+              onNext={i < ENTRIES.length - 1 ? () => setI((n) => Math.min(ENTRIES.length - 1, n + 1)) : undefined}
+              onOpen={() => {}}
+            />
+            {/* Second tile: next entry (wraps) */}
+            <ComponentCard
+              {...cmp}
+              thumbHeight={104}
+              index={(i + 1) % ENTRIES.length}
+              total={ENTRIES.length}
+              onPrev={() => setI((n) => Math.max(0, n - 1))}
+              onNext={() => setI((n) => Math.min(ENTRIES.length - 1, n + 1))}
+              onOpen={() => {}}
+            />
           </div>
         </div>
 

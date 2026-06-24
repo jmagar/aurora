@@ -115,14 +115,35 @@ export function Chart({
           })
         )}
       </svg>
-      <div className="mt-3 grid gap-2">
+      {/* X-axis tick labels — one per data point, laid out horizontally */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "nowrap",
+          justifyContent: "space-between",
+          marginTop: "4px",
+          paddingLeft: type === "bar" ? "4px" : "0",
+          paddingRight: type === "bar" ? "4px" : "0",
+        }}
+      >
         {data.map((item, index) => (
-          <div key={index} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 aurora-text-meta">
-            <span className="truncate">{item.label}</span>
-            <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>
-              {item.value}
-            </span>
-          </div>
+          <span
+            key={index}
+            style={{
+              flex: "1 1 0",
+              minWidth: 0,
+              textAlign: "center",
+              fontSize: "10px",
+              fontFamily: "var(--aurora-font-mono)",
+              color: "var(--aurora-text-muted)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              lineHeight: 1.4,
+            }}
+          >
+            {item.label !== "" ? item.label : item.value}
+          </span>
         ))}
       </div>
     </div>

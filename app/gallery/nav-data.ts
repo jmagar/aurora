@@ -158,6 +158,7 @@ export const NAV: NavGroup[] = [
     { label: "File picker", slug: "file-picker" },
     { label: "File tree", slug: "file-tree" },
     { label: "Code editor", slug: "code-editor" },
+    { label: "Code workspace", slug: "code-workspace" },
     { label: "Web preview", slug: "web-preview" },
     { label: "Aspect ratio", slug: "aspect-ratio" },
     { label: "Card", slug: "card" },

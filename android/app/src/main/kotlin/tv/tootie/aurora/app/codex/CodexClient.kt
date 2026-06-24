@@ -108,9 +108,12 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     fun disconnect() { ws?.close(1000, "bye"); ws = null }
 
-    fun startThread(model: String? = null): Int {
+    fun startThread(model: String? = null, effort: String? = null): Int {
         val id = ids.incrementAndGet()
-        send("thread/start", buildJsonObject { model?.let { put("model", it) } }, id)
+        send("thread/start", buildJsonObject {
+            model?.let { put("model", it) }
+            effort?.let { put("effort", it) }
+        }, id)
         return id
     }
 
@@ -301,6 +304,21 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    /**
+     * Fetch the full item history for an existing thread.
+     *
+     * Protocol: `thread/read` → `{ threadId }` → `result.items[]`
+     * Each item is a raw JsonObject with at minimum `type`, `role`, and `content` fields.
+     * Use this after a successful `thread/resume` to restore prior messages in the UI.
+     */
+    fun readThread(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/read", buildJsonObject {
+            put("threadId", threadId)
+        }, id)
+        return id
+    }
+
     fun steerTurn(threadId: String, text: String, expectedTurnId: String): Int {
         val id = ids.incrementAndGet()
         send("turn/steer", buildJsonObject {
@@ -376,6 +394,30 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     fun interrupt(threadId: String) {
         send("turn/interrupt", buildJsonObject { put("threadId", threadId) })
+    }
+
+    /**
+     * Respond to an `account/chatgptAuthTokens/refresh` server request.
+     *
+     * The server sends this request (with its own id) when it needs fresh ChatGPT
+     * tokens. The client must echo back a result frame keyed to the same [requestId].
+     * Mirrors the RPC response shape: `{ id, result: { accessToken, chatgptAccountId } }`.
+     *
+     * Returns `true` if the frame was queued on the WebSocket, `false` if not connected.
+     */
+    fun respondAuthTokensRefresh(
+        requestId: JsonElement,
+        accessToken: String,
+        chatgptAccountId: String,
+    ): Boolean {
+        val frame = json.encodeToString(buildJsonObject {
+            put("id", requestId)
+            put("result", buildJsonObject {
+                put("accessToken", accessToken)
+                put("chatgptAccountId", chatgptAccountId)
+            })
+        })
+        return ws?.send(frame) ?: false
     }
 
     private fun send(method: String, params: JsonElement, id: Int? = null) {

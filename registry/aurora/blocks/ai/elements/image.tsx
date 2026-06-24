@@ -60,7 +60,11 @@ export interface AuroraImageProps
 // ---------------------------------------------------------------------------
 
 function aspectValue(aspect: AiImageAspect): string {
-  return /^\d+\s*:\s*\d+$/.test(aspect) ? aspect.replace(/\s/g, "") : "4 / 3"
+  // CSS aspect-ratio requires "W / H" — convert the "W:H" shorthand to that
+  // form so browsers actually honour it; invalid values silently collapse the frame.
+  return /^\d+\s*:\s*\d+$/.test(aspect)
+    ? aspect.replace(/\s*:\s*/, " / ")
+    : "4 / 3"
 }
 
 const ROSE = "var(--aurora-accent-pink)"
@@ -151,7 +155,7 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
       <figure
         ref={ref}
         className={["aurora-ai-image grid gap-2", className].filter(Boolean).join(" ")}
-        style={{ margin: 0, ...style }}
+        style={{ margin: 0, alignItems: "start", ...style }}
         {...props}
       >
         <div style={frameStyle}>

@@ -11,6 +11,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 type CardAccent = "cyan" | "rose"
 
@@ -54,15 +55,7 @@ const CSS = `
 @media (prefers-reduced-motion: reduce) { .aurora-card[data-interactive="true"] { transition: none; } }
 `
 
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-card", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+function ensureCSS() { injectOnce("aurora-card", CSS) }
 
 /* ─── Card ────────────────────────────────────────────────────────────────── */
 

@@ -74,6 +74,281 @@ const DEFAULT_MENTIONS: MentionItem[] = [
   { id: "agent-reviewer", label: "Reviewer Agent", kind: "agent" },
 ]
 
+// ---------------------------------------------------------------------------
+// Static style objects — hoisted to module scope so they are never reallocated
+// ---------------------------------------------------------------------------
+
+const S = {
+  root: { position: "relative", width: "100%", minWidth: 0 } as React.CSSProperties,
+
+  popup: {
+    position: "absolute",
+    bottom: "calc(100% + 6px)",
+    left: 0,
+    background: "var(--aurora-surface-raised)",
+    border: "1px solid var(--aurora-border-strong)",
+    borderRadius: "var(--aurora-radius-2)",
+    boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
+    zIndex: 50,
+    overflow: "hidden",
+  } as React.CSSProperties,
+
+  popupHeader: {
+    padding: "6px 10px 4px",
+    fontSize: "10px",
+    fontWeight: 600,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase" as const,
+    color: "var(--aurora-text-muted)",
+    borderBottom: "1px solid var(--aurora-border-default)",
+  } as React.CSSProperties,
+
+  slashPopup: { width: "280px" } as React.CSSProperties,
+  mentionPopup: { width: "260px" } as React.CSSProperties,
+
+  slashRowBase: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    width: "100%",
+    padding: "7px 12px",
+    border: "none",
+    cursor: "pointer",
+    textAlign: "left" as const,
+  } as React.CSSProperties,
+
+  slashLabel: {
+    fontFamily: "var(--aurora-font-mono)",
+    fontSize: "13px",
+    color: "var(--axon-orange)",
+    minWidth: "90px",
+  } as React.CSSProperties,
+
+  slashDescription: {
+    fontSize: "12px",
+    color: "var(--aurora-text-muted)",
+  } as React.CSSProperties,
+
+  mentionRowBase: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    width: "100%",
+    padding: "7px 12px",
+    border: "none",
+    cursor: "pointer",
+    textAlign: "left" as const,
+    color: "var(--aurora-text-primary)",
+  } as React.CSSProperties,
+
+  mentionIcon: { color: "var(--aurora-text-muted)", flexShrink: 0 } as React.CSSProperties,
+  mentionLabel: { fontSize: "13px" } as React.CSSProperties,
+  mentionKindLabel: {
+    marginLeft: "auto",
+    fontSize: "10px",
+    color: "var(--aurora-text-muted)",
+    textTransform: "capitalize" as const,
+  } as React.CSSProperties,
+
+  modelPopup: {
+    position: "absolute",
+    bottom: "calc(100% + 6px)",
+    right: 0,
+    width: "220px",
+    background: "var(--aurora-surface-raised)",
+    border: "1px solid var(--aurora-border-strong)",
+    borderRadius: "var(--aurora-radius-2)",
+    boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
+    zIndex: 50,
+    overflow: "hidden",
+    padding: "4px",
+  } as React.CSSProperties,
+
+  containerTransition: {
+    transition: "border-color 0.15s ease-out, box-shadow 0.15s ease-out",
+    overflow: "hidden",
+  } as React.CSSProperties,
+
+  mentionChipsRow: {
+    display: "flex",
+    flexWrap: "wrap" as const,
+    gap: "5px",
+    padding: "8px 12px 0",
+  } as React.CSSProperties,
+
+  mentionChip: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "4px",
+    padding: "2px 8px 2px 6px",
+    background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
+    border: "1px solid color-mix(in srgb, var(--axon-orange) 32%, transparent)",
+    borderRadius: "8px",
+    fontSize: "12px",
+    color: "var(--axon-orange)",
+    fontWeight: 500,
+  } as React.CSSProperties,
+
+  mentionChipRemove: {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: "0 0 0 2px",
+    color: "var(--aurora-text-muted)",
+    lineHeight: 1,
+    display: "flex",
+    alignItems: "center",
+  } as React.CSSProperties,
+
+  attachChipsRow: {
+    display: "flex",
+    flexWrap: "wrap" as const,
+    gap: "6px",
+    padding: "8px 12px 0",
+  } as React.CSSProperties,
+
+  attachChip: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "6px",
+    background: "var(--aurora-control-surface)",
+    border: "1px solid var(--aurora-border-default)",
+    borderRadius: "10px",
+    fontSize: "12px",
+    color: "var(--aurora-text-primary)",
+    maxWidth: "180px",
+  } as React.CSSProperties,
+
+  attachImg: {
+    width: "22px",
+    height: "22px",
+    borderRadius: "6px",
+    objectFit: "cover" as const,
+    flexShrink: 0,
+  } as React.CSSProperties,
+
+  attachFileIcon: { color: "var(--aurora-text-muted)", flexShrink: 0 } as React.CSSProperties,
+
+  attachName: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap" as const,
+    minWidth: 0,
+  } as React.CSSProperties,
+
+  attachRemove: {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    color: "var(--aurora-text-muted)",
+    padding: "0",
+    lineHeight: 1,
+    flexShrink: 0,
+    display: "flex",
+    alignItems: "center",
+  } as React.CSSProperties,
+
+  textarea: {
+    display: "block",
+    width: "100%",
+    resize: "none" as const,
+    background: "transparent",
+    border: "none",
+    outline: "none",
+    padding: "12px 14px 4px",
+    fontSize: "14px",
+    lineHeight: "1.6",
+    color: "var(--aurora-text-primary)",
+    fontFamily: "inherit",
+    minHeight: "44px",
+    maxHeight: "200px",
+    overflowY: "auto" as const,
+    caretColor: "var(--aurora-accent-primary)",
+  } as React.CSSProperties,
+
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "8px 10px 10px",
+    borderTop: "1px solid color-mix(in srgb, var(--aurora-border-default) 72%, transparent)",
+    background: "color-mix(in srgb, var(--aurora-control-surface) 45%, transparent)",
+  } as React.CSSProperties,
+
+  fileInput: { display: "none" } as React.CSSProperties,
+  spacer: { flex: 1 } as React.CSSProperties,
+  iconBtnShrink: { flexShrink: 0 } as React.CSSProperties,
+
+  modelBtn: {
+    gap: "5px",
+    fontSize: "11px",
+    marginLeft: "2px",
+    color: "var(--axon-orange)",
+    borderColor: "color-mix(in srgb, var(--axon-orange) 32%, transparent)",
+    background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
+  } as React.CSSProperties,
+
+  toolbarBtn: {
+    width: 28,
+    height: 28,
+    flexShrink: 0,
+    color: "var(--aurora-text-muted)",
+  } as React.CSSProperties,
+} as const
+
+// ---------------------------------------------------------------------------
+// Derived style helpers (vary by active state — built once per active index)
+// ---------------------------------------------------------------------------
+
+function slashRowStyle(active: boolean): React.CSSProperties {
+  return {
+    ...S.slashRowBase,
+    background: active ? "var(--aurora-hover-bg)" : "transparent",
+    borderLeft: active ? "2px solid var(--axon-orange)" : "2px solid transparent",
+    boxShadow: active
+      ? "inset 0 0 0 1px color-mix(in srgb, var(--axon-orange) 16%, transparent)"
+      : "none",
+  }
+}
+
+function mentionRowStyle(active: boolean): React.CSSProperties {
+  return {
+    ...S.mentionRowBase,
+    background: active ? "var(--aurora-hover-bg)" : "transparent",
+    borderLeft: active ? "2px solid var(--axon-orange)" : "2px solid transparent",
+    boxShadow: active
+      ? "inset 0 0 0 1px color-mix(in srgb, var(--axon-orange) 16%, transparent)"
+      : "none",
+  }
+}
+
+function modelRowStyle(active: boolean): React.CSSProperties {
+  return {
+    display: "block",
+    width: "100%",
+    padding: "7px 10px",
+    background: active ? "var(--aurora-hover-bg)" : "transparent",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    textAlign: "left",
+    fontSize: "13px",
+    color: active ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
+    fontWeight: active ? 600 : 400,
+    boxShadow: active
+      ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)"
+      : "none",
+  }
+}
+
+function attachChipStyle(isImage: boolean): React.CSSProperties {
+  return { ...S.attachChip, padding: isImage ? "2px 8px 2px 2px" : "3px 8px" }
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 function insertTrigger(current: string, char: string, setter: (v: string) => void) {
   const sep = current.length > 0 && !current.endsWith(" ") ? " " : ""
   setter(current + sep + char)
@@ -91,6 +366,10 @@ function getMentionKindLabel(item: MentionItem) {
   const kind = item.kind.toLowerCase()
   return label.includes(kind) ? null : item.kind
 }
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
 
 export function PromptInput({
   value,
@@ -146,17 +425,45 @@ export function PromptInput({
     prevAttachmentsRef.current = attachments
   }, [attachments])
 
-  const filteredSlash = slashCommands.filter((c) =>
-    c.label.toLowerCase().includes(slashQuery.toLowerCase())
+  const filteredSlash = React.useMemo(
+    () => slashCommands.filter((c) => c.label.toLowerCase().includes(slashQuery.toLowerCase())),
+    [slashCommands, slashQuery]
   )
-  const filteredMentions = mentionItems.filter(
-    (m) =>
-      m.label.toLowerCase().includes(mentionQuery.toLowerCase()) &&
-      !selectedMentions.find((s) => s.id === m.id)
+
+  const filteredMentions = React.useMemo(
+    () =>
+      mentionItems.filter(
+        (m) =>
+          m.label.toLowerCase().includes(mentionQuery.toLowerCase()) &&
+          !selectedMentions.find((s) => s.id === m.id)
+      ),
+    [mentionItems, mentionQuery, selectedMentions]
+  )
+
+  // Memoized container styles — only change when isFocused toggles
+  const containerStyle = React.useMemo<React.CSSProperties>(
+    () => ({
+      background: "var(--aurora-surface-raised)",
+      border: `1px solid ${
+        isFocused
+          ? "color-mix(in srgb, var(--aurora-accent-primary) 48%, var(--aurora-border-strong))"
+          : "var(--aurora-border-strong)"
+      }`,
+      borderRadius: "var(--aurora-radius-2)",
+      boxShadow: isFocused
+        ? [
+            "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)",
+            "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
+            "0 16px 36px color-mix(in srgb, var(--aurora-accent-primary) 9%, transparent)",
+            "var(--aurora-highlight-strong)",
+          ].join(", ")
+        : "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
+      ...S.containerTransition,
+    }),
+    [isFocused]
   )
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    // Slash popup nav
     if (slashOpen) {
       if (e.key === "ArrowDown") {
         e.preventDefault()
@@ -174,13 +481,9 @@ export function PromptInput({
         if (cmd) insertSlashCommand(cmd)
         return
       }
-      if (e.key === "Escape") {
-        setSlashOpen(false)
-        return
-      }
+      if (e.key === "Escape") { setSlashOpen(false); return }
     }
 
-    // Mention popup nav
     if (mentionOpen) {
       if (e.key === "ArrowDown") {
         e.preventDefault()
@@ -198,13 +501,9 @@ export function PromptInput({
         if (item) insertMention(item)
         return
       }
-      if (e.key === "Escape") {
-        setMentionOpen(false)
-        return
-      }
+      if (e.key === "Escape") { setMentionOpen(false); return }
     }
 
-    // Submit on Enter (no shift)
     if (e.key === "Enter" && !e.shiftKey && !isStreaming) {
       e.preventDefault()
       handleSubmit()
@@ -215,7 +514,6 @@ export function PromptInput({
     const v = e.target.value
     onChange(v)
 
-    // Detect / trigger
     const slashMatch = v.match(/(?:^|\s)\/(\w*)$/)
     if (slashMatch) {
       setSlashQuery(slashMatch[1])
@@ -226,7 +524,6 @@ export function PromptInput({
       setSlashOpen(false)
     }
 
-    // Detect @ trigger
     const mentionMatch = v.match(/@(\w*)$/)
     if (mentionMatch) {
       setMentionQuery(mentionMatch[1])
@@ -264,7 +561,6 @@ export function PromptInput({
   }
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    // In a real app this would upload; here we just demonstrate the chip pattern
     const files = Array.from(e.target.files ?? [])
     files.forEach((f) => {
       const isImage = f.type.startsWith("image/")
@@ -281,7 +577,10 @@ export function PromptInput({
         }
       }
       const att: Attachment = {
-        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}-${f.name}`,
+        id:
+          typeof crypto !== "undefined" && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}-${f.name}`,
         name: f.name,
         type: isImage ? "image" : "file",
         url,
@@ -307,160 +606,50 @@ export function PromptInput({
     }
   }
 
-  const containerBoxShadow = isFocused
-    ? [
-        "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent)",
-        "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
-        "0 16px 36px color-mix(in srgb, var(--aurora-accent-primary) 9%, transparent)",
-        "var(--aurora-highlight-strong)",
-      ].join(", ")
-    : "var(--aurora-shadow-medium), var(--aurora-highlight-medium)"
-
   return (
-    <div style={{ position: "relative", width: "100%", minWidth: 0 }}>
-      {/* Popups */}
+    <div style={S.root}>
+      {/* Slash commands popup */}
       {slashOpen && filteredSlash.length > 0 && (
-        <div
-          role="listbox"
-          aria-label="Slash commands"
-          style={{
-            position: "absolute",
-            bottom: "calc(100% + 6px)",
-            left: 0,
-            width: "280px",
-            background: "var(--aurora-surface-raised)",
-            border: "1px solid var(--aurora-border-strong)",
-            borderRadius: "var(--aurora-radius-2)",
-            boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
-            zIndex: 50,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              padding: "6px 10px 4px",
-              fontSize: "10px",
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--aurora-text-muted)",
-              borderBottom: "1px solid var(--aurora-border-default)",
-            }}
-          >
-            Commands
-          </div>
+        <div role="listbox" aria-label="Slash commands" style={{ ...S.popup, ...S.slashPopup }}>
+          <div style={S.popupHeader}>Commands</div>
           {filteredSlash.map((cmd, i) => (
-            <Button variant="plain" size="unstyled"
+            <Button
+              variant="plain"
+              size="unstyled"
               key={cmd.id}
               role="option"
               aria-selected={i === slashIndex}
               onClick={() => insertSlashCommand(cmd)}
               onMouseEnter={() => setSlashIndex(i)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                width: "100%",
-                padding: "7px 12px",
-                background: i === slashIndex ? "var(--aurora-hover-bg)" : "transparent",
-                border: "none",
-                cursor: "pointer",
-                textAlign: "left",
-                borderLeft: i === slashIndex ? "2px solid var(--axon-orange)" : "2px solid transparent",
-                boxShadow: i === slashIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--axon-orange) 16%, transparent)" : "none",
-              }}
+              style={slashRowStyle(i === slashIndex)}
             >
-              <span
-                style={{
-                  fontFamily: "var(--aurora-font-mono)",
-                  fontSize: "13px",
-                  color: "var(--axon-orange)",
-                  minWidth: "90px",
-                }}
-              >
-                {cmd.label}
-              </span>
-              {cmd.description && (
-                <span style={{ fontSize: "12px", color: "var(--aurora-text-muted)" }}>
-                  {cmd.description}
-                </span>
-              )}
+              <span style={S.slashLabel}>{cmd.label}</span>
+              {cmd.description && <span style={S.slashDescription}>{cmd.description}</span>}
             </Button>
           ))}
         </div>
       )}
 
+      {/* Mention popup */}
       {mentionOpen && filteredMentions.length > 0 && (
-        <div
-          role="listbox"
-          aria-label="Mentions"
-          style={{
-            position: "absolute",
-            bottom: "calc(100% + 6px)",
-            left: 0,
-            width: "260px",
-            background: "var(--aurora-surface-raised)",
-            border: "1px solid var(--aurora-border-strong)",
-            borderRadius: "var(--aurora-radius-2)",
-            boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
-            zIndex: 50,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              padding: "6px 10px 4px",
-              fontSize: "10px",
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--aurora-text-muted)",
-              borderBottom: "1px solid var(--aurora-border-default)",
-            }}
-          >
-            Mention
-          </div>
+        <div role="listbox" aria-label="Mentions" style={{ ...S.popup, ...S.mentionPopup }}>
+          <div style={S.popupHeader}>Mention</div>
           {filteredMentions.map((item, i) => {
             const kindLabel = getMentionKindLabel(item)
-
             return (
-              <Button variant="plain" size="unstyled"
+              <Button
+                variant="plain"
+                size="unstyled"
                 key={item.id}
                 role="option"
                 aria-selected={i === mentionIndex}
                 onClick={() => insertMention(item)}
                 onMouseEnter={() => setMentionIndex(i)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  width: "100%",
-                  padding: "7px 12px",
-                  background: i === mentionIndex ? "var(--aurora-hover-bg)" : "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  borderLeft: i === mentionIndex ? "2px solid var(--axon-orange)" : "2px solid transparent",
-                  boxShadow: i === mentionIndex ? "inset 0 0 0 1px color-mix(in srgb, var(--axon-orange) 16%, transparent)" : "none",
-                  color: "var(--aurora-text-primary)",
-                }}
+                style={mentionRowStyle(i === mentionIndex)}
               >
-                <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
-                  <FileIcon kind={item.kind} />
-                </span>
-                <span style={{ fontSize: "13px" }}>{item.label}</span>
-                {kindLabel && (
-                  <span
-                    style={{
-                      marginLeft: "auto",
-                      fontSize: "10px",
-                      color: "var(--aurora-text-muted)",
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {kindLabel}
-                  </span>
-                )}
+                <span style={S.mentionIcon}><FileIcon kind={item.kind} /></span>
+                <span style={S.mentionLabel}>{item.label}</span>
+                {kindLabel && <span style={S.mentionKindLabel}>{kindLabel}</span>}
               </Button>
             )
           })}
@@ -469,46 +658,16 @@ export function PromptInput({
 
       {/* Model selector dropdown */}
       {showModelMenu && (
-        <div
-          role="listbox"
-          aria-label="Models"
-          style={{
-            position: "absolute",
-            bottom: "calc(100% + 6px)",
-            right: 0,
-            width: "220px",
-            background: "var(--aurora-surface-raised)",
-            border: "1px solid var(--aurora-border-strong)",
-            borderRadius: "var(--aurora-radius-2)",
-            boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
-            zIndex: 50,
-            overflow: "hidden",
-            padding: "4px",
-          }}
-        >
+        <div role="listbox" aria-label="Models" style={S.modelPopup}>
           {DEFAULT_MODELS.map((m) => (
-            <Button variant="plain" size="unstyled"
+            <Button
+              variant="plain"
+              size="unstyled"
               key={m.id}
               role="option"
               aria-selected={m.id === model}
-              onClick={() => {
-                onModelChange?.(m.id)
-                setShowModelMenu(false)
-              }}
-              style={{
-                display: "block",
-                width: "100%",
-                padding: "7px 10px",
-                background: m.id === model ? "var(--aurora-hover-bg)" : "transparent",
-                border: "none",
-                borderRadius: "10px",
-                cursor: "pointer",
-                textAlign: "left",
-                fontSize: "13px",
-                color: m.id === model ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
-                fontWeight: m.id === model ? 600 : 400,
-                boxShadow: m.id === model ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)" : "none",
-              }}
+              onClick={() => { onModelChange?.(m.id); setShowModelMenu(false) }}
+              style={modelRowStyle(m.id === model)}
             >
               {m.label}
             </Button>
@@ -517,58 +676,21 @@ export function PromptInput({
       )}
 
       {/* Main container */}
-      <div
-        style={{
-          background: "var(--aurora-surface-raised)",
-          border: `1px solid ${isFocused ? "color-mix(in srgb, var(--aurora-accent-primary) 48%, var(--aurora-border-strong))" : "var(--aurora-border-strong)"}`,
-          borderRadius: "var(--aurora-radius-2)",
-          boxShadow: containerBoxShadow,
-          transition: "border-color 0.15s ease-out, box-shadow 0.15s ease-out",
-          overflow: "hidden",
-        }}
-      >
+      <div style={containerStyle}>
         {/* Mention chips row */}
         {selectedMentions.length > 0 && (
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "5px",
-              padding: "8px 12px 0",
-            }}
-          >
+          <div style={S.mentionChipsRow}>
             {selectedMentions.map((m) => (
-              <span
-                key={m.id}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  padding: "2px 8px 2px 6px",
-                  background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
-                  border: "1px solid color-mix(in srgb, var(--axon-orange) 32%, transparent)",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                  color: "var(--axon-orange)",
-                  fontWeight: 500,
-                }}
-              >
+              <span key={m.id} style={S.mentionChip}>
                 <FileIcon kind={m.kind} />
                 {m.label}
-                <Button variant="plain" size="unstyled"
+                <Button
+                  variant="plain"
+                  size="unstyled"
                   onClick={() => removeMention(m.id)}
                   aria-label={`Remove ${m.label}`}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: "0 0 0 2px",
-                  color: "var(--aurora-text-muted)",
-                  lineHeight: 1,
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
+                  style={S.mentionChipRemove}
+                >
                   <X size={12} strokeWidth={1.8} aria-hidden />
                 </Button>
               </span>
@@ -578,59 +700,19 @@ export function PromptInput({
 
         {/* Attachment chips */}
         {attachments.length > 0 && (
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "6px",
-              padding: "8px 12px 0",
-            }}
-          >
+          <div style={S.attachChipsRow}>
             {attachments.map((att) => (
-              <div
-                key={att.id}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  padding: att.type === "image" ? "2px 8px 2px 2px" : "3px 8px",
-                  background: "var(--aurora-control-surface)",
-                  border: "1px solid var(--aurora-border-default)",
-                  borderRadius: "10px",
-                  fontSize: "12px",
-                  color: "var(--aurora-text-primary)",
-                  maxWidth: "180px",
-                }}
-              >
+              <div key={att.id} style={attachChipStyle(att.type === "image")}>
                 {att.type === "image" && att.url ? (
-                  <img
-                    src={att.url}
-                    alt={att.name}
-                    style={{
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "6px",
-                      objectFit: "cover",
-                      flexShrink: 0,
-                    }}
-                  />
+                  <img src={att.url} alt={att.name} style={S.attachImg} />
                 ) : (
-                  <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
-                    <FileIcon kind="file" />
-                  </span>
+                  <span style={S.attachFileIcon}><FileIcon kind="file" /></span>
                 )}
-                <span
-                  style={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    minWidth: 0,
-                  }}
-                >
-                  {att.name}
-                </span>
+                <span style={S.attachName}>{att.name}</span>
                 {onRemoveAttachment && (
-                  <Button variant="plain" size="unstyled"
+                  <Button
+                    variant="plain"
+                    size="unstyled"
                     onClick={() => {
                       if (att.url) {
                         URL.revokeObjectURL(att.url)
@@ -639,17 +721,7 @@ export function PromptInput({
                       onRemoveAttachment(att.id)
                     }}
                     aria-label={`Remove ${att.name}`}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "var(--aurora-text-muted)",
-                      padding: "0",
-                      lineHeight: 1,
-                      flexShrink: 0,
-                      display: "flex",
-                      alignItems: "center",
-                    }}
+                    style={S.attachRemove}
                   >
                     <X size={12} strokeWidth={1.8} aria-hidden />
                   </Button>
@@ -665,13 +737,9 @@ export function PromptInput({
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => {
-            clearBlurTimer()
-            setIsFocused(true)
-          }}
+          onFocus={() => { clearBlurTimer(); setIsFocused(true) }}
           onBlur={() => {
             setIsFocused(false)
-            // Delay close so click events on popups register first
             if (blurTimerRef.current) clearTimeout(blurTimerRef.current)
             blurTimerRef.current = setTimeout(() => {
               setSlashOpen(false)
@@ -685,53 +753,16 @@ export function PromptInput({
           rows={1}
           aria-label="Prompt input"
           className="border-none focus-visible:outline-none"
-          style={{
-            display: "block",
-            width: "100%",
-            resize: "none",
-            background: "transparent",
-            border: "none",
-            outline: "none",
-            padding: "12px 14px 4px",
-            fontSize: "14px",
-            lineHeight: "1.6",
-            color: "var(--aurora-text-primary)",
-            fontFamily: "inherit",
-            minHeight: "44px",
-            maxHeight: "200px",
-            overflowY: "auto",
-            caretColor: "var(--aurora-accent-primary)",
-          }}
+          style={S.textarea}
         />
 
         {/* Bottom toolbar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            padding: "8px 10px 10px",
-            borderTop: "1px solid color-mix(in srgb, var(--aurora-border-default) 72%, transparent)",
-            background: "color-mix(in srgb, var(--aurora-control-surface) 45%, transparent)",
-          }}
-        >
-          {/* Attach */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            style={{ display: "none" }}
-            onChange={handleFileSelect}
-          />
-          <ToolbarButton
-            onClick={() => fileInputRef.current?.click()}
-            aria-label="Attach file"
-            title="Attach file"
-          >
+        <div style={S.toolbar}>
+          <input ref={fileInputRef} type="file" multiple style={S.fileInput} onChange={handleFileSelect} />
+          <ToolbarButton onClick={() => fileInputRef.current?.click()} aria-label="Attach file" title="Attach file">
             <Paperclip size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
 
-          {/* Slash command trigger */}
           <ToolbarButton
             onClick={() => {
               clearBlurTimer()
@@ -749,7 +780,6 @@ export function PromptInput({
             <Command size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
 
-          {/* Mention trigger */}
           <ToolbarButton
             onClick={() => {
               clearBlurTimer()
@@ -767,51 +797,28 @@ export function PromptInput({
             <AtSign size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
 
-          {/* Model selector pill */}
           <Button
             type="button"
             variant="neutral"
             size="sm"
-            onClick={() => {
-              clearBlurTimer()
-              setShowModelMenu((o) => !o)
-              setSlashOpen(false)
-              setMentionOpen(false)
-            }}
+            onClick={() => { clearBlurTimer(); setShowModelMenu((o) => !o); setSlashOpen(false); setMentionOpen(false) }}
             aria-haspopup="listbox"
             aria-expanded={showModelMenu}
-            style={{
-              gap: "5px",
-              fontSize: "11px",
-              marginLeft: "2px",
-              color: "var(--axon-orange)",
-              borderColor: "color-mix(in srgb, var(--axon-orange) 32%, transparent)",
-              background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
-            }}
+            style={S.modelBtn}
           >
             <Sparkles size={13} strokeWidth={1.6} aria-hidden />
             {modelLabel}
             <ChevronDown size={12} strokeWidth={1.65} aria-hidden />
           </Button>
 
-          {/* Spacer */}
-          <div style={{ flex: 1 }} />
+          <div style={S.spacer} />
 
-          {/* Stop button (streaming) */}
           {isStreaming && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="icon"
-              onClick={onStop}
-              aria-label="Stop generation"
-              style={{ flexShrink: 0 }}
-            >
+            <Button type="button" variant="destructive" size="icon" onClick={onStop} aria-label="Stop generation" style={S.iconBtnShrink}>
               <Square size={12} strokeWidth={1.6} fill="currentColor" aria-hidden />
             </Button>
           )}
 
-          {/* Send button */}
           {!isStreaming && (
             <Button
               type="button"
@@ -820,7 +827,7 @@ export function PromptInput({
               onClick={handleSubmit}
               disabled={!value.trim() && attachments.length === 0}
               aria-label="Send message"
-              style={{ flexShrink: 0 }}
+              style={S.iconBtnShrink}
             >
               <Send size={15} strokeWidth={1.7} aria-hidden />
             </Button>
@@ -837,19 +844,7 @@ function ToolbarButton({
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <Button
-      {...props}
-      type="button"
-      variant="ghost"
-      size="icon"
-      style={{
-        width: 28,
-        height: 28,
-        flexShrink: 0,
-        color: "var(--aurora-text-muted)",
-        ...style,
-      }}
-    >
+    <Button {...props} type="button" variant="ghost" size="icon" style={{ ...S.toolbarBtn, ...style }}>
       {children}
     </Button>
   )

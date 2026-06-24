@@ -343,6 +343,7 @@ export function CommandPalette({
           position: "fixed",
           top: "50%",
           left: "50%",
+          transform: "translate(-50%, -50%)",
           zIndex: 201,
           width: "560px",
           maxWidth: "calc(100vw - 32px)",

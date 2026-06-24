@@ -164,24 +164,39 @@ export function tryResolveColorMix(value) {
 
 /**
  * Resolve all var(--aurora-*) references in a value string.
- * Stops at depth 20 to prevent infinite loops on circular references.
+ *
+ * Throws immediately on circular references or unresolvable var() so the
+ * originating token is identified at the point of failure rather than silently
+ * propagating an unresolved string that only surfaces at the late validation
+ * gate (which reports the symptom, not the cause).
+ *
+ * A depth ceiling of 20 guards against pathological chains that would otherwise
+ * exhaust the call stack; hitting it is also treated as an error.
  */
 export function resolveVars(value, vars, visited = new Set(), depth = 0) {
   if (depth > 20) {
-    console.warn(`  warn: var() depth limit reached for value: ${value.slice(0, 60)}`);
-    return value;
+    throw new Error(
+      `var() resolution depth exceeded (>20) — likely a circular chain.\n` +
+      `  value: ${value.slice(0, 120)}\n` +
+      `  visited: ${[...visited].join(' → ')}`
+    );
   }
   return value.replace(/var\(\s*(--aurora-[\w-]+)\s*(?:,\s*([^)]+?))?\s*\)/g, (_match, varName, fallback) => {
     if (visited.has(varName)) {
-      console.warn(`  warn: circular var() reference: ${varName}`);
-      return fallback === undefined ? `var(${varName})` : resolveVars(fallback.trim(), vars, visited, depth + 1);
+      throw new Error(
+        `Circular var() reference detected: ${varName}\n` +
+        `  chain: ${[...visited].join(' → ')} → ${varName}`
+      );
     }
     const raw = vars[varName];
     if (raw === undefined) {
       if (fallback !== undefined) {
         return resolveVars(fallback.trim(), vars, new Set(visited), depth + 1);
       }
-      return `var(${varName})`;
+      throw new Error(
+        `Unresolvable var() reference: ${varName} has no definition and no fallback.\n` +
+        `  in value: ${value.slice(0, 120)}`
+      );
     }
     return resolveVars(raw, vars, new Set([...visited, varName]), depth + 1);
   });
@@ -335,6 +350,9 @@ console.log(`Excluded: ${exclusions.length} tokens`);
  *
  * The `base` sentinel is also applied at the leaf position if a branch already
  * exists there, guarding against CSS declaration order variation.
+ *
+ * Throws on a base/base collision (two tokens that map to the same `base` slot
+ * inside the same group) rather than silently overwriting the first.
  */
 function setNested(obj, segments, value) {
   let cur = obj;
@@ -351,7 +369,16 @@ function setNested(obj, segments, value) {
   }
   const lastKey = segments[segments.length - 1];
   if (cur[lastKey] !== undefined && cur[lastKey].$value === undefined) {
-    // A branch already exists — this token is the base value for the group
+    // A branch already exists — this token is the base value for the group.
+    // Fail loud if `base` is already occupied so we don't silently drop a token.
+    if (cur[lastKey].base !== undefined) {
+      throw new Error(
+        `base/base collision at path [${segments.join('.')}]: ` +
+        `existing base $value="${cur[lastKey].base.$value}", ` +
+        `incoming $value="${value.$value}". ` +
+        `Two tokens resolve to the same DTCG group base slot.`
+      );
+    }
     cur[lastKey].base = value;
   } else {
     cur[lastKey] = value;

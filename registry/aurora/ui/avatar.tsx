@@ -3,6 +3,7 @@
 import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
 import { cn } from "@/lib/utils"
+import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 // ─── Size map ─────────────────────────────────────────────────────────────────
 
@@ -39,15 +40,7 @@ const BEACON_KEYFRAMES = `
 }
 `
 
-let keyframesInjected = false
-
-function ensureBeaconKeyframes() {
-  if (keyframesInjected || typeof document === "undefined") return
-  const style = document.createElement("style")
-  style.textContent = BEACON_KEYFRAMES
-  document.head.appendChild(style)
-  keyframesInjected = true
-}
+function ensureBeaconKeyframes() { injectOnce("aurora-avatar-beacon", BEACON_KEYFRAMES) }
 
 // ─── Avatar component ─────────────────────────────────────────────────────────
 

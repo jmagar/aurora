@@ -45,16 +45,16 @@ const PANEL_STYLES = `
   .aurora-ael__head {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 16px 18px;
+    gap: 10px;
+    padding: 10px 14px;
   }
   .aurora-ael__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
+    width: 28px;
+    height: 28px;
     border-radius: var(--aurora-radius-1);
     color: var(--aurora-ael-tone, var(--aurora-accent-primary));
     border: 1px solid color-mix(in srgb, var(--aurora-ael-tone, var(--aurora-accent-primary)) 55%, transparent);
@@ -76,7 +76,7 @@ const PANEL_STYLES = `
     line-height: 1.2;
   }
   .aurora-ael__title {
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--aurora-text-primary);
@@ -114,20 +114,20 @@ const PANEL_STYLES = `
     padding: 0;
   }
   .aurora-ael__btn.sm {
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
   }
   .aurora-ael__body {
-    padding: 16px 18px;
+    padding: 12px 14px;
     border-top: 1px solid color-mix(in srgb, var(--aurora-border-strong) 60%, transparent);
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.55;
     color: var(--aurora-text-primary);
   }
   .aurora-ael__foot {
-    padding: 12px 18px;
+    padding: 9px 14px;
     border-top: 1px solid color-mix(in srgb, var(--aurora-border-strong) 60%, transparent);
-    font-size: 14px;
+    font-size: 12px;
     color: var(--aurora-text-muted);
   }
 `

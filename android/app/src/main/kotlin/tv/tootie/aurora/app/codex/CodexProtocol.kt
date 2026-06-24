@@ -109,3 +109,76 @@ data class DeviceCodeParams(
     /** Seconds until the code expires. */
     val expiresIn: Int = 300,
 )
+
+/**
+ * Params for the legacy `execCommandApproval` server request.
+ *
+ * Sent by older codex-app-server versions instead of `item/commandExecution/requestApproval`.
+ * The client responds with allow/deny keyed to the same request id.
+ */
+@Serializable
+data class ExecCommandApprovalParams(
+    val command: String,
+    val workingDirectory: String? = null,
+    val sandboxPolicy: String? = null,
+    val reason: String? = null,
+    val availableDecisions: List<String>? = null,
+)
+
+/**
+ * Params for the legacy `applyPatchApproval` server request.
+ *
+ * Sent by older codex-app-server versions for file-patch approval.
+ * [fileChanges] maps absolute file paths to their before/after content.
+ * Correlates with patchApplyBeginEvent/patchApplyEndEvent notifications.
+ */
+@Serializable
+data class ApplyPatchApprovalParams(
+    val callId: String? = null,
+    val conversationId: String? = null,
+    /** Map of absolute path → `{ "before": String?, "after": String? }`. */
+    val fileChanges: JsonObject? = null,
+    val grantRoot: Boolean? = null,
+    val reason: String? = null,
+)
+
+/**
+ * Additional filesystem/network permissions the agent is requesting beyond its sandbox policy.
+ *
+ * Received in `item/permissions/requestApproval` params under the `permissionProfile` key.
+ * All fields are optional — absence means no change to that dimension.
+ */
+@Serializable
+data class AdditionalPermissionProfile(
+    /** Absolute paths the agent wants read access to. */
+    val readPaths: List<String>? = null,
+    /** Absolute paths the agent wants write access to. */
+    val writePaths: List<String>? = null,
+    /** Whether the agent is requesting network access. */
+    val networkEnabled: Boolean? = null,
+)
+
+/**
+ * Params received in an `account/chatgptAuthTokens/refresh` server request.
+ *
+ * The server sends this when it receives a 401 upstream while the client session
+ * is authenticated via chatgptAuthTokens. The client must respond with fresh tokens
+ * using [ChatGptAuthTokensRefreshResult] keyed to the same request id.
+ */
+@Serializable
+data class ChatGptAuthTokensRefreshParams(
+    /** The account id that triggered the 401. Used to confirm we're refreshing the right account. */
+    val previousAccountId: String? = null,
+    /** Reason code from the server (e.g. "tokenExpired"). Informational; may be null. */
+    val reason: String? = null,
+)
+
+/**
+ * Result sent back to the server in response to `account/chatgptAuthTokens/refresh`.
+ * Both fields are required — the server uses them to resume the upstream request.
+ */
+@Serializable
+data class ChatGptAuthTokensRefreshResult(
+    val accessToken: String,
+    val chatgptAccountId: String,
+)

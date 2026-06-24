@@ -49,6 +49,7 @@ export default function AiImageDemo() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+            alignItems: "start",
             gap: 16,
           }}
         >

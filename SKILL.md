@@ -52,7 +52,7 @@ Do not hard-code component counts, gallery route counts, or active branch names 
 - Use inline or class-supported shadows like `boxShadow: "var(--aurora-shadow-strong)"`.
 - Use `boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)"` for Tier 2 panels when no local helper exists.
 - Registry entries should declare `registryDependencies` for Aurora components they import. At minimum, token-dependent components need `aurora-tokens`.
-- When adding a gallery demo, wire both `app/gallery/[section]/page.tsx` and `app/gallery/layout.tsx`.
+- When adding a gallery demo, register it in the `DEMOS` map in `app/gallery/[section]/page.tsx` and add a nav entry in `app/gallery/nav-data.ts`. There is no demo wiring in `layout.tsx`.
 - After registry changes, run `pnpm registry:build` so `public/r/*.json` and `public/r/registry.json` stay aligned.
 
 ## Badges

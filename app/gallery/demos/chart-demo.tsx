@@ -29,8 +29,10 @@ const grid: React.CSSProperties = {
   gap: "18px",
 }
 
+// Short hour labels keep the x-axis readable at narrow widths.
+const hours = ["1h", "2h", "3h", "4h", "5h", "6h", "7h", "8h"]
 const toData = (values: number[]): ChartDatum[] =>
-  values.map((value) => ({ label: "", value }))
+  values.map((value, i) => ({ label: hours[i] ?? "", value }))
 
 // CD composition: two token-styled cells in a 2-col grid.
 const requestsData = toData([12, 19, 14, 23, 18, 27, 21, 30])

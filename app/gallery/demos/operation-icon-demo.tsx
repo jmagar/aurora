@@ -58,6 +58,46 @@ function Row({ label, names }: { label: string; names: OperationName[] }) {
   )
 }
 
+function IconOnlyRow({ label, names }: { label: string; names: OperationName[] }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+      <span
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: "var(--aurora-text-muted)",
+        }}
+      >
+        {label}
+      </span>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        {names.map((n) => (
+          <div
+            key={n}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              border:
+                "1px solid color-mix(in srgb, var(--aurora-border-default) 55%, var(--aurora-page-bg))",
+              background:
+                "color-mix(in srgb, var(--aurora-page-bg) 30%, var(--aurora-control-surface))",
+            }}
+            title={n.charAt(0).toUpperCase() + n.slice(1)}
+          >
+            <OperationIcon name={n} size={16} aria-label={n} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function OperationIconDemo() {
   return (
     <div className="flex flex-col gap-8">
@@ -91,6 +131,10 @@ export default function OperationIconDemo() {
         <Row
           label="Reason (rose)"
           names={["ask", "summarize", "research", "suggest"]}
+        />
+        <IconOnlyRow
+          label="Icon only"
+          names={["scrape", "map", "retrieve", "screenshot", "endpoints", "crawl", "extract", "embed", "ingest", "ask", "summarize", "research", "suggest"]}
         />
       </div>
     </div>

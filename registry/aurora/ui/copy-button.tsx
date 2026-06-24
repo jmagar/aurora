@@ -15,6 +15,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { injectOnce } from "@/registry/aurora/lib/inject-once"
 
 // ─── Visual layer (ported from Claude Design) ──────────────────────────────────
 
@@ -52,15 +53,7 @@ const CSS = `
 .aurora-copy-btn__icon svg { display: block; }
 `
 
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-copy-button", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+function ensureCSS() { injectOnce("aurora-copy-button", CSS) }
 
 // ─── Icons ─────────────────────────────────────────────────────────────────────
 

@@ -40,13 +40,7 @@
   --aurora-accent-pink-button: #e879a0;
   --aurora-rose-gradient: linear-gradient(180deg, var(--aurora-accent-pink) 0%, var(--aurora-accent-pink-button) 100%);
 
-  /* Expressive accent — Aurora violet (AI / automation identity) */
-  --aurora-accent-violet:        #a78bfa;
-  --aurora-accent-violet-strong: #c4b5fd;
-  --aurora-accent-violet-deep:   #7c3aed;
-  --aurora-accent-violet-button: #8b5cf6;
-  --aurora-accent-violet-surface: color-mix(in srgb, var(--aurora-accent-violet) 12%, var(--aurora-panel-medium));
-  --aurora-accent-violet-border:  color-mix(in srgb, var(--aurora-accent-violet) 32%, transparent);
+  /* Violet removed — AI/automation identity uses --axon-orange. */
 
   /* Expressive surface tokens — rose (extends existing rose family) */
   --aurora-accent-pink-surface: color-mix(in srgb, var(--aurora-accent-pink) 12%, var(--aurora-panel-medium));
@@ -266,13 +260,7 @@
   --aurora-accent-pink-deep:   #a0284f;
   --aurora-accent-pink-button: #b82f60;
 
-  /* Violet (light) */
-  --aurora-accent-violet:         #7c3aed;
-  --aurora-accent-violet-strong:  #8b5cf6;
-  --aurora-accent-violet-deep:    #5b21b6;
-  --aurora-accent-violet-button:  #6d28d9;
-  --aurora-accent-violet-surface: color-mix(in srgb, var(--aurora-accent-violet) 10%, var(--aurora-panel-medium));
-  --aurora-accent-violet-border:  color-mix(in srgb, var(--aurora-accent-violet) 26%, transparent);
+  /* Violet removed — AI/automation identity uses --axon-orange. */
 
   /* Rose surfaces (light) */
   --aurora-accent-pink-surface: color-mix(in srgb, var(--aurora-accent-pink) 10%, var(--aurora-panel-medium));
