@@ -85,6 +85,354 @@ function matchesFilter(file: FileItem, filter: FilterChip): boolean {
 }
 
 // ---------------------------------------------------------------------------
+// Hoisted static style objects — avoids re-allocation on every file-list render
+// ---------------------------------------------------------------------------
+
+const FP = {
+  selectionChip: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "5px",
+    padding: "3px 8px 3px 6px",
+    background: "color-mix(in srgb, var(--aurora-accent-primary) 10%, var(--aurora-panel-medium))",
+    border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 28%, var(--aurora-border-default))",
+    borderRadius: "8px",
+    flexShrink: 0,
+  } as React.CSSProperties,
+  selectionChipName: {
+    fontSize: "11px",
+    fontWeight: 500,
+    color: "var(--aurora-text-primary)",
+    fontFamily: "var(--aurora-font-sans)",
+    maxWidth: "120px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  } as React.CSSProperties,
+  selectionChipRemove: {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    color: "var(--aurora-text-muted)",
+    padding: 0,
+    display: "flex",
+    alignItems: "center",
+    flexShrink: 0,
+  } as React.CSSProperties,
+  // FileGridCard static sub-elements
+  gridThumbArea: {
+    height: "80px",
+    background: "var(--aurora-control-surface)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    overflow: "hidden",
+  } as React.CSSProperties,
+  gridThumbIconBox: {
+    width: "36px",
+    height: "36px",
+    borderRadius: "10px",
+    background: "var(--aurora-panel-medium)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "1px solid var(--aurora-border-default)",
+  } as React.CSSProperties,
+  gridThumbImg: { width: "100%", height: "100%", objectFit: "cover" } as React.CSSProperties,
+  gridCheckBadge: {
+    position: "absolute",
+    top: "6px",
+    right: "6px",
+    width: "18px",
+    height: "18px",
+    borderRadius: "50%",
+    background: "var(--aurora-accent-primary)",
+    color: "var(--aurora-accent-foreground)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  } as React.CSSProperties,
+  gridInfoArea: { padding: "7px 8px 8px" } as React.CSSProperties,
+  gridInfoName: {
+    margin: 0,
+    fontSize: "11px",
+    fontWeight: 600,
+    color: "var(--aurora-text-primary)",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  gridInfoDate: {
+    margin: "2px 0 0",
+    fontSize: "10px",
+    color: "var(--aurora-text-muted)",
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  // FileListRow static sub-elements
+  listIconBox: {
+    width: "28px",
+    height: "28px",
+    borderRadius: "8px",
+    background: "var(--aurora-control-surface)",
+    border: "1px solid var(--aurora-border-default)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  } as React.CSSProperties,
+  listName: {
+    flex: 1,
+    fontSize: "13px",
+    fontWeight: 500,
+    color: "var(--aurora-text-primary)",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  listSize: {
+    fontSize: "11px",
+    color: "var(--aurora-text-muted)",
+    fontVariantNumeric: "tabular-nums",
+    flexShrink: 0,
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  listDate: {
+    fontSize: "11px",
+    color: "var(--aurora-text-muted)",
+    flexShrink: 0,
+    minWidth: "52px",
+    textAlign: "right",
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  listCheckBadge: {
+    width: "18px",
+    height: "18px",
+    borderRadius: "50%",
+    background: "var(--aurora-accent-primary)",
+    color: "var(--aurora-accent-foreground)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  } as React.CSSProperties,
+  // Main layout statics
+  backdrop: {
+    position: "fixed",
+    inset: 0,
+    zIndex: 200,
+    background: "var(--aurora-overlay)",
+  } as React.CSSProperties,
+  dialog: {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    zIndex: 201,
+    width: "780px",
+    maxWidth: "calc(100vw - 32px)",
+    height: "520px",
+    maxHeight: "calc(100vh - 64px)",
+    display: "flex",
+    flexDirection: "column",
+    background: "var(--aurora-panel-strong)",
+    border: "1px solid var(--aurora-border-strong)",
+    borderRadius: "var(--aurora-radius-2)",
+    boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
+    overflow: "hidden",
+    animation: "aurora-fp-in 0.16s cubic-bezier(0.16, 1, 0.3, 1)",
+  } as React.CSSProperties,
+  dragOverlay: {
+    position: "absolute",
+    inset: 0,
+    zIndex: 10,
+    background: "color-mix(in srgb, var(--aurora-accent-primary) 10%, rgba(7,19,28,0.72))",
+    border: "2px dashed var(--aurora-accent-primary)",
+    borderRadius: "var(--aurora-radius-2)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "12px",
+    pointerEvents: "none",
+  } as React.CSSProperties,
+  dragOverlayText: {
+    margin: 0,
+    fontSize: "18px",
+    fontWeight: 700,
+    color: "var(--aurora-accent-primary)",
+    fontFamily: "var(--aurora-font-display)",
+  } as React.CSSProperties,
+  bodyRow: { display: "flex", flex: 1, overflow: "hidden" } as React.CSSProperties,
+  sidebar: {
+    width: "160px",
+    flexShrink: 0,
+    borderRight: "1px solid var(--aurora-border-default)",
+    background: "var(--aurora-panel-medium)",
+    display: "flex",
+    flexDirection: "column",
+    padding: "12px 8px",
+    gap: "2px",
+  } as React.CSSProperties,
+  sidebarTitle: {
+    margin: "0 0 6px 8px",
+    fontSize: "10px",
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: "var(--aurora-text-muted)",
+  } as React.CSSProperties,
+  sidebarIconWrap: { flexShrink: 0 } as React.CSSProperties,
+  sidebarSpacer: { flex: 1 } as React.CSSProperties,
+  hiddenFileInput: { display: "none" } as React.CSSProperties,
+  uploadBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: "7px",
+    padding: "7px 10px",
+    background: "color-mix(in srgb, var(--aurora-accent-primary) 9%, transparent)",
+    border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent)",
+    borderRadius: "10px",
+    cursor: "pointer",
+    color: "var(--aurora-accent-primary)",
+    fontSize: "12px",
+    fontWeight: 600,
+    width: "100%",
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  mainArea: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" } as React.CSSProperties,
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "10px 14px",
+    borderBottom: "1px solid var(--aurora-border-default)",
+    flexShrink: 0,
+  } as React.CSSProperties,
+  searchBox: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+    gap: "7px",
+    padding: "6px 10px",
+    background: "var(--aurora-control-surface)",
+    border: "1px solid var(--aurora-border-default)",
+    borderRadius: "10px",
+  } as React.CSSProperties,
+  searchIconWrap: { color: "var(--aurora-text-muted)", flexShrink: 0 } as React.CSSProperties,
+  searchInput: {
+    flex: 1,
+    background: "transparent",
+    border: "none",
+    outline: "none",
+    fontSize: "13px",
+    color: "var(--aurora-text-primary)",
+    fontFamily: "var(--aurora-font-sans)",
+    caretColor: "var(--aurora-accent-primary)",
+  } as React.CSSProperties,
+  filterChipsRow: { display: "flex", gap: "4px" } as React.CSSProperties,
+  viewToggleWrap: {
+    display: "flex",
+    border: "1px solid var(--aurora-border-default)",
+    borderRadius: "8px",
+    overflow: "hidden",
+  } as React.CSSProperties,
+  emptyState: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
+    gap: "12px",
+    color: "var(--aurora-text-muted)",
+  } as React.CSSProperties,
+  emptyStateText: {
+    margin: 0,
+    fontSize: "13px",
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  gridLayout: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))",
+    gap: "8px",
+  } as React.CSSProperties,
+  listHeaderRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    padding: "0 12px 6px",
+    borderBottom: "1px solid var(--aurora-border-default)",
+  } as React.CSSProperties,
+  listHeaderSpacer: { width: "28px", flexShrink: 0 } as React.CSSProperties,
+  listHeaderName: {
+    flex: 1,
+    fontSize: "11px",
+    fontWeight: 600,
+    color: "var(--aurora-text-muted)",
+    letterSpacing: "0.05em",
+    textTransform: "uppercase",
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  listHeaderSize: {
+    fontSize: "11px",
+    fontWeight: 600,
+    color: "var(--aurora-text-muted)",
+    letterSpacing: "0.05em",
+    textTransform: "uppercase",
+    fontFamily: "var(--aurora-font-sans)",
+    width: "60px",
+    textAlign: "right",
+  } as React.CSSProperties,
+  listHeaderModified: {
+    fontSize: "11px",
+    fontWeight: 600,
+    color: "var(--aurora-text-muted)",
+    letterSpacing: "0.05em",
+    textTransform: "uppercase",
+    fontFamily: "var(--aurora-font-sans)",
+    width: "60px",
+    textAlign: "right",
+  } as React.CSSProperties,
+  footer: {
+    borderTop: "1px solid var(--aurora-border-default)",
+    padding: "10px 14px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    background: "var(--aurora-panel-medium)",
+    flexShrink: 0,
+  } as React.CSSProperties,
+  footerChipsArea: {
+    flex: 1,
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "5px",
+    minWidth: 0,
+    overflowX: "auto",
+  } as React.CSSProperties,
+  footerEmptyLabel: {
+    fontSize: "12px",
+    color: "var(--aurora-text-muted)",
+    fontFamily: "var(--aurora-font-sans)",
+  } as React.CSSProperties,
+  footerActions: { display: "flex", gap: "8px", flexShrink: 0 } as React.CSSProperties,
+  cancelBtn: {
+    padding: "7px 14px",
+    background: "var(--aurora-control-surface)",
+    border: "1px solid var(--aurora-border-default)",
+    borderRadius: "10px",
+    color: "var(--aurora-text-muted)",
+    fontSize: "13px",
+    fontWeight: 500,
+    cursor: "pointer",
+    fontFamily: "var(--aurora-font-sans)",
+    transition: "color 0.1s, border-color 0.1s",
+  } as React.CSSProperties,
+}
+
+// ---------------------------------------------------------------------------
 // Icons
 // ---------------------------------------------------------------------------
 
@@ -256,46 +604,15 @@ function SelectionChip({
   onRemove: () => void
 }) {
   return (
-    <div
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "5px",
-        padding: "3px 8px 3px 6px",
-        background: "color-mix(in srgb, var(--aurora-accent-primary) 10%, var(--aurora-panel-medium))",
-        border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 28%, var(--aurora-border-default))",
-        borderRadius: "8px",
-        flexShrink: 0,
-      }}
-    >
+    <div style={FP.selectionChip}>
       <FileTypeIcon type={file.type} />
-      <span
-        style={{
-          fontSize: "11px",
-          fontWeight: 500,
-          color: "var(--aurora-text-primary)",
-          fontFamily: "var(--aurora-font-sans)",
-          maxWidth: "120px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
-      >
+      <span style={FP.selectionChipName}>
         {file.name}
       </span>
       <Button variant="plain" size="unstyled"
         onClick={onRemove}
         aria-label={`Remove ${file.name}`}
-        style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          color: "var(--aurora-text-muted)",
-          padding: 0,
-          display: "flex",
-          alignItems: "center",
-          flexShrink: 0,
-        }}
+        style={FP.selectionChipRemove}
       >
         <CloseIcon />
       </Button>
@@ -345,86 +662,33 @@ function FileGridCard({
       }}
     >
       {/* Thumbnail / icon area */}
-      <div
-        style={{
-          height: "80px",
-          background: "var(--aurora-control-surface)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
+      <div style={FP.gridThumbArea}>
         {file.thumbnailUrl ? (
           <img
             src={file.thumbnailUrl}
             alt={file.name}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={FP.gridThumbImg}
           />
         ) : (
-          <div
-            style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "10px",
-              background: "var(--aurora-panel-medium)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid var(--aurora-border-default)",
-            }}
-          >
+          <div style={FP.gridThumbIconBox}>
             <FileTypeIcon type={file.type} />
           </div>
         )}
 
         {/* Selection check */}
         {selected && (
-          <div
-            style={{
-              position: "absolute",
-              top: "6px",
-              right: "6px",
-              width: "18px",
-              height: "18px",
-              borderRadius: "50%",
-              background: "var(--aurora-accent-primary)",
-              color: "var(--aurora-accent-foreground)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div style={FP.gridCheckBadge}>
             <CheckIcon />
           </div>
         )}
       </div>
 
       {/* Info */}
-      <div style={{ padding: "7px 8px 8px" }}>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "11px",
-            fontWeight: 600,
-            color: "var(--aurora-text-primary)",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            fontFamily: "var(--aurora-font-sans)",
-          }}
-        >
+      <div style={FP.gridInfoArea}>
+        <p style={FP.gridInfoName}>
           {file.name}
         </p>
-        <p
-          style={{
-            margin: "2px 0 0",
-            fontSize: "10px",
-            color: "var(--aurora-text-muted)",
-            fontFamily: "var(--aurora-font-sans)",
-          }}
-        >
+        <p style={FP.gridInfoDate}>
           {relativeTime(file.modifiedAt)}
         </p>
       </div>
@@ -474,80 +738,28 @@ function FileListRow({
       }}
     >
       {/* Icon */}
-      <div
-        style={{
-          width: "28px",
-          height: "28px",
-          borderRadius: "8px",
-          background: "var(--aurora-control-surface)",
-          border: "1px solid var(--aurora-border-default)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
+      <div style={FP.listIconBox}>
         <FileTypeIcon type={file.type} />
       </div>
 
       {/* Name */}
-      <span
-        style={{
-          flex: 1,
-          fontSize: "13px",
-          fontWeight: 500,
-          color: "var(--aurora-text-primary)",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          fontFamily: "var(--aurora-font-sans)",
-        }}
-      >
+      <span style={FP.listName}>
         {file.name}
       </span>
 
       {/* Size */}
-      <span
-        style={{
-          fontSize: "11px",
-          color: "var(--aurora-text-muted)",
-          fontVariantNumeric: "tabular-nums",
-          flexShrink: 0,
-          fontFamily: "var(--aurora-font-sans)",
-        }}
-      >
+      <span style={FP.listSize}>
         {formatBytes(file.size)}
       </span>
 
       {/* Date */}
-      <span
-        style={{
-          fontSize: "11px",
-          color: "var(--aurora-text-muted)",
-          flexShrink: 0,
-          minWidth: "52px",
-          textAlign: "right",
-          fontFamily: "var(--aurora-font-sans)",
-        }}
-      >
+      <span style={FP.listDate}>
         {relativeTime(file.modifiedAt)}
       </span>
 
       {/* Check */}
       {selected && (
-        <div
-          style={{
-            width: "18px",
-            height: "18px",
-            borderRadius: "50%",
-            background: "var(--aurora-accent-primary)",
-            color: "var(--aurora-accent-foreground)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
+        <div style={FP.listCheckBadge}>
           <CheckIcon />
         </div>
       )}
@@ -734,12 +946,7 @@ export function FilePicker({
           setSelected(new Set())
           onOpenChange(false)
         }}
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 200,
-          background: "var(--aurora-overlay)",
-        }}
+        style={FP.backdrop}
       />
 
       {/* Dialog */}
@@ -751,84 +958,27 @@ export function FilePicker({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: 201,
-          width: "780px",
-          maxWidth: "calc(100vw - 32px)",
-          height: "520px",
-          maxHeight: "calc(100vh - 64px)",
-          display: "flex",
-          flexDirection: "column",
-          background: "var(--aurora-panel-strong)",
-          border: "1px solid var(--aurora-border-strong)",
-          borderRadius: "var(--aurora-radius-2)",
-          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
-          overflow: "hidden",
-          animation: "aurora-fp-in 0.16s cubic-bezier(0.16, 1, 0.3, 1)",
-        }}
+        style={FP.dialog}
       >
         {/* Drag-drop overlay */}
         {draggingOver && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              zIndex: 10,
-              background: "color-mix(in srgb, var(--aurora-accent-primary) 10%, rgba(7,19,28,0.72))",
-              border: "2px dashed var(--aurora-accent-primary)",
-              borderRadius: "var(--aurora-radius-2)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "12px",
-              pointerEvents: "none",
-            }}
-          >
+          <div style={FP.dragOverlay}>
             <UploadCloudIcon />
-            <p
-              style={{
-                margin: 0,
-                fontSize: "18px",
-                fontWeight: 700,
-                color: "var(--aurora-accent-primary)",
-                fontFamily: "var(--aurora-font-display)",
-              }}
-            >
+            <p style={FP.dragOverlayText}>
               Drop files to upload
             </p>
           </div>
         )}
 
-        <div className="aurora-file-picker-body" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        <div className="aurora-file-picker-body" style={FP.bodyRow}>
           {/* Sidebar */}
           <div
             className="aurora-file-picker-sidebar"
-            style={{
-              width: "160px",
-              flexShrink: 0,
-              borderRight: "1px solid var(--aurora-border-default)",
-              background: "var(--aurora-panel-medium)",
-              display: "flex",
-              flexDirection: "column",
-              padding: "12px 8px",
-              gap: "2px",
-            }}
+            style={FP.sidebar}
           >
             <p
               className="aurora-file-picker-sidebar-title"
-              style={{
-                margin: "0 0 6px 8px",
-                fontSize: "10px",
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "var(--aurora-text-muted)",
-              }}
+              style={FP.sidebarTitle}
             >
               Files
             </p>
@@ -856,20 +1006,20 @@ export function FilePicker({
                     transition: "background 0.1s, color 0.1s",
                   }}
                 >
-                  <span style={{ flexShrink: 0 }}>{item.icon}</span>
+                  <span style={FP.sidebarIconWrap}>{item.icon}</span>
                   {item.label}
                 </Button>
               )
             })}
 
             {/* Upload button */}
-            <div className="aurora-file-picker-upload-spacer" style={{ flex: 1 }} />
+            <div className="aurora-file-picker-upload-spacer" style={FP.sidebarSpacer} />
             <input
               ref={uploadInputRef}
               type="file"
               multiple={multiple}
               accept={accept}
-              style={{ display: "none" }}
+              style={FP.hiddenFileInput}
               onChange={(e) => {
                 // Handled by parent in real use
                 e.target.value = ""
@@ -877,21 +1027,7 @@ export function FilePicker({
             />
             <Button variant="plain" size="unstyled"
               onClick={() => uploadInputRef.current?.click()}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "7px",
-                padding: "7px 10px",
-                background: "color-mix(in srgb, var(--aurora-accent-primary) 9%, transparent)",
-                border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent)",
-                borderRadius: "10px",
-                cursor: "pointer",
-                color: "var(--aurora-accent-primary)",
-                fontSize: "12px",
-                fontWeight: 600,
-                width: "100%",
-                fontFamily: "var(--aurora-font-sans)",
-              }}
+              style={FP.uploadBtn}
             >
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
                 <path d="M6.5 9V1M6.5 1L3.5 4M6.5 1L9.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
@@ -904,40 +1040,19 @@ export function FilePicker({
           {/* Main area */}
           <div
             className="aurora-file-picker-main"
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
-            }}
+            style={FP.mainArea}
           >
             {/* Toolbar */}
             <div
               className="aurora-file-picker-toolbar"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "10px 14px",
-                borderBottom: "1px solid var(--aurora-border-default)",
-                flexShrink: 0,
-              }}
+              style={FP.toolbar}
             >
               {/* Search */}
               <div
                 className="aurora-file-picker-search"
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "7px",
-                  padding: "6px 10px",
-                  background: "var(--aurora-control-surface)",
-                  border: "1px solid var(--aurora-border-default)",
-                  borderRadius: "10px",
-                }}
+                style={FP.searchBox}
               >
-                <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
+                <span style={FP.searchIconWrap}>
                   <SearchIcon />
                 </span>
                 <Input
@@ -946,21 +1061,12 @@ export function FilePicker({
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search files…"
                   className="h-auto border-none px-0 py-0 focus-visible:outline-none"
-                  style={{
-                    flex: 1,
-                    background: "transparent",
-                    border: "none",
-                    outline: "none",
-                    fontSize: "13px",
-                    color: "var(--aurora-text-primary)",
-                    fontFamily: "var(--aurora-font-sans)",
-                    caretColor: "var(--aurora-accent-primary)",
-                  }}
+                  style={FP.searchInput}
                 />
               </div>
 
               {/* Filter chips */}
-              <div className="aurora-file-picker-filters" style={{ display: "flex", gap: "4px" }}>
+              <div className="aurora-file-picker-filters" style={FP.filterChipsRow}>
                 {FILTER_CHIPS.map((chip) => {
                   const active = filter === chip.id
                   return (
@@ -991,14 +1097,7 @@ export function FilePicker({
               </div>
 
               {/* View toggle */}
-              <div
-                style={{
-                  display: "flex",
-                  border: "1px solid var(--aurora-border-default)",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                }}
-              >
+              <div style={FP.viewToggleWrap}>
                 {(["grid", "list"] as ViewMode[]).map((mode) => {
                   const active = viewMode === mode
                   return (
@@ -1033,36 +1132,14 @@ export function FilePicker({
               }}
             >
               {filteredFiles.length === 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100%",
-                    gap: "12px",
-                    color: "var(--aurora-text-muted)",
-                  }}
-                >
+                <div style={FP.emptyState}>
                   <SearchIcon />
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: "13px",
-                      fontFamily: "var(--aurora-font-sans)",
-                    }}
-                  >
+                  <p style={FP.emptyStateText}>
                     No files found
                   </p>
                 </div>
               ) : viewMode === "grid" ? (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))",
-                    gap: "8px",
-                  }}
-                >
+                <div style={FP.gridLayout}>
                   {filteredFiles.map((file) => (
                     <FileGridCard
                       key={file.id}
@@ -1075,57 +1152,11 @@ export function FilePicker({
               ) : (
                 <div>
                   {/* List header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      padding: "0 12px 6px",
-                      borderBottom: "1px solid var(--aurora-border-default)",
-                    }}
-                  >
-                    <div style={{ width: "28px", flexShrink: 0 }} />
-                    <span
-                      style={{
-                        flex: 1,
-                        fontSize: "11px",
-                        fontWeight: 600,
-                        color: "var(--aurora-text-muted)",
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase",
-                        fontFamily: "var(--aurora-font-sans)",
-                      }}
-                    >
-                      Name
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        fontWeight: 600,
-                        color: "var(--aurora-text-muted)",
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase",
-                        fontFamily: "var(--aurora-font-sans)",
-                        width: "60px",
-                        textAlign: "right",
-                      }}
-                    >
-                      Size
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        fontWeight: 600,
-                        color: "var(--aurora-text-muted)",
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase",
-                        fontFamily: "var(--aurora-font-sans)",
-                        width: "60px",
-                        textAlign: "right",
-                      }}
-                    >
-                      Modified
-                    </span>
+                  <div style={FP.listHeaderRow}>
+                    <div style={FP.listHeaderSpacer} />
+                    <span style={FP.listHeaderName}>Name</span>
+                    <span style={FP.listHeaderSize}>Size</span>
+                    <span style={FP.listHeaderModified}>Modified</span>
                   </div>
                   {filteredFiles.map((file) => (
                     <FileListRow
@@ -1142,35 +1173,12 @@ export function FilePicker({
             {/* Selection tray + confirm */}
             <div
               className="aurora-file-picker-footer"
-              style={{
-                borderTop: "1px solid var(--aurora-border-default)",
-                padding: "10px 14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                background: "var(--aurora-panel-medium)",
-                flexShrink: 0,
-              }}
+              style={FP.footer}
             >
               {/* Selected chips */}
-              <div
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "5px",
-                  minWidth: 0,
-                  overflowX: "auto",
-                }}
-              >
+              <div style={FP.footerChipsArea}>
                 {selectedFiles.length === 0 ? (
-                  <span
-                    style={{
-                      fontSize: "12px",
-                      color: "var(--aurora-text-muted)",
-                      fontFamily: "var(--aurora-font-sans)",
-                    }}
-                  >
+                  <span style={FP.footerEmptyLabel}>
                     {multiple ? "Select files to attach" : "Select a file"}
                   </span>
                 ) : (
@@ -1185,24 +1193,13 @@ export function FilePicker({
               </div>
 
               {/* Actions */}
-              <div className="aurora-file-picker-actions" style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+              <div className="aurora-file-picker-actions" style={FP.footerActions}>
                 <Button variant="plain" size="unstyled"
                   onClick={() => {
                     setSelected(new Set())
                     onOpenChange(false)
                   }}
-                  style={{
-                    padding: "7px 14px",
-                    background: "var(--aurora-control-surface)",
-                    border: "1px solid var(--aurora-border-default)",
-                    borderRadius: "10px",
-                    color: "var(--aurora-text-muted)",
-                    fontSize: "13px",
-                    fontWeight: 500,
-                    cursor: "pointer",
-                    fontFamily: "var(--aurora-font-sans)",
-                    transition: "color 0.1s, border-color 0.1s",
-                  }}
+                  style={FP.cancelBtn}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = "var(--aurora-text-primary)"
                     e.currentTarget.style.borderColor = "var(--aurora-border-strong)"

@@ -47,6 +47,11 @@ const TOKEN_COLORS: Record<TokenType, string> = {
   plain:    "var(--aurora-text-primary)",
 }
 
+// Pre-built style objects for each token type — avoids per-token object allocation
+const TOKEN_STYLES = Object.fromEntries(
+  (Object.keys(TOKEN_COLORS) as TokenType[]).map((t) => [t, { color: TOKEN_COLORS[t] } as React.CSSProperties])
+) as Record<TokenType, React.CSSProperties>
+
 interface Token { type: TokenType; text: string }
 
 // ---------------------------------------------------------------------------
@@ -247,25 +252,155 @@ function mergeAdjacentPlain(tokens: Token[]): Token[] {
 }
 
 // ---------------------------------------------------------------------------
+// Hoisted static style objects
+// ---------------------------------------------------------------------------
+
+const CE = {
+  outerContainer: {
+    display: "flex",
+    flexDirection: "column",
+    background: "var(--aurora-bg, var(--aurora-panel-medium))",
+    border: "1px solid var(--aurora-border-default)",
+    borderRadius: "var(--aurora-radius-2)",
+    overflow: "hidden",
+    boxShadow: "var(--aurora-shadow-medium)",
+    fontFamily: "var(--aurora-font-mono)",
+  } as React.CSSProperties,
+  titleBar: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "0 12px",
+    height: "38px",
+    background: "var(--aurora-panel-strong)",
+    borderBottom: "1px solid var(--aurora-border-default)",
+    flexShrink: 0,
+  } as React.CSSProperties,
+  fileIconSvg: { flexShrink: 0 } as React.CSSProperties,
+  filenameSpan: {
+    fontFamily: "var(--aurora-font-sans)",
+    fontSize: "13px",
+    color: "var(--aurora-text-primary)",
+    fontWeight: 500,
+    flex: 1,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  } as React.CSSProperties,
+  closeBtn: { width: "22px", height: "22px", fontSize: "13px" } as React.CSSProperties,
+  codeAreaRow: { display: "flex", flex: 1, minHeight: 0, overflow: "hidden" } as React.CSSProperties,
+  codeScroll: {
+    flex: 1,
+    overflowY: "auto",
+    overflowX: "auto",
+    padding: "8px 0",
+    background: "var(--aurora-control-surface)",
+  } as React.CSSProperties,
+  minimapContainer: {
+    width: "60px",
+    flexShrink: 0,
+    background: "var(--aurora-control-surface)",
+    borderLeft: "1px solid var(--aurora-border-default)",
+    overflowY: "hidden",
+    padding: "8px 4px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1px",
+  } as React.CSSProperties,
+  langBadge: {
+    display: "inline-flex",
+    alignItems: "center",
+    padding: "1px 7px",
+    borderRadius: "5px",
+    background: "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
+    border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 20%, transparent)",
+    color: "var(--aurora-accent-primary)",
+    fontFamily: "var(--aurora-font-mono)",
+    fontSize: "11px",
+    fontWeight: 600,
+    letterSpacing: "0.02em",
+  } as React.CSSProperties,
+  errorPanel: {
+    borderTop: "1px solid var(--aurora-border-default)",
+    background: "color-mix(in srgb, var(--aurora-error) 5%, var(--aurora-panel-strong))",
+    padding: "6px 12px",
+    maxHeight: "120px",
+    overflowY: "auto",
+  } as React.CSSProperties,
+  errorPanelTitle: {
+    fontSize: "11px",
+    fontFamily: "var(--aurora-font-sans)",
+    fontWeight: 600,
+    color: "var(--aurora-error)",
+    marginBottom: "4px",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
+  } as React.CSSProperties,
+  errorLinePos: { fontFamily: "var(--aurora-font-mono)", opacity: 0.7, flexShrink: 0 } as React.CSSProperties,
+  errorLineMsg: { color: "var(--aurora-text-primary)" } as React.CSSProperties,
+  statusBar: {
+    display: "flex",
+    alignItems: "center",
+    gap: "16px",
+    padding: "0 12px",
+    height: "24px",
+    background: "var(--aurora-panel-strong)",
+    borderTop: "1px solid var(--aurora-border-default)",
+    fontFamily: "var(--aurora-font-sans)",
+    fontSize: "11px",
+    color: "var(--aurora-text-muted)",
+    flexShrink: 0,
+  } as React.CSSProperties,
+  statusBarSpacer: { flex: 1 } as React.CSSProperties,
+  statusBarLang: { color: "var(--aurora-accent-primary)" } as React.CSSProperties,
+  // CodeLine sub-styles (static parts)
+  codeLineBase: { display: "flex", alignItems: "flex-start", minHeight: "20px" } as React.CSSProperties,
+  diffPrefixBase: {
+    width: "16px",
+    flexShrink: 0,
+    fontFamily: "var(--aurora-font-mono)",
+    fontSize: "12px",
+    lineHeight: "20px",
+    textAlign: "center",
+    userSelect: "none",
+  } as React.CSSProperties,
+  lineNumberBase: {
+    minWidth: "36px",
+    flexShrink: 0,
+    fontFamily: "var(--aurora-font-mono)",
+    fontSize: "12px",
+    lineHeight: "20px",
+    textAlign: "right",
+    paddingRight: "12px",
+    userSelect: "none",
+    opacity: 0.7,
+  } as React.CSSProperties,
+  gutterIconBase: {
+    width: "16px",
+    flexShrink: 0,
+    fontSize: "10px",
+    lineHeight: "20px",
+    textAlign: "center",
+    userSelect: "none",
+  } as React.CSSProperties,
+  codeContent: {
+    flex: 1,
+    fontFamily: "var(--aurora-font-mono)",
+    fontSize: "13px",
+    lineHeight: "20px",
+    whiteSpace: "pre",
+    overflow: "visible",
+  } as React.CSSProperties,
+}
+
+// ---------------------------------------------------------------------------
 // Minimap column (visual only)
 // ---------------------------------------------------------------------------
 
 function Minimap({ lines }: { lines: string[] }) {
   const shown = lines.slice(0, 80)
   return (
-    <div
-      style={{
-        width: "60px",
-        flexShrink: 0,
-        background: "var(--aurora-control-surface)",
-        borderLeft: "1px solid var(--aurora-border-default)",
-        overflowY: "hidden",
-        padding: "8px 4px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1px",
-      }}
-    >
+    <div style={CE.minimapContainer}>
       {shown.map((line, i) => {
         const trimmed = line.trim()
         const width = Math.min(52, Math.max(4, trimmed.length * 0.65))
@@ -297,21 +432,7 @@ function Minimap({ lines }: { lines: string[] }) {
 
 function LanguageBadge({ language }: { language: string }) {
   return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        padding: "1px 7px",
-        borderRadius: "5px",
-        background: "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
-        border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 20%, transparent)",
-        color: "var(--aurora-accent-primary)",
-        fontFamily: "var(--aurora-font-mono)",
-        fontSize: "11px",
-        fontWeight: 600,
-        letterSpacing: "0.02em",
-      }}
-    >
+    <span style={CE.langBadge}>
       {language}
     </span>
   )
@@ -361,91 +482,43 @@ function CodeLine({ lineIndex, content, language, diffType, errorDiagnostics }: 
   const hasError = errorDiagnostics && errorDiagnostics.some((d) => d.severity !== "warning" && d.severity !== "info")
   const hasWarn = errorDiagnostics && errorDiagnostics.some((d) => d.severity === "warning")
 
+  const diffPrefixColor =
+    diffType === "add" ? "var(--aurora-success)" : diffType === "remove" ? "var(--aurora-error)" : "transparent"
+  const lineNumColor = hasError
+    ? "var(--aurora-error)"
+    : hasWarn
+    ? "var(--aurora-warn)"
+    : "var(--aurora-text-muted)"
+  const gutterColor = hasError
+    ? "var(--aurora-error)"
+    : hasWarn
+    ? "var(--aurora-warn)"
+    : "transparent"
+
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        background: bgColor,
-        minHeight: "20px",
-      }}
-    >
+    <div style={{ ...CE.codeLineBase, background: bgColor }}>
       {/* Diff prefix */}
-      <span
-        style={{
-          width: "16px",
-          flexShrink: 0,
-          color:
-            diffType === "add"
-              ? "var(--aurora-success)"
-              : diffType === "remove"
-              ? "var(--aurora-error)"
-              : "transparent",
-          fontFamily: "var(--aurora-font-mono)",
-          fontSize: "12px",
-          lineHeight: "20px",
-          textAlign: "center",
-          userSelect: "none",
-        }}
-      >
+      <span style={{ ...CE.diffPrefixBase, color: diffPrefixColor }}>
         {linePrefix}
       </span>
 
       {/* Line number */}
-      <span
-        style={{
-          minWidth: "36px",
-          flexShrink: 0,
-          color: hasError
-            ? "var(--aurora-error)"
-            : hasWarn
-            ? "var(--aurora-warn)"
-            : "var(--aurora-text-muted)",
-          fontFamily: "var(--aurora-font-mono)",
-          fontSize: "12px",
-          lineHeight: "20px",
-          textAlign: "right",
-          paddingRight: "12px",
-          userSelect: "none",
-          opacity: 0.7,
-        }}
-      >
+      <span style={{ ...CE.lineNumberBase, color: lineNumColor }}>
         {lineIndex + 1}
       </span>
 
       {/* Gutter error icon */}
-      <span
-        style={{
-          width: "16px",
-          flexShrink: 0,
-          fontSize: "10px",
-          lineHeight: "20px",
-          textAlign: "center",
-          color: hasError
-            ? "var(--aurora-error)"
-            : hasWarn
-            ? "var(--aurora-warn)"
-            : "transparent",
-          userSelect: "none",
-        }}
-      >
+      <span style={{ ...CE.gutterIconBase, color: gutterColor }}>
         {hasError ? "●" : hasWarn ? "▲" : ""}
       </span>
 
       {/* Code content */}
       <span
-        style={{
-          flex: 1,
-          fontFamily: "var(--aurora-font-mono)",
-          fontSize: "13px",
-          lineHeight: "20px",
-          whiteSpace: "pre",
-          overflow: "visible",
-        }}
+        style={CE.codeContent}
         className={hasError ? "aurora-squiggle" : hasWarn ? "aurora-warn-squiggle" : undefined}
       >
         {tokens.map((tok, i) => (
-          <span key={i} style={{ color: TOKEN_COLORS[tok.type] }}>
+          <span key={i} style={TOKEN_STYLES[tok.type]}>
             {tok.text}
           </span>
         ))}
@@ -460,26 +533,8 @@ function CodeLine({ lineIndex, content, language, diffType, errorDiagnostics }: 
 
 function ErrorPanel({ errors }: { errors: Diagnostic[] }) {
   return (
-    <div
-      style={{
-        borderTop: "1px solid var(--aurora-border-default)",
-        background: "color-mix(in srgb, var(--aurora-error) 5%, var(--aurora-panel-strong))",
-        padding: "6px 12px",
-        maxHeight: "120px",
-        overflowY: "auto",
-      }}
-    >
-      <div
-        style={{
-          fontSize: "11px",
-          fontFamily: "var(--aurora-font-sans)",
-          fontWeight: 600,
-          color: "var(--aurora-error)",
-          marginBottom: "4px",
-          textTransform: "uppercase",
-          letterSpacing: "0.05em",
-        }}
-      >
+    <div style={CE.errorPanel}>
+      <div style={CE.errorPanelTitle}>
         Problems ({errors.length})
       </div>
       {errors.map((err, i) => (
@@ -495,10 +550,10 @@ function ErrorPanel({ errors }: { errors: Diagnostic[] }) {
             padding: "2px 0",
           }}
         >
-          <span style={{ fontFamily: "var(--aurora-font-mono)", opacity: 0.7, flexShrink: 0 }}>
+          <span style={CE.errorLinePos}>
             {err.line}:{err.col ?? 0}
           </span>
-          <span style={{ color: "var(--aurora-text-primary)" }}>{err.message}</span>
+          <span style={CE.errorLineMsg}>{err.message}</span>
         </div>
       ))}
     </div>
@@ -517,25 +572,11 @@ function StatusBar({
   lineCount: number
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "16px",
-        padding: "0 12px",
-        height: "24px",
-        background: "var(--aurora-panel-strong)",
-        borderTop: "1px solid var(--aurora-border-default)",
-        fontFamily: "var(--aurora-font-sans)",
-        fontSize: "11px",
-        color: "var(--aurora-text-muted)",
-        flexShrink: 0,
-      }}
-    >
+    <div style={CE.statusBar}>
       <span>Ln 1, Col 1</span>
       <span>UTF-8</span>
-      <span style={{ color: "var(--aurora-accent-primary)" }}>{language}</span>
-      <div style={{ flex: 1 }} />
+      <span style={CE.statusBarLang}>{language}</span>
+      <div style={CE.statusBarSpacer} />
       <span>{lineCount} lines</span>
     </div>
   )
@@ -565,36 +606,13 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
     }, [errors])
 
     return (
-      <div
-        ref={ref}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          background: "var(--aurora-bg, var(--aurora-panel-medium))",
-          border: "1px solid var(--aurora-border-default)",
-          borderRadius: "var(--aurora-radius-2)",
-          overflow: "hidden",
-          boxShadow: "var(--aurora-shadow-medium)",
-          fontFamily: "var(--aurora-font-mono)",
-        }}
-      >
+      <div ref={ref} style={CE.outerContainer}>
         <style>{SQUIGGLE_STYLE}</style>
 
         {/* Title bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "0 12px",
-            height: "38px",
-            background: "var(--aurora-panel-strong)",
-            borderBottom: "1px solid var(--aurora-border-default)",
-            flexShrink: 0,
-          }}
-        >
+        <div style={CE.titleBar}>
           {/* File icon */}
-          <svg width="13" height="14" viewBox="0 0 13 14" fill="none" style={{ flexShrink: 0 }}>
+          <svg width="13" height="14" viewBox="0 0 13 14" fill="none" style={CE.fileIconSvg}>
             <path
               d="M7.5 1H2C1.448 1 1 1.448 1 2V12C1 12.552 1.448 13 2 13H11C11.552 13 12 12.552 12 12V5.5L7.5 1Z"
               stroke="var(--aurora-accent-primary)"
@@ -605,18 +623,7 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
             <path d="M7.5 1V5.5H12" stroke="var(--aurora-accent-primary)" strokeWidth="1" opacity="0.5" />
           </svg>
 
-          <span
-            style={{
-              fontFamily: "var(--aurora-font-sans)",
-              fontSize: "13px",
-              color: "var(--aurora-text-primary)",
-              fontWeight: 500,
-              flex: 1,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <span style={CE.filenameSpan}>
             {filename}
           </span>
 
@@ -629,11 +636,7 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
               size="icon"
               onClick={onClose}
               aria-label="Close"
-              style={{
-                width: "22px",
-                height: "22px",
-                fontSize: "13px",
-              }}
+              style={CE.closeBtn}
             >
               ×
             </Button>
@@ -641,17 +644,9 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
         </div>
 
         {/* Code area + minimap */}
-        <div style={{ display: "flex", flex: 1, minHeight: 0, overflow: "hidden" }}>
+        <div style={CE.codeAreaRow}>
           {/* Code scroll area */}
-          <div
-            style={{
-              flex: 1,
-              overflowY: "auto",
-              overflowX: "auto",
-              padding: "8px 0",
-              background: "var(--aurora-control-surface)",
-            }}
-          >
+          <div style={CE.codeScroll}>
             {isDiff
               ? diff!.map((dl, i) => (
                   <CodeLine
