@@ -140,24 +140,21 @@ const RANGE_SLIDER_CSS = `
 }
 `
 
-const RangeSlider = React.forwardRef<HTMLDivElement, RangeSliderProps>(
-  (
-    {
-      className,
-      value,
-      defaultValue = [0, 100],
-      min = 0,
-      max = 100,
-      step = 1,
-      disabled = false,
-      tone,
-      onValueChange,
-      style,
-      "aria-label": ariaLabel,
-      ...props
-    },
-    ref
-  ) => {
+function RangeSlider({
+  ref,
+  className,
+  value,
+  defaultValue = [0, 100],
+  min = 0,
+  max = 100,
+  step = 1,
+  disabled = false,
+  tone,
+  onValueChange,
+  style,
+  "aria-label": ariaLabel,
+  ...props
+}: RangeSliderProps & { ref?: React.Ref<HTMLDivElement> }) {
     const controlled = value !== undefined
     const [internalValue, setInternalValue] =
       React.useState<[number, number]>(defaultValue)
@@ -233,9 +230,7 @@ const RangeSlider = React.forwardRef<HTMLDivElement, RangeSliderProps>(
         </div>
       </>
     )
-  }
-)
-RangeSlider.displayName = "RangeSlider"
+}
 
 export { RangeSlider }
 export default RangeSlider

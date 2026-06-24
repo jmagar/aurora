@@ -89,8 +89,7 @@ const SLIDER_CSS = `
 }
 `
 
-const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
-  ({ className, value, defaultValue = 0, min = 0, max = 100, step = 1, tone, onValueChange, style, ...props }, ref) => {
+function Slider({ ref, className, value, defaultValue = 0, min = 0, max = 100, step = 1, tone, onValueChange, style, ...props }: SliderProps & { ref?: React.Ref<HTMLInputElement> }) {
     const controlled = value !== undefined
     const [internalValue, setInternalValue] = React.useState(defaultValue)
     const current = controlled ? value : internalValue
@@ -123,9 +122,7 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
         />
       </>
     )
-  }
-)
-Slider.displayName = "Slider"
+}
 
 export { Slider }
 export default Slider

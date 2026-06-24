@@ -52,23 +52,20 @@ function StarIcon({ size, fill }: { size: number; fill: number }) {
   )
 }
 
-const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
-  (
-    {
-      value,
-      defaultValue = 0,
-      onChange,
-      max = 5,
-      size = 24,
-      readOnly = false,
-      disabled = false,
-      className,
-      style,
-      "aria-label": ariaLabel,
-      ...props
-    },
-    ref
-  ) => {
+function Rating({
+  ref,
+  value,
+  defaultValue = 0,
+  onChange,
+  max = 5,
+  size = 24,
+  readOnly = false,
+  disabled = false,
+  className,
+  style,
+  "aria-label": ariaLabel,
+  ...props
+}: RatingProps & { ref?: React.Ref<HTMLDivElement> }) {
     const isControlled = value !== undefined
     const [internal, setInternal] = React.useState(defaultValue)
     const current = isControlled ? (value as number) : internal
@@ -168,9 +165,7 @@ const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
         })}
       </div>
     )
-  }
-)
-Rating.displayName = "Rating"
+}
 
 export { Rating }
 export default Rating

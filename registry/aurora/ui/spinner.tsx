@@ -23,8 +23,7 @@ const toneMap = {
   muted: "var(--aurora-text-muted)",
 }
 
-const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
-  ({ className, size = "default", tone = "cyan", thickness = 2, style, ...props }, ref) => {
+function Spinner({ ref, className, size = "default", tone = "cyan", thickness = 2, style, ...props }: SpinnerProps & { ref?: React.Ref<HTMLSpanElement> }) {
     const px = typeof size === "number" ? size : sizeMap[size]
     const color = toneMap[tone]
 
@@ -46,9 +45,7 @@ const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
         {...props}
       />
     )
-  }
-)
-Spinner.displayName = "Spinner"
+}
 
 export { Spinner }
 export default Spinner

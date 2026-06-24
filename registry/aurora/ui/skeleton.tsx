@@ -72,11 +72,16 @@ export interface SkeletonProps
 // Skeleton
 // ---------------------------------------------------------------------------
 
-export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
-  function Skeleton(
-    { variant, width, height, circle, className, style, ...rest },
-    ref,
-  ) {
+export function Skeleton({
+  ref,
+  variant,
+  width,
+  height,
+  circle,
+  className,
+  style,
+  ...rest
+}: SkeletonProps & { ref?: React.Ref<HTMLDivElement> }) {
     React.useEffect(injectShimmer, []);
 
     // `width` is a Tailwind/utility class escape hatch only when it's a class
@@ -107,10 +112,7 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
         {...rest}
       />
     );
-  },
-);
-
-Skeleton.displayName = "Skeleton";
+}
 
 // ---------------------------------------------------------------------------
 // SkeletonRow — pre-composed avatar + two text lines + button
@@ -118,8 +120,7 @@ Skeleton.displayName = "Skeleton";
 
 export type SkeletonRowProps = React.HTMLAttributes<HTMLDivElement>
 
-export const SkeletonRow = React.forwardRef<HTMLDivElement, SkeletonRowProps>(
-  function SkeletonRow({ className, ...rest }, ref) {
+export function SkeletonRow({ ref, className, ...rest }: SkeletonRowProps & { ref?: React.Ref<HTMLDivElement> }) {
     React.useEffect(injectShimmer, []);
 
     return (
@@ -142,7 +143,4 @@ export const SkeletonRow = React.forwardRef<HTMLDivElement, SkeletonRowProps>(
         <Skeleton variant="button" />
       </div>
     );
-  },
-);
-
-SkeletonRow.displayName = "SkeletonRow";
+}
