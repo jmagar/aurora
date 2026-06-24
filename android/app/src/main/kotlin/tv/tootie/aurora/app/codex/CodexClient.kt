@@ -564,6 +564,27 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    fun listPlugins(cwds: List<String>? = null, marketplaceKinds: List<String>? = null): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/list", buildJsonObject {
+            cwds?.let { put("cwds", buildJsonArray { it.forEach { c -> add(c) } }) }
+            marketplaceKinds?.let { put("marketplaceKinds", buildJsonArray { it.forEach { k -> add(k) } }) }
+        }, id)
+        return id
+    }
+
+    fun readPlugin(pluginId: String): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/read", buildJsonObject { put("pluginId", pluginId) }, id)
+        return id
+    }
+
+    fun listInstalledPlugins(): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/installed", JsonObject(emptyMap()), id)
+        return id
+    }
+
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean {
         val json = buildJsonObject {
             put("id", rawServerId)

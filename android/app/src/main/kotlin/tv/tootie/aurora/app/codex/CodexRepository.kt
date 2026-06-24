@@ -52,6 +52,8 @@ public enum class RequestKind {
     McpServers,          // mcpServerStatus/list
     Models,              // model/list
     Skills,              // skills/list
+    Plugins,             // plugin/list
+    InstalledPlugins,    // plugin/installed
     ConfigRequirements,  // configRequirements/read
     ConfigRead,          // config/read
     ExperimentalFeatures,   // experimentalFeature/list
@@ -93,6 +95,9 @@ sealed class CodexEvent {
 
     /** Parsed result from a mcpServerStatus/list response. */
     data class McpServerList(val servers: List<JsonObject>) : CodexEvent()
+
+    /** Aggregated result from plugin/list + plugin/installed responses. */
+    data class PluginList(val available: List<JsonObject>, val installed: List<JsonObject>) : CodexEvent()
 
     /**
      * Parsed result from a config/read response.
@@ -183,6 +188,9 @@ class CodexRepository {
 
     private val _mcpServersFlow = MutableSharedFlow<CodexEvent.McpServerList>(replay = 1)
     val mcpServersFlow: SharedFlow<CodexEvent.McpServerList> = _mcpServersFlow.asSharedFlow()
+
+    private val _pluginsFlow = MutableSharedFlow<CodexEvent.PluginList>(replay = 1)
+    val pluginsFlow: SharedFlow<CodexEvent.PluginList> = _pluginsFlow.asSharedFlow()
 
     private val _accountFlow = MutableSharedFlow<CodexEvent.AccountInfo>(replay = 1)
     /** Account details from account/read responses and account/updated notifications. */
@@ -404,6 +412,18 @@ class CodexRepository {
         return key
     }
 
+    fun listPlugins(): Int {
+        val id = client?.listPlugins() ?: return -1
+        pendingKinds[id.toString()] = RequestKind.Plugins
+        return id
+    }
+
+    fun listInstalledPlugins(): Int {
+        val id = client?.listInstalledPlugins() ?: return -1
+        pendingKinds[id.toString()] = RequestKind.InstalledPlugins
+        return id
+    }
+
     /**
      * Send a configRequirements/read request to validate config completeness.
      * The response is routed through [turnEventsFlow] with [RequestKind.ConfigRequirements].
@@ -609,6 +629,8 @@ class CodexRepository {
                 RequestKind.Models -> routeModelsResponse(msg)
                 RequestKind.Skills -> routeSkillsResponse(msg)
                 RequestKind.McpServers -> routeMcpServersResponse(msg)
+                RequestKind.Plugins -> routePluginsResponse(msg)
+                RequestKind.InstalledPlugins -> routeInstalledPluginsResponse(msg)
                 RequestKind.AccountRead -> routeAccountResponse(msg)
                 RequestKind.RateLimitsRead -> routeRateLimitsResponse(msg)
                 RequestKind.ConfigRead -> routeConfigResponse(msg)
@@ -712,6 +734,21 @@ class CodexRepository {
         val list = servers.mapNotNull { it as? JsonObject }
         _mcpServersFlow.tryEmit(CodexEvent.McpServerList(list))
     }
+
+    private fun routePluginsResponse(msg: RpcMessage) {
+        val result = msg.result?.jsonObject ?: return
+        val available = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: emptyList()
+        val current = _pluginsFlow.replayCache.firstOrNull()
+        _pluginsFlow.tryEmit(CodexEvent.PluginList(available = available, installed = current?.installed ?: emptyList()))
+    }
+
+    private fun routeInstalledPluginsResponse(msg: RpcMessage) {
+        val result = msg.result?.jsonObject ?: return
+        val installed = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: emptyList()
+        val current = _pluginsFlow.replayCache.firstOrNull()
+        _pluginsFlow.tryEmit(CodexEvent.PluginList(available = current?.available ?: emptyList(), installed = installed))
+    }
+
     private fun routeAccountResponse(msg: RpcMessage) {
         val data = msg.result?.jsonObject ?: return
         _accountFlow.tryEmit(CodexEvent.AccountInfo(data))
