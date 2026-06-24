@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check, Code2, Copy } from "lucide-react"
+import { Check, Code, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface JsxPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -130,7 +130,7 @@ const JsxPreview = React.memo(
       >
         {/* Header: code icon · filename · language pill · copy */}
         <div className="flex items-center gap-3 px-4 py-3">
-          <Code2
+          <Code
             className="size-4 shrink-0"
             aria-hidden
             style={{ color: "var(--aurora-accent-primary)" }}

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { Code2, Globe, TerminalSquare, Download } from "lucide-react"
+import { Code, Globe, SquareTerminal, Download } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { SpectrumBar, CopyLine } from "@/components/site/site-ui"
@@ -17,9 +17,9 @@ import {
 } from "@/lib/themes"
 
 const CAT_ICON: Record<ThemeCategory, React.ReactNode> = {
-  editors: <Code2 size={15} strokeWidth={1.7} />,
+  editors: <Code size={15} strokeWidth={1.7} />,
   browser: <Globe size={15} strokeWidth={1.7} />,
-  shell: <TerminalSquare size={15} strokeWidth={1.7} />,
+  shell: <SquareTerminal size={15} strokeWidth={1.7} />,
 }
 
 function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {

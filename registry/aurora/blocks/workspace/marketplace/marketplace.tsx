@@ -4,8 +4,8 @@ import * as React from "react"
 import {
   Bot,
   Boxes,
-  Code2,
-  FileCode2,
+  Code,
+  FileCode,
   Grid2X2,
   LayoutList,
   Plus,
@@ -13,7 +13,7 @@ import {
   Server,
   ShoppingBag,
   Sparkles,
-  TerminalSquare,
+  SquareTerminal,
 } from "lucide-react"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
@@ -205,11 +205,11 @@ const DEMO_ITEMS: MarketplaceCatalogItem[] = [
 const KIND_META: Record<MarketplaceKind, { label: string; icon: React.ReactNode }> = {
   plugin: { label: "Plugin", icon: <Boxes className="size-4" aria-hidden /> },
   skill: { label: "Skill", icon: <Sparkles className="size-4" aria-hidden /> },
-  command: { label: "Command", icon: <TerminalSquare className="size-4" aria-hidden /> },
+  command: { label: "Command", icon: <SquareTerminal className="size-4" aria-hidden /> },
   mcp_server: { label: "MCP server", icon: <Server className="size-4" aria-hidden /> },
   acp_agent: { label: "ACP agent", icon: <Bot className="size-4" aria-hidden /> },
-  app: { label: "App", icon: <Code2 className="size-4" aria-hidden /> },
-  hook: { label: "Hook", icon: <FileCode2 className="size-4" aria-hidden /> },
+  app: { label: "App", icon: <Code className="size-4" aria-hidden /> },
+  hook: { label: "Hook", icon: <FileCode className="size-4" aria-hidden /> },
   source: { label: "Source", icon: <ShoppingBag className="size-4" aria-hidden /> },
 }
 

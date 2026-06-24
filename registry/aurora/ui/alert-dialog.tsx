@@ -31,7 +31,7 @@
  */
 
 import * as React from "react"
-import { AlertTriangle, Info } from "lucide-react"
+import { TriangleAlert, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/registry/aurora/ui/button"
 import {
@@ -161,7 +161,7 @@ function AlertDialogCard({
     ensureCSS()
   }, [])
 
-  const Icon = destructive ? AlertTriangle : Info
+  const Icon = destructive ? TriangleAlert : Info
 
   return (
     <div
