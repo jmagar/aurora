@@ -55,6 +55,7 @@ public enum class RequestKind {
     ConfigRequirements,  // configRequirements/read
     AccountRead,         // account/read
     RateLimitsRead,      // account/rateLimits/read
+    FuzzySearch,         // fuzzyFileSearch
     Other,
 }
 
@@ -354,6 +355,19 @@ class CodexRepository {
         val rawId = client?.readRateLimits() ?: return "-1"
         val key = rawId.toString()
         pendingKinds[key] = RequestKind.RateLimitsRead
+        return key
+    }
+
+    /**
+     * Start a fuzzy file search session. The initial response is routed to [turnEventsFlow]
+     * with [RequestKind.FuzzySearch] so [ChatViewModel] can extract the sessionId. Subsequent
+     * incremental results arrive as [fuzzyFileSearch/sessionUpdated] notifications and are
+     * dispatched through [turnEventsFlow] as ordinary server notifications.
+     */
+    fun fuzzyFileSearch(query: String, roots: List<String>): String {
+        val rawId = client?.fuzzyFileSearch(query, roots) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.FuzzySearch
         return key
     }
 

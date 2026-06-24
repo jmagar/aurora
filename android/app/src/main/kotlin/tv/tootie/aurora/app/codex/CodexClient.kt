@@ -463,6 +463,25 @@ class CodexClient(private val url: String, private val token: String? = null) {
     }
 
     /**
+     * Start a fuzzy file search session.
+     *
+     * [query] is the user's search string. [roots] is the list of root directories to search.
+     * The server responds with a synchronous result (same id) and then emits incremental
+     * [fuzzyFileSearch/sessionUpdated] and [fuzzyFileSearch/sessionCompleted] notifications
+     * keyed by the sessionId returned in the response.
+     *
+     * Returns the request id for correlation.
+     */
+    fun fuzzyFileSearch(query: String, roots: List<String>): Int {
+        val id = ids.incrementAndGet()
+        send("fuzzyFileSearch", buildJsonObject {
+            put("query", query)
+            put("roots", buildJsonArray { roots.forEach { add(it) } })
+        }, id)
+        return id
+    }
+
+    /**
      * Send an account/read request.
      * Returns the request id for correlation in the messages flow.
      */

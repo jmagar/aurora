@@ -88,6 +88,12 @@ import tv.tootie.aurora.components.AuroraMessageRole
 import tv.tootie.aurora.components.AuroraPermissionPrompt
 import tv.tootie.aurora.components.AuroraPromptInput
 import tv.tootie.aurora.components.AuroraThinking
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -588,6 +594,18 @@ fun ChatScreen(
                             modifier = Modifier.size(18.dp),
                         )
                     }
+                    // File picker button — opens fuzzy file search overlay (Ctrl+P style)
+                    IconButton(
+                        onClick = { vm.startFuzzySearch("") },
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.FolderOpen,
+                            contentDescription = "Pick file",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
                 },
             )
         }
@@ -616,6 +634,20 @@ fun ChatScreen(
             allowLabel = allowLabel,
             onDeny = { vm.approveToolCall(denyDecision) },
             denyLabel = denyLabel,
+        )
+    }
+
+    // Fuzzy file picker overlay — shown when a fuzzyFileSearch session is active
+    s.fuzzySearch?.let { fuzzyState ->
+        FuzzyFilePickerOverlay(
+            state = fuzzyState,
+            onSelect = { path ->
+                val name = path.substringAfterLast('/')
+                selectedItems = selectedItems + SelectedItem.Mention(name = name, path = path)
+                vm.dismissFuzzySearch()
+            },
+            onQueryChange = { q -> vm.startFuzzySearch(q) },
+            onDismiss = vm::dismissFuzzySearch,
         )
     }
 
@@ -664,6 +696,7 @@ fun ChatScreen(
             }
         }
     }
+
 }
 
 /**
@@ -814,6 +847,108 @@ private fun AutoApprovalReviewBanner(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                 )
+            }
+        }
+    }
+}
+
+
+/**
+ * Fuzzy file picker overlay — full-screen modal dialog with a query field and an
+ * incrementally-populated results list. Fires [onSelect] with the chosen path and
+ * [onQueryChange] whenever the query text changes so the caller can issue a new
+ * fuzzyFileSearch RPC. [onDismiss] is called on back-press or outside-click.
+ */
+@Composable
+private fun FuzzyFilePickerOverlay(
+    state: FuzzyFileSearchState,
+    onSelect: (String) -> Unit,
+    onQueryChange: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var query by remember { mutableStateOf("") }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth(0.95f)
+                .fillMaxSize(0.8f),
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = 6.dp,
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { q ->
+                        query = q
+                        onQueryChange(q)
+                    },
+                    placeholder = { Text("Search files…") },
+                    leadingIcon = {
+                        Icon(Icons.Default.Search, contentDescription = null)
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (!state.done && state.results.isEmpty()) {
+                    // Searching in progress, no results yet
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
+
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    items(state.results, key = { it }) { path ->
+                        val name = path.substringAfterLast('/')
+                        val dir = path.substringBeforeLast('/', "")
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onSelect(path) },
+                            shape = MaterialTheme.shapes.small,
+                        ) {
+                            Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)) {
+                                Text(
+                                    text = name,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                )
+                                if (dir.isNotBlank()) {
+                                    Text(
+                                        text = dir,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        maxLines = 1,
+                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (state.done && state.results.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                        Text(
+                            "No files found",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+
+                TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
+                    Text("Cancel")
+                }
             }
         }
     }

@@ -411,6 +411,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 withTimeout(10_000) { repo.isReady.filter { it }.first() }
                 repo.listModels()
                 repo.listSkills()
+                repo.readConfigRequirements()
                 // Auto-resume only when: route is "new", caller has not suppressed it,
                 // and a saved threadId exists. Suppressing via allowResume=false lets the
                 // "New session" sidebar action always produce a genuinely empty thread
@@ -626,6 +627,22 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     fun showSteer() = _state.update { it.copy(showSteerSheet = true) }
     fun hideSteer() = _state.update { it.copy(showSteerSheet = false) }
 
+    /**
+     * Start a fuzzy file search session. Uses the current thread's cwd as the sole
+     * root if [roots] is empty. Results arrive incrementally via
+     * [fuzzyFileSearch/sessionUpdated] notifications; the picker dismisses once
+     * [fuzzyFileSearch/sessionCompleted] fires or the user cancels.
+     */
+    fun startFuzzySearch(query: String, roots: List<String> = emptyList()) {
+        val effectiveRoots = roots.ifEmpty {
+            listOfNotNull(_state.value.cwd)
+        }
+        repo.fuzzyFileSearch(query, effectiveRoots)
+    }
+
+    /** Clear the fuzzy search state (user cancelled or picked a file). */
+    fun dismissFuzzySearch() = _state.update { it.copy(fuzzySearch = null) }
+
     /** Dismiss a server warning banner by its exact text. */
     fun dismissWarning(warning: String) {
         _state.update { it.copy(serverWarnings = it.serverWarnings.filter { w -> w != warning }.toImmutableList()) }
@@ -776,6 +793,22 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     if (text != null) {
                         val steerMsg = ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer] $text")
                         _state.update { s -> s.copy(msgs = (s.msgs + steerMsg).toImmutableList()) }
+                    }
+                    return
+                }
+
+                if (event.originKind == RequestKind.ConfigRequirements) {
+                    if (msg.error != null) {
+                        val detail = msg.error.message.sanitizeForDisplay()
+                        _state.update { it.copy(error = "Configuration error: $detail. Please check Settings.") }
+                    } else {
+                        val missing = result?.get("missing")?.jsonArray
+                            ?.mapNotNull { (it as? kotlinx.serialization.json.JsonPrimitive)?.contentOrNull?.sanitizeForDisplay() }
+                            ?: emptyList()
+                        if (missing.isNotEmpty()) {
+                            val detail = missing.joinToString(", ")
+                            _state.update { it.copy(error = "Configuration incomplete: $detail. Please check Settings.") }
+                        }
                     }
                     return
                 }
