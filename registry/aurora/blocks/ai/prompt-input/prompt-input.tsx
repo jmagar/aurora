@@ -758,7 +758,7 @@ export function PromptInput({
 
         {/* Bottom toolbar */}
         <div style={S.toolbar}>
-          <input ref={fileInputRef} type="file" multiple style={S.fileInput} onChange={handleFileSelect} />
+          <input ref={fileInputRef} type="file" multiple style={{ display: "none" }} onChange={handleFileSelect} />
           <ToolbarButton onClick={() => fileInputRef.current?.click()} aria-label="Attach file" title="Attach file">
             <Paperclip size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>

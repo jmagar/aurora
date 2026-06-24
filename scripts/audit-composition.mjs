@@ -50,6 +50,11 @@ const allowNativeButton = new Set([
   "registry/aurora/ui/chat-sidebar.tsx",
   "registry/aurora/blocks/ai/elements/web-preview.tsx",
   "registry/aurora/blocks/ai/elements/voice-selector.tsx",
+  // ARIA-role primitives: the bare <button> IS the a11y-correct role host
+  // (role="checkbox", role="radio") — wrapping in Aurora Button would add
+  // unwanted visual chrome and break the ARIA contract.
+  "registry/aurora/ui/checkbox.tsx",
+  "registry/aurora/ui/radio-group.tsx",
 ])
 
 const allowedHiddenFileInputFiles = new Set([

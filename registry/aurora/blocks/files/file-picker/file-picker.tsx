@@ -1121,7 +1121,7 @@ export function FilePicker({
               type="file"
               multiple={multiple}
               accept={accept}
-              style={FP.uploadInput}
+              style={{ display: "none" }}
               onChange={(e) => {
                 // Handled by parent in real use
                 e.target.value = ""

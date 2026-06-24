@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Checkbox, RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/checkbox";
+import { Checkbox } from "@/registry/aurora/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/radio-group";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
 export default function CheckboxesDemo() {
