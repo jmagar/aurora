@@ -48,6 +48,7 @@ import tv.tootie.aurora.components.AuroraButtonVariant
 import tv.tootie.aurora.components.AuroraDropdownMenu
 import tv.tootie.aurora.components.AuroraField
 import tv.tootie.aurora.components.AuroraMenuEntry
+import tv.tootie.aurora.components.AuroraSwitch
 import tv.tootie.aurora.components.AuroraTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +71,7 @@ fun SettingsScreen(
     val vm: SettingsViewModel = viewModel()
     val state by vm.state.collectAsStateWithLifecycle()
 
-    // Load saved settings and trigger config/read on first render
+    // Load saved settings and trigger config/read + experimental feature list on first render
     LaunchedEffect(Unit) {
         url = settings.serverUrl.first()
         token = settings.authToken.first().orEmpty()
@@ -78,6 +79,7 @@ fun SettingsScreen(
         selectedApprovalPolicy = ApprovalPolicy.fromWire(settings.approvalPolicy.first())
         selectedReviewer = ApprovalsReviewer.fromWire(settings.approvalsReviewer.first())
         vm.loadConfig()
+        vm.loadExperimentalFeatures()
     }
 
     // Navigate away when logout completes
@@ -275,6 +277,86 @@ fun SettingsScreen(
                 else -> {
                     ConfigViewer(entries = state.configEntries)
                 }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // --- Experimental features ---
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text("Experimental", style = MaterialTheme.typography.titleMedium)
+                AuroraButton(
+                    onClick = { vm.loadExperimentalFeatures() },
+                    variant = AuroraButtonVariant.Outlined,
+                    loading = state.isLoadingExperimental,
+                ) { Text("Refresh") }
+            }
+
+            when {
+                state.experimentalError != null -> {
+                    Text(
+                        text = "Error: ${state.experimentalError}",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+                state.isLoadingExperimental && state.experimentalFeatures.isEmpty() -> {
+                    CircularProgressIndicator()
+                }
+                state.experimentalFeatures.isEmpty() -> {
+                    Text(
+                        "No experimental features available.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                else -> {
+                    ExperimentalFeaturesViewer(
+                        features = state.experimentalFeatures,
+                        onToggle = { name, enabled -> vm.toggleFeature(name, enabled) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExperimentalFeaturesViewer(
+    features: List<ExperimentalFeature>,
+    onToggle: (name: String, enabled: Boolean) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
+        features.forEachIndexed { idx, feature ->
+            if (idx > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = feature.name,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    if (feature.description != null) {
+                        Text(
+                            text = feature.description,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                AuroraSwitch(
+                    checked = feature.enabled,
+                    onCheckedChange = { onToggle(feature.name, it) },
+                )
             }
         }
     }

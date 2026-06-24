@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import tv.tootie.aurora.app.CodexApp
@@ -38,6 +39,19 @@ sealed class SettingsUiEvent {
  */
 data class ConfigEntry(val key: String, val value: String, val layer: String? = null)
 
+/**
+ * A single experimental feature as returned by experimentalFeature/list.
+ *
+ * [name] is the feature identifier used in enablement/set calls.
+ * [enabled] is the current state.
+ * [description] is optional human-readable text from the server.
+ */
+data class ExperimentalFeature(
+    val name: String,
+    val enabled: Boolean,
+    val description: String? = null,
+)
+
 data class SettingsState(
     val isLoggingOut: Boolean = false,
     val logoutError: String? = null,
@@ -47,6 +61,10 @@ data class SettingsState(
     val isLoadingConfig: Boolean = false,
     val configEntries: List<ConfigEntry> = emptyList(),
     val configError: String? = null,
+    // --- Experimental features ---
+    val isLoadingExperimental: Boolean = false,
+    val experimentalFeatures: List<ExperimentalFeature> = emptyList(),
+    val experimentalError: String? = null,
 )
 
 class SettingsViewModel(app: Application) : AndroidViewModel(app) {
@@ -78,6 +96,23 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
                 )
             }
         }.launchIn(viewModelScope)
+
+        // Subscribe to experimentalFeature/list responses.
+        repo.experimentalFeaturesFlow.onEach { result ->
+            val features = result.features.mapNotNull { obj ->
+                val name = (obj["name"] as? JsonPrimitive)?.contentOrNull ?: return@mapNotNull null
+                val enabled = (obj["enabled"] as? JsonPrimitive)?.booleanOrNull ?: false
+                val description = (obj["description"] as? JsonPrimitive)?.contentOrNull
+                ExperimentalFeature(name = name, enabled = enabled, description = description)
+            }.sortedBy { it.name }
+            _state.update {
+                it.copy(
+                    isLoadingExperimental = false,
+                    experimentalFeatures = features,
+                    experimentalError = result.error,
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     /** Trigger a config/read RPC. Response arrives on [state].configEntries. */
@@ -85,6 +120,28 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         if (_state.value.isLoadingConfig) return
         _state.update { it.copy(isLoadingConfig = true, configError = null) }
         repo.readConfig(cwd = cwd, includeLayers = true)
+    }
+
+    /** Trigger an experimentalFeature/list RPC. Response arrives on [state].experimentalFeatures. */
+    fun loadExperimentalFeatures() {
+        if (_state.value.isLoadingExperimental) return
+        _state.update { it.copy(isLoadingExperimental = true, experimentalError = null) }
+        repo.listExperimentalFeatures()
+    }
+
+    /**
+     * Toggle a named experimental feature. Optimistically updates the local list,
+     * then fires the RPC — the repository re-fetches the authoritative list on success
+     * or surfaces an error on failure, both of which update state via the flow.
+     */
+    fun toggleFeature(name: String, enabled: Boolean) {
+        // Optimistic update so the switch feels instant.
+        _state.update { s ->
+            s.copy(experimentalFeatures = s.experimentalFeatures.map { f ->
+                if (f.name == name) f.copy(enabled = enabled) else f
+            })
+        }
+        repo.setFeatureEnablement(name, enabled)
     }
 
     fun logout() {
