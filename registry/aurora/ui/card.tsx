@@ -32,11 +32,11 @@ const CSS = `
 }
 .aurora-card[data-accent="cyan"] {
   border-color: color-mix(in srgb, var(--aurora-accent-primary) 60%, var(--aurora-border-default));
-  box-shadow: var(--aurora-shadow-strong), var(--aurora-highlight-strong), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent), 0 0 20px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent);
+  box-shadow: var(--aurora-shadow-strong), var(--aurora-highlight-strong);
 }
 .aurora-card[data-accent="rose"] {
   border-color: color-mix(in srgb, var(--aurora-accent-pink) 60%, var(--aurora-border-default));
-  box-shadow: var(--aurora-shadow-strong), var(--aurora-highlight-strong), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-pink) 22%, transparent), 0 0 20px color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent);
+  box-shadow: var(--aurora-shadow-strong), var(--aurora-highlight-strong);
 }
 .aurora-card[data-interactive="true"] {
   cursor: pointer;

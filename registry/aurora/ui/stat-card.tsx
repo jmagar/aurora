@@ -123,22 +123,6 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
         }}
         {...rest}
       >
-        {/* Legacy left accent rail — only when a non-neutral tone is set */}
-        {tone !== "neutral" && (
-          <span
-            aria-hidden="true"
-            style={{
-              background: toneColor,
-              bottom: 0,
-              left: 0,
-              opacity: 0.9,
-              position: "absolute",
-              top: 0,
-              width: 3,
-            }}
-          />
-        )}
-
         {/* Header row: icon chip (full only) + label */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {!compact && icon && (
