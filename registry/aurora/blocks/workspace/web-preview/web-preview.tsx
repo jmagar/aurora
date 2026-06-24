@@ -8,6 +8,7 @@ import { Button } from "@/registry/aurora/ui/button"
 // ---------------------------------------------------------------------------
 
 export type WebPreviewVariant = "browser" | "unfurl-card" | "skeleton" | "error"
+export type WebPreviewViewport = "desktop" | "tablet" | "mobile"
 
 export interface WebPreviewProps {
   url: string
@@ -17,6 +18,12 @@ export interface WebPreviewProps {
   screenshot?: string
   variant?: WebPreviewVariant
   isLoading?: boolean
+  /** Show viewport toggle buttons in the browser chrome (default: true) */
+  showViewportToggle?: boolean
+  /** Show the Console strip at the bottom (default: true) */
+  showConsole?: boolean
+  /** Number shown in the Console badge */
+  consoleCount?: number
 }
 
 // ---------------------------------------------------------------------------
@@ -64,6 +71,42 @@ function GlobeIcon() {
       <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" />
       <ellipse cx="8" cy="8" rx="2.8" ry="6.5" stroke="currentColor" strokeWidth="1.2" />
       <path d="M1.5 8h13M8 1.5C6 3.5 5 5.5 5 8s1 4.5 3 6.5M8 1.5c2 2 3 4 3 6.5s-1 4.5-3 6.5" stroke="currentColor" strokeWidth="1.2" />
+    </svg>
+  )
+}
+
+function DesktopIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="1" y="2" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M5 14h6M8 12v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function TabletIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+      <circle cx="8" cy="12.5" r="0.8" fill="currentColor" />
+    </svg>
+  )
+}
+
+function MobileIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="4.5" y="1" width="7" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+      <circle cx="8" cy="12.5" r="0.7" fill="currentColor" />
+    </svg>
+  )
+}
+
+function ExternalLinkIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M6 2H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M9 1h4m0 0v4m0-4L7 7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -188,9 +231,20 @@ function BrowserChrome({
   title,
   screenshot,
   isLoading,
+  showViewportToggle = true,
+  showConsole = true,
+  consoleCount = 3,
 }: WebPreviewProps) {
   const domain = getDomain(url)
   const secure = isHttps(url)
+  const [viewport, setViewport] = React.useState<WebPreviewViewport>("desktop")
+  const [consoleOpen, setConsoleOpen] = React.useState(false)
+
+  const VIEWPORTS: { id: WebPreviewViewport; Icon: () => React.ReactElement; label: string }[] = [
+    { id: "desktop", Icon: DesktopIcon, label: "Desktop" },
+    { id: "tablet",  Icon: TabletIcon,  label: "Tablet" },
+    { id: "mobile",  Icon: MobileIcon,  label: "Mobile" },
+  ]
 
   return (
     <div
@@ -216,43 +270,82 @@ function BrowserChrome({
           flexShrink: 0,
         }}
       >
-        <WindowDots />
-        <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "6px" }}>
-          {/* Address bar */}
-          <div
+        <ChromeButton title="Reload"><ReloadIcon /></ChromeButton>
+        {/* Address bar */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            height: "28px",
+            padding: "0 10px",
+            background: "var(--aurora-control-surface)",
+            border: "1px solid var(--aurora-border-default)",
+            borderRadius: "8px",
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "12px",
+            color: "var(--aurora-text-muted)",
+            overflow: "hidden",
+          }}
+        >
+          <span style={{ color: secure ? "var(--aurora-success)" : "var(--aurora-warn)", flexShrink: 0 }}>
+            <LockIcon />
+          </span>
+          <span
             style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              height: "28px",
-              padding: "0 10px",
-              background: "var(--aurora-control-surface)",
-              border: "1px solid var(--aurora-border-default)",
-              borderRadius: "8px",
-              fontFamily: "var(--aurora-font-sans)",
-              fontSize: "12px",
-              color: "var(--aurora-text-muted)",
               overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              flex: 1,
             }}
           >
-            <span style={{ color: secure ? "var(--aurora-success)" : "var(--aurora-warn)", flexShrink: 0 }}>
-              <LockIcon />
-            </span>
-            <span
-              style={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                flex: 1,
-              }}
-            >
-              {url}
-            </span>
-          </div>
+            {url}
+          </span>
+          {/* Live indicator dot */}
+          <span
+            style={{
+              width: "7px",
+              height: "7px",
+              borderRadius: "50%",
+              background: "var(--aurora-success)",
+              flexShrink: 0,
+            }}
+          />
         </div>
-        <ChromeButton title="Reload"><ReloadIcon /></ChromeButton>
-        <ChromeButton title="Share"><ShareIcon /></ChromeButton>
+        {/* Viewport toggles */}
+        {showViewportToggle && (
+          <div style={{ display: "flex", gap: "2px" }}>
+            {VIEWPORTS.map(({ id, Icon, label }) => {
+              const active = viewport === id
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  aria-label={label}
+                  title={label}
+                  onClick={() => setViewport(id)}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "28px",
+                    height: "26px",
+                    border: active ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 40%, transparent)" : "1px solid transparent",
+                    borderRadius: "6px",
+                    background: active ? "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)" : "transparent",
+                    color: active ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  <Icon />
+                </button>
+              )
+            })}
+          </div>
+        )}
+        <ChromeButton title="Open in new tab"><ExternalLinkIcon /></ChromeButton>
       </div>
 
       {/* Content area */}
@@ -297,6 +390,76 @@ function BrowserChrome({
           </div>
         )}
       </div>
+
+      {/* Console strip */}
+      {showConsole && (
+        <div
+          style={{
+            borderTop: "1px solid var(--aurora-border-default)",
+            background: "var(--aurora-panel-strong)",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setConsoleOpen((o) => !o)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              width: "100%",
+              padding: "0 12px",
+              height: "32px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              color: "var(--aurora-text-muted)",
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "12px",
+              textAlign: "left",
+            }}
+          >
+            <span style={{ fontSize: "10px", opacity: 0.7 }}>{consoleOpen ? "▾" : "▸"}</span>
+            <span>Console</span>
+            {consoleCount > 0 && (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "18px",
+                  height: "16px",
+                  padding: "0 5px",
+                  borderRadius: "10px",
+                  background: "color-mix(in srgb, var(--aurora-warn) 18%, transparent)",
+                  color: "var(--aurora-warn)",
+                  fontFamily: "var(--aurora-font-mono)",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                }}
+              >
+                {consoleCount}
+              </span>
+            )}
+          </button>
+          {consoleOpen && (
+            <div
+              style={{
+                padding: "8px 12px",
+                borderTop: "1px solid var(--aurora-border-default)",
+                fontFamily: "var(--aurora-font-mono)",
+                fontSize: "11px",
+                color: "var(--aurora-text-muted)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "4px",
+              }}
+            >
+              <span style={{ color: "var(--aurora-warn)" }}>⚠ Mixed content blocked (2)</span>
+              <span style={{ color: "var(--aurora-text-muted)" }}>&gt; Labby gateway connected</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
