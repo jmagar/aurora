@@ -42,11 +42,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.collections.immutable.ImmutableList
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 @Composable
 public fun ToolCallTimeline(
-    calls: List<ToolCall>,
+    calls: ImmutableList<ToolCall>,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -143,7 +144,7 @@ private fun ToolCallRow(call: ToolCall) {
             enter = expandVertically(),
             exit = shrinkVertically(),
         ) {
-            val output = call.out.toString().sanitizeForDisplay()
+            val output = call.out.sanitizeForDisplay()
             if (output.isNotBlank()) {
                 Box(
                     modifier = Modifier
@@ -183,7 +184,7 @@ private fun ToolCallRow(call: ToolCall) {
 }
 
 @Composable
-fun McpToolCallRows(calls: List<McpToolCallItem>, modifier: Modifier = Modifier) {
+fun McpToolCallRows(calls: ImmutableList<McpToolCallItem>, modifier: Modifier = Modifier) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
         calls.forEach { call -> McpToolCallRow(call) }
     }

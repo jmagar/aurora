@@ -6,8 +6,9 @@ import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,7 +68,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -86,7 +86,7 @@ import tv.tootie.aurora.components.AuroraPermissionPrompt
 import tv.tootie.aurora.components.AuroraPromptInput
 import tv.tootie.aurora.components.AuroraThinking
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ChatScreen(
     threadId: String,
@@ -328,9 +328,11 @@ fun ChatScreen(
                                 role = if (msg.role == MsgRole.User) AuroraMessageRole.User else AuroraMessageRole.Assistant,
                                 content = msg.content,
                             ),
-                            modifier = Modifier.pointerInput(msg.id) {
-                                detectTapGestures(onLongPress = { vm.showActions(msg) })
-                            },
+                            modifier = Modifier.combinedClickable(
+                                onLongClick = { vm.showActions(msg) },
+                                onLongClickLabel = "Message actions",
+                                onClick = {},
+                            ),
                         )
                         // Show reactions below message
                         val msgReactions = s.reactions[msg.id]

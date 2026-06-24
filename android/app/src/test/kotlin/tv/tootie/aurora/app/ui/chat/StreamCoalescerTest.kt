@@ -1,5 +1,7 @@
 package tv.tootie.aurora.app.ui.chat
 
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
@@ -7,7 +9,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Unit tests for [StreamCoalescer] (GAP-1).
+ * Unit tests for [StreamCoalescer].
  *
  * StreamCoalescer is the pure buffer/dirty state machine extracted from ChatViewModel.
  * These tests pin down the coalesce + flush guarantees with NO coroutines / virtual time:
@@ -15,14 +17,16 @@ import org.junit.Test
  *  - flush returns the buffered tail even with no intervening timer tick,
  *  - reset() clears buffers so a stale flush after reset emits nothing,
  *  - a delta for a NEW agent message id seeds correctly from prior content (no tail loss/dup),
- *  - reasoning last-line replacement commits the prior line before reset.
+ *  - reasoning last-line replacement commits the prior line before reset,
+ *  - command output deltas accumulate in the buffer and flush snapshots them into
+ *    ToolCall.out as an immutable String (no mutable StringBuilder side-effects).
  *
  * The timing (delay/flushJob) lives in the ViewModel and is intentionally not tested here.
  */
 class StreamCoalescerTest {
 
     private fun stateWithAssistant(id: String, content: String = ""): ChatState =
-        ChatState(msgs = listOf(ChatMsg(id, MsgRole.Assistant, content)))
+        ChatState(msgs = persistentListOf(ChatMsg(id, MsgRole.Assistant, content)))
 
     @Test
     fun `two agent deltas accumulate into one flushed result`() {
@@ -94,7 +98,7 @@ class StreamCoalescerTest {
             msgs = listOf(
                 ChatMsg("a1", MsgRole.Assistant, "first-msg"),
                 ChatMsg("a2", MsgRole.Assistant, "seed"),
-            ),
+            ).toImmutableList(),
         )
         val flushed = c.flush(state)
         // a1 untouched, a2 carries seed + the new delta -- no loss, no dup of a1's text.
@@ -120,12 +124,12 @@ class StreamCoalescerTest {
         // First reasoning line streams in.
         c.startReasoning("step one")
         c.appendReasoning(" continued")
-        var state = ChatState(reasoning = listOf("step one"))
+        var state = ChatState(reasoning = persistentListOf("step one"))
         state = c.flush(state)
         assertEquals(listOf("step one continued"), state.reasoning)
         // A new summary part begins: the VM appends a blank line, then resets the buffer.
         c.resetReasoningLine()
-        state = state.copy(reasoning = state.reasoning + "")
+        state = state.copy(reasoning = (state.reasoning + "").toImmutableList())
         // Next line streams into the now-empty buffer.
         c.appendReasoning("step two")
         state = c.flush(state)
@@ -133,16 +137,35 @@ class StreamCoalescerTest {
     }
 
     @Test
-    fun `command dirty flush emits a fresh toolCalls reference`() {
+    fun `command output deltas accumulate and flush snapshots them into ToolCall out`() {
         val c = StreamCoalescer()
         val tc = ToolCall("t1", "echo hi")
-        val state = ChatState(toolCalls = listOf(tc))
-        tc.out.append("output")
-        c.markCommandDirty()
+        val state = ChatState(toolCalls = persistentListOf(tc))
+        // Two deltas arrive for the same item.
+        c.appendCommandDelta("t1", "out", state.toolCalls)
+        c.appendCommandDelta("t1", "put", state.toolCalls)
         assertTrue(c.isDirty)
         val flushed = c.flush(state)
-        // Fresh list reference so Compose recomposes; same element identity preserved.
-        assertEquals(listOf(tc), flushed.toolCalls)
-        assertEquals("output", flushed.toolCalls.single().out.toString())
+        // ToolCall.out is now an immutable String snapshot — no StringBuilder identity tricks.
+        assertEquals("output", flushed.toolCalls.single().out)
+        assertFalse(c.isDirty)
+    }
+
+    @Test
+    fun `command output seeds from existing out when item id switches`() {
+        val c = StreamCoalescer()
+        // t1 already has some output in state (prior flush).
+        val tc1 = ToolCall("t1", "cmd1", out = "prior")
+        val tc2 = ToolCall("t2", "cmd2")
+        val state = ChatState(toolCalls = persistentListOf(tc1, tc2))
+        // A delta arrives for t2 first.
+        c.appendCommandDelta("t2", "t2-out", state.toolCalls)
+        // Flush t2 before switching (mirrors the VM's flushStreaming() before item/completed).
+        val s2 = c.flush(state)
+        assertEquals("t2-out", s2.toolCalls.find { it.id == "t2" }?.out)
+        // Now t1 gets another delta — must seed from "prior" so output is "prior+more".
+        c.appendCommandDelta("t1", "+more", s2.toolCalls)
+        val s3 = c.flush(s2)
+        assertEquals("prior+more", s3.toolCalls.find { it.id == "t1" }?.out)
     }
 }

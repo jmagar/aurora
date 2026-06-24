@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,24 +26,28 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import tv.tootie.aurora.components.AuroraDropdownMenu
 import tv.tootie.aurora.components.AuroraMenuEntry
 import tv.tootie.aurora.theme.LocalAuroraColors
 
+@Immutable
+data class ReasoningEffortOption(val value: String, val description: String)
+
+@Immutable
 data class ModelOption(
     val id: String,
     val displayName: String,
-    val reasoningEfforts: List<ReasoningEffortOption> = emptyList(),
+    val reasoningEfforts: ImmutableList<ReasoningEffortOption> = persistentListOf(),
     val defaultEffort: String = "medium",
 )
-
-data class ReasoningEffortOption(val value: String, val description: String)
 
 @Composable
 fun ModelReasoningBar(
     selectedModel: String,
     selectedEffort: String,
-    models: List<ModelOption>,
+    models: ImmutableList<ModelOption>,
     onModelSelect: (String) -> Unit,
     onEffortSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
