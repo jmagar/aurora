@@ -59,17 +59,19 @@ export default function CarouselDemo() {
         <p style={copy}>Horizontal snap track with prev/next controls.</p>
       </div>
 
-      <Carousel title="Recent deploys">
-        {deploys.map(([name, time]) => (
-          <CarouselItem key={name}>
-            <div style={itemName}>{name}</div>
-            <div style={statusRow}>
-              <span style={dot} aria-hidden />
-              200 OK · {time}
-            </div>
-          </CarouselItem>
-        ))}
-      </Carousel>
+      <div style={{ maxWidth: 560 }}>
+        <Carousel title="Recent deploys">
+          {deploys.map(([name, time]) => (
+            <CarouselItem key={name}>
+              <div style={itemName}>{name}</div>
+              <div style={statusRow}>
+                <span style={dot} aria-hidden />
+                200 OK · {time}
+              </div>
+            </CarouselItem>
+          ))}
+        </Carousel>
+      </div>
     </div>
   )
 }
