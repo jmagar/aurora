@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Brain, CheckCircle2, ChevronDown, Circle, CircleAlert, ListChecks, ListTree } from "lucide-react"
+import { Brain, CircleCheck, ChevronDown, Circle, CircleAlert, ListChecks, ListTree } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // Aurora cyan primary marks AI/automation identity.
@@ -85,7 +85,7 @@ function StepIcon({ status }: { status: StepStatus }) {
   if (status === "error") {
     return <CircleAlert {...iconProps} aria-label="Error" style={{ color: "var(--aurora-error)", flexShrink: 0 }} />
   }
-  return <CheckCircle2 {...iconProps} aria-label="Done" style={{ color: "var(--aurora-success)", flexShrink: 0 }} />
+  return <CircleCheck {...iconProps} aria-label="Done" style={{ color: "var(--aurora-success)", flexShrink: 0 }} />
 }
 
 // ---------------------------------------------------------------------------
