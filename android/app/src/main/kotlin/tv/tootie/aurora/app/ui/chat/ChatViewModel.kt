@@ -28,6 +28,7 @@ import tv.tootie.aurora.app.codex.CodexRepository
 import tv.tootie.aurora.app.codex.GranularPolicy
 import tv.tootie.aurora.app.codex.PendingAttachment
 import tv.tootie.aurora.app.codex.RequestKind
+import tv.tootie.aurora.app.codex.SandboxPolicy
 import tv.tootie.aurora.app.data.AppSettings
 
 enum class MsgRole { User, Assistant }
@@ -104,6 +105,7 @@ data class ChatState(
     val pendingApprovals: List<ToolApproval> = emptyList(),
     val activeTurnId: String? = null,
     val showSteerSheet: Boolean = false,
+    val selectedSandboxPolicy: SandboxPolicy = SandboxPolicy.DangerFullAccess,
     // Bead nev6: thread name + cwd shown in top bar
     val threadName: String? = null,
     val cwd: String? = null,
@@ -328,6 +330,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(selectedReviewer = reviewer) }
     }
 
+    fun selectSandboxPolicy(policy: SandboxPolicy) {
+        _state.update { it.copy(selectedSandboxPolicy = policy) }
+    }
+
     fun send(text: String, attachments: List<SelectedItem> = emptyList()) {
         val tid = _state.value.threadId
         val images = _state.value.pendingAttachments
@@ -369,7 +375,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     approvalPolicy = _state.value.selectedApprovalPolicy,
                     granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
                         _state.value.granularPolicy else null,
-                    approvalsReviewer = _state.value.selectedReviewer)
+                    approvalsReviewer = _state.value.selectedReviewer,
+                    sandboxPolicy = _state.value.selectedSandboxPolicy)
             }
         }
     }
@@ -451,7 +458,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 approvalPolicy = _state.value.selectedApprovalPolicy,
                 granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
                     _state.value.granularPolicy else null,
-                approvalsReviewer = _state.value.selectedReviewer)
+                approvalsReviewer = _state.value.selectedReviewer,
+                sandboxPolicy = _state.value.selectedSandboxPolicy)
         }
     }
 
@@ -646,7 +654,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                                 approvalPolicy = _state.value.selectedApprovalPolicy,
                                 granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
                                     _state.value.granularPolicy else null,
-                                approvalsReviewer = _state.value.selectedReviewer)
+                                approvalsReviewer = _state.value.selectedReviewer,
+                                sandboxPolicy = _state.value.selectedSandboxPolicy)
                         }
                     }
                 }

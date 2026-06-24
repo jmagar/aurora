@@ -616,9 +616,11 @@ fun ChatScreen(
                     selectedPolicy = s.selectedApprovalPolicy,
                     granularPolicy = s.granularPolicy,
                     selectedReviewer = s.selectedReviewer,
+                    selectedSandboxPolicy = s.selectedSandboxPolicy,
                     onPolicySelect = vm::selectApprovalPolicy,
                     onGranularUpdate = vm::updateGranularPolicy,
                     onReviewerSelect = vm::selectReviewer,
+                    onSandboxPolicySelect = vm::selectSandboxPolicy,
                 )
             }
         }

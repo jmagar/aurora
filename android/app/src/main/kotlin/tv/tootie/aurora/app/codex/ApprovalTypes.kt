@@ -45,6 +45,60 @@ data class GranularPolicy(
 )
 
 /**
+ * Per-turn sandbox isolation policy sent as `sandboxPolicy` on `turn/start`.
+ *
+ * Protocol shape (all variants carry a `type` discriminant):
+ *   dangerFullAccess  — no isolation; agent has full host access
+ *   readOnly          — host filesystem read-only; optional `networkAccess`
+ *   workspaceWrite    — writes allowed inside `writableRoots`; optional `networkAccess`
+ *   externalSandbox   — delegate to an externally-managed sandbox
+ *
+ * [DangerFullAccess] is the default (wire: omit sandboxPolicy entirely = server default).
+ * Only [ReadOnly] and [WorkspaceWrite] carry sub-options; the other two are singletons.
+ */
+sealed class SandboxPolicy(
+    val displayName: String,
+    val description: String,
+) {
+    /** No isolation — full host access. Protocol: omit the `sandboxPolicy` key. */
+    object DangerFullAccess : SandboxPolicy(
+        displayName = "Full access",
+        description = "No isolation — agent has full host access (default)",
+    )
+
+    /** Host filesystem is read-only. */
+    data class ReadOnly(val networkAccess: Boolean = false) : SandboxPolicy(
+        displayName = "Read-only",
+        description = "No filesystem writes; network optional",
+    )
+
+    /** Writes allowed inside [writableRoots] only. */
+    data class WorkspaceWrite(
+        val writableRoots: List<String> = emptyList(),
+        val networkAccess: Boolean = false,
+    ) : SandboxPolicy(
+        displayName = "Workspace write",
+        description = "Write access limited to specified directories",
+    )
+
+    /** Delegate to an externally-managed sandbox. */
+    object ExternalSandbox : SandboxPolicy(
+        displayName = "External sandbox",
+        description = "Delegate isolation to an external sandbox",
+    )
+
+    companion object {
+        /** Ordered list for display in the sandbox policy selector. */
+        val all: List<SandboxPolicy> = listOf(
+            DangerFullAccess,
+            ReadOnly(),
+            WorkspaceWrite(),
+            ExternalSandbox,
+        )
+    }
+}
+
+/**
  * Who reviews approval requests.
  *
  * Protocol values for turn/start `approvalsReviewer`:

@@ -135,6 +135,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
         approvalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
         granularPolicy: GranularPolicy? = null,
         approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
+        sandboxPolicy: SandboxPolicy = SandboxPolicy.DangerFullAccess,
     ): Pair<String, Int> {
         val id = ids.incrementAndGet()
         val frame = json.encodeToString(
@@ -189,6 +190,24 @@ class CodexClient(private val url: String, private val token: String? = null) {
                             put("skill_approval", granularPolicy.skillApproval)
                         })
                     }
+                    // sandboxPolicy: omit entirely for DangerFullAccess (server default).
+                    when (sandboxPolicy) {
+                        SandboxPolicy.DangerFullAccess -> Unit
+                        is SandboxPolicy.ReadOnly -> put("sandboxPolicy", buildJsonObject {
+                            put("type", "readOnly")
+                            put("networkAccess", sandboxPolicy.networkAccess)
+                        })
+                        is SandboxPolicy.WorkspaceWrite -> put("sandboxPolicy", buildJsonObject {
+                            put("type", "workspaceWrite")
+                            put("networkAccess", sandboxPolicy.networkAccess)
+                            put("writableRoots", buildJsonArray {
+                                sandboxPolicy.writableRoots.forEach { add(it) }
+                            })
+                        })
+                        SandboxPolicy.ExternalSandbox -> put("sandboxPolicy", buildJsonObject {
+                            put("type", "externalSandbox")
+                        })
+                    }
                 })
             }
         )
@@ -205,10 +224,11 @@ class CodexClient(private val url: String, private val token: String? = null) {
         approvalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
         granularPolicy: GranularPolicy? = null,
         approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
+        sandboxPolicy: SandboxPolicy = SandboxPolicy.DangerFullAccess,
     ): Int {
         val (frame, id) = buildTurnFrame(
             threadId, text, attachments, model, effort, images,
-            approvalPolicy, granularPolicy, approvalsReviewer,
+            approvalPolicy, granularPolicy, approvalsReviewer, sandboxPolicy,
         )
         ws?.send(frame)
         return id
