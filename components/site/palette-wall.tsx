@@ -54,20 +54,12 @@ const PALETTE: Group[] = [
     ],
   },
   {
-    group: "Accent · violet (AI)",
-    swatches: [
-      { token: "--aurora-accent-violet-deep", name: "Deep", role: "Pressed violet" },
-      { token: "--aurora-accent-violet", name: "Violet", role: "AI · automation identity", strong: true },
-      { token: "--aurora-accent-violet-strong", name: "Strong", role: "Hover emphasis" },
-      { token: "--aurora-accent-violet-button", name: "Button", role: "Filled violet action" },
-    ],
-  },
-  {
     group: "Accent · axon orange (async)",
     swatches: [
       { token: "--axon-orange-deep", name: "Deep", role: "Pressed orange" },
       { token: "--axon-orange", name: "Orange", role: "Async · heavy jobs", strong: true },
       { token: "--axon-orange-strong", name: "Strong", role: "Hover emphasis" },
+      { token: "--axon-orange-button", name: "Button", role: "Filled orange action" },
     ],
   },
   {
