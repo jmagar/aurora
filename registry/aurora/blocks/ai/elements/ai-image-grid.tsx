@@ -199,6 +199,7 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gridAutoRows: "minmax(160px, 1fr)",
             gap: 14,
           }}
         >
@@ -221,6 +222,7 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
                   position: "relative",
                   aspectRatio: "1 / 1",
                   width: "100%",
+                  minHeight: 160,
                   padding: 0,
                   overflow: "hidden",
                   cursor: "pointer",
