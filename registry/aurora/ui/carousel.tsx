@@ -9,7 +9,8 @@
  * gradient never bands). Reads only `--aurora-*` tokens.
  *
  * Architecture stays Aurora: the Aurora `Button` (neutral icon variant) drives
- * the controls, `CarouselItem` is a `forwardRef` with `displayName`, and the
+ * the controls, `CarouselItem` wraps items with inline styles (no injected CSS so
+ * `overflow-x: auto` is always present on the track), and the
  * `title`/HTML props/escape-hatch API is preserved.
  */
 
@@ -17,59 +18,11 @@ import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
-const CSS = `
-.aurora-carousel { display: grid; gap: 14px; }
-.aurora-carousel__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.aurora-carousel__title {
-  margin: 0;
-  font-family: var(--aurora-font-display);
-  font-weight: 800;
-  font-size: 26px;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--aurora-text-primary);
-}
-.aurora-carousel__controls { display: flex; gap: 8px; }
-.aurora-carousel__track {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 4px;
-  scrollbar-width: thin;
-}
-.aurora-carousel__slide { min-width: 240px; scroll-snap-align: start; }
-.aurora-carousel__item {
-  position: relative;
-  border-radius: 8px;
-  border: 1px solid var(--aurora-border-default);
-  background:
-    linear-gradient(180deg, var(--aurora-panel-medium-top), transparent 60%),
-    var(--aurora-panel-medium);
-  box-shadow: var(--aurora-shadow-medium), var(--aurora-highlight-medium);
-  padding: 16px;
-}
-`
-
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-carousel", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
-
 export interface CarouselProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   title?: React.ReactNode
 }
 
 export function Carousel({ title, className, children, style, ...props }: CarouselProps) {
-  React.useEffect(() => {
-    ensureCSS()
-  }, [])
-
   const trackRef = React.useRef<HTMLDivElement>(null)
 
   const scroll = (direction: -1 | 1) => {
@@ -77,10 +30,31 @@ export function Carousel({ title, className, children, style, ...props }: Carous
   }
 
   return (
-    <section className={["aurora-carousel", className].filter(Boolean).join(" ")} style={style} {...props}>
-      <div className="aurora-carousel__head">
-        {title ? <h3 className="aurora-carousel__title">{title}</h3> : <span />}
-        <div className="aurora-carousel__controls">
+    <section
+      className={className}
+      style={{ display: "grid", gap: 14, ...style }}
+      {...props}
+    >
+      {/* Header row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        {title ? (
+          <h3
+            style={{
+              margin: 0,
+              fontFamily: "var(--aurora-font-display)",
+              fontWeight: 800,
+              fontSize: 26,
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
+              color: "var(--aurora-text-primary)",
+            }}
+          >
+            {title}
+          </h3>
+        ) : (
+          <span />
+        )}
+        <div style={{ display: "flex", gap: 8 }}>
           <Button type="button" size="icon" variant="neutral" aria-label="Previous slide" onClick={() => scroll(-1)}>
             <ChevronLeft className="size-4" aria-hidden />
           </Button>
@@ -89,30 +63,44 @@ export function Carousel({ title, className, children, style, ...props }: Carous
           </Button>
         </div>
       </div>
-      <div ref={trackRef} className="aurora-carousel__track">
+
+      {/* Scroll track — overflow-x: auto always present inline, never dependent on injected CSS */}
+      <div
+        ref={trackRef}
+        style={{
+          display: "flex",
+          gap: 12,
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          paddingBottom: 4,
+          scrollbarWidth: "thin",
+        }}
+      >
         {React.Children.map(children, (child) => (
-          <div className="aurora-carousel__slide">{child}</div>
+          <div style={{ minWidth: 240, scrollSnapAlign: "start" }}>{child}</div>
         ))}
       </div>
     </section>
   )
 }
 
-export const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => {
-    React.useEffect(() => {
-      ensureCSS()
-    }, [])
-
-    return (
-      <div
-        ref={ref}
-        className={["aurora-carousel__item", className].filter(Boolean).join(" ")}
-        {...props}
-      />
-    )
-  }
-)
-CarouselItem.displayName = "CarouselItem"
+export function CarouselItem({ ref, className, style, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        position: "relative",
+        borderRadius: 8,
+        border: "1px solid var(--aurora-border-default)",
+        background: "linear-gradient(180deg, var(--aurora-panel-medium-top), transparent 60%), var(--aurora-panel-medium)",
+        boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
+        padding: 16,
+        ...style,
+      }}
+      {...props}
+    />
+  )
+}
 
 export default Carousel

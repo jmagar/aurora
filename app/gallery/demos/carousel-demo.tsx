@@ -23,6 +23,10 @@ const deploys: Array<[string, string]> = [
   ["edge-2", "51ms"],
   ["edge-3", "88ms"],
   ["edge-4", "37ms"],
+  ["edge-5", "63ms"],
+  ["edge-6", "29ms"],
+  ["edge-7", "74ms"],
+  ["edge-8", "55ms"],
 ]
 
 const itemName: React.CSSProperties = {
