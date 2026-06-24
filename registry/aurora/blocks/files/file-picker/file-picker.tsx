@@ -316,7 +316,6 @@ const S = {
   } as React.CSSProperties,
   sidebarIconWrap: { flexShrink: 0 } as React.CSSProperties,
   uploadSpacer: { flex: 1 } as React.CSSProperties,
-  fileInputHidden: { display: "none" } as React.CSSProperties,
   uploadBtn: {
     display: "flex",
     alignItems: "center",
@@ -1061,7 +1060,7 @@ export function FilePicker({
               type="file"
               multiple={multiple}
               accept={accept}
-              style={S.fileInputHidden}
+              style={{ display: "none" }}
               onChange={(e) => {
                 // Handled by parent in real use
                 e.target.value = ""

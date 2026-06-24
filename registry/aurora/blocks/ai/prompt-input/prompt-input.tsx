@@ -228,7 +228,6 @@ const S = {
     borderTop: "1px solid color-mix(in srgb, var(--aurora-border-default) 72%, transparent)",
     background: "color-mix(in srgb, var(--aurora-control-surface) 45%, transparent)",
   } as React.CSSProperties,
-  fileInputHidden: { display: "none" } as React.CSSProperties,
   spacer: { flex: 1 } as React.CSSProperties,
   flexShrink0: { flexShrink: 0 } as React.CSSProperties,
   slashCmdLabel: {
@@ -746,7 +745,7 @@ export function PromptInput({
             ref={fileInputRef}
             type="file"
             multiple
-            style={S.fileInputHidden}
+            style={{ display: "none" }}
             onChange={handleFileSelect}
           />
           <ToolbarButton
