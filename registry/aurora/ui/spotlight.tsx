@@ -36,6 +36,8 @@ export interface SpotlightProps
   emptyMessage?: string
   /** Fired when an item is activated (Enter or click). */
   onSelect?: (item: SpotlightItem) => void
+  /** Seed query to show the results panel pre-opened (e.g. in gallery demos). */
+  defaultQuery?: string
 }
 
 const SIZES = {
@@ -53,13 +55,14 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
     shortcut,
     emptyMessage = "No results found.",
     onSelect,
+    defaultQuery = "",
     className,
     ...props
   },
   ref,
 ) {
   const s = SIZES[size]
-  const [query, setQuery] = React.useState("")
+  const [query, setQuery] = React.useState(defaultQuery)
   const [focused, setFocused] = React.useState(false)
   const [active, setActive] = React.useState(0)
   const listRef = React.useRef<HTMLDivElement>(null)

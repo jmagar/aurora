@@ -48,8 +48,7 @@ export default function SpotlightDemo() {
         </div>
         <Spotlight
           size="lg"
-          autoFocus
-          openOnFocus
+          defaultQuery="Button"
           shortcut="⌘K"
           placeholder="Search components, themes, tokens…"
           items={[
