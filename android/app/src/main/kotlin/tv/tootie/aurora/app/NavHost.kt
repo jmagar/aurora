@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.ui.chat.ChatScreen
 import tv.tootie.aurora.app.ui.login.LoginScreen
+import tv.tootie.aurora.app.ui.plugins.PluginBrowserScreen
 import tv.tootie.aurora.app.ui.settings.SettingsScreen
 import tv.tootie.aurora.app.ui.sidebar.SessionsSidebar
 import tv.tootie.aurora.app.ui.sidebar.SidebarViewModel
@@ -42,6 +43,7 @@ sealed class Screen(val route: String) {
         const val NEW = "chat/new"
     }
     object Settings : Screen("settings")
+    object Plugins  : Screen("plugins")
 }
 
 @Composable
@@ -150,7 +152,11 @@ fun CodexNavHost() {
                             launchSingleTop = true
                         }
                     },
+                    onPlugins = { nav.navigate(Screen.Plugins.route) },
                 )
+            }
+            composable(Screen.Plugins.route) {
+                PluginBrowserScreen(onBack = { nav.popBackStack() })
             }
         }
     }

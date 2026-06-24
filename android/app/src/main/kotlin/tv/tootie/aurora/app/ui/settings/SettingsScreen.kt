@@ -48,6 +48,7 @@ import tv.tootie.aurora.components.AuroraTextField
 fun SettingsScreen(
     onBack: () -> Unit,
     onLogout: () -> Unit,
+    onPlugins: () -> Unit = {},
 ) {
     val ctx = LocalContext.current
     val settings = remember { AppSettings(ctx) }
@@ -209,6 +210,16 @@ fun SettingsScreen(
                 variant = AuroraButtonVariant.Filled,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Save") }
+
+            Spacer(Modifier.height(8.dp))
+
+            Text("Plugins", style = MaterialTheme.typography.titleMedium)
+
+            AuroraButton(
+                onClick = onPlugins,
+                variant = AuroraButtonVariant.Outlined,
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text("Browse plugins") }
 
             Spacer(Modifier.height(8.dp))
 

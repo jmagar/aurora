@@ -49,9 +49,11 @@ public enum class RequestKind {
     GoalSet,       // thread/goal/set
     GoalGet,       // thread/goal/get
     GoalClear,     // thread/goal/clear
-    McpServers,    // mcpServerStatus/list
-    Models,        // model/list
-    Skills,        // skills/list
+    McpServers,         // mcpServerStatus/list
+    Models,             // model/list
+    Skills,             // skills/list
+    Plugins,            // plugin/list
+    InstalledPlugins,   // plugin/installed
     Other,
 }
 
@@ -79,6 +81,9 @@ sealed class CodexEvent {
 
     /** Parsed result from a mcpServerStatus/list response. */
     data class McpServerList(val servers: List<JsonObject>) : CodexEvent()
+
+    /** Aggregated result from plugin/list + plugin/installed responses. */
+    data class PluginList(val available: List<JsonObject>, val installed: List<JsonObject>) : CodexEvent()
 
     /** A connection-level error (WebSocket failure). */
     data class ConnectionError(val message: String) : CodexEvent()
@@ -131,6 +136,9 @@ class CodexRepository {
 
     private val _mcpServersFlow = MutableSharedFlow<CodexEvent.McpServerList>(replay = 1)
     val mcpServersFlow: SharedFlow<CodexEvent.McpServerList> = _mcpServersFlow.asSharedFlow()
+
+    private val _pluginsFlow = MutableSharedFlow<CodexEvent.PluginList>(replay = 1)
+    val pluginsFlow: SharedFlow<CodexEvent.PluginList> = _pluginsFlow.asSharedFlow()
 
     private val _sidebarNotificationsFlow = MutableSharedFlow<RpcMessage>(replay = 1)
     val sidebarNotificationsFlow: SharedFlow<RpcMessage> = _sidebarNotificationsFlow.asSharedFlow()
@@ -298,6 +306,18 @@ class CodexRepository {
         return key
     }
 
+    fun listPlugins(): Int {
+        val id = client?.listPlugins() ?: return -1
+        pendingKinds[id.toString()] = RequestKind.Plugins
+        return id
+    }
+
+    fun listInstalledPlugins(): Int {
+        val id = client?.listInstalledPlugins() ?: return -1
+        pendingKinds[id.toString()] = RequestKind.InstalledPlugins
+        return id
+    }
+
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean =
         client?.sendApproval(rawServerId, decision) ?: false
 
@@ -325,6 +345,8 @@ class CodexRepository {
                 RequestKind.Models -> routeModelsResponse(msg)
                 RequestKind.Skills -> routeSkillsResponse(msg)
                 RequestKind.McpServers -> routeMcpServersResponse(msg)
+                RequestKind.Plugins -> routePluginsResponse(msg)
+                RequestKind.InstalledPlugins -> routeInstalledPluginsResponse(msg)
                 // ThreadStart, ThreadResume, Steer, Goal*, Other, null — go to turnEventsFlow
                 // so ChatViewModel handles them with its existing null-method dispatch.
                 // Direct emit (demux is already suspend) — no scope.launch to preserve ordering
@@ -388,5 +410,19 @@ class CodexRepository {
             ?: run { Log.w(TAG, "unexpected mcpServerStatus shape"); return }
         val list = servers.mapNotNull { it as? JsonObject }
         _mcpServersFlow.tryEmit(CodexEvent.McpServerList(list))
+    }
+
+    private fun routePluginsResponse(msg: RpcMessage) {
+        val result = msg.result?.jsonObject ?: return
+        val available = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: emptyList()
+        val current = _pluginsFlow.replayCache.firstOrNull()
+        _pluginsFlow.tryEmit(CodexEvent.PluginList(available = available, installed = current?.installed ?: emptyList()))
+    }
+
+    private fun routeInstalledPluginsResponse(msg: RpcMessage) {
+        val result = msg.result?.jsonObject ?: return
+        val installed = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: emptyList()
+        val current = _pluginsFlow.replayCache.firstOrNull()
+        _pluginsFlow.tryEmit(CodexEvent.PluginList(available = current?.available ?: emptyList(), installed = installed))
     }
 }
