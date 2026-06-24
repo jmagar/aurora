@@ -29,6 +29,7 @@ import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.ui.chat.ChatScreen
 import tv.tootie.aurora.app.ui.login.LoginScreen
 import tv.tootie.aurora.app.ui.settings.SettingsScreen
+import tv.tootie.aurora.app.ui.terminal.TerminalScreen
 import tv.tootie.aurora.app.ui.sidebar.SessionsSidebar
 import tv.tootie.aurora.app.ui.sidebar.SidebarViewModel
 import tv.tootie.aurora.app.ui.startup.StartupState
@@ -48,6 +49,7 @@ sealed class Screen(val route: String) {
         const val NEW_FRESH = "chat/new?resume=false"
     }
     object Settings : Screen("settings")
+    object Terminal : Screen("terminal")
 }
 
 @Composable
@@ -111,6 +113,10 @@ fun CodexNavHost() {
                     }
                     scope.launch { drawerState.close() }
                 },
+                onTerminal = {
+                    nav.navigate(Screen.Terminal.route)
+                    scope.launch { drawerState.close() }
+                },
                 onSettings = {
                     nav.navigate(Screen.Settings.route)
                     scope.launch { drawerState.close() }
@@ -132,13 +138,6 @@ fun CodexNavHost() {
                 mcpServers = sidebarState.mcpServers,
                 goalError = sidebarState.goalError,
                 onClearGoalError = sidebarVm::clearGoalError,
-                onLogout = {
-                    scope.launch { drawerState.close() }
-                    nav.navigate(Screen.Login.route) {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
             )
         },
     ) {
@@ -208,7 +207,6 @@ fun CodexNavHost() {
             }
             composable(Screen.Settings.route) {
                 SettingsScreen(
-                    vm = settingsVm,
                     onBack = { nav.popBackStack() },
                     onLogout = {
                         nav.navigate(Screen.Login.route) {
@@ -216,6 +214,11 @@ fun CodexNavHost() {
                             launchSingleTop = true
                         }
                     },
+                )
+            }
+            composable(Screen.Terminal.route) {
+                TerminalScreen(
+                    onBack = { nav.popBackStack() },
                 )
             }
         }
