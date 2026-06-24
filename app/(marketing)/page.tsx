@@ -6,6 +6,7 @@ import { Button } from "@/registry/aurora/ui/button"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { LabbyMark } from "@/components/labby-brand"
 import { SpectrumBar } from "@/components/site/site-ui"
+import { PaletteWall } from "@/components/site/palette-wall"
 import { panelStrong, tint } from "@/components/site/style-tokens"
 import { AURORA_THEMES, AURORA_SPECTRUM, type AuroraTheme } from "@/lib/themes"
 import registry from "@/registry.json"
@@ -153,9 +154,11 @@ export default function LandingPage() {
       </section>
 
       <div className="aurora-reveal mb-2 flex items-center gap-4" style={{ animationDelay: "300ms" }}>
-        <span className="aurora-text-eyebrow shrink-0">The palette</span>
+        <span className="aurora-text-eyebrow shrink-0">Spectrum</span>
         <SpectrumBar colors={AURORA_SPECTRUM} className="!h-2 flex-1" />
       </div>
+
+      <PaletteWall />
 
       <section className="mt-12 grid gap-[18px] md:grid-cols-3">
         {PILLARS.map((p, i) => (
