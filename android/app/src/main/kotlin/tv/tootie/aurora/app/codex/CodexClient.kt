@@ -21,6 +21,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 
 private const val TAG = "CodexClient"
@@ -31,6 +32,15 @@ class CodexClient(private val url: String, private val token: String? = null) {
     private val http = OkHttpClient()
     internal val ids = AtomicInteger(0)
     private var ws: WebSocket? = null
+
+    /**
+     * Frames queued while the WebSocket is connecting or the server `initialized`
+     * handshake has not yet completed. Drained in order once `onOpen` fires and the
+     * handshake exchange is sent. This prevents messages from being silently dropped
+     * if a caller sends before the socket is open (e.g., a race between `connect()`
+     * returning and `onOpen` being dispatched on OkHttp's async thread).
+     */
+    private val outboundQueue = ConcurrentLinkedQueue<String>()
 
     private val _msgs = Channel<RpcMessage>(Channel.UNLIMITED)
     val messages: Flow<RpcMessage> = _msgs.receiveAsFlow()
@@ -77,9 +87,16 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 try {
                     val msg: RpcMessage = json.decodeFromString(text)
                     // The server echoes back an "initialized" notification once it
-                    // has processed the handshake — flip the ready flag at that point.
+                    // has processed the handshake — flip the ready flag and drain any
+                    // frames that were queued before the socket was ready.
                     if (msg.method == "initialized") {
                         _isInitialized.value = true
+                        var queued = outboundQueue.poll()
+                        while (queued != null) {
+                            ws.send(queued)
+                            queued = outboundQueue.poll()
+                        }
+                        Log.d(TAG, "initialized — drained outboundQueue")
                     }
                     _msgs.trySendBlocking(msg)
                 } catch (e: Exception) { Log.w(TAG, "parse error len=${text.length}: ${e.javaClass.simpleName}: ${e.message}") }
@@ -87,11 +104,13 @@ class CodexClient(private val url: String, private val token: String? = null) {
             override fun onFailure(ws: WebSocket, t: Throwable, r: Response?) {
                 Log.e(TAG, "failure", t)
                 _isInitialized.value = false
+                outboundQueue.clear()
                 _msgs.trySendBlocking(RpcMessage(error = RpcError(-1, t.message ?: "error")))
             }
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
                 val wasReady = _isInitialized.value
                 _isInitialized.value = false
+                outboundQueue.clear()
                 // Emit a synthetic error for unexpected server-side closes (code != 1000)
                 // so demux() receives a termination signal and ChatViewModel can clear thinking=true.
                 // Code 1000 = normal user-initiated close via disconnect(); no error needed.
@@ -524,6 +543,20 @@ class CodexClient(private val url: String, private val token: String? = null) {
             if (id != null) put("id", id)
             put("params", params)
         }
-        ws?.send(json.encodeToString(msg))
+        val frame = json.encodeToString(msg)
+        val socket = ws
+        when {
+            socket == null -> {
+                // Not yet connected — should not happen in normal flow since CodexRepository
+                // guards calls with isReady, but enqueue defensively rather than silently drop.
+                Log.w(TAG, "send: ws null, queuing method=$method")
+                outboundQueue.add(frame)
+            }
+            !_isInitialized.value -> {
+                // Socket open but handshake not yet acknowledged — queue until drain in onMessage.
+                outboundQueue.add(frame)
+            }
+            else -> socket.send(frame)
+        }
     }
 }
