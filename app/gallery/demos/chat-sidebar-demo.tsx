@@ -40,12 +40,12 @@ export default function ChatSidebarDemo() {
 
       <div
         style={{
-          width: 320,
-          height: 440,
+          width: 300,
+          height: 480,
           boxSizing: "border-box",
           display: "flex",
           overflow: "hidden",
-          borderRadius: "var(--radius-2, 18px)",
+          borderRadius: "var(--aurora-radius-2, 10px)",
           border: "1px solid var(--aurora-border-default)",
           background: "var(--aurora-page-bg)",
         }}

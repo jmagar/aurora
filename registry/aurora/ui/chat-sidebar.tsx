@@ -53,10 +53,10 @@ const CHAT_SIDEBAR_CSS = `
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  padding: 14px 16px;
-  border-radius: var(--radius-1, 14px);
+  padding: 10px 14px;
+  border-radius: var(--aurora-radius-2, 10px);
   border: 1px solid color-mix(in srgb, var(--aurora-accent-primary) 42%, transparent);
   background: linear-gradient(
     180deg,
@@ -65,12 +65,12 @@ const CHAT_SIDEBAR_CSS = `
   );
   color: var(--aurora-text-primary);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent),
-    0 8px 18px color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent);
+    0 4px 12px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent);
   transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
 .aurora-chat-sidebar__new:hover {
@@ -96,7 +96,7 @@ const CHAT_SIDEBAR_CSS = `
 }
 .aurora-chat-sidebar__search-icon {
   position: absolute;
-  left: 16px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--aurora-text-muted);
@@ -105,13 +105,13 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__search-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 12px 14px 12px 44px;
-  border-radius: var(--radius-1, 14px);
+  padding: 8px 12px 8px 38px;
+  border-radius: var(--aurora-radius-2, 10px);
   border: 1px solid var(--aurora-border-default);
   background: var(--aurora-control-surface);
   color: var(--aurora-text-primary);
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.2;
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
@@ -135,9 +135,9 @@ const CHAT_SIDEBAR_CSS = `
   gap: 2px;
 }
 .aurora-chat-sidebar__bucket {
-  padding: 14px 8px 6px;
+  padding: 10px 8px 4px;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.08em;
@@ -147,16 +147,16 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__thread {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   box-sizing: border-box;
-  padding: 11px 12px;
-  border-radius: var(--radius-1, 14px);
+  padding: 8px 10px;
+  border-radius: var(--aurora-radius-2, 10px);
   border: 1px solid transparent;
   background: transparent;
   color: var(--aurora-text-muted);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 1.25;
   text-align: left;
@@ -252,7 +252,7 @@ const CHAT_SIDEBAR_CSS = `
   width: 28px;
   height: 28px;
   padding: 0;
-  border-radius: var(--radius-1, 14px);
+  border-radius: var(--aurora-radius-2, 8px);
   border: 1px solid transparent;
   background: transparent;
   color: var(--aurora-text-muted);
