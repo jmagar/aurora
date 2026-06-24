@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckCircle2, FlaskConical, MinusCircle, XCircle } from "lucide-react"
+import { CircleCheck, FlaskConical, CircleMinus, CircleX } from "lucide-react"
 import { Badge } from "@/registry/aurora/ui/badge"
 
 export interface TestResult {
@@ -18,19 +18,19 @@ export interface TestResultsProps extends Omit<React.HTMLAttributes<HTMLDivEleme
 const statusMeta = {
   passed: {
     color: "var(--aurora-success)",
-    icon: CheckCircle2,
+    icon: CircleCheck,
     badge: "success" as const,
     label: "passed",
   },
   failed: {
     color: "var(--aurora-error)",
-    icon: XCircle,
+    icon: CircleX,
     badge: "error" as const,
     label: "failed",
   },
   skipped: {
     color: "var(--aurora-neutral)",
-    icon: MinusCircle,
+    icon: CircleMinus,
     badge: "neutral" as const,
     label: "skipped",
   },

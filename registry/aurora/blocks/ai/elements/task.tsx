@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckCircle2, CircleDashed, ListChecks, XCircle } from "lucide-react"
+import { CircleCheck, CircleDashed, ListChecks, CircleX } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge, type BadgeTone } from "@/registry/aurora/ui/badge"
 import { Spinner } from "@/registry/aurora/ui/spinner"
@@ -47,14 +47,14 @@ const taskTone: Record<AgentTask["status"], TaskTone> = {
   },
   completed: {
     color: "var(--aurora-success)",
-    icon: <CheckCircle2 className="size-[18px]" aria-hidden />,
+    icon: <CircleCheck className="size-[18px]" aria-hidden />,
     badge: "success",
     dot: false,
     active: false,
   },
   failed: {
     color: "var(--aurora-error)",
-    icon: <XCircle className="size-[18px]" aria-hidden />,
+    icon: <CircleX className="size-[18px]" aria-hidden />,
     badge: "error",
     dot: true,
     active: true,

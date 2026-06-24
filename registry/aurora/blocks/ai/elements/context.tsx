@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Layers3, X, AlertCircle } from "lucide-react"
+import { Layers2, X, CircleAlert } from "lucide-react"
 
 export interface ContextSegment {
   /** Display label, e.g. "System" */
@@ -91,7 +91,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
         className="flex min-w-0 items-center gap-2 aurora-text-label"
         style={{ color: "var(--aurora-text-primary)", fontWeight: 700 }}
       >
-        <Layers3 className="size-3.5 shrink-0" style={{ color: "var(--aurora-text-muted)" }} aria-hidden />
+        <Layers2 className="size-3.5 shrink-0" style={{ color: "var(--aurora-text-muted)" }} aria-hidden />
         <span className="truncate">{label}</span>
       </div>
     )
@@ -138,7 +138,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
             />
           </div>
           {isWarning ? (
-            <AlertCircle className="size-3.5 shrink-0" style={{ color: "var(--aurora-error)" }} aria-hidden />
+            <CircleAlert className="size-3.5 shrink-0" style={{ color: "var(--aurora-error)" }} aria-hidden />
           ) : null}
           <span
             className="shrink-0 tabular-nums"
@@ -328,7 +328,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
             role="status"
             style={{ color: "var(--aurora-error)", fontSize: 14, fontWeight: 500 }}
           >
-            <AlertCircle className="size-4 shrink-0" aria-hidden />
+            <CircleAlert className="size-4 shrink-0" aria-hidden />
             <span>
               Near context limit
               {reserved > 0 ? ` · ${formatTokenCount(reserved)} reserved for output` : null}

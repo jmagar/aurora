@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { CheckCircle2, Info, TriangleAlert, X, XCircle } from "lucide-react";
+import { CircleCheck, Info, TriangleAlert, X, CircleX } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
@@ -84,8 +84,8 @@ const DISMISS_COLOR: Record<ToastStatus, string> = {
 function StatusIcon({ status }: { status: ToastStatus }) {
   const iconProps = { size: 18, strokeWidth: 1.65, "aria-hidden": true } as const;
 
-  if (status === "success") return <CheckCircle2 {...iconProps} color="var(--aurora-success)" />;
-  if (status === "error") return <XCircle {...iconProps} color="var(--aurora-error)" />;
+  if (status === "success") return <CircleCheck {...iconProps} color="var(--aurora-success)" />;
+  if (status === "error") return <CircleX {...iconProps} color="var(--aurora-error)" />;
   if (status === "warn") return <TriangleAlert {...iconProps} color="var(--aurora-warn)" />;
   return <Info {...iconProps} color="var(--aurora-info)" />;
 }

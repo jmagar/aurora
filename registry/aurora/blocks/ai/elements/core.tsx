@@ -6,16 +6,16 @@ import {
   Boxes,
   Check,
   Copy,
-  CheckCircle2,
+  CircleCheck,
   CircleAlert,
   CircleDashed,
   ExternalLink,
-  FileCode2,
+  FileCode,
   FileText,
   FlaskConical,
   GitCommitHorizontal,
   KeyRound,
-  Layers3,
+  Layers2,
   ListChecks,
   Mic,
   Network,
@@ -28,7 +28,7 @@ import {
   UserRound,
   Workflow,
   X,
-  XCircle,
+  CircleX,
 } from "lucide-react"
 import { Avatar as AuroraAvatar } from "@/registry/aurora/ui/avatar"
 import { Badge } from "@/registry/aurora/ui/badge"
@@ -274,8 +274,8 @@ export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
 const taskTone = {
   queued: { color: "var(--aurora-text-muted)", icon: <CircleDashed className="size-4" aria-hidden /> },
   running: { color: "var(--aurora-accent-primary)", icon: <Spinner size="sm" /> },
-  completed: { color: "var(--aurora-success)", icon: <CheckCircle2 className="size-4" aria-hidden /> },
-  failed: { color: "var(--aurora-error)", icon: <XCircle className="size-4" aria-hidden /> },
+  completed: { color: "var(--aurora-success)", icon: <CircleCheck className="size-4" aria-hidden /> },
+  failed: { color: "var(--aurora-error)", icon: <CircleX className="size-4" aria-hidden /> },
 }
 
 const resultVariant = {
@@ -784,7 +784,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
       >
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
-            <Layers3 className="size-3.5 shrink-0" aria-hidden />
+            <Layers2 className="size-3.5 shrink-0" aria-hidden />
             <span>{label}</span>
           </div>
           <div className="shrink-0" style={{ color: "var(--aurora-text-muted)", fontSize: 10, lineHeight: "14px" }}>
@@ -966,7 +966,7 @@ Commit.displayName = "Commit"
 const JsxPreview = React.forwardRef<HTMLDivElement, JsxPreviewProps>(
   ({ code, className, style, ...props }, ref) => (
     <div ref={ref} className={className} style={style} {...props}>
-      <CodeSurface icon={<FileCode2 className="size-3.5" aria-hidden />} title="JSX preview" value={code}>
+      <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="JSX preview" value={code}>
         <pre className="overflow-auto rounded-[7px] border p-3 aurora-text-code" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>{code}</pre>
       </CodeSurface>
     </div>
@@ -1023,7 +1023,7 @@ Sandbox.displayName = "Sandbox"
 const SchemaDisplay = React.forwardRef<HTMLPreElement, SchemaDisplayProps>(
   ({ schema, className, style, ...props }, ref) => (
     <div className={className} style={style}>
-      <CodeSurface icon={<FileCode2 className="size-3.5" aria-hidden />} title="Schema display" value={stringifyWithOrder(schema)}>
+      <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="Schema display" value={stringifyWithOrder(schema)}>
         <pre
           ref={ref}
           className="overflow-auto rounded-[7px] border p-3 aurora-text-code"
@@ -1041,7 +1041,7 @@ SchemaDisplay.displayName = "SchemaDisplay"
 const Snippet = React.forwardRef<HTMLPreElement, SnippetProps>(
   ({ code, language = "tsx", className, style, ...props }, ref) => (
     <div className={className} style={style}>
-      <CodeSurface icon={<FileCode2 className="size-3.5" aria-hidden />} title="Snippet" value={code}>
+      <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="Snippet" value={code}>
         <pre
           ref={ref}
           className="overflow-auto rounded-[7px] border p-3 aurora-text-code"
