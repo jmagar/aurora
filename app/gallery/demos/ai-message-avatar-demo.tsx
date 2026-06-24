@@ -17,9 +17,9 @@ export default function AiMessageAvatarDemo() {
         <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
           <MessageAvatar label="AX" status="online" />
           <MessageAvatar label="JM" tone="cyan" status="busy" />
-          <MessageAvatar label="LB" tone="success" />
-          <MessageAvatar label="OP" tone="muted" status="away" />
-          <MessageAvatar label="BIG" size={44} />
+          <MessageAvatar label="LB" tone="success" status="away" />
+          <MessageAvatar label="OP" tone="muted" status="offline" />
+          <MessageAvatar label="BIG" size={44} status="online" />
         </div>
       </div>
     </div>

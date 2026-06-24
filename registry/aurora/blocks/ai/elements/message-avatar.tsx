@@ -54,13 +54,17 @@ const MessageAvatar = React.forwardRef<
     ref
   ) => {
     const color = toneColor[tone]
+    // Dot sits at the bottom-right corner, overlapping the avatar ring.
+    // Size is 28-32% of avatar diameter; minimum 9px so it reads at small sizes.
     const dotSize = Math.max(9, Math.round(size * 0.3))
-    const dotOffset = -1
+    // Positive offset pushes the dot inward so it never gets clipped by a parent.
+    // It lands just inside the avatar ring, consistent with CD reference.
+    const dotInset = Math.round(dotSize * 0.1)
 
     return (
       <span
         className={cn("relative inline-flex shrink-0", className)}
-        style={{ width: size, height: size }}
+        style={{ width: size, height: size, overflow: "visible" }}
       >
         <AuroraAvatar
           ref={ref}
@@ -89,14 +93,16 @@ const MessageAvatar = React.forwardRef<
             aria-label={`Status: ${status}`}
             style={{
               position: "absolute",
-              bottom: dotOffset,
-              right: dotOffset,
+              bottom: dotInset,
+              right: dotInset,
               width: dotSize,
               height: dotSize,
               borderRadius: "50%",
               backgroundColor: statusColor[status],
               border: "2px solid var(--aurora-page-bg)",
               boxShadow: `0 0 6px ${statusColor[status]}`,
+              // Ensure dot always renders above the avatar image
+              zIndex: 1,
             }}
           />
         ) : null}
