@@ -112,3 +112,6 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
 - **Non-interactive shell.** Use `cp -f`, `mv -f`, `rm -f`, `rm -rf` — see `AGENTS.md`.
 - **See also:** `AGENTS.md` (agent shell rules), `SKILL.md` (Aurora usage skill),
   `docs/component-kotlin-map.md` (Kotlin/Compose parity matrix).
+- **SWAG upstream contract:** `aurora.tootie.tv` is reverse-proxied by SWAG on `squirts`
+  (`/mnt/appdata/swag/nginx/proxy-confs/aurora.subdomain.conf`) → upstream `tootie:50000`,
+  scheme HTTP, Authelia enabled. Changes to port/host must be mirrored in that proxy config.

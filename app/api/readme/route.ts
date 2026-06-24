@@ -7,7 +7,8 @@ export async function GET(request: Request) {
   const rel = searchParams.get("path") ?? ""
   const asset = assets[rel]
 
-  if (!asset) {
+  // Guard against a malformed manifest where a value isn't a string.
+  if (!asset || typeof asset !== "string") {
     return new Response("Not found", { status: 404 })
   }
 
