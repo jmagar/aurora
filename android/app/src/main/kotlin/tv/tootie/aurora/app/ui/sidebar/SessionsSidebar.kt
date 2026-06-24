@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -102,6 +103,7 @@ fun SessionsSidebar(
     mcpServers: List<McpServerInfo> = emptyList(),
     goalError: String? = null,
     onClearGoalError: () -> Unit = {},
+    onTerminal: () -> Unit = {},
     onLogout: () -> Unit = {},
 ) {
     val aurora = LocalAuroraColors.current
@@ -294,6 +296,13 @@ fun SessionsSidebar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(0.dp),
             ) {
+                IconButton(onClick = onTerminal) {
+                    Icon(
+                        Icons.Default.Code,
+                        contentDescription = "Terminal",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
                 IconButton(onClick = onSettings) {
                     Icon(
                         Icons.Default.Settings,

@@ -28,7 +28,7 @@ private const val TAG = "CodexClient"
 
 class CodexClient(private val url: String, private val token: String? = null) {
 
-    private val json = Json { ignoreUnknownKeys = true; isLenient = true }
+    private val json = Json { ignoreUnknownKeys = true }
     private val http = OkHttpClient()
     internal val ids = AtomicInteger(0)
     private var ws: WebSocket? = null
