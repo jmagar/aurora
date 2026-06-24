@@ -45,16 +45,16 @@ const PANEL_STYLES = `
   .aurora-ael__head {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 16px 18px;
+    gap: 10px;
+    padding: 12px 16px;
   }
   .aurora-ael__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
+    width: 30px;
+    height: 30px;
     border-radius: var(--aurora-radius-1);
     color: var(--aurora-ael-tone, var(--aurora-accent-primary));
     border: 1px solid color-mix(in srgb, var(--aurora-ael-tone, var(--aurora-accent-primary)) 55%, transparent);
@@ -76,7 +76,7 @@ const PANEL_STYLES = `
     line-height: 1.2;
   }
   .aurora-ael__title {
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--aurora-text-primary);
@@ -118,14 +118,14 @@ const PANEL_STYLES = `
     height: 32px;
   }
   .aurora-ael__body {
-    padding: 16px 18px;
+    padding: 12px 16px;
     border-top: 1px solid color-mix(in srgb, var(--aurora-border-strong) 60%, transparent);
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.55;
     color: var(--aurora-text-primary);
   }
   .aurora-ael__foot {
-    padding: 12px 18px;
+    padding: 10px 16px;
     border-top: 1px solid color-mix(in srgb, var(--aurora-border-strong) 60%, transparent);
     font-size: 14px;
     color: var(--aurora-text-muted);
