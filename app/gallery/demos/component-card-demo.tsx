@@ -130,7 +130,7 @@ export default function ComponentCardDemo() {
         }}
       >
         <div>
-          <span style={sectionLabel}>variant=&quot;tile&quot; — gallery grid</span>
+          <span style={sectionLabel}>variant=&quot;tile&quot; — gallery grid (with prev/next)</span>
           <div
             style={{
               display: "grid",
@@ -138,8 +138,24 @@ export default function ComponentCardDemo() {
               gap: 14,
             }}
           >
-            <ComponentCard {...ENTRIES[0]} thumbHeight={104} onOpen={() => {}} />
-            <ComponentCard {...ENTRIES[1]} thumbHeight={104} onOpen={() => {}} />
+            <ComponentCard
+              {...ENTRIES[i % ENTRIES.length]}
+              thumbHeight={104}
+              index={i % ENTRIES.length}
+              total={ENTRIES.length}
+              onPrev={() => setI((n) => Math.max(0, n - 1))}
+              onNext={() => setI((n) => Math.min(ENTRIES.length - 1, n + 1))}
+              onOpen={() => {}}
+            />
+            <ComponentCard
+              {...ENTRIES[(i + 1) % ENTRIES.length]}
+              thumbHeight={104}
+              index={(i + 1) % ENTRIES.length}
+              total={ENTRIES.length}
+              onPrev={() => setI((n) => Math.max(0, n - 1))}
+              onNext={() => setI((n) => Math.min(ENTRIES.length - 1, n + 1))}
+              onOpen={() => {}}
+            />
           </div>
         </div>
 
