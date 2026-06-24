@@ -35,6 +35,7 @@ import tv.tootie.aurora.app.codex.CodexRepository
 import tv.tootie.aurora.app.codex.GranularPolicy
 import tv.tootie.aurora.app.codex.PendingAttachment
 import tv.tootie.aurora.app.codex.RequestKind
+import tv.tootie.aurora.app.codex.SelectedItem
 import tv.tootie.aurora.app.data.AppSettings
 
 enum class MsgRole { User, Assistant }
@@ -649,7 +650,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     if (tid != null) {
                         val cwd = threadObj["cwd"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                         val name = threadObj["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
-                        _state.update { it.copy(threadId = tid, msgs = emptyList(), cwd = cwd, threadName = name) }
+                        _state.update { it.copy(threadId = tid, msgs = persistentListOf(), cwd = cwd, threadName = name) }
                         // Fetch full item history now that we have a valid threadId.
                         repo.readThread(tid)
                     }
@@ -873,7 +874,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     // No part started yet — create the first line immediately so the
                     // reasoning section appears, and seed the buffer for coalescing.
                     coalescer.startReasoning(delta)
-                    _state.update { s -> s.copy(reasoning = listOf(delta)) }
+                    _state.update { s -> s.copy(reasoning = persistentListOf(delta)) }
                 } else {
                     coalescer.appendReasoning(delta)
                 }
@@ -944,7 +945,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val safeCommand = rawCommand.sanitizeForDisplay()
                 val reason = params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                 val decisions = params?.get("availableDecisions")?.jsonArray
-                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull }?.toImmutableList()
+                    ?: persistentListOf("accept", "decline")
                 _state.update { s ->
                     s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
@@ -993,7 +995,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val reason = listOfNotNull(reasonBase, permLines.joinToString("\n").ifBlank { null })
                     .joinToString("\n\n").ifBlank { null }
                 val decisions = params?.get("availableDecisions")?.jsonArray
-                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull }?.toImmutableList()
+                    ?: persistentListOf("accept", "decline")
                 _state.update { s ->
                     s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
@@ -1021,7 +1024,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     sandboxPolicy?.let { "Sandbox policy: $it" },
                 ).joinToString("\n").ifBlank { null }
                 val decisions = params?.get("availableDecisions")?.jsonArray
-                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull } ?: listOf("accept", "decline")
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull }?.toImmutableList()
+                    ?: persistentListOf("accept", "decline")
                 _state.update { s ->
                     s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
@@ -1080,7 +1084,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         rawServerId = rawId,
                         type = "elicitation",
                         reason = message,
-                        availableDecisions = listOf("accept", "cancel"),
+                        availableDecisions = persistentListOf("accept", "cancel"),
                     ))))
                 }
             }
@@ -1102,7 +1106,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         rawServerId = rawId,
                         type = "elicitation",
                         reason = displayReason,
-                        availableDecisions = listOf("accept", "cancel"),
+                        availableDecisions = persistentListOf("accept", "cancel"),
                     ))))
                 }
             }

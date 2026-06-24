@@ -6,7 +6,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import tv.tootie.aurora.app.ui.chat.SelectedItem
+import tv.tootie.aurora.app.codex.SelectedItem
 
 /**
  * Verify that CodexClient.buildTurnFrame() emits the correct JSON for skill and mention inputs.

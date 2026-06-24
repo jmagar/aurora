@@ -21,7 +21,6 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import tv.tootie.aurora.app.ui.chat.SelectedItem
 import java.util.concurrent.atomic.AtomicInteger
 
 private const val TAG = "CodexClient"

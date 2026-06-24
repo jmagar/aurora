@@ -32,7 +32,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import tv.tootie.aurora.app.codex.MentionItem
+import tv.tootie.aurora.app.codex.MentionKind
 import tv.tootie.aurora.app.codex.PendingAttachment
+import tv.tootie.aurora.app.codex.SelectedItem
 import tv.tootie.aurora.components.AuroraAttachment
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assistant

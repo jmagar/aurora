@@ -28,7 +28,6 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ConcurrentHashMap
-import tv.tootie.aurora.app.ui.chat.SelectedItem
 
 private const val TAG = "CodexRepository"
 
