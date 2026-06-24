@@ -13,10 +13,9 @@ function devWarn(message: string): void {
 
 export type TimelineProps = React.HTMLAttributes<HTMLOListElement>
 
-const Timeline = React.forwardRef<HTMLOListElement, TimelineProps>(({ className, ...props }, ref) => (
-  <ol ref={ref} className={cn("space-y-0", className)} {...props} />
-))
-Timeline.displayName = "Timeline"
+function Timeline({ ref, className, ...props }: TimelineProps & { ref?: React.Ref<HTMLOListElement> }) {
+  return <ol ref={ref} className={cn("space-y-0", className)} {...props} />
+}
 
 export interface TimelineItemProps extends Omit<React.LiHTMLAttributes<HTMLLIElement>, "title"> {
   tone?: StatusTone
@@ -36,8 +35,7 @@ export interface TimelineItemProps extends Omit<React.LiHTMLAttributes<HTMLLIEle
 // the Claude Design Timeline spec.
 const hollowTones = new Set<StatusTone>(["queued", "offline"])
 
-const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
-  ({ className, tone = "queued", title, meta, children, dotStyle, ...props }, ref) => {
+function TimelineItem({ ref, className, tone = "queued", title, meta, children, dotStyle, ...props }: TimelineItemProps & { ref?: React.Ref<HTMLLIElement> }) {
     const safeTone = Object.hasOwn(toneColor, tone) ? tone : "queued"
     if (tone !== safeTone) {
       devWarn(`[Aurora TimelineItem] Unknown tone "${tone}". Valid values: ${Object.keys(toneColor).join(", ")}. Falling back to "queued".`)
@@ -68,8 +66,6 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
         </span>
       </li>
     )
-  }
-)
-TimelineItem.displayName = "TimelineItem"
+}
 
 export { Timeline, TimelineItem }

@@ -13,23 +13,17 @@ import { cn } from "@/lib/utils"
 
 const Tabs = TabsPrimitive.Root
 
-const TabsList = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, style, ...props }, ref) => (
+const TabsList = ({ ref, className, style, ...props }: React.ComponentPropsWithRef<typeof TabsPrimitive.List>) => (
   <TabsPrimitive.List
     ref={ref}
     className={cn("flex max-w-full items-end gap-1 overflow-x-auto overflow-y-hidden border-b", className)}
     style={{ borderColor: "var(--aurora-border-default)", ...style }}
     {...props}
   />
-))
+)
 TabsList.displayName = TabsPrimitive.List.displayName
 
-const TabsTrigger = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+const TabsTrigger = ({ ref, className, ...props }: React.ComponentPropsWithRef<typeof TabsPrimitive.Trigger>) => (
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
@@ -57,19 +51,16 @@ const TabsTrigger = React.forwardRef<
     }}
     {...props}
   />
-))
+)
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
 
-const TabsContent = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
+const TabsContent = ({ ref, className, ...props }: React.ComponentPropsWithRef<typeof TabsPrimitive.Content>) => (
   <TabsPrimitive.Content
     ref={ref}
     className={cn("mt-4 focus-visible:outline-none", className)}
     {...props}
   />
-))
+)
 TabsContent.displayName = TabsPrimitive.Content.displayName
 
 // ─── Pill Group ───────────────────────────────────────────────────────────────
@@ -86,12 +77,9 @@ TabsContent.displayName = TabsPrimitive.Content.displayName
  * Note: PillGroup renders only the TabsList, not TabsContent.
  * Pair with TabsContent outside PillGroup if panel switching is needed.
  */
-export type PillGroupProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
+export type PillGroupProps = React.ComponentPropsWithRef<typeof TabsPrimitive.Root>
 
-const PillGroup = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.Root>,
-  PillGroupProps
->(({ className, children, style, ...props }, ref) => (
+const PillGroup = ({ ref, className, children, style, ...props }: PillGroupProps) => (
   <TabsPrimitive.Root ref={ref} {...props}>
     <TabsPrimitive.List
       className={cn(
@@ -107,13 +95,9 @@ const PillGroup = React.forwardRef<
       {children}
     </TabsPrimitive.List>
   </TabsPrimitive.Root>
-))
-PillGroup.displayName = "PillGroup"
+)
 
-const PillTrigger = React.forwardRef<
-  React.ComponentRef<typeof TabsPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+const PillTrigger = ({ ref, className, ...props }: React.ComponentPropsWithRef<typeof TabsPrimitive.Trigger>) => (
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
@@ -137,8 +121,7 @@ const PillTrigger = React.forwardRef<
     }}
     {...props}
   />
-))
-PillTrigger.displayName = "PillTrigger"
+)
 
 export {
   Tabs,

@@ -45,25 +45,22 @@ export interface StatGridProps extends React.HTMLAttributes<HTMLDivElement> {
 // StatCard
 // ---------------------------------------------------------------------------
 
-export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
-  function StatCard(
-    {
-      label,
-      value,
-      delta,
-      trend,
-      deltaPositive,
-      sub,
-      description,
-      icon,
-      compact = false,
-      tone = "neutral",
-      className,
-      style,
-      ...rest
-    },
-    ref,
-  ) {
+export function StatCard({
+  ref,
+  label,
+  value,
+  delta,
+  trend,
+  deltaPositive,
+  sub,
+  description,
+  icon,
+  compact = false,
+  tone = "neutral",
+  className,
+  style,
+  ...rest
+}: StatCardProps & { ref?: React.Ref<HTMLDivElement> }) {
     // Resolve the change-badge color. `trend` wins; fall back to the legacy
     // `deltaPositive` boolean, then to a muted neutral.
     const deltaColor =
@@ -235,17 +232,13 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
         )}
       </div>
     );
-  },
-);
-
-StatCard.displayName = "StatCard";
+}
 
 // ---------------------------------------------------------------------------
 // StatGrid
 // ---------------------------------------------------------------------------
 
-export const StatGrid = React.forwardRef<HTMLDivElement, StatGridProps>(
-  function StatGrid({ children, className, style, ...rest }, ref) {
+export function StatGrid({ ref, children, className, style, ...rest }: StatGridProps & { ref?: React.Ref<HTMLDivElement> }) {
     return (
       <div
         ref={ref}
@@ -261,7 +254,4 @@ export const StatGrid = React.forwardRef<HTMLDivElement, StatGridProps>(
         {children}
       </div>
     );
-  },
-);
-
-StatGrid.displayName = "StatGrid";
+}

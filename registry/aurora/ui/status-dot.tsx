@@ -109,11 +109,15 @@ export interface StatusDotProps
   label?: React.ReactNode;
 }
 
-const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
-  function StatusDot(
-    { status = "neutral", pulse = false, label, className, style, ...props },
-    ref
-  ) {
+function StatusDot({
+  ref,
+  status = "neutral",
+  pulse = false,
+  label,
+  className,
+  style,
+  ...props
+}: StatusDotProps & { ref?: React.Ref<HTMLSpanElement> }) {
     React.useEffect(() => {
       injectStyles();
     }, []);
@@ -148,10 +152,7 @@ const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
         )}
       </span>
     );
-  }
-);
-
-StatusDot.displayName = "StatusDot";
+}
 
 export { StatusDot };
 export default StatusDot;

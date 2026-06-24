@@ -13,8 +13,7 @@ export interface ToggleProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   onPressedChange?: (pressed: boolean) => void
 }
 
-const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
-  ({ className, pressed, defaultPressed = false, onPressedChange, style, onClick, disabled, ...props }, ref) => {
+function Toggle({ ref, className, pressed, defaultPressed = false, onPressedChange, style, onClick, disabled, ...props }: ToggleProps & { ref?: React.Ref<HTMLButtonElement> }) {
     const isControlled = pressed !== undefined
     const [internal, setInternal] = React.useState(defaultPressed)
     const isPressed = isControlled ? pressed : internal
@@ -60,9 +59,7 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
         {...props}
       />
     )
-  }
-)
-Toggle.displayName = "Toggle"
+}
 
 export { Toggle }
 export default Toggle

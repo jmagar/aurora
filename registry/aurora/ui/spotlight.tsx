@@ -43,21 +43,19 @@ const SIZES = {
   lg: { height: "4rem", radius: "var(--aurora-radius-3)", icon: 22, type: "1.5rem", pad: "0 1.4rem", gap: "1rem" },
 } as const
 
-const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spotlight(
-  {
-    items,
-    placeholder = "Search…",
-    size = "md",
-    autoFocus = false,
-    openOnFocus = false,
-    shortcut,
-    emptyMessage = "No results found.",
-    onSelect,
-    className,
-    ...props
-  },
+function Spotlight({
   ref,
-) {
+  items,
+  placeholder = "Search…",
+  size = "md",
+  autoFocus = false,
+  openOnFocus = false,
+  shortcut,
+  emptyMessage = "No results found.",
+  onSelect,
+  className,
+  ...props
+}: SpotlightProps & { ref?: React.Ref<HTMLDivElement> }) {
   const s = SIZES[size]
   const [query, setQuery] = React.useState("")
   const [focused, setFocused] = React.useState(false)
@@ -321,9 +319,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
       ) : null}
     </div>
   )
-})
-
-Spotlight.displayName = "Spotlight"
+}
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return (

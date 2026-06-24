@@ -152,8 +152,7 @@ const CheckIcon = () => (
   </svg>
 );
 
-export const Stepper = React.forwardRef<HTMLOListElement, StepperProps>(
-  ({ steps, current = 0, className, ...props }, ref) => {
+export function Stepper({ ref, steps, current = 0, className, ...props }: StepperProps & { ref?: React.Ref<HTMLOListElement> }) {
     useStepperStyle();
     return (
       <ol
@@ -191,8 +190,6 @@ export const Stepper = React.forwardRef<HTMLOListElement, StepperProps>(
         })}
       </ol>
     );
-  },
-);
-Stepper.displayName = "Stepper";
+}
 
 export default Stepper;

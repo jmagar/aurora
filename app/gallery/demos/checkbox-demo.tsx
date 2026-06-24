@@ -4,48 +4,57 @@ import * as React from "react";
 import { Checkbox } from "@/registry/aurora/ui/checkbox";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
-function Row({
-  defaultChecked,
-  children,
-}: {
-  defaultChecked: boolean;
-  children: React.ReactNode;
-}) {
-  const [on, setOn] = React.useState(defaultChecked);
-  return (
-    <label
-      onClick={(e) => {
-        e.preventDefault();
-        setOn(!on);
-      }}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        marginBottom: 15,
-        fontSize: 13,
-        cursor: "pointer",
-      }}
-    >
-      <Checkbox checked={on} onCheckedChange={setOn} />
-      {children}
-    </label>
-  );
-}
-
 export default function CheckboxDemo() {
+  const [colorCode, setColorCode] = React.useState(true);
+  const [stream, setStream] = React.useState(true);
+  const [compact, setCompact] = React.useState(false);
+  // Indeterminate parent — checked when all children on, indeterminate when some
+  const allOn = colorCode && stream && compact;
+  const someOn = colorCode || stream || compact;
+  const parentIndeterminate = someOn && !allOn;
+
+  function toggleAll() {
+    const next = !allOn;
+    setColorCode(next);
+    setStream(next);
+    setCompact(next);
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
-        eyebrow="Components"
+        eyebrow="Form elements"
         heading="Checkbox"
-        description="Accent fill + glow. A controlled checkbox with a cyan accent fill, soft glow, and animated checkmark."
+        description="Tinted accent fill + glow when checked. Supports tri-state indeterminate for partially-selected groups."
       />
 
-      <div>
-        <Row defaultChecked>Color-code by operation</Row>
-        <Row defaultChecked>Stream tokens</Row>
-        <Row defaultChecked={false}>Compact density</Row>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 340 }}>
+        {/* Indeterminate parent */}
+        <Checkbox
+          checked={allOn}
+          indeterminate={parentIndeterminate}
+          onCheckedChange={toggleAll}
+        >
+          Display settings
+        </Checkbox>
+
+        {/* Indented children */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingLeft: 28 }}>
+          <Checkbox checked={colorCode} onCheckedChange={setColorCode}>
+            Color-code by operation
+          </Checkbox>
+          <Checkbox checked={stream} onCheckedChange={setStream}>
+            Stream tokens
+          </Checkbox>
+          <Checkbox checked={compact} onCheckedChange={setCompact}>
+            Compact density
+          </Checkbox>
+        </div>
+
+        {/* Disabled */}
+        <Checkbox checked={false} disabled>
+          Read-only (disabled)
+        </Checkbox>
       </div>
     </div>
   );

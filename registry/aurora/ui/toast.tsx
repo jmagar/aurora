@@ -99,8 +99,7 @@ export interface ToastProps {
   onDismiss: (id: string) => void;
 }
 
-export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
-  function Toast({ item, onDismiss }, ref) {
+export function Toast({ ref, item, onDismiss }: ToastProps & { ref?: React.Ref<HTMLDivElement> }) {
     const status: ToastStatus = item.status ?? "info";
     const dismissColor = DISMISS_COLOR[status];
 
@@ -174,9 +173,7 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         </Button>
       </div>
     );
-  },
-);
-Toast.displayName = "Toast";
+}
 
 // ---------------------------------------------------------------------------
 // Sub-components

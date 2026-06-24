@@ -26,21 +26,18 @@ export interface TagInputProps
  * plus an inline text field. Press Enter (or comma) to add the current value
  * as a chip; press Backspace on an empty field to remove the last chip.
  */
-const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
-  (
-    {
-      className,
-      value,
-      defaultValue,
-      onValueChange,
-      placeholder = "Add tag…",
-      disabled = false,
-      style,
-      onKeyDown,
-      ...props
-    },
-    ref
-  ) => {
+function TagInput({
+  ref,
+  className,
+  value,
+  defaultValue,
+  onValueChange,
+  placeholder = "Add tag…",
+  disabled = false,
+  style,
+  onKeyDown,
+  ...props
+}: TagInputProps & { ref?: React.Ref<HTMLInputElement> }) {
     const isControlled = value !== undefined
     const [internalTags, setInternalTags] = React.useState<string[]>(
       defaultValue ?? []
@@ -182,9 +179,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
         />
       </div>
     )
-  }
-)
-TagInput.displayName = "TagInput"
+}
 
 export interface TagChipProps {
   label: string
@@ -193,8 +188,7 @@ export interface TagChipProps {
 }
 
 /** A single removable chip rendered inside TagInput. */
-const TagChip = React.forwardRef<HTMLSpanElement, TagChipProps>(
-  ({ label, disabled, onRemove }, ref) => {
+function TagChip({ ref, label, disabled, onRemove }: TagChipProps & { ref?: React.Ref<HTMLSpanElement> }) {
     return (
       <span
         ref={ref}
@@ -240,9 +234,7 @@ const TagChip = React.forwardRef<HTMLSpanElement, TagChipProps>(
         </button>
       </span>
     )
-  }
-)
-TagChip.displayName = "TagChip"
+}
 
 export { TagInput, TagChip }
 export default TagInput

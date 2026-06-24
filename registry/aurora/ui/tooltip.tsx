@@ -23,10 +23,7 @@ const TooltipTrigger = TooltipPrimitive.Trigger
 
 // ─── Content ─────────────────────────────────────────────────────────────────
 
-const TooltipContent = React.forwardRef<
-  React.ComponentRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 6, style, ...props }, ref) => (
+const TooltipContent = ({ ref, className, sideOffset = 6, style, ...props }: React.ComponentPropsWithRef<typeof TooltipPrimitive.Content>) => (
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
       ref={ref}
@@ -54,7 +51,7 @@ const TooltipContent = React.forwardRef<
       {...props}
     />
   </TooltipPrimitive.Portal>
-))
+)
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }

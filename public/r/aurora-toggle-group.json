@@ -12,7 +12,7 @@
   "files": [
     {
       "path": "registry/aurora/ui/toggle-group.tsx",
-      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface ToggleGroupProps extends React.HTMLAttributes<HTMLDivElement> {\n  orientation?: \"horizontal\" | \"vertical\"\n}\n\nconst ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(({ className, orientation = \"horizontal\", style, ...props }, ref) => (\n  <div\n    ref={ref}\n    role=\"group\"\n    className={cn(\"inline-flex\", orientation === \"vertical\" ? \"flex-col\" : \"items-center\", className)}\n    style={{\n      gap: 4,\n      ...style,\n    }}\n    {...props}\n  />\n))\nToggleGroup.displayName = \"ToggleGroup\"\n\nexport { ToggleGroup }\nexport default ToggleGroup\n",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface ToggleGroupProps extends React.HTMLAttributes<HTMLDivElement> {\n  orientation?: \"horizontal\" | \"vertical\"\n}\n\nfunction ToggleGroup({ ref, className, orientation = \"horizontal\", style, ...props }: ToggleGroupProps & { ref?: React.Ref<HTMLDivElement> }) {\n  return (\n    <div\n      ref={ref}\n      role=\"group\"\n      className={cn(\"inline-flex\", orientation === \"vertical\" ? \"flex-col\" : \"items-center\", className)}\n      style={{\n        gap: 4,\n        ...style,\n      }}\n      {...props}\n    />\n  )\n}\n\nexport { ToggleGroup }\nexport default ToggleGroup\n",
       "type": "registry:ui",
       "target": "@ui/aurora/toggle-group.tsx"
     }
