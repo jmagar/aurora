@@ -18,9 +18,9 @@ export default function ChatMessageDemo() {
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: 16,
-          maxWidth: 620,
-          padding: "24px 28px",
+          gap: 12,
+          maxWidth: 560,
+          padding: "18px 22px",
           borderRadius: "var(--aurora-radius-2, 10px)",
           border: "1px solid var(--aurora-border-default)",
           background: "var(--aurora-page-bg)",
