@@ -1,9 +1,11 @@
 package tv.tootie.aurora.app.ui.sidebar
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,6 +47,8 @@ data class ThreadGoal(
     val tokensUsed: Int = 0,
 )
 
+enum class ThreadFilter { Active, Archived }
+
 data class SidebarState(
     val projects: List<ProjectGroup> = emptyList(),
     val isLoading: Boolean = true,
@@ -57,6 +61,10 @@ data class SidebarState(
     val goalError: String? = null,
     /** IDs of threads currently loaded in server memory (actively processing or recently active). */
     val loadedThreadIds: Set<String> = emptySet(),
+    val renamingThreadId: String? = null,
+    val renameText: String = "",
+    val threadFilter: ThreadFilter = ThreadFilter.Active,
+    val isForkingThread: Boolean = false,
 )
 
 class SidebarViewModel(app: Application) : AndroidViewModel(app) {
@@ -83,7 +91,16 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
 
         // Clear sidebar state when server URL/token changes (mirrors ChatViewModel pattern)
         repo.sessionInvalidated.onEach {
-            _state.update { it.copy(currentThreadId = null, currentGoal = null, mcpServers = emptyList()) }
+            _state.update {
+                it.copy(
+                    currentThreadId = null,
+                    currentGoal = null,
+                    mcpServers = emptyList(),
+                    renamingThreadId = null,
+                    renameText = "",
+                    isForkingThread = false,
+                )
+            }
         }.launchIn(viewModelScope)
 
         // Subscribe to goal and MCP notifications from sidebar flow
@@ -143,6 +160,10 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
                 else -> { /* other response kinds not handled here */ }
             }
         }.launchIn(viewModelScope)
+
+        repo.threadMgmtFlow
+            .onEach { event -> handleThreadMgmtEvent(event) }
+            .launchIn(viewModelScope)
     }
 
     fun connect() {
@@ -200,6 +221,49 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     fun hideGoalEditor() = _state.update { it.copy(showGoalEditor = false) }
     fun clearGoalError() = _state.update { it.copy(goalError = null) }
 
+    fun startRename(threadId: String, currentTitle: String) {
+        _state.update { it.copy(renamingThreadId = threadId, renameText = currentTitle) }
+    }
+
+    fun updateRenameText(text: String) {
+        _state.update { it.copy(renameText = text) }
+    }
+
+    fun cancelRename() {
+        _state.update { it.copy(renamingThreadId = null, renameText = "") }
+    }
+
+    fun commitRename() {
+        val threadId = _state.value.renamingThreadId ?: return
+        val name = _state.value.renameText.trim()
+        if (name.isBlank()) {
+            cancelRename()
+            return
+        }
+        _state.update { it.copy(renamingThreadId = null, renameText = "") }
+        repo.setThreadName(threadId, name)
+    }
+
+    fun archiveThread(threadId: String) {
+        repo.archiveThread(threadId)
+    }
+
+    fun unarchiveThread(threadId: String) {
+        repo.unarchiveThread(threadId)
+    }
+
+    fun setThreadFilter(filter: ThreadFilter) {
+        _state.update { it.copy(threadFilter = filter) }
+    }
+
+    fun forkThread(threadId: String, onForked: (String?) -> Unit) {
+        _state.update { it.copy(isForkingThread = true) }
+        pendingForkCallback = onForked
+        repo.forkThread(threadId)
+    }
+
+    private var pendingForkCallback: ((String?) -> Unit)? = null
+
     /**
      * Fetch which threads are currently loaded in server memory.
      * Results arrive via [loadedThreadsFlow] and update [SidebarState.loadedThreadIds].
@@ -217,6 +281,37 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun updateThreadMetadata(threadId: String, metadata: Map<String, String>) {
         repo.updateThreadMetadata(threadId, metadata)
+    }
+
+    private fun handleThreadMgmtEvent(event: CodexEvent) {
+        when (event) {
+            is CodexEvent.ThreadNameAck -> {
+                if (!event.success) {
+                    Toast.makeText(getApplication(), "Rename failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+            is CodexEvent.ThreadArchiveAck -> {
+                if (event.success) {
+                    viewModelScope.launch { repo.listThreads() }
+                } else {
+                    val msg = if (event.archived) "Archive failed" else "Unarchive failed"
+                    Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+            is CodexEvent.ThreadForkAck -> {
+                _state.update { it.copy(isForkingThread = false) }
+                val callback = pendingForkCallback
+                pendingForkCallback = null
+                if (!event.success || event.forkedThreadId == null) {
+                    Toast.makeText(getApplication(), "Fork failed", Toast.LENGTH_SHORT).show()
+                    callback?.invoke(null)
+                } else {
+                    viewModelScope.launch { repo.listThreads() }
+                    callback?.invoke(event.forkedThreadId)
+                }
+            }
+            else -> Unit
+        }
     }
 
     private fun handleSidebarNotification(msg: RpcMessage) {
@@ -272,6 +367,9 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
                 // Settings changes (model, policy) are not sidebar-visible — no-op here.
                 // ChatViewModel handles the model/policy update for the active thread.
             }
+            "thread/archived", "thread/unarchived" -> {
+                viewModelScope.launch { repo.listThreads() }
+            }
         }
     }
 
@@ -323,7 +421,19 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             val title = name ?: preview.take(60)
             val updatedAt = obj["updatedAt"]?.jsonPrimitive?.longOrNull ?: 0L
             val isLive = obj["status"]?.jsonObject?.get("type")?.jsonPrimitive?.content == "active"
-            SessionItem(id = id, title = title, cwd = cwd, updatedAt = updatedAt, isLive = isLive)
+            val threadStatus = obj["status"]?.jsonObject?.get("type")?.jsonPrimitive?.contentOrNull ?: "idle"
+            val isArchived = obj["archived"]?.jsonPrimitive?.let {
+                it.booleanOrNull == true || it.contentOrNull == "true"
+            } == true
+            SessionItem(
+                id = id,
+                title = title,
+                cwd = cwd,
+                updatedAt = updatedAt,
+                isLive = isLive,
+                isArchived = isArchived,
+                threadStatus = threadStatus,
+            )
         }.sortedByDescending { it.updatedAt }
 
         val groups = sessions

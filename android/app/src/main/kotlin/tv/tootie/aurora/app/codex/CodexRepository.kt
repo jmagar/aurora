@@ -45,6 +45,10 @@ public enum class RequestKind {
     ThreadStart,   // thread/start — response goes to turnEventsFlow, not threadsFlow
     ThreadResume,  // thread/resume
     ThreadRead,    // thread/read — fetch full item history for history restore
+    ThreadName,    // thread/name/set
+    ThreadArchive, // thread/archive
+    ThreadUnarchive, // thread/unarchive
+    ThreadFork,    // thread/fork
     Steer,         // turn/steer
     GoalSet,       // thread/goal/set
     GoalGet,       // thread/goal/get
@@ -135,6 +139,19 @@ sealed class CodexEvent {
 
     /** Parsed result from an account/rateLimits/read response — raw result object. */
     data class RateLimitsInfo(val data: JsonObject) : CodexEvent()
+
+    /** Acknowledgement from a `thread/name/set` response. */
+    data class ThreadNameAck(val success: Boolean, val threadId: String = "") : CodexEvent()
+
+    /** Acknowledgement from a `thread/archive` or `thread/unarchive` response. */
+    data class ThreadArchiveAck(
+        val success: Boolean,
+        val threadId: String = "",
+        val archived: Boolean,
+    ) : CodexEvent()
+
+    /** Response from a `thread/fork` request. */
+    data class ThreadForkAck(val success: Boolean, val forkedThreadId: String?) : CodexEvent()
 }
 
 /**
@@ -202,6 +219,9 @@ class CodexRepository {
 
     private val _sidebarNotificationsFlow = MutableSharedFlow<RpcMessage>(replay = 1)
     val sidebarNotificationsFlow: SharedFlow<RpcMessage> = _sidebarNotificationsFlow.asSharedFlow()
+
+    private val _threadMgmtFlow = MutableSharedFlow<CodexEvent>(replay = 1)
+    val threadMgmtFlow: SharedFlow<CodexEvent> = _threadMgmtFlow.asSharedFlow()
 
     private val _sessionInvalidated = MutableSharedFlow<Unit>(replay = 0)
     val sessionInvalidated: SharedFlow<Unit> = _sessionInvalidated.asSharedFlow()
@@ -374,6 +394,56 @@ class CodexRepository {
         val rawId = client?.readThread(threadId) ?: return "-1"
         val key = rawId.toString()
         pendingKinds[key] = RequestKind.ThreadRead
+        return key
+    }
+
+    fun setThreadName(threadId: String, name: String): String {
+        val rawId = client?.setThreadName(threadId, name) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ThreadName
+        return key
+    }
+
+    fun archiveThread(threadId: String): String {
+        val rawId = client?.archiveThread(threadId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ThreadArchive
+        return key
+    }
+
+    fun unarchiveThread(threadId: String): String {
+        val rawId = client?.unarchiveThread(threadId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ThreadUnarchive
+        return key
+    }
+
+    fun forkThread(
+        threadId: String,
+        model: String? = null,
+        sandboxMode: String? = null,
+        cwd: String? = null,
+        approvalPolicy: String? = null,
+        approvalsReviewer: String? = null,
+        developerInstructions: String? = null,
+        serviceTier: String? = null,
+        ephemeral: Boolean? = null,
+        config: JsonObject? = null,
+    ): String {
+        val rawId = client?.forkThread(
+            threadId = threadId,
+            model = model,
+            sandboxMode = sandboxMode,
+            cwd = cwd,
+            approvalPolicy = approvalPolicy,
+            approvalsReviewer = approvalsReviewer,
+            developerInstructions = developerInstructions,
+            serviceTier = serviceTier,
+            ephemeral = ephemeral,
+            config = config,
+        ) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ThreadFork
         return key
     }
 
@@ -626,6 +696,10 @@ class CodexRepository {
                 RequestKind.Thread -> routeThreadListResponse(msg)
                 RequestKind.LoadedThreads -> routeLoadedThreadsResponse(msg)
                 RequestKind.MetadataUpdate -> { /* fire-and-forget — no state update needed */ }
+                RequestKind.ThreadName -> routeThreadNameResponse(msg)
+                RequestKind.ThreadArchive -> routeThreadArchiveResponse(msg, archived = true)
+                RequestKind.ThreadUnarchive -> routeThreadArchiveResponse(msg, archived = false)
+                RequestKind.ThreadFork -> routeThreadForkResponse(msg)
                 RequestKind.Models -> routeModelsResponse(msg)
                 RequestKind.Skills -> routeSkillsResponse(msg)
                 RequestKind.McpServers -> routeMcpServersResponse(msg)
@@ -679,6 +753,8 @@ class CodexRepository {
             "thread/started", "thread/status/changed", "thread/closed",
             // Thread metadata — keep sidebar title and chat header in sync
             "thread/name/updated", "thread/settings/updated",
+            // Archive state changes move rows between Active and Archived tabs.
+            "thread/archived", "thread/unarchived",
         )
         if (msg.method in sidebarMethods) {
             _sidebarNotificationsFlow.tryEmit(msg)
@@ -710,6 +786,47 @@ class CodexRepository {
         // thread/loaded/list response shape mirrors thread/list: result.data[]
         val threads = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: emptyList()
         _loadedThreadsFlow.tryEmit(CodexEvent.ThreadList(threads))
+    }
+
+    private fun routeThreadNameResponse(msg: RpcMessage) {
+        val success = msg.error == null
+        if (!success) Log.w(TAG, "thread/name/set failed: ${msg.error?.message}")
+        val threadId = msg.result?.jsonObject
+            ?.get("threadId")?.jsonPrimitive?.contentOrNull
+            ?: msg.result?.jsonObject
+                ?.get("thread")?.jsonObject
+                ?.get("id")?.jsonPrimitive?.contentOrNull
+            ?: ""
+        _threadMgmtFlow.tryEmit(CodexEvent.ThreadNameAck(success = success, threadId = threadId))
+    }
+
+    private fun routeThreadArchiveResponse(msg: RpcMessage, archived: Boolean) {
+        val success = msg.error == null
+        if (!success) {
+            Log.w(TAG, "${if (archived) "thread/archive" else "thread/unarchive"} failed: ${msg.error?.message}")
+        }
+        val threadId = msg.result?.jsonObject
+            ?.get("threadId")?.jsonPrimitive?.contentOrNull
+            ?: msg.result?.jsonObject
+                ?.get("thread")?.jsonObject
+                ?.get("id")?.jsonPrimitive?.contentOrNull
+            ?: ""
+        _threadMgmtFlow.tryEmit(
+            CodexEvent.ThreadArchiveAck(success = success, threadId = threadId, archived = archived)
+        )
+    }
+
+    private fun routeThreadForkResponse(msg: RpcMessage) {
+        val success = msg.error == null
+        if (!success) Log.w(TAG, "thread/fork failed: ${msg.error?.message}")
+        val result = msg.result?.jsonObject
+        val forkedId = result
+            ?.get("threadId")?.jsonPrimitive?.contentOrNull
+            ?: result
+                ?.get("thread")?.jsonObject
+                ?.get("id")?.jsonPrimitive?.contentOrNull
+            ?: result?.get("id")?.jsonPrimitive?.contentOrNull
+        _threadMgmtFlow.tryEmit(CodexEvent.ThreadForkAck(success = success, forkedThreadId = forkedId))
     }
 
     private fun routeModelsResponse(msg: RpcMessage) {

@@ -140,6 +140,29 @@ fun CodexNavHost() {
                 mcpServers = sidebarState.mcpServers,
                 goalError = sidebarState.goalError,
                 onClearGoalError = sidebarVm::clearGoalError,
+                threadFilter = sidebarState.threadFilter,
+                onThreadFilterChange = sidebarVm::setThreadFilter,
+                renamingThreadId = sidebarState.renamingThreadId,
+                renameText = sidebarState.renameText,
+                onRenameTextChange = sidebarVm::updateRenameText,
+                onStartRename = sidebarVm::startRename,
+                onCommitRename = sidebarVm::commitRename,
+                onCancelRename = sidebarVm::cancelRename,
+                onArchiveThread = sidebarVm::archiveThread,
+                onUnarchiveThread = sidebarVm::unarchiveThread,
+                onForkThread = { id ->
+                    sidebarVm.forkThread(id) { forkedId ->
+                        if (forkedId != null) {
+                            sidebarVm.setActiveSession(forkedId)
+                            sidebarVm.setCurrentThread(forkedId)
+                            nav.navigate(Screen.Chat.go(forkedId)) {
+                                launchSingleTop = true
+                            }
+                            scope.launch { drawerState.close() }
+                        }
+                    }
+                },
+                isForkingThread = sidebarState.isForkingThread,
             )
         },
     ) {

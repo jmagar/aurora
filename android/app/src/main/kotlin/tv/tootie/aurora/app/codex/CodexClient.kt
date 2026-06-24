@@ -384,6 +384,59 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    fun setThreadName(threadId: String, name: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/name/set", buildJsonObject {
+            put("threadId", threadId)
+            put("name", name)
+        }, id)
+        return id
+    }
+
+    fun archiveThread(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/archive", buildJsonObject {
+            put("threadId", threadId)
+        }, id)
+        return id
+    }
+
+    fun unarchiveThread(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/unarchive", buildJsonObject {
+            put("threadId", threadId)
+        }, id)
+        return id
+    }
+
+    fun forkThread(
+        threadId: String,
+        model: String? = null,
+        sandboxMode: String? = null,
+        cwd: String? = null,
+        approvalPolicy: String? = null,
+        approvalsReviewer: String? = null,
+        developerInstructions: String? = null,
+        serviceTier: String? = null,
+        ephemeral: Boolean? = null,
+        config: JsonObject? = null,
+    ): Int {
+        val id = ids.incrementAndGet()
+        send("thread/fork", buildJsonObject {
+            put("threadId", threadId)
+            model?.let { put("model", it) }
+            sandboxMode?.let { put("sandboxMode", it) }
+            cwd?.let { put("cwd", it) }
+            approvalPolicy?.let { put("approvalPolicy", it) }
+            approvalsReviewer?.let { put("approvalsReviewer", it) }
+            developerInstructions?.let { put("developerInstructions", it) }
+            serviceTier?.let { put("serviceTier", it) }
+            ephemeral?.let { put("ephemeral", it) }
+            config?.let { put("config", it) }
+        }, id)
+        return id
+    }
+
     /**
      * Builds the raw JSON string for a `turn/steer` request.
      * Extracted as `internal` so unit tests can assert on the serialised frame
