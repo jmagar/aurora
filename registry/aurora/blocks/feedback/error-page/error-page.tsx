@@ -13,6 +13,8 @@ export interface ErrorPageProps {
   incidentId?: string
   onRetry?: () => void
   countdown?: number
+  /** Wrap in a full-viewport centering shell (default: true). Set false for gallery/embed contexts. */
+  fullPage?: boolean
 }
 
 // ---------------------------------------------------------------------------
@@ -416,7 +418,39 @@ function Page500({ incidentId, onRetry, countdown: initialCountdown = 30 }: Erro
 
 export const ErrorPage = React.forwardRef<HTMLDivElement, ErrorPageProps>(
   function ErrorPage(props, ref) {
-    const { code } = props
+    const { code, fullPage = true } = props
+
+    const card = (
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "480px",
+          padding: "48px 32px",
+          // Opaque→opaque vertical gradient (lit top, deep base) — matches CD's
+          // panel-strong tier. Both stops are opaque tokens so there is no
+          // translucent-over-opaque seam.
+          background:
+            "linear-gradient(180deg, var(--aurora-panel-strong-top) 0%, var(--aurora-panel-strong) 100%)",
+          border: "1px solid var(--aurora-border-default)",
+          borderRadius: "var(--aurora-radius-3)",
+          boxShadow: "var(--aurora-shadow-strong)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {code === 404 && <Page404 {...props} />}
+        {code === 403 && <Page403 {...props} />}
+        {code === 500 && <Page500 {...props} />}
+      </div>
+    )
+
+    if (!fullPage) {
+      return (
+        <div ref={ref} style={{ display: "flex", justifyContent: "center", padding: "24px" }}>
+          {card}
+        </div>
+      )
+    }
 
     return (
       <div
@@ -432,27 +466,7 @@ export const ErrorPage = React.forwardRef<HTMLDivElement, ErrorPageProps>(
           padding: "24px 20px",
         }}
       >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "480px",
-            padding: "36px 28px",
-            // Opaque→opaque vertical gradient (lit top, deep base) — matches CD's
-            // panel-strong tier. Both stops are opaque tokens so there is no
-            // translucent-over-opaque seam.
-            background:
-              "linear-gradient(180deg, var(--aurora-panel-strong-top) 0%, var(--aurora-panel-strong) 100%)",
-            border: "1px solid var(--aurora-border-default)",
-            borderRadius: "var(--aurora-radius-3)",
-            boxShadow: "var(--aurora-shadow-strong)",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          {code === 404 && <Page404 {...props} />}
-          {code === 403 && <Page403 {...props} />}
-          {code === 500 && <Page500 {...props} />}
-        </div>
+        {card}
       </div>
     )
   }

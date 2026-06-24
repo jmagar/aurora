@@ -30,6 +30,7 @@ export function ErrorPagesDemo() {
           code={404}
           path="/gateways/edge-9/logs"
           onRetry={() => {}}
+          fullPage={false}
         />
       </div>
 
@@ -44,6 +45,7 @@ export function ErrorPagesDemo() {
         <ErrorPage
           code={403}
           path="/gateways/edge-9/logs"
+          fullPage={false}
         />
       </div>
 
@@ -60,6 +62,7 @@ export function ErrorPagesDemo() {
           incidentId="inc-2b4f8e"
           onRetry={() => {}}
           countdown={10}
+          fullPage={false}
         />
       </div>
     </div>
