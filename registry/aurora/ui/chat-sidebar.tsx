@@ -55,8 +55,8 @@ const CHAT_SIDEBAR_CSS = `
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 10px 14px;
-  border-radius: var(--aurora-radius-2, 10px);
+  padding: 11px 14px;
+  border-radius: var(--aurora-radius-pill, 999px);
   border: 1px solid color-mix(in srgb, var(--aurora-accent-primary) 42%, transparent);
   background: linear-gradient(
     180deg,
@@ -105,8 +105,8 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__search-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 8px 12px 8px 38px;
-  border-radius: var(--aurora-radius-2, 10px);
+  padding: 9px 12px 9px 38px;
+  border-radius: var(--aurora-radius-pill, 999px);
   border: 1px solid var(--aurora-border-default);
   background: var(--aurora-control-surface);
   color: var(--aurora-text-primary);
@@ -129,13 +129,13 @@ const CHAT_SIDEBAR_CSS = `
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 4px 12px 12px;
+  padding: 4px 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 .aurora-chat-sidebar__bucket {
-  padding: 10px 8px 4px;
+  padding: 12px 8px 4px;
   font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 700;
@@ -150,7 +150,7 @@ const CHAT_SIDEBAR_CSS = `
   gap: 10px;
   width: 100%;
   box-sizing: border-box;
-  padding: 8px 10px;
+  padding: 10px 12px;
   border-radius: var(--aurora-radius-2, 10px);
   border: 1px solid transparent;
   background: transparent;
@@ -180,6 +180,12 @@ const CHAT_SIDEBAR_CSS = `
 }
 .aurora-chat-sidebar__thread-icon {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   color: var(--aurora-accent-strong);
 }
 .aurora-chat-sidebar__thread[data-active="false"] .aurora-chat-sidebar__thread-icon {
@@ -328,8 +334,8 @@ function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
 function ThreadIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="18"
-      height="18"
+      width="16"
+      height="16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -339,7 +345,7 @@ function ThreadIcon(props: React.SVGProps<SVGSVGElement>) {
       aria-hidden="true"
       {...props}
     >
-      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   )
 }
