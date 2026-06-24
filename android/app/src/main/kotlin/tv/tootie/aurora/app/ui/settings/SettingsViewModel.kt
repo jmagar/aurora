@@ -9,9 +9,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import tv.tootie.aurora.app.CodexApp
@@ -19,8 +22,6 @@ import tv.tootie.aurora.app.codex.CodexClient
 import tv.tootie.aurora.app.codex.CodexEvent
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.data.AuthRepository
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 sealed class SettingsUiEvent {
     /** Emitted once after a successful logout — UI should navigate away. */
@@ -45,6 +46,16 @@ data class RateLimitsInfo(
     val resetTime: String? = null,
 )
 
+/**
+ * A single effective config entry shown in the config viewer.
+ *
+ * [key] is the config key (e.g. "model", "approvalPolicy").
+ * [value] is its effective value as a display string.
+ * [layer] is the name of the layer that supplied this value (e.g. "user", "project", "defaults"),
+ *   or null when layer information was not included in the response.
+ */
+data class ConfigEntry(val key: String, val value: String, val layer: String? = null)
+
 data class SettingsState(
     val isLoggingOut: Boolean = false,
     val logoutError: String? = null,
@@ -52,6 +63,10 @@ data class SettingsState(
     val pendingEvent: SettingsUiEvent? = null,
     val accountInfo: AccountInfo? = null,
     val rateLimits: RateLimitsInfo? = null,
+    // --- Config viewer ---
+    val isLoadingConfig: Boolean = false,
+    val configEntries: List<ConfigEntry> = emptyList(),
+    val configError: String? = null,
 )
 
 class SettingsViewModel(app: Application) : AndroidViewModel(app) {
@@ -71,6 +86,22 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
 
         repo.rateLimitsFlow.onEach { event ->
             _state.update { it.copy(rateLimits = parseRateLimits(event)) }
+        }.launchIn(viewModelScope)
+
+        // Subscribe to config/read responses. Repeated loadConfig() calls surface here.
+        repo.configFlow.onEach { result ->
+            val entries = result.config?.entries?.map { (key, value) ->
+                val layer = (result.layers?.get(key) as? JsonPrimitive)?.contentOrNull
+                val display = (value as? JsonPrimitive)?.contentOrNull ?: value.toString()
+                ConfigEntry(key = key, value = display, layer = layer)
+            }?.sortedBy { it.key } ?: emptyList()
+            _state.update {
+                it.copy(
+                    isLoadingConfig = false,
+                    configEntries = entries,
+                    configError = result.error,
+                )
+            }
         }.launchIn(viewModelScope)
 
         // Fetch initial values once on creation.
@@ -102,6 +133,13 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
             resetTime = d["resetTime"]?.jsonPrimitive?.contentOrNull
                 ?: d["resetsAt"]?.jsonPrimitive?.contentOrNull,
         )
+    }
+
+    /** Trigger a config/read RPC. Response arrives on [state].configEntries. */
+    fun loadConfig(cwd: String? = null) {
+        if (_state.value.isLoadingConfig) return
+        _state.update { it.copy(isLoadingConfig = true, configError = null) }
+        repo.readConfig(cwd = cwd, includeLayers = true)
     }
 
     fun logout() {

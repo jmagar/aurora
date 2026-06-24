@@ -528,6 +528,22 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    /**
+     * Read the effective codex configuration, optionally with a layer breakdown.
+     *
+     * [cwd] scopes the read to a project directory (server resolves project config from here).
+     * [includeLayers] requests the full per-key layer breakdown (user/project/defaults)
+     * in addition to the merged effective config.
+     */
+    fun readConfig(cwd: String? = null, includeLayers: Boolean = true): Int {
+        val id = ids.incrementAndGet()
+        send("config/read", buildJsonObject {
+            cwd?.let { put("cwd", it) }
+            if (includeLayers) put("includeLayers", true)
+        }, id)
+        return id
+    }
+
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean {
         val json = buildJsonObject {
             put("id", rawServerId)
