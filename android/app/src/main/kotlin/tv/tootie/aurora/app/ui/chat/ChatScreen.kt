@@ -92,6 +92,13 @@ fun ChatScreen(
     threadId: String,
     onBack: () -> Unit,
     onOpenSidebar: () -> Unit = {},
+    /**
+     * When `false` the ViewModel will not attempt to auto-resume the last saved thread even
+     * if threadId == "new". Pass `false` when the user explicitly requested a new session
+     * (e.g. via the sidebar "New session" action) so they reliably get an empty thread rather
+     * than having the previous thread reopened underneath them.
+     */
+    allowResume: Boolean = true,
     vm: ChatViewModel = viewModel(),
 ) {
     val s by vm.state.collectAsStateWithLifecycle()
@@ -155,7 +162,7 @@ fun ChatScreen(
         commands + skills
     }
 
-    LaunchedEffect(threadId) { vm.connect(threadId) }
+    LaunchedEffect(threadId) { vm.connect(threadId, allowResume = allowResume) }
 
     // Feature 2: Pre-fill input when entering edit mode; clear prior selections
     LaunchedEffect(s.editingMessage) {

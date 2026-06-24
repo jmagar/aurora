@@ -1,8 +1,14 @@
 package tv.tootie.aurora.app.ui.chat
 
 import android.app.Application
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -269,7 +275,21 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }.launchIn(viewModelScope)
     }
 
-    fun connect(threadId: String) {
+    /**
+     * Connect to the server and optionally resume the last saved thread.
+     *
+     * [allowResume] controls whether cold-start auto-resume is attempted:
+     *   - `true`  (default) — if `threadId == "new"` and DataStore has a saved thread id,
+     *             resume it. This is the cold-start path (app launched fresh with no explicit
+     *             thread choice).
+     *   - `false` — skip auto-resume entirely. Pass this when the user explicitly tapped
+     *             "New session" in the sidebar or thread list — they want a fresh thread, not
+     *             the previous one.
+     *
+     * For explicit thread navigations (`threadId != "new"`) the distinction is irrelevant;
+     * the saved threadId is never consulted when a concrete id is provided.
+     */
+    fun connect(threadId: String, allowResume: Boolean = true) {
         viewModelScope.launch {
             val url = settings.serverUrl.first()
             val tok = settings.authToken.first()
@@ -289,10 +309,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 withTimeout(10_000) { repo.isReady.filter { it }.first() }
                 repo.listModels()
                 repo.listSkills()
-                // Only try to resume on cold start (msgs empty = no prior session in this ViewModel).
-                // If msgs is non-empty the user navigated to chat/new intentionally — don't hijack
-                // their new session by resuming the old one.
-                if (threadId == "new" && _state.value.msgs.isEmpty()) {
+                // Auto-resume only when: route is "new", caller has not suppressed it,
+                // and a saved threadId exists. Suppressing via allowResume=false lets the
+                // "New session" sidebar action always produce a genuinely empty thread
+                // regardless of what was saved from a prior session.
+                if (threadId == "new" && allowResume) {
                     val saved = settings.savedThreadId.first()
                     if (saved != null) {
                         tryResumeThread(saved)

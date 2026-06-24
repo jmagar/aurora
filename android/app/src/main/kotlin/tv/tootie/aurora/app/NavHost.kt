@@ -39,9 +39,13 @@ sealed class Screen(val route: String) {
     object Startup : Screen("startup")
     object Login   : Screen("login")
     object Threads : Screen("threads")
-    object Chat    : Screen("chat/{threadId}") {
+    object Chat    : Screen("chat/{threadId}?resume={resume}") {
+        /** Navigate to a specific existing thread — resume is always allowed. */
         fun go(id: String) = "chat/$id"
+        /** Cold-start new thread — auto-resume the last saved session if one exists. */
         const val NEW = "chat/new"
+        /** Explicit user "New session" — always start fresh, never auto-resume. */
+        const val NEW_FRESH = "chat/new?resume=false"
     }
     object Settings : Screen("settings")
 }
@@ -98,7 +102,7 @@ fun CodexNavHost() {
                 },
                 onNewSession = {
                     sidebarVm.setCurrentThread(null)
-                    nav.navigate(Screen.Chat.NEW) {
+                    nav.navigate(Screen.Chat.NEW_FRESH) {
                         popUpTo(Screen.Chat.route) { inclusive = true }
                     }
                     scope.launch { drawerState.close() }
@@ -139,7 +143,7 @@ fun CodexNavHost() {
                 ThreadListScreen(
                     onNewThread = {
                         sidebarVm.setCurrentThread(null)
-                        nav.navigate(Screen.Chat.NEW) {
+                        nav.navigate(Screen.Chat.NEW_FRESH) {
                             popUpTo(Screen.Threads.route) { inclusive = false }
                             launchSingleTop = true
                         }
@@ -156,10 +160,27 @@ fun CodexNavHost() {
                     vm = sidebarVm,
                 )
             }
-            composable(Screen.Chat.route) { back ->
+            composable(
+                route = Screen.Chat.route,
+                arguments = listOf(
+                    androidx.navigation.navArgument("threadId") {
+                        type = androidx.navigation.NavType.StringType
+                        defaultValue = "new"
+                    },
+                    androidx.navigation.navArgument("resume") {
+                        type = androidx.navigation.NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                ),
+            ) { back ->
                 val threadId = back.arguments?.getString("threadId") ?: "new"
+                // resume=false only when explicitly set (user-initiated "New session").
+                // Absent or any other value → allow resume (cold-start default).
+                val allowResume = back.arguments?.getString("resume") != "false"
                 ChatScreen(
                     threadId = threadId,
+                    allowResume = allowResume,
                     onOpenSidebar = { scope.launch { drawerState.open() } },
                     onBack = { nav.popBackStack() },
                 )
