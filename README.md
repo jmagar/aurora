@@ -182,11 +182,20 @@ pnpm audit:standalone
 pnpm registry:build
 pnpm tokens:generate
 
+# Unit tests (Node test runner — no framework required)
+pnpm test:unit
+
 # Android gates
 cd android
 ./gradlew :app:testDebugUnitTest --no-daemon
 ./gradlew :aurora:lintDebug --no-daemon
 ```
+
+> **Build side-effect:** `pnpm build` runs `pnpm readmes:generate` as a
+> prebuild step. This script regenerates `public/readmes/*.md` from the
+> registry source and must complete before the Next.js build starts.
+> If the prebuild step mutates files you have staged, commit or stash those
+> changes first — otherwise the working tree will be dirty after the build.
 
 ## Contributing
 
