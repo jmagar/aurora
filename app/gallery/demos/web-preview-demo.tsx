@@ -77,6 +77,9 @@ export function WebPreviewDemo() {
           title="Labby Gateway — Production"
           variant="browser"
           isLoading={isLoading}
+          showViewportToggle
+          showConsole
+          consoleCount={3}
         />
       )}
 
