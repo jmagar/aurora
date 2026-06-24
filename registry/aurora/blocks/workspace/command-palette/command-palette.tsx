@@ -343,6 +343,7 @@ export function CommandPalette({
           position: "fixed",
           top: "50%",
           left: "50%",
+          transform: "translate(-50%, -50%)",
           zIndex: 201,
           width: "560px",
           maxWidth: "calc(100vw - 32px)",
@@ -354,7 +355,7 @@ export function CommandPalette({
           borderRadius: "var(--aurora-radius-2)",
           boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
           overflow: "hidden",
-          animation: "aurora-cmd-in 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
+          animation: "aurora-cmd-in 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         }}
       >
         {/* Search row */}
