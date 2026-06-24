@@ -59,6 +59,10 @@ fun CodexNavHost() {
     val startupVm: StartupViewModel = viewModel()
     val startupState by startupVm.state.collectAsStateWithLifecycle()
 
+    // Hoisted to NavHost scope so the sidebar logout button can call it without
+    // requiring the user to navigate to Settings first.
+    val settingsVm: tv.tootie.aurora.app.ui.settings.SettingsViewModel = viewModel()
+
     val sidebarVm: SidebarViewModel = viewModel()
     val sidebarState by sidebarVm.state.collectAsStateWithLifecycle()
 
@@ -111,6 +115,14 @@ fun CodexNavHost() {
                     nav.navigate(Screen.Settings.route)
                     scope.launch { drawerState.close() }
                 },
+                onLogout = {
+                    settingsVm.logout()
+                    nav.navigate(Screen.Login.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                    scope.launch { drawerState.close() }
+                },
                 currentGoal = sidebarState.currentGoal,
                 showGoalEditor = sidebarState.showGoalEditor,
                 onShowGoalEditor = sidebarVm::showGoalEditor,
@@ -120,6 +132,13 @@ fun CodexNavHost() {
                 mcpServers = sidebarState.mcpServers,
                 goalError = sidebarState.goalError,
                 onClearGoalError = sidebarVm::clearGoalError,
+                onLogout = {
+                    scope.launch { drawerState.close() }
+                    nav.navigate(Screen.Login.route) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
             )
         },
     ) {
@@ -189,6 +208,7 @@ fun CodexNavHost() {
             }
             composable(Screen.Settings.route) {
                 SettingsScreen(
+                    vm = settingsVm,
                     onBack = { nav.popBackStack() },
                     onLogout = {
                         nav.navigate(Screen.Login.route) {

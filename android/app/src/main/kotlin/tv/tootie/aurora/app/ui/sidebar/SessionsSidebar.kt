@@ -102,6 +102,7 @@ fun SessionsSidebar(
     mcpServers: List<McpServerInfo> = emptyList(),
     goalError: String? = null,
     onClearGoalError: () -> Unit = {},
+    onLogout: () -> Unit = {},
 ) {
     val aurora = LocalAuroraColors.current
 
@@ -300,10 +301,7 @@ fun SessionsSidebar(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                // TODO(aurora-design-system-vyjr): Wire a real logout callback through
-                // SessionsSidebar's signature (and NavHost) instead of routing to Settings.
-                // Kept minimal here to avoid expanding the component API in this change.
-                IconButton(onClick = onSettings) {
+                IconButton(onClick = onLogout) {
                     Icon(
                         Icons.AutoMirrored.Filled.Logout,
                         contentDescription = "Log out",
