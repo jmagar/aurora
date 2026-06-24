@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Textarea } from "@/registry/aurora/ui/textarea"
+import { uid } from "@/lib/uid"
 
 export interface Attachment {
   id: string
@@ -281,7 +282,7 @@ export function PromptInput({
         }
       }
       const att: Attachment = {
-        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}-${f.name}`,
+        id: uid(),
         name: f.name,
         type: isImage ? "image" : "file",
         url,

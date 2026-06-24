@@ -45,16 +45,16 @@ export const SECTION_REDIRECTS: Record<string, string> = {
   table: "tables",
 }
 
+/** Words that should be rendered fully uppercased in section titles. */
+const ACRONYMS = new Set(["ai", "otp", "jsx", "css", "html", "url", "api", "sdk", "id"])
+
 export function formatSectionTitle(section: string) {
   const override = SECTION_TITLE_OVERRIDES[section]
   if (override) return override
 
-  const words = section.split("-").map((word) => {
-    if (word === "ai") return "AI"
-    if (word === "otp") return "OTP"
-    if (word === "jsx") return "JSX"
-    return word.charAt(0).toUpperCase() + word.slice(1)
-  })
+  const words = section.split("-").map((word) =>
+    ACRONYMS.has(word) ? word.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1)
+  )
 
   return words.join(" ")
 }
