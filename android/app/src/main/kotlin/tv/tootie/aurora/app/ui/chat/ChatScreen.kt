@@ -567,6 +567,7 @@ fun ChatScreen(
             "command" -> "Allow command?" to "A command is requesting approval."
             "fileChange" -> "Allow file changes?" to "File changes are requesting approval."
             "permissions" -> "Allow additional permissions?" to "The agent is requesting expanded sandbox permissions."
+            "elicitation" -> "Input needed" to "An MCP tool needs additional information to continue."
             else -> "Allow action?" to "An action is requesting approval."
         }
         val descParts = listOfNotNull(approval.reason, approval.command)

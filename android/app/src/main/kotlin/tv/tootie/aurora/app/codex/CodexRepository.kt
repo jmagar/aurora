@@ -317,6 +317,20 @@ class CodexRepository {
         client?.sendApproval(rawServerId, decision) ?: false
 
     /**
+     * Respond to an `mcpServer/elicitation/request` or `item/tool/requestUserInput`
+     * server request.
+     *
+     * [requestId] is echoed verbatim. [action] is `"accept"` or `"cancel"`. [content]
+     * carries field values on accept; ignored (and omitted from the frame) on cancel.
+     * Returns `true` if the frame was queued, `false` if the client is not connected.
+     */
+    fun respondElicitation(
+        requestId: JsonElement,
+        action: String,
+        content: JsonObject = JsonObject(emptyMap()),
+    ): Boolean = client?.respondElicitation(requestId, action, content) ?: false
+
+    /**
      * Respond to an `account/chatgptAuthTokens/refresh` server request.
      *
      * [requestId] is the raw [JsonElement] id from the server's inbound request — it is

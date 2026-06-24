@@ -516,9 +516,19 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
      * always sent explicitly; nothing is auto-accepted. Removal is correlated by
      * rawServerId via [reduceApprovals], so concurrent serverRequest/resolved races
      * never drop the wrong entry.
+     *
+     * Elicitation requests use [repo.respondElicitation] so the response frame carries
+     * the correct MCP elicitation shape (`{ action, content? }`) rather than a bare
+     * decision string. All other approval types use [repo.sendApproval] as before.
      */
     fun approveToolCall(approval: ToolApproval, decision: String) {
-        val sent = repo.sendApproval(approval.rawServerId, decision)
+        val sent = if (approval.type == "elicitation") {
+            // MCP elicitation response: { id, result: { action: "accept"|"cancel", content?: {} } }
+            // On accept we send an empty content object — full field collection is a future feature.
+            repo.respondElicitation(approval.rawServerId, decision)
+        } else {
+            repo.sendApproval(approval.rawServerId, decision)
+        }
         if (sent) {
             _state.update {
                 it.copy(pendingApprovals = reduceApprovals(it.pendingApprovals, ApprovalEvent.Approved(approval.rawServerId)))
@@ -1016,6 +1026,49 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         rawServerId = rawId,
                         type = "fileChange",
                         reason = reason,
+                    ))))
+                }
+            }
+
+            // MCP server-layer elicitation: the server needs structured user input
+            // that the model cannot supply. Params: message, requestedSchema (JSON Schema).
+            // The client responds with action="accept" (content={}) or action="cancel".
+            // Full form rendering based on requestedSchema is a future enhancement;
+            // the current UI surfaces the message prompt and gives Accept / Cancel.
+            "mcpServer/elicitation/request" -> {
+                val rawId = normalizeServerId(msg.id ?: return)
+                val message = params?.get("message")?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay()
+                    ?: "An MCP server needs additional information to continue."
+                _state.update { s ->
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                        itemId = "",
+                        rawServerId = rawId,
+                        type = "elicitation",
+                        reason = message,
+                        availableDecisions = listOf("accept", "cancel"),
+                    ))))
+                }
+            }
+
+            // Item-scoped elicitation: a MCP tool in progress needs user input.
+            // Params: itemId, toolName, message, requestedSchema.
+            // Response shape is the same as mcpServer/elicitation/request.
+            "item/tool/requestUserInput" -> {
+                val rawId = normalizeServerId(msg.id ?: return)
+                val toolName = params?.get("toolName")?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay()
+                val message = params?.get("message")?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay()
+                    ?: "A tool needs additional information to continue."
+                val displayReason = if (toolName != null) "Tool: $toolName\n\n$message" else message
+                _state.update { s ->
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                        itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
+                        rawServerId = rawId,
+                        type = "elicitation",
+                        reason = displayReason,
+                        availableDecisions = listOf("accept", "cancel"),
                     ))))
                 }
             }

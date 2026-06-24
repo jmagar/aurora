@@ -182,3 +182,65 @@ data class ChatGptAuthTokensRefreshResult(
     val accessToken: String,
     val chatgptAccountId: String,
 )
+
+/**
+ * Params for an `mcpServer/elicitation/request` server request.
+ *
+ * Sent by the MCP server layer when a tool needs structured user input that the
+ * model cannot supply. The client must respond with [ElicitationResult] keyed to
+ * the same request id.
+ *
+ * [requestedSchema] is a JSON Schema object describing the fields being requested.
+ * Full form rendering is a future enhancement — for now the client surfaces the
+ * [message] prompt and allows accept (with empty content) or cancel.
+ */
+@Serializable
+data class McpElicitationRequestParams(
+    /** Human-readable prompt describing what the MCP server needs from the user. */
+    val message: String,
+    /**
+     * JSON Schema describing the expected fields. Keys are field names; values describe
+     * type, title, description, enum options, etc. May be null for unstructured input.
+     */
+    val requestedSchema: JsonObject? = null,
+)
+
+/**
+ * Params for an `item/tool/requestUserInput` server request.
+ *
+ * Sent when a MCP tool (identified by [itemId] + [toolName]) needs user input that
+ * the model cannot provide. Semantically identical to [McpElicitationRequestParams]
+ * but scoped to an in-progress item rather than the MCP server layer.
+ *
+ * The client responds with [ElicitationResult] keyed to the same request id.
+ */
+@Serializable
+data class ToolRequestUserInputParams(
+    /** Correlates this request with the originating `mcpToolCall` item. */
+    val itemId: String? = null,
+    /** Name of the MCP tool that issued the input request. */
+    val toolName: String? = null,
+    /** Human-readable prompt from the tool. */
+    val message: String,
+    /**
+     * JSON Schema describing the expected fields — same shape as
+     * [McpElicitationRequestParams.requestedSchema]. May be null.
+     */
+    val requestedSchema: JsonObject? = null,
+)
+
+/**
+ * Result sent back to the server in response to either
+ * `mcpServer/elicitation/request` or `item/tool/requestUserInput`.
+ *
+ * Per MCP elicitation spec:
+ *   - `action = "accept"` — user confirmed; [content] holds field values keyed by field name.
+ *   - `action = "cancel"` — user dismissed the prompt; [content] should be null or empty.
+ *
+ * The client echoes back the server's original request id (never calls ids.incrementAndGet()).
+ */
+@Serializable
+data class ElicitationResult(
+    val action: String,                   // "accept" or "cancel"
+    val content: JsonObject? = null,      // field values when action == "accept"
+)

@@ -397,6 +397,32 @@ class CodexClient(private val url: String, private val token: String? = null) {
     }
 
     /**
+     * Respond to an `mcpServer/elicitation/request` or `item/tool/requestUserInput`
+     * server request with the user's decision.
+     *
+     * [requestId] is the raw [JsonElement] id from the server's inbound request — echoed
+     * back verbatim so the server can correlate the response. Per MCP elicitation spec,
+     * [action] is `"accept"` or `"cancel"`. [content] holds field values when accepting
+     * (may be an empty object); should be null or empty for cancel.
+     *
+     * Returns `true` if the frame was queued on the WebSocket, `false` if not connected.
+     */
+    fun respondElicitation(
+        requestId: JsonElement,
+        action: String,
+        content: JsonObject = JsonObject(emptyMap()),
+    ): Boolean {
+        val frame = json.encodeToString(buildJsonObject {
+            put("id", requestId)
+            put("result", buildJsonObject {
+                put("action", action)
+                if (action == "accept") put("content", content)
+            })
+        })
+        return ws?.send(frame) ?: false
+    }
+
+    /**
      * Respond to an `account/chatgptAuthTokens/refresh` server request.
      *
      * The server sends this request (with its own id) when it needs fresh ChatGPT
