@@ -192,6 +192,57 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
             }
             "thread/goal/cleared" -> _state.update { it.copy(currentGoal = null) }
             "mcpServer/startupStatus/updated" -> loadMcpServers()
+
+            // Thread lifecycle — update per-session status indicators
+            "thread/started" -> {
+                val threadId = params["thread"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull ?: return
+                updateSessionStatus(threadId, "active")
+            }
+            "thread/status/changed" -> {
+                val threadObj = params["thread"]?.jsonObject ?: return
+                val threadId = threadObj["id"]?.jsonPrimitive?.contentOrNull ?: return
+                val statusType = threadObj["status"]?.jsonObject?.get("type")?.jsonPrimitive?.contentOrNull ?: "idle"
+                updateSessionStatus(threadId, statusType)
+            }
+            "thread/closed" -> {
+                val threadId = params["thread"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull ?: return
+                _state.update { s ->
+                    s.copy(projects = s.projects.map { group ->
+                        group.copy(sessions = group.sessions.map { session ->
+                            if (session.id == threadId) session.copy(isLive = false, threadStatus = "closed")
+                            else session
+                        })
+                    })
+                }
+            }
+
+            // Thread metadata updates
+            "thread/name/updated" -> {
+                val threadId = params["thread"]?.jsonObject?.get("id")?.jsonPrimitive?.contentOrNull ?: return
+                val name = params["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
+                _state.update { s ->
+                    s.copy(projects = s.projects.map { group ->
+                        group.copy(sessions = group.sessions.map { session ->
+                            if (session.id == threadId) session.copy(title = name) else session
+                        })
+                    })
+                }
+            }
+            "thread/settings/updated" -> {
+                // Settings changes (model, policy) are not sidebar-visible — no-op here.
+                // ChatViewModel handles the model/policy update for the active thread.
+            }
+        }
+    }
+
+    /** Update the [threadStatus] for a single session item across all project groups. */
+    private fun updateSessionStatus(threadId: String, status: String) {
+        _state.update { s ->
+            s.copy(projects = s.projects.map { group ->
+                group.copy(sessions = group.sessions.map { session ->
+                    if (session.id == threadId) session.copy(threadStatus = status) else session
+                })
+            })
         }
     }
 

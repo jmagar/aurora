@@ -381,7 +381,11 @@ class CodexRepository {
         // Route sidebar-relevant methods to sidebarNotificationsFlow as well.
         val sidebarMethods = setOf(
             "thread/goal/updated", "thread/goal/cleared",
-            "mcpServer/startupStatus/updated"
+            "mcpServer/startupStatus/updated",
+            // Thread lifecycle — keep sidebar thread list in sync without a full refresh
+            "thread/started", "thread/status/changed", "thread/closed",
+            // Thread metadata — keep sidebar title and chat header in sync
+            "thread/name/updated", "thread/settings/updated",
         )
         if (msg.method in sidebarMethods) {
             _sidebarNotificationsFlow.tryEmit(msg)

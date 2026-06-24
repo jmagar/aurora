@@ -864,6 +864,27 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(threadName = name) }
             }
 
+            // Bead 3dx: thread settings updated from server (model + sandboxPolicy sync)
+            "thread/settings/updated" -> {
+                val settings = params?.get("settings")?.jsonObject ?: return
+                val model = settings["model"]?.jsonPrimitive?.contentOrNull
+                val policyType = settings["sandboxPolicy"]?.jsonObject?.get("type")?.jsonPrimitive?.contentOrNull
+                _state.update { s ->
+                    var next = s
+                    if (model != null) next = next.copy(selectedModel = model)
+                    if (policyType != null) {
+                        val policy = when (policyType) {
+                            "readOnly"       -> SandboxPolicy.ReadOnly()
+                            "workspaceWrite" -> SandboxPolicy.WorkspaceWrite()
+                            "externalSandbox"-> SandboxPolicy.ExternalSandbox
+                            else             -> SandboxPolicy.DangerFullAccess
+                        }
+                        next = next.copy(selectedSandboxPolicy = policy)
+                    }
+                    next
+                }
+            }
+
             // Errors
             "error" -> {
                 // Commit any buffered streaming text before teardown. A sub-50ms error
