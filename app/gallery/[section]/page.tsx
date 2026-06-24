@@ -219,34 +219,6 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
 
   return (
     <div className="aurora-gallery-page grid gap-8">
-      <style>{`
-        .aurora-gallery-page {
-          min-width: 0;
-        }
-        .aurora-gallery-page > * {
-          min-width: 0;
-        }
-        .aurora-gallery-demo-region {
-          display: grid;
-          justify-items: start;
-          width: 100%;
-          max-width: min(100%, 1120px);
-          min-width: 0;
-        }
-        .aurora-gallery-demo-region > * {
-          max-width: 100%;
-          min-width: 0;
-        }
-        .aurora-gallery-install-region {
-          width: 100%;
-          max-width: min(760px, 100%);
-          min-width: 0;
-        }
-        .aurora-gallery-install-region > * {
-          max-width: 100%;
-          min-width: 0;
-        }
-      `}</style>
       <header className="grid gap-4" style={{ width: "min(760px, 100%)", minWidth: 0 }}>
         <div>
           <p
