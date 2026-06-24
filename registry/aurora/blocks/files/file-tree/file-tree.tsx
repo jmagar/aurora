@@ -6,7 +6,7 @@ import {
   ChevronRight,
   Copy,
   File,
-  FileCode2,
+  FileCode,
   FileJson,
   FileText,
   Folder,
@@ -56,7 +56,7 @@ function FolderIcon({ open }: { open: boolean }) {
 function FileIcon({ language }: { language?: string }) {
   const Icon =
     language === "typescript" || language === "ts" || language === "tsx" || language === "rust"
-      ? FileCode2
+      ? FileCode
       : language === "json"
         ? FileJson
         : language === "md" || language === "markdown"

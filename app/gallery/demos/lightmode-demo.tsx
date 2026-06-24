@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { AlertTriangle } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 import { Badge, type BadgeTone } from "@/registry/aurora/ui/badge";
 import { Button } from "@/registry/aurora/ui/button";
 
@@ -55,7 +55,7 @@ export default function LightmodeDemo() {
       </div>
 
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 16px", borderRadius: 8, border: "1px solid var(--aurora-warn-border)", background: "var(--aurora-warn-surface)" }}>
-        <AlertTriangle size={16} strokeWidth={1.7} style={{ marginTop: 1, color: "var(--aurora-warn)", flexShrink: 0 }} aria-hidden />
+        <TriangleAlert size={16} strokeWidth={1.7} style={{ marginTop: 1, color: "var(--aurora-warn)", flexShrink: 0 }} aria-hidden />
         <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <span style={{ fontSize: 13, fontWeight: 600, color: "var(--aurora-warn)" }}>Staging gateway degraded</span>
           <span style={{ fontSize: 12, color: "var(--aurora-text-muted)" }}>P99 latency has exceeded 200 ms for the past 5 minutes. Consider scaling the replica count or investigating upstream dependencies.</span>

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Code2 } from "lucide-react"
+import { Code } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
 
@@ -176,7 +176,7 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
           style={{ borderBottom: "1px solid var(--aurora-border-default)" }}
         >
           <div className="flex min-w-0 items-center gap-2.5">
-            <Code2
+            <Code
               className="size-[18px] shrink-0"
               style={{ color: "var(--aurora-accent-pink)" }}
               aria-hidden

@@ -6,7 +6,7 @@
  */
 
 import * as React from "react"
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // ─── Pagination root ──────────────────────────────────────────────────────────
@@ -156,7 +156,7 @@ const PaginationEllipsis = React.forwardRef<
     style={{ color: "var(--aurora-text-muted)" }}
     {...props}
   >
-    <MoreHorizontal className="size-4" />
+    <Ellipsis className="size-4" />
     <span className="sr-only">More pages</span>
   </span>
 ))

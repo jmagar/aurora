@@ -7,7 +7,7 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { ChevronRight, Dot, MoreHorizontal } from "lucide-react"
+import { ChevronRight, Dot, Ellipsis } from "lucide-react"
 import { Badge } from "./badge"
 import { cn } from "@/lib/utils"
 
@@ -202,7 +202,7 @@ const BreadcrumbEllipsis = React.forwardRef<
     style={{ color: "var(--aurora-text-muted)" }}
     {...props}
   >
-    <MoreHorizontal className="size-4" aria-hidden />
+    <Ellipsis className="size-4" aria-hidden />
     <span className="sr-only">More</span>
   </span>
 ))
