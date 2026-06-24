@@ -2,13 +2,18 @@ package tv.tootie.aurora.app.ui.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,8 +28,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -63,13 +70,14 @@ fun SettingsScreen(
     val vm: SettingsViewModel = viewModel()
     val state by vm.state.collectAsStateWithLifecycle()
 
-    // Load saved settings on first render
+    // Load saved settings and trigger config/read on first render
     LaunchedEffect(Unit) {
         url = settings.serverUrl.first()
         token = settings.authToken.first().orEmpty()
         model = settings.model.first()
         selectedApprovalPolicy = ApprovalPolicy.fromWire(settings.approvalPolicy.first())
         selectedReviewer = ApprovalsReviewer.fromWire(settings.approvalsReviewer.first())
+        vm.loadConfig()
     }
 
     // Navigate away when logout completes
@@ -96,7 +104,8 @@ fun SettingsScreen(
         Column(
             Modifier
                 .padding(pad)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text("Connection", style = MaterialTheme.typography.titleMedium)
@@ -228,6 +237,82 @@ fun SettingsScreen(
                 loading = state.isLoggingOut,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Log out") }
+
+            Spacer(Modifier.height(8.dp))
+
+            // --- Codex config viewer ---
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text("Codex configuration", style = MaterialTheme.typography.titleMedium)
+                AuroraButton(
+                    onClick = { vm.loadConfig() },
+                    variant = AuroraButtonVariant.Outlined,
+                    loading = state.isLoadingConfig,
+                ) { Text("Refresh") }
+            }
+
+            when {
+                state.configError != null -> {
+                    Text(
+                        text = "Error: ${state.configError}",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+                state.isLoadingConfig && state.configEntries.isEmpty() -> {
+                    CircularProgressIndicator()
+                }
+                state.configEntries.isEmpty() -> {
+                    Text(
+                        "No configuration received.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                else -> {
+                    ConfigViewer(entries = state.configEntries)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ConfigViewer(entries: List<ConfigEntry>) {
+    Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
+        entries.forEachIndexed { idx, entry ->
+            if (idx > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = entry.key,
+                        style = MaterialTheme.typography.labelMedium.copy(fontFamily = FontFamily.Monospace),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    if (entry.layer != null) {
+                        Text(
+                            text = entry.layer,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                Text(
+                    text = entry.value,
+                    style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 12.dp),
+                )
+            }
         }
     }
 }

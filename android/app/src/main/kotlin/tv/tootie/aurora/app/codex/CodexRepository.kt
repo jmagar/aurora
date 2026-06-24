@@ -52,6 +52,7 @@ public enum class RequestKind {
     McpServers,    // mcpServerStatus/list
     Models,        // model/list
     Skills,        // skills/list
+    ConfigRead,    // config/read
     Other,
 }
 
@@ -79,6 +80,21 @@ sealed class CodexEvent {
 
     /** Parsed result from a mcpServerStatus/list response. */
     data class McpServerList(val servers: List<JsonObject>) : CodexEvent()
+
+    /**
+     * Parsed result from a config/read response.
+     *
+     * [config] is the merged effective configuration (always present on success).
+     * [layers] is the optional per-key breakdown — present when includeLayers=true was requested.
+     * Each entry in [layers] maps a config key to the name of the layer that supplied it
+     * (e.g. "user", "project", "defaults").
+     * [error] is non-null when the RPC returned an error.
+     */
+    data class ConfigResult(
+        val config: JsonObject?,
+        val layers: JsonObject?,
+        val error: String? = null,
+    ) : CodexEvent()
 
     /** A connection-level error (WebSocket failure). */
     data class ConnectionError(val message: String) : CodexEvent()
@@ -144,6 +160,10 @@ class CodexRepository {
 
     private val _errorsFlow = MutableSharedFlow<CodexEvent.ConnectionError>(replay = 1)
     val errorsFlow: SharedFlow<CodexEvent.ConnectionError> = _errorsFlow.asSharedFlow()
+
+    private val _configFlow = MutableSharedFlow<CodexEvent.ConfigResult>(replay = 1)
+    /** config/read responses. SettingsViewModel subscribes here. */
+    val configFlow: SharedFlow<CodexEvent.ConfigResult> = _configFlow.asSharedFlow()
 
     // --- Connection lifecycle ----------------------------------------------
 
@@ -298,6 +318,13 @@ class CodexRepository {
         return key
     }
 
+    fun readConfig(cwd: String? = null, includeLayers: Boolean = true): String {
+        val rawId = client?.readConfig(cwd, includeLayers) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ConfigRead
+        return key
+    }
+
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean =
         client?.sendApproval(rawServerId, decision) ?: false
 
@@ -325,6 +352,7 @@ class CodexRepository {
                 RequestKind.Models -> routeModelsResponse(msg)
                 RequestKind.Skills -> routeSkillsResponse(msg)
                 RequestKind.McpServers -> routeMcpServersResponse(msg)
+                RequestKind.ConfigRead -> routeConfigResponse(msg)
                 // ThreadStart, ThreadResume, Steer, Goal*, Other, null — go to turnEventsFlow
                 // so ChatViewModel handles them with its existing null-method dispatch.
                 // Direct emit (demux is already suspend) — no scope.launch to preserve ordering
@@ -388,5 +416,20 @@ class CodexRepository {
             ?: run { Log.w(TAG, "unexpected mcpServerStatus shape"); return }
         val list = servers.mapNotNull { it as? JsonObject }
         _mcpServersFlow.tryEmit(CodexEvent.McpServerList(list))
+    }
+
+    private fun routeConfigResponse(msg: RpcMessage) {
+        if (msg.error != null) {
+            _configFlow.tryEmit(CodexEvent.ConfigResult(
+                config = null,
+                layers = null,
+                error = msg.error.message,
+            ))
+            return
+        }
+        val result = msg.result?.jsonObject ?: return
+        val config = result["config"]?.jsonObject
+        val layers = result["layers"]?.jsonObject
+        _configFlow.tryEmit(CodexEvent.ConfigResult(config = config, layers = layers))
     }
 }
