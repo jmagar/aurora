@@ -214,6 +214,29 @@ fun SettingsScreen(
 
             Text("Account", style = MaterialTheme.typography.titleMedium)
 
+            // Account details: plan, email, credits
+            state.accountInfo?.let { info ->
+                if (info.email != null) {
+                    AccountInfoRow(label = "Email", value = info.email)
+                }
+                if (info.planType != null) {
+                    AccountInfoRow(label = "Plan", value = info.planType)
+                }
+                if (info.creditsBalance != null) {
+                    AccountInfoRow(label = "Credits", value = info.creditsBalance)
+                }
+            }
+
+            // Rate-limit state
+            state.rateLimits?.let { rl ->
+                if (rl.requestsRemaining != null) {
+                    AccountInfoRow(label = "Requests remaining", value = rl.requestsRemaining.toString())
+                }
+                if (rl.resetTime != null) {
+                    AccountInfoRow(label = "Resets at", value = rl.resetTime)
+                }
+            }
+
             if (state.logoutError != null) {
                 Text(
                     text = "Error: ${state.logoutError}",
@@ -229,5 +252,24 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Log out") }
         }
+    }
+}
+
+/** Single label/value row for account metadata display. */
+@Composable
+private fun AccountInfoRow(label: String, value: String) {
+    androidx.compose.foundation.layout.Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+        )
     }
 }

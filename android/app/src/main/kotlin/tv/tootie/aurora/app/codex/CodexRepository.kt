@@ -49,9 +49,12 @@ public enum class RequestKind {
     GoalSet,       // thread/goal/set
     GoalGet,       // thread/goal/get
     GoalClear,     // thread/goal/clear
-    McpServers,    // mcpServerStatus/list
-    Models,        // model/list
-    Skills,        // skills/list
+    McpServers,          // mcpServerStatus/list
+    Models,              // model/list
+    Skills,              // skills/list
+    ConfigRequirements,  // configRequirements/read
+    AccountRead,         // account/read
+    RateLimitsRead,      // account/rateLimits/read
     Other,
 }
 
@@ -82,6 +85,12 @@ sealed class CodexEvent {
 
     /** A connection-level error (WebSocket failure). */
     data class ConnectionError(val message: String) : CodexEvent()
+
+    /** Parsed result from an account/read response — raw result object. */
+    data class AccountInfo(val data: JsonObject) : CodexEvent()
+
+    /** Parsed result from an account/rateLimits/read response — raw result object. */
+    data class RateLimitsInfo(val data: JsonObject) : CodexEvent()
 }
 
 /**
@@ -131,6 +140,14 @@ class CodexRepository {
 
     private val _mcpServersFlow = MutableSharedFlow<CodexEvent.McpServerList>(replay = 1)
     val mcpServersFlow: SharedFlow<CodexEvent.McpServerList> = _mcpServersFlow.asSharedFlow()
+
+    private val _accountFlow = MutableSharedFlow<CodexEvent.AccountInfo>(replay = 1)
+    /** Account details from account/read responses and account/updated notifications. */
+    val accountFlow: SharedFlow<CodexEvent.AccountInfo> = _accountFlow.asSharedFlow()
+
+    private val _rateLimitsFlow = MutableSharedFlow<CodexEvent.RateLimitsInfo>(replay = 1)
+    /** Rate-limit state from account/rateLimits/read responses and account/rateLimits/updated notifications. */
+    val rateLimitsFlow: SharedFlow<CodexEvent.RateLimitsInfo> = _rateLimitsFlow.asSharedFlow()
 
     private val _sidebarNotificationsFlow = MutableSharedFlow<RpcMessage>(replay = 1)
     val sidebarNotificationsFlow: SharedFlow<RpcMessage> = _sidebarNotificationsFlow.asSharedFlow()
@@ -312,6 +329,34 @@ class CodexRepository {
         return key
     }
 
+    /**
+     * Send a configRequirements/read request to validate config completeness.
+     * The response is routed through [turnEventsFlow] with [RequestKind.ConfigRequirements].
+     * Returns the request key for correlation, or "-1" if not connected.
+     */
+    fun readConfigRequirements(): String {
+        val rawId = client?.readConfigRequirements() ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ConfigRequirements
+        return key
+    }
+
+    /** Fetch current account details. Response routed to [accountFlow]. */
+    fun readAccount(): String {
+        val rawId = client?.readAccount() ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.AccountRead
+        return key
+    }
+
+    /** Fetch current rate-limit state. Response routed to [rateLimitsFlow]. */
+    fun readRateLimits(): String {
+        val rawId = client?.readRateLimits() ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.RateLimitsRead
+        return key
+    }
+
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean =
         client?.sendApproval(rawServerId, decision) ?: false
 
@@ -366,6 +411,8 @@ class CodexRepository {
                 RequestKind.Models -> routeModelsResponse(msg)
                 RequestKind.Skills -> routeSkillsResponse(msg)
                 RequestKind.McpServers -> routeMcpServersResponse(msg)
+                RequestKind.AccountRead -> routeAccountResponse(msg)
+                RequestKind.RateLimitsRead -> routeRateLimitsResponse(msg)
                 // ThreadStart, ThreadResume, Steer, Goal*, Other, null — go to turnEventsFlow
                 // so ChatViewModel handles them with its existing null-method dispatch.
                 // Direct emit (demux is already suspend) — no scope.launch to preserve ordering
@@ -398,6 +445,18 @@ class CodexRepository {
         if (msg.method in sidebarMethods) {
             _sidebarNotificationsFlow.tryEmit(msg)
         }
+        // Route account push notifications directly to their dedicated flows so
+        // SettingsViewModel stays current without polling.
+        when (msg.method) {
+            "account/updated" -> {
+                val data = msg.params?.jsonObject ?: msg.result?.jsonObject
+                if (data != null) _accountFlow.tryEmit(CodexEvent.AccountInfo(data))
+            }
+            "account/rateLimits/updated" -> {
+                val data = msg.params?.jsonObject ?: msg.result?.jsonObject
+                if (data != null) _rateLimitsFlow.tryEmit(CodexEvent.RateLimitsInfo(data))
+            }
+        }
         // suspend emit() ensures critical events like turn/completed are never dropped.
         _turnEventsFlow.emit(CodexEvent.TurnEvent(msg))
     }
@@ -429,5 +488,15 @@ class CodexRepository {
             ?: run { Log.w(TAG, "unexpected mcpServerStatus shape"); return }
         val list = servers.mapNotNull { it as? JsonObject }
         _mcpServersFlow.tryEmit(CodexEvent.McpServerList(list))
+    }
+
+    private fun routeAccountResponse(msg: RpcMessage) {
+        val data = msg.result?.jsonObject ?: return
+        _accountFlow.tryEmit(CodexEvent.AccountInfo(data))
+    }
+
+    private fun routeRateLimitsResponse(msg: RpcMessage) {
+        val data = msg.result?.jsonObject ?: return
+        _rateLimitsFlow.tryEmit(CodexEvent.RateLimitsInfo(data))
     }
 }

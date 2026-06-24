@@ -452,6 +452,36 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    /**
+     * Send a configRequirements/read request (no params).
+     * Returns the request id for correlation in the messages flow.
+     */
+    fun readConfigRequirements(): Int {
+        val id = ids.incrementAndGet()
+        send("configRequirements/read", JsonObject(emptyMap()), id)
+        return id
+    }
+
+    /**
+     * Send an account/read request.
+     * Returns the request id for correlation in the messages flow.
+     */
+    fun readAccount(): Int {
+        val id = ids.incrementAndGet()
+        send("account/read", JsonObject(emptyMap()), id)
+        return id
+    }
+
+    /**
+     * Send an account/rateLimits/read request.
+     * Returns the request id for correlation in the messages flow.
+     */
+    fun readRateLimits(): Int {
+        val id = ids.incrementAndGet()
+        send("account/rateLimits/read", JsonObject(emptyMap()), id)
+        return id
+    }
+
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean {
         val json = buildJsonObject {
             put("id", rawServerId)

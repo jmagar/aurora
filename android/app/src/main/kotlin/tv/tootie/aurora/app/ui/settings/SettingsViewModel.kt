@@ -14,29 +14,95 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
+import tv.tootie.aurora.app.CodexApp
 import tv.tootie.aurora.app.codex.CodexClient
+import tv.tootie.aurora.app.codex.CodexEvent
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.data.AuthRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 sealed class SettingsUiEvent {
     /** Emitted once after a successful logout — UI should navigate away. */
     object LoggedOut : SettingsUiEvent()
 }
 
+/**
+ * Account information from [account/read] and [account/updated] push notifications.
+ * Fields are nullable — the server may omit any subset.
+ */
+data class AccountInfo(
+    val planType: String? = null,
+    val email: String? = null,
+    val creditsBalance: String? = null,
+)
+
+/**
+ * Rate-limit state from [account/rateLimits/read] and [account/rateLimits/updated].
+ */
+data class RateLimitsInfo(
+    val requestsRemaining: Int? = null,
+    val resetTime: String? = null,
+)
+
 data class SettingsState(
     val isLoggingOut: Boolean = false,
     val logoutError: String? = null,
     /** Non-null when the UI should navigate; consumed by the composable. */
     val pendingEvent: SettingsUiEvent? = null,
+    val accountInfo: AccountInfo? = null,
+    val rateLimits: RateLimitsInfo? = null,
 )
 
 class SettingsViewModel(app: Application) : AndroidViewModel(app) {
 
     private val settings = AppSettings(app)
     private val authRepo = AuthRepository(app)
+    private val repo = (app as CodexApp).repository
 
     private val _state = MutableStateFlow(SettingsState())
     val state: StateFlow<SettingsState> = _state.asStateFlow()
+
+    init {
+        // Subscribe to push notifications so the UI stays current without polling.
+        repo.accountFlow.onEach { event ->
+            _state.update { it.copy(accountInfo = parseAccountInfo(event)) }
+        }.launchIn(viewModelScope)
+
+        repo.rateLimitsFlow.onEach { event ->
+            _state.update { it.copy(rateLimits = parseRateLimits(event)) }
+        }.launchIn(viewModelScope)
+
+        // Fetch initial values once on creation.
+        fetchAccountInfo()
+    }
+
+    /** Trigger fresh account/read and account/rateLimits/read requests. */
+    fun fetchAccountInfo() {
+        repo.readAccount()
+        repo.readRateLimits()
+    }
+
+    private fun parseAccountInfo(event: CodexEvent.AccountInfo): AccountInfo {
+        val d = event.data
+        return AccountInfo(
+            planType = d["planType"]?.jsonPrimitive?.contentOrNull
+                ?: d["plan"]?.jsonPrimitive?.contentOrNull,
+            email = d["email"]?.jsonPrimitive?.contentOrNull,
+            creditsBalance = d["creditsBalance"]?.jsonPrimitive?.contentOrNull
+                ?: d["credits"]?.jsonPrimitive?.contentOrNull,
+        )
+    }
+
+    private fun parseRateLimits(event: CodexEvent.RateLimitsInfo): RateLimitsInfo {
+        val d = event.data
+        return RateLimitsInfo(
+            requestsRemaining = d["requestsRemaining"]?.jsonPrimitive?.contentOrNull?.toIntOrNull()
+                ?: d["remaining"]?.jsonPrimitive?.contentOrNull?.toIntOrNull(),
+            resetTime = d["resetTime"]?.jsonPrimitive?.contentOrNull
+                ?: d["resetsAt"]?.jsonPrimitive?.contentOrNull,
+        )
+    }
 
     fun logout() {
         if (_state.value.isLoggingOut) return
