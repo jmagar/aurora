@@ -34,9 +34,14 @@ object Keys {
     // Approval policy
     val APPROVAL_POLICY = stringPreferencesKey("approval_policy")       // wire value; default "on-request"
     val APPROVALS_REVIEWER = stringPreferencesKey("approvals_reviewer") // wire value; default "user"
-    // Thread persistence
+    // Thread persistence — keyed by server URL to prevent cross-server resume (gtca).
+    // Legacy unkeyed keys kept so existing installs can be read once and migrated.
     val THREAD_ID = stringPreferencesKey("thread_id")
     val THREAD_UPDATED_AT = longPreferencesKey("thread_updated_at")
+
+    /** Per-server thread key. Uses a stable hash of the URL so key names stay ASCII-safe. */
+    fun threadIdForUrl(url: String) = stringPreferencesKey("thread_id_${url.hashCode()}")
+    fun threadUpdatedAtForUrl(url: String) = longPreferencesKey("thread_updated_at_${url.hashCode()}")
 }
 
 /**
@@ -205,17 +210,29 @@ class AppSettings(private val ctx: Context) {
         it.remove(Keys.CHATGPT_ACCOUNT_ID)
     }
 
-    val savedThreadId: Flow<String?> = ctx.store.data.map {
-        it[Keys.THREAD_ID]?.takeIf { id -> id.isNotBlank() }
+    /**
+     * Returns the saved thread ID for [serverUrl].
+     * Falls back to the legacy unkeyed entry for existing installs that have not yet saved
+     * under the new URL-keyed scheme; once [saveThread] is called the legacy entry is cleared.
+     */
+    fun savedThreadId(serverUrl: String): Flow<String?> = ctx.store.data.map { prefs ->
+        prefs[Keys.threadIdForUrl(serverUrl)]?.takeIf { it.isNotBlank() }
+            ?: prefs[Keys.THREAD_ID]?.takeIf { it.isNotBlank() } // legacy fallback
     }
 
-    suspend fun saveThread(id: String) = ctx.store.edit {
-        it[Keys.THREAD_ID] = id
-        it[Keys.THREAD_UPDATED_AT] = System.currentTimeMillis() / 1000L
+    suspend fun saveThread(serverUrl: String, id: String) = ctx.store.edit { prefs ->
+        prefs[Keys.threadIdForUrl(serverUrl)] = id
+        prefs[Keys.threadUpdatedAtForUrl(serverUrl)] = System.currentTimeMillis() / 1000L
+        // Clear the legacy unkeyed entry so it is only consulted once per install
+        prefs.remove(Keys.THREAD_ID)
+        prefs.remove(Keys.THREAD_UPDATED_AT)
     }
 
-    suspend fun clearThreadId() = ctx.store.edit {
-        it.remove(Keys.THREAD_ID)
-        it.remove(Keys.THREAD_UPDATED_AT)
+    suspend fun clearThreadId(serverUrl: String) = ctx.store.edit { prefs ->
+        prefs.remove(Keys.threadIdForUrl(serverUrl))
+        prefs.remove(Keys.threadUpdatedAtForUrl(serverUrl))
+        // Also clear legacy key in case it hasn't been migrated yet
+        prefs.remove(Keys.THREAD_ID)
+        prefs.remove(Keys.THREAD_UPDATED_AT)
     }
 }

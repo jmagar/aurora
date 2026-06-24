@@ -229,6 +229,9 @@ internal fun reduceApprovals(
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
     private val repo: CodexRepository = (app as CodexApp).repository
+    // Stored when connect() resolves so saveThread/clearThreadId callers don't need to re-read it.
+    // Volatile: written from viewModelScope (main dispatcher), read from same dispatcher.
+    @Volatile private var currentServerUrl: String = ""
     /**
      * Holds one queued outbound turn while a thread/start is in flight.
      *
@@ -328,7 +331,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             pendingTurns.clear()
             resetStreamBuffers()
             _state.update { it.copy(threadId = null, msgs = persistentListOf(), pendingApprovals = persistentListOf()) }
-            viewModelScope.launch { settings.clearThreadId() }
+            viewModelScope.launch { settings.clearThreadId(currentServerUrl) }
         }.launchIn(viewModelScope)
     }
 
@@ -349,6 +352,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     fun connect(threadId: String, allowResume: Boolean = true) {
         viewModelScope.launch {
             val url = settings.serverUrl.first()
+            currentServerUrl = url
             val tok = settings.authToken.first()
             repo.connect(url, tok)
             _state.update { it.copy(connected = true, threadId = if (threadId != "new") threadId else null) }
@@ -371,7 +375,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 // "New session" sidebar action always produce a genuinely empty thread
                 // regardless of what was saved from a prior session.
                 if (threadId == "new" && allowResume) {
-                    val saved = settings.savedThreadId.first()
+                    val saved = settings.savedThreadId(url).first()
                     if (saved != null) {
                         tryResumeThread(saved)
                     }
@@ -655,8 +659,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 if (event.originKind == RequestKind.ThreadResume) {
                     if (msg.error != null) {
                         if (msg.error.code == -32600) {
-                            // Thread expired — clear saved ID
-                            viewModelScope.launch { settings.clearThreadId() }
+                            // Thread expired — clear saved ID for this server
+                            viewModelScope.launch { settings.clearThreadId(currentServerUrl) }
                         }
                         // Any other error: leave savedThreadId intact (transient failure)
                         return
@@ -737,7 +741,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     val cwd = threadObj["cwd"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                     val name = threadObj["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                     _state.update { it.copy(threadId = tid, cwd = cwd ?: it.cwd, threadName = name ?: it.threadName) }
-                    viewModelScope.launch { settings.saveThread(tid) }
+                    viewModelScope.launch { settings.saveThread(currentServerUrl, tid) }
                     // Drain the pending-turns queue in order. Each turn is sent sequentially
                     // so message ordering is preserved (startTurn is fire-and-forget on the
                     // WebSocket; the server queues them per-thread and won't interleave them).
@@ -1140,6 +1144,20 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { s ->
                     s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, event))
                 }
+            }
+
+            // Server switched the active model mid-session (rate-limiting, model availability, etc.).
+            // Update selectedModel so the model selector reflects the actual model in use.
+            "model/rerouted" -> {
+                val newModel = params?.get("model")?.jsonPrimitive?.contentOrNull ?: return
+                _state.update { it.copy(selectedModel = newModel.sanitizeForDisplay()) }
+            }
+
+            // Server confirms model availability after a reroute or initial negotiation.
+            // Update selectedModel to reflect the confirmed model.
+            "model/verification" -> {
+                val confirmedModel = params?.get("model")?.jsonPrimitive?.contentOrNull ?: return
+                _state.update { it.copy(selectedModel = confirmedModel.sanitizeForDisplay()) }
             }
 
             // Server requests the client to supply fresh ChatGPT auth tokens.
