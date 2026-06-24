@@ -33,9 +33,9 @@ export default function AiResponseDemo() {
         description="Markdown answer with inline code, fenced code blocks (copy + language chip), citation chips, bullet lists, and a streaming fade — rendered with the real registry implementation."
       />
       <section
-        className="grid gap-4"
+        className="grid gap-3"
         style={{
-          padding: "22px 26px",
+          padding: "16px 20px",
           borderRadius: "var(--aurora-radius-2)",
           border: "1px solid var(--aurora-border-strong)",
           background: "var(--aurora-panel-strong)",
@@ -46,7 +46,6 @@ export default function AiResponseDemo() {
           style={{
             fontSize: 11,
             color: "var(--aurora-text-muted)",
-            marginBottom: 8,
           }}
         >
           Hover a citation chip ¹ ² to preview its source.

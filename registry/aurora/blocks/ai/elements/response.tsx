@@ -132,7 +132,7 @@ function ResponseCodeBlock({ code, language }: { code: string; language: string 
         borderRadius: "var(--aurora-radius-2)",
         boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
         overflow: "hidden",
-        margin: "14px 0",
+        margin: "10px 0",
       }}
     >
       <div
@@ -503,8 +503,8 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
         className={cn("aurora-text-body", className)}
         style={{
           fontFamily: "var(--aurora-font-sans)",
-          fontSize: 15,
-          lineHeight: 1.6,
+          fontSize: 14,
+          lineHeight: 1.55,
           color: "var(--aurora-text-primary)",
           opacity: streaming ? 0.96 : 1,
           ...style,
@@ -529,10 +529,10 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
                 key={`b-${bi}`}
                 style={{
                   listStyle: "none",
-                  margin: "10px 0",
+                  margin: "8px 0",
                   padding: 0,
                   display: "grid",
-                  gap: 8,
+                  gap: 6,
                 }}
               >
                 {block.items.map((item, li) => (
@@ -566,7 +566,7 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
             <p
               className="aurora-response-block"
               key={`b-${bi}`}
-              style={{ margin: "10px 0" }}
+              style={{ margin: "8px 0" }}
             >
               {renderInline(block.text, `b-${bi}`, sources, onCitationClick)}
               {streaming && isLast ? (
