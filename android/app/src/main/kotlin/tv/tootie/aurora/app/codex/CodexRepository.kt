@@ -278,10 +278,11 @@ class CodexRepository {
         approvalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
         granularPolicy: GranularPolicy? = null,
         approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
+        sandboxPolicy: SandboxPolicy = SandboxPolicy.DangerFullAccess,
     ): Int {
         val id = client?.startTurn(
             threadId, text, attachments, model, effort, images,
-            approvalPolicy, granularPolicy, approvalsReviewer,
+            approvalPolicy, granularPolicy, approvalsReviewer, sandboxPolicy,
         ) ?: return -1
         pendingKinds[id.toString()] = RequestKind.Other
         return id

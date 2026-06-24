@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.SupervisorAccount
 import androidx.compose.material3.DropdownMenu
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.app.codex.ApprovalPolicy
 import tv.tootie.aurora.app.codex.ApprovalsReviewer
 import tv.tootie.aurora.app.codex.GranularPolicy
+import tv.tootie.aurora.app.codex.SandboxPolicy
 import tv.tootie.aurora.components.AuroraSwitch
 import tv.tootie.aurora.theme.LocalAuroraColors
 
@@ -43,14 +45,17 @@ fun ApprovalPolicyBar(
     selectedPolicy: ApprovalPolicy,
     granularPolicy: GranularPolicy,
     selectedReviewer: ApprovalsReviewer,
+    selectedSandboxPolicy: SandboxPolicy,
     onPolicySelect: (ApprovalPolicy) -> Unit,
     onGranularUpdate: (GranularPolicy.() -> GranularPolicy) -> Unit,
     onReviewerSelect: (ApprovalsReviewer) -> Unit,
+    onSandboxPolicySelect: (SandboxPolicy) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val aurora = LocalAuroraColors.current
     var policyMenuOpen by remember { mutableStateOf(false) }
     var reviewerMenuOpen by remember { mutableStateOf(false) }
+    var sandboxMenuOpen by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -154,6 +159,62 @@ fun ApprovalPolicyBar(
                             onClick = {
                                 onReviewerSelect(reviewer)
                                 reviewerMenuOpen = false
+                            },
+                        )
+                    }
+                }
+            }
+
+            // Sandbox policy selector
+            val sandboxColor = when (selectedSandboxPolicy) {
+                SandboxPolicy.DangerFullAccess -> aurora.warn
+                is SandboxPolicy.ReadOnly      -> aurora.success
+                is SandboxPolicy.WorkspaceWrite -> aurora.info
+                SandboxPolicy.ExternalSandbox  -> aurora.accentPink
+            }
+            Box {
+                Row(
+                    modifier = Modifier
+                        .semantics {
+                            contentDescription = "Sandbox policy selector"
+                            stateDescription = selectedSandboxPolicy.displayName
+                        }
+                        .clickable(role = Role.Button) { sandboxMenuOpen = true }
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Icon(
+                        Icons.Default.Lock,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = sandboxColor,
+                    )
+                    Text(
+                        selectedSandboxPolicy.displayName,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = sandboxColor,
+                    )
+                    Icon(
+                        Icons.Default.ExpandMore,
+                        contentDescription = "Change sandbox policy",
+                        modifier = Modifier.size(14.dp),
+                        tint = sandboxColor,
+                    )
+                }
+                DropdownMenu(
+                    expanded = sandboxMenuOpen,
+                    onDismissRequest = { sandboxMenuOpen = false },
+                ) {
+                    SandboxPolicy.all.forEach { policy ->
+                        DescriptiveMenuItem(
+                            label = policy.displayName,
+                            description = policy.description,
+                            selected = policy::class == selectedSandboxPolicy::class,
+                            accentColor = sandboxColor,
+                            onClick = {
+                                onSandboxPolicySelect(policy)
+                                sandboxMenuOpen = false
                             },
                         )
                     }

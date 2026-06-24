@@ -39,6 +39,7 @@ import tv.tootie.aurora.app.codex.GranularPolicy
 import tv.tootie.aurora.app.codex.PendingAttachment
 import tv.tootie.aurora.app.codex.RequestKind
 import tv.tootie.aurora.app.codex.SelectedItem
+import tv.tootie.aurora.app.codex.SandboxPolicy
 import tv.tootie.aurora.app.data.AppSettings
 
 enum class MsgRole { User, Assistant }
@@ -203,6 +204,7 @@ data class ChatState(
     val pendingApprovals: ImmutableList<ToolApproval> = persistentListOf(),
     val activeTurnId: String? = null,
     val showSteerSheet: Boolean = false,
+    val selectedSandboxPolicy: SandboxPolicy = SandboxPolicy.DangerFullAccess,
     // Bead nev6: thread name + cwd shown in top bar
     val threadName: String? = null,
     val cwd: String? = null,
@@ -492,6 +494,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(selectedReviewer = reviewer) }
     }
 
+    fun selectSandboxPolicy(policy: SandboxPolicy) {
+        _state.update { it.copy(selectedSandboxPolicy = policy) }
+    }
+
     fun send(text: String, attachments: List<SelectedItem> = emptyList()) {
         val tid = _state.value.threadId
         val images = _state.value.pendingAttachments
@@ -741,6 +747,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             approvalPolicy = s.selectedApprovalPolicy,
             granularPolicy = if (s.selectedApprovalPolicy == ApprovalPolicy.Granular) s.granularPolicy else null,
             approvalsReviewer = s.selectedReviewer,
+            sandboxPolicy = s.selectedSandboxPolicy,
         )
     }
 
@@ -898,16 +905,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         pendingTurns.clear()
                         viewModelScope.launch {
                             for (turn in queued) {
-                                repo.startTurn(
+                                startTurnWithCurrentPolicy(
                                     tid, turn.text,
                                     attachments = turn.attachments,
-                                    model = _state.value.selectedModel,
-                                    effort = _state.value.selectedEffort,
                                     images = turn.images,
-                                    approvalPolicy = _state.value.selectedApprovalPolicy,
-                                    granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
-                                        _state.value.granularPolicy else null,
-                                    approvalsReviewer = _state.value.selectedReviewer,
                                 )
                             }
                         }
