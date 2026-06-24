@@ -172,10 +172,10 @@ function ResponseCodeBlock({ code, language }: { code: string; language: string 
         className="overflow-auto aurora-text-code"
         style={{
           margin: 0,
-          padding: "16px 18px",
+          padding: "12px 16px",
           background: "transparent",
           color: "var(--aurora-text-primary)",
-          lineHeight: 1.7,
+          lineHeight: 1.6,
           whiteSpace: "pre",
         }}
       >
@@ -488,11 +488,16 @@ function useResponseStyle() {
   }, [])
 }
 
-const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
-  (
-    { markdown, sources, onCitationClick, streaming = false, className, style, ...props },
-    ref
-  ) => {
+function Response({
+  ref,
+  markdown,
+  sources,
+  onCitationClick,
+  streaming = false,
+  className,
+  style,
+  ...props
+}: ResponseProps & { ref?: React.Ref<HTMLDivElement> }) {
     useResponseStyle()
     const blocks = React.useMemo(() => parseBlocks(markdown), [markdown])
     const lastIndex = blocks.length - 1
@@ -503,8 +508,8 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
         className={cn("aurora-text-body", className)}
         style={{
           fontFamily: "var(--aurora-font-sans)",
-          fontSize: 16,
-          lineHeight: 1.6,
+          fontSize: 15,
+          lineHeight: 1.55,
           color: "var(--aurora-text-primary)",
           opacity: streaming ? 0.96 : 1,
           ...style,
@@ -529,10 +534,10 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
                 key={`b-${bi}`}
                 style={{
                   listStyle: "none",
-                  margin: "10px 0",
+                  margin: "8px 0",
                   padding: 0,
                   display: "grid",
-                  gap: 8,
+                  gap: 6,
                 }}
               >
                 {block.items.map((item, li) => (
@@ -566,7 +571,7 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
             <p
               className="aurora-response-block"
               key={`b-${bi}`}
-              style={{ margin: "10px 0" }}
+              style={{ margin: "8px 0" }}
             >
               {renderInline(block.text, `b-${bi}`, sources, onCitationClick)}
               {streaming && isLast ? (
@@ -577,9 +582,7 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
         })}
       </div>
     )
-  }
-)
-Response.displayName = "Response"
+}
 
 export { Response }
 export default Response
