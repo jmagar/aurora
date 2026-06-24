@@ -14,6 +14,7 @@ export function ErrorPagesDemo() {
       code={404}
       path="/gateways/edge-9/logs"
       onRetry={() => {}}
+      fullPage={false}
     />
   )
 }
