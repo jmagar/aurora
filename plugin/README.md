@@ -10,16 +10,6 @@ base with cyan/rose/violet accents, served from the `@aurora` shadcn registry at
 claude plugin install ./plugin
 ```
 
-## Commands
-
-| Command | Description |
-| ------- | ----------- |
-| (none yet) | — |
-
-## Agents
-
-(none yet)
-
 ## Skills
 
 | Skill | Description |
