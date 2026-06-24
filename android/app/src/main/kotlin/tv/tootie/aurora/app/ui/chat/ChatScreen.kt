@@ -617,14 +617,18 @@ fun ChatScreen(
         val denyDecision = approval.availableDecisions.getOrElse(1) { "decline" }
         val allowLabel = allowDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
         val denyLabel = denyDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
-        val (title, fallback) = when (approval.type) {
-            "command" -> "Allow command?" to "A command is requesting approval."
-            "fileChange" -> "Allow file changes?" to "File changes are requesting approval."
-            "permissions" -> "Allow additional permissions?" to "The agent is requesting expanded sandbox permissions."
-            "elicitation" -> "Input needed" to "An MCP tool needs additional information to continue."
-            else -> "Allow action?" to "An action is requesting approval."
+        val (title, fallback) = when (approval) {
+            is ToolApproval.Command     -> "Allow command?" to "A command is requesting approval."
+            is ToolApproval.FileChange  -> "Allow file changes?" to "File changes are requesting approval."
+            is ToolApproval.Permissions -> "Allow additional permissions?" to "The agent is requesting expanded sandbox permissions."
+            is ToolApproval.Elicitation -> "Input needed" to "An MCP tool needs additional information to continue."
         }
-        val descParts = listOfNotNull(approval.reason, approval.command)
+        val descParts = when (approval) {
+            is ToolApproval.Command     -> listOfNotNull(approval.reason, approval.command)
+            is ToolApproval.FileChange  -> listOfNotNull(approval.reason)
+            is ToolApproval.Permissions -> listOfNotNull(approval.reason)
+            is ToolApproval.Elicitation -> listOfNotNull(approval.reason)
+        }
         val description = descParts.joinToString("\n\n").ifBlank { fallback }
         AuroraPermissionPrompt(
             onDismissRequest = { },

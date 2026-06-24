@@ -17,8 +17,8 @@ import org.junit.Test
  */
 class ApprovalReducerTest {
 
-    private fun approval(serverId: JsonElement, itemId: String, type: String = "command") =
-        ToolApproval(itemId = itemId, rawServerId = serverId, type = type, command = "echo $itemId")
+    private fun approval(serverId: JsonElement, itemId: String) =
+        ToolApproval.Command(itemId = itemId, rawServerId = serverId, command = "echo $itemId")
 
     private val idA: JsonElement = JsonPrimitive("req-A")
     private val idB: JsonElement = JsonPrimitive("req-B")
@@ -86,7 +86,7 @@ class ApprovalReducerTest {
     @Test
     fun `request with default empty itemId does not crash and is retained`() {
         // Mirrors the requestApproval branch where itemId may be absent ("").
-        val missing = ToolApproval(itemId = "", rawServerId = idA, type = "fileChange")
+        val missing = ToolApproval.FileChange(itemId = "", rawServerId = idA)
         val after = reduceApprovals(emptyList(), ApprovalEvent.Requested(missing))
         assertEquals(listOf(missing), after)
     }

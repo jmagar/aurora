@@ -88,17 +88,54 @@ data class FileChangeItem(
     val patch: String = "",
 )
 
+/**
+ * A pending tool-call approval request from the server.
+ *
+ * Sealed so the compiler enforces exhaustive handling in when-expressions.
+ * The base class carries fields common to all variants; subclasses add
+ * variant-specific data.
+ */
 @Immutable
-data class ToolApproval(
-    val itemId: String,
-    // Correlation key. Removal/resolution assumes server-id uniqueness; if two pending
-    // entries share a rawServerId (a tie), the reducer removes ALL matches (see reduceApprovals).
-    val rawServerId: JsonElement,
-    val type: String,              // "command" or "fileChange"
-    val command: String? = null,   // already sanitized
-    val reason: String? = null,    // already sanitized
-    val availableDecisions: ImmutableList<String> = persistentListOf("accept", "decline"),
-)
+sealed class ToolApproval {
+    abstract val itemId: String
+    // Correlation key — removal/resolution assumes server-id uniqueness.
+    // If two pending entries share a rawServerId the reducer removes ALL matches.
+    abstract val rawServerId: JsonElement
+    abstract val availableDecisions: ImmutableList<String>
+
+    @Immutable
+    data class Command(
+        override val itemId: String,
+        override val rawServerId: JsonElement,
+        override val availableDecisions: ImmutableList<String> = persistentListOf("accept", "decline"),
+        val command: String? = null,   // already sanitized
+        val reason: String? = null,    // already sanitized
+    ) : ToolApproval()
+
+    @Immutable
+    data class FileChange(
+        override val itemId: String,
+        override val rawServerId: JsonElement,
+        override val availableDecisions: ImmutableList<String> = persistentListOf("accept", "decline"),
+        val reason: String? = null,    // already sanitized
+    ) : ToolApproval()
+
+    @Immutable
+    data class Permissions(
+        override val itemId: String,
+        override val rawServerId: JsonElement,
+        override val availableDecisions: ImmutableList<String> = persistentListOf("accept", "decline"),
+        val reason: String? = null,    // already sanitized
+    ) : ToolApproval()
+
+    @Immutable
+    data class Elicitation(
+        override val itemId: String,
+        override val rawServerId: JsonElement,
+        override val availableDecisions: ImmutableList<String> = persistentListOf("accept", "cancel"),
+        val reason: String? = null,    // prompt message, already sanitized
+    ) : ToolApproval()
+}
 
 /**
  * Tracks an in-progress or completed auto-approval review by the guardian subagent.
@@ -1081,10 +1118,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     ?.mapNotNull { it.jsonPrimitive?.contentOrNull }?.toImmutableList()
                     ?: persistentListOf("accept", "decline")
                 _state.update { s ->
-                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval.Command(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
                         rawServerId = rawId,
-                        type = "command",
                         command = safeCommand,
                         reason = reason,
                         availableDecisions = decisions,
@@ -1116,10 +1152,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             "item/fileChange/requestApproval" -> {
                 val rawId = normalizeServerId(event.msg.id ?: return)
                 _state.update { s ->
-                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval.FileChange(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
                         rawServerId = rawId,
-                        type = "fileChange",
                         reason = params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay(),
                     ))))
                 }
@@ -1199,10 +1234,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     ?.mapNotNull { it.jsonPrimitive?.contentOrNull }?.toImmutableList()
                     ?: persistentListOf("accept", "decline")
                 _state.update { s ->
-                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval.Permissions(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
                         rawServerId = rawId,
-                        type = "permissions",
                         reason = reason,
                         availableDecisions = decisions,
                     ))))
@@ -1228,10 +1262,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     ?.mapNotNull { it.jsonPrimitive?.contentOrNull }?.toImmutableList()
                     ?: persistentListOf("accept", "decline")
                 _state.update { s ->
-                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval.Command(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
                         rawServerId = rawId,
-                        type = "command",
                         command = command,
                         reason = reason,
                         availableDecisions = decisions,
@@ -1260,10 +1293,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     if (grantRoot == true) "Requires root access" else null,
                 ).joinToString("\n").ifBlank { null }
                 _state.update { s ->
-                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval.FileChange(
                         itemId = params?.get("callId")?.jsonPrimitive?.contentOrNull ?: "",
                         rawServerId = rawId,
-                        type = "fileChange",
                         reason = reason,
                     ))))
                 }
@@ -1280,12 +1312,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     ?.sanitizeForDisplay()
                     ?: "An MCP server needs additional information to continue."
                 _state.update { s ->
-                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval.Elicitation(
                         itemId = "",
                         rawServerId = rawId,
-                        type = "elicitation",
                         reason = message,
-                        availableDecisions = persistentListOf("accept", "cancel"),
                     ))))
                 }
             }
@@ -1302,12 +1332,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     ?: "A tool needs additional information to continue."
                 val displayReason = if (toolName != null) "Tool: $toolName\n\n$message" else message
                 _state.update { s ->
-                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval(
+                    s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, ApprovalEvent.Requested(ToolApproval.Elicitation(
                         itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: "",
                         rawServerId = rawId,
-                        type = "elicitation",
                         reason = displayReason,
-                        availableDecisions = persistentListOf("accept", "cancel"),
                     ))))
                 }
             }
@@ -1454,6 +1482,48 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val name = params?.get("name")?.jsonPrimitive?.contentOrNull ?: "unknown"
                 val status = params?.get("status")?.jsonPrimitive?.contentOrNull ?: "unknown"
                 android.util.Log.d("ChatViewModel", "mcpServer/startupStatus/updated: $name \u2192 $status")
+            }
+
+            // Available apps/connectors list changed — log for now; a future apps panel
+            // can subscribe and refresh its catalog.
+            "app/list/updated" -> {
+                android.util.Log.d("ChatViewModel", "app/list/updated received")
+            }
+
+            // External agent config import finished — surface the summary so the user
+            // knows whether their import succeeded or had partial failures.
+            "externalAgentConfig/import/completed" -> {
+                val succeeded = params?.get("succeeded")?.jsonPrimitive?.intOrNull ?: 0
+                val failed = params?.get("failed")?.jsonPrimitive?.intOrNull ?: 0
+                val summary = if (failed > 0) {
+                    "[Import] Config import finished: $succeeded succeeded, $failed failed."
+                } else {
+                    "[Import] Config import completed: $succeeded items imported."
+                }
+                _state.update { s ->
+                    if (s.serverWarnings.contains(summary)) s
+                    else s.copy(serverWarnings = (s.serverWarnings + summary).toImmutableList())
+                }
+            }
+
+            // Windows: world-writable paths detected — surface as a warning banner with
+            // the affected paths so the user can remediate the security issue.
+            "windows/worldWritableWarning" -> {
+                val paths = params?.get("paths")?.jsonArray
+                    ?.mapNotNull { (it as? kotlinx.serialization.json.JsonPrimitive)?.contentOrNull?.sanitizeForDisplay() }
+                    ?: emptyList()
+                val detail = if (paths.isNotEmpty()) paths.joinToString(", ") else "unknown paths"
+                val warning = "[Security] World-writable paths detected: $detail. Please restrict permissions."
+                _state.update { s ->
+                    if (s.serverWarnings.contains(warning)) s
+                    else s.copy(serverWarnings = (s.serverWarnings + warning).toImmutableList())
+                }
+            }
+
+            // Windows sandbox initialisation completed successfully — log only;
+            // no user-visible action required.
+            "windowsSandbox/setupCompleted" -> {
+                android.util.Log.d("ChatViewModel", "windowsSandbox/setupCompleted")
             }
 
             // MCP tool call progress update — update matching McpToolCallItem output
