@@ -311,6 +311,31 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    /**
+     * List threads currently loaded in server memory (actively processing or recently active).
+     * Distinct from [listThreads] which returns the full persisted history.
+     * Returns the request id for correlation.
+     */
+    fun listLoadedThreads(): Int {
+        val id = ids.incrementAndGet()
+        send("thread/loaded/list", JsonObject(emptyMap()), id)
+        return id
+    }
+
+    /**
+     * Update opaque key/value metadata on a thread. The server merges [metadata] into
+     * any existing metadata for the thread — keys not present in [metadata] are preserved.
+     * Returns the request id for correlation.
+     */
+    fun updateThreadMetadata(threadId: String, metadata: Map<String, String>): Int {
+        val id = ids.incrementAndGet()
+        send("thread/metadata/update", buildJsonObject {
+            put("threadId", threadId)
+            put("metadata", JsonObject(metadata.mapValues { JsonPrimitive(it.value) }))
+        }, id)
+        return id
+    }
+
     fun resumeThread(threadId: String, history: List<JsonObject>? = null): Int {
         val id = ids.incrementAndGet()
         send("thread/resume", buildJsonObject {

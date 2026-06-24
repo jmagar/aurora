@@ -61,6 +61,8 @@ public enum class RequestKind {
     ExecCommand,         // command/exec (buffered)
     ExecCommandPty,      // command/exec (PTY streaming)
     CompactStart,        // thread/compact/start
+    LoadedThreads,       // thread/loaded/list
+    MetadataUpdate,      // thread/metadata/update
     Other,
 }
 
@@ -137,6 +139,10 @@ class CodexRepository {
     private val _threadsFlow = MutableSharedFlow<CodexEvent.ThreadList>(replay = 1)
     /** Thread-list updates from thread/list responses. SidebarViewModel subscribes here. */
     val threadsFlow: SharedFlow<CodexEvent.ThreadList> = _threadsFlow.asSharedFlow()
+
+    private val _loadedThreadsFlow = MutableSharedFlow<CodexEvent.ThreadList>(replay = 1)
+    /** Loaded-thread-list updates from thread/loaded/list responses. */
+    val loadedThreadsFlow: SharedFlow<CodexEvent.ThreadList> = _loadedThreadsFlow.asSharedFlow()
 
     private val _modelsFlow = MutableSharedFlow<CodexEvent.ModelList>(replay = 1)
     val modelsFlow: SharedFlow<CodexEvent.ModelList> = _modelsFlow.asSharedFlow()
@@ -277,6 +283,29 @@ class CodexRepository {
         val id = client?.listThreads(limit) ?: return -1
         pendingKinds[id.toString()] = RequestKind.Thread  // response goes to threadsFlow
         return id
+    }
+
+    /**
+     * List threads currently loaded in server memory (active or recently active).
+     * Response is routed to [loadedThreadsFlow] — the data shape is identical to thread/list.
+     * SidebarViewModel can use this to show a "running sessions" indicator.
+     */
+    fun listLoadedThreads(): String {
+        val rawId = client?.listLoadedThreads() ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.LoadedThreads
+        return key
+    }
+
+    /**
+     * Update opaque key/value metadata on a thread. Fire-and-forget — the response
+     * carries no meaningful payload; errors are logged via the demux null path.
+     */
+    fun updateThreadMetadata(threadId: String, metadata: Map<String, String>): String {
+        val rawId = client?.updateThreadMetadata(threadId, metadata) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.MetadataUpdate
+        return key
     }
 
     fun resumeThread(threadId: String, history: List<JsonObject>? = null): String {
@@ -514,6 +543,8 @@ class CodexRepository {
             val kind = pendingKinds.remove(idStr)
             when (kind) {
                 RequestKind.Thread -> routeThreadListResponse(msg)
+                RequestKind.LoadedThreads -> routeLoadedThreadsResponse(msg)
+                RequestKind.MetadataUpdate -> { /* fire-and-forget — no state update needed */ }
                 RequestKind.Models -> routeModelsResponse(msg)
                 RequestKind.Skills -> routeSkillsResponse(msg)
                 RequestKind.McpServers -> routeMcpServersResponse(msg)
@@ -571,6 +602,13 @@ class CodexRepository {
         val result = msg.result?.jsonObject ?: return
         val threads = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: return
         _threadsFlow.tryEmit(CodexEvent.ThreadList(threads))
+    }
+
+    private fun routeLoadedThreadsResponse(msg: RpcMessage) {
+        val result = msg.result?.jsonObject ?: return
+        // thread/loaded/list response shape mirrors thread/list: result.data[]
+        val threads = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: emptyList()
+        _loadedThreadsFlow.tryEmit(CodexEvent.ThreadList(threads))
     }
 
     private fun routeModelsResponse(msg: RpcMessage) {

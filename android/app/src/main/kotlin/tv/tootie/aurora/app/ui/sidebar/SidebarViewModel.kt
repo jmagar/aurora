@@ -55,6 +55,8 @@ data class SidebarState(
     val mcpServers: List<McpServerInfo> = emptyList(),
     /** Non-null when the last setGoal or clearGoal RPC failed. UI dismisses by calling clearGoalError(). */
     val goalError: String? = null,
+    /** IDs of threads currently loaded in server memory (actively processing or recently active). */
+    val loadedThreadIds: Set<String> = emptySet(),
 )
 
 class SidebarViewModel(app: Application) : AndroidViewModel(app) {
@@ -71,6 +73,12 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
 
         repo.mcpServersFlow.onEach { event ->
             parseMcpServers(event.servers)
+        }.launchIn(viewModelScope)
+
+        // Track which threads are currently loaded in server memory.
+        repo.loadedThreadsFlow.onEach { event ->
+            val ids = event.threads.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }.toSet()
+            _state.update { it.copy(loadedThreadIds = ids) }
         }.launchIn(viewModelScope)
 
         // Clear sidebar state when server URL/token changes (mirrors ChatViewModel pattern)
@@ -191,6 +199,25 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
     fun showGoalEditor() = _state.update { it.copy(showGoalEditor = true) }
     fun hideGoalEditor() = _state.update { it.copy(showGoalEditor = false) }
     fun clearGoalError() = _state.update { it.copy(goalError = null) }
+
+    /**
+     * Fetch which threads are currently loaded in server memory.
+     * Results arrive via [loadedThreadsFlow] and update [SidebarState.loadedThreadIds].
+     */
+    fun refreshLoadedThreads() {
+        viewModelScope.launch {
+            repo.isReady.filter { it }.first()
+            repo.listLoadedThreads()
+        }
+    }
+
+    /**
+     * Update opaque key/value [metadata] on [threadId]. Fire-and-forget — useful for
+     * storing UI state, project associations, or custom tags alongside the thread.
+     */
+    fun updateThreadMetadata(threadId: String, metadata: Map<String, String>) {
+        repo.updateThreadMetadata(threadId, metadata)
+    }
 
     private fun handleSidebarNotification(msg: RpcMessage) {
         val params = msg.params?.jsonObject ?: return
