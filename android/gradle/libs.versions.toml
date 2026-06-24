@@ -3,6 +3,7 @@ kotlin = "2.1.0"
 agp = "8.13.2"
 androidx-browser = "1.8.0"
 junit = "4.13.2"
+robolectric = "4.13"
 composeBom = "2026.04.01"
 kotlinx-collections-immutable = "0.3.8"
 coil = "3.0.3"
@@ -44,3 +45,6 @@ datastore-preferences = { group = "androidx.datastore", name = "datastore-prefer
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidx-browser" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
