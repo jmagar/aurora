@@ -9,6 +9,7 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,12 +39,25 @@ import tv.tootie.aurora.app.data.AppSettings
 
 enum class MsgRole { User, Assistant }
 
+@Immutable
 data class ChatMsg(val id: String, val role: MsgRole, val content: String)
-data class ToolCall(val id: String, val cmd: String, val out: StringBuilder = StringBuilder(), val done: Boolean = false, val failed: Boolean = false)
+
+/** out is a String snapshot — never mutable in place. Updated via state transitions only. */
+@Immutable
+data class ToolCall(
+    val id: String,
+    val cmd: String,
+    val out: String = "",
+    val done: Boolean = false,
+    val failed: Boolean = false,
+)
+
 enum class SkillSource { HOOK, EXPLICIT }
 
+@Immutable
 data class SkillItem(val name: String, val description: String, val path: String? = null)
 
+@Immutable
 data class SkillInvocation(
     val id: String,
     val skillName: String,
@@ -51,6 +65,7 @@ data class SkillInvocation(
     val source: SkillSource = SkillSource.HOOK,
 )
 
+@Immutable
 data class McpToolCallItem(
     val id: String,
     val server: String,
@@ -61,12 +76,14 @@ data class McpToolCallItem(
     val error: String? = null,
 )
 
+@Immutable
 data class FileChangeItem(
     val id: String,
-    val paths: List<String>,
+    val paths: ImmutableList<String>,
     val status: String = "pending",
 )
 
+@Immutable
 data class ToolApproval(
     val itemId: String,
     // Correlation key. Removal/resolution assumes server-id uniqueness; if two pending
@@ -75,45 +92,71 @@ data class ToolApproval(
     val type: String,              // "command" or "fileChange"
     val command: String? = null,   // already sanitized
     val reason: String? = null,    // already sanitized
-    val availableDecisions: List<String> = listOf("accept", "decline"),
+    val availableDecisions: ImmutableList<String> = persistentListOf("accept", "decline"),
 )
 
+@Immutable
 data class ChatState(
     val threadId: String? = null,
-    val msgs: List<ChatMsg> = emptyList(),
-    val toolCalls: List<ToolCall> = emptyList(),
-    val reasoning: List<String> = emptyList(),
+    val msgs: ImmutableList<ChatMsg> = persistentListOf(),
+    val toolCalls: ImmutableList<ToolCall> = persistentListOf(),
+    val reasoning: ImmutableList<String> = persistentListOf(),
     val rawReasoning: String = "",          // verbose reasoning text, accumulated but not shown in summary UI
     val thinking: Boolean = false,
     val connected: Boolean = false,
     val error: String? = null,
     val assistantId: String? = null,
-    val models: List<ModelOption> = emptyList(),
+    val models: ImmutableList<ModelOption> = persistentListOf(),
     val selectedModel: String = "gpt-5.5",
     val selectedEffort: String = "medium",
-    val reactions: Map<String, Set<String>> = emptyMap(),
+    val reactions: ImmutableMap<String, Set<String>> = persistentMapOf(),
     val editingMessage: ChatMsg? = null,
     val actionsTarget: ChatMsg? = null,
-    val availableCommands: List<String> = emptyList(),
-    val availableSkills: List<SkillItem> = emptyList(),
-    val skillInvocations: List<SkillInvocation> = emptyList(),
-    val mcpToolCalls: List<McpToolCallItem> = emptyList(),
-    val planItems: List<String> = emptyList(),
-    val webSearches: List<String> = emptyList(),
-    val fileChanges: List<FileChangeItem> = emptyList(),
+    val availableCommands: ImmutableList<String> = persistentListOf(),
+    val availableSkills: ImmutableList<SkillItem> = persistentListOf(),
+    val skillInvocations: ImmutableList<SkillInvocation> = persistentListOf(),
+    val mcpToolCalls: ImmutableList<McpToolCallItem> = persistentListOf(),
+    val planItems: ImmutableList<String> = persistentListOf(),
+    val webSearches: ImmutableList<String> = persistentListOf(),
+    val fileChanges: ImmutableList<FileChangeItem> = persistentListOf(),
     // Image attachments pending send
-    val pendingAttachments: List<PendingAttachment> = emptyList(),
+    val pendingAttachments: ImmutableList<PendingAttachment> = persistentListOf(),
     // Approval policy controls
     val selectedApprovalPolicy: ApprovalPolicy = ApprovalPolicy.OnRequest,
     val granularPolicy: GranularPolicy = GranularPolicy(),
     val selectedReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
-    val pendingApprovals: List<ToolApproval> = emptyList(),
+    val pendingApprovals: ImmutableList<ToolApproval> = persistentListOf(),
     val activeTurnId: String? = null,
     val showSteerSheet: Boolean = false,
     // Bead nev6: thread name + cwd shown in top bar
     val threadName: String? = null,
     val cwd: String? = null,
-)
+) {
+    /**
+     * Return a copy with all per-turn transient fields zeroed and [newMsgs] installed.
+     * Called from send(), sendEdit(), and sendWithSkill() so the reset is always consistent.
+     *
+     * [retainSkillInvocations]: sendWithSkill() appends the new invocation before calling
+     * this, so it passes `true` to keep the updated list intact.
+     */
+    fun resetForNewTurn(
+        newMsgs: ImmutableList<ChatMsg> = msgs,
+        retainSkillInvocations: Boolean = false,
+    ): ChatState = copy(
+        msgs = newMsgs,
+        thinking = true,
+        toolCalls = persistentListOf(),
+        reasoning = persistentListOf(),
+        rawReasoning = "",
+        skillInvocations = if (retainSkillInvocations) skillInvocations else persistentListOf(),
+        mcpToolCalls = persistentListOf(),
+        planItems = persistentListOf(),
+        webSearches = persistentListOf(),
+        fileChanges = persistentListOf(),
+        pendingAttachments = persistentListOf(),
+        pendingApprovals = persistentListOf(),
+    )
+}
 
 /**
  * Strips terminal escape sequences, Bidi overrides, and zero-width chars from
@@ -173,13 +216,13 @@ internal fun normalizeServerId(id: JsonElement): JsonElement =
     if (id is JsonPrimitive) id else JsonPrimitive(id.toString())
 
 internal fun reduceApprovals(
-    pending: List<ToolApproval>,
+    pending: ImmutableList<ToolApproval>,
     event: ApprovalEvent,
-): List<ToolApproval> = when (event) {
-    is ApprovalEvent.Requested -> pending + event.approval
-    is ApprovalEvent.Approved -> pending.filter { it.rawServerId != event.rawServerId }
-    is ApprovalEvent.Resolved -> pending.filter { it.rawServerId != event.rawServerId }
-    ApprovalEvent.ResolvedAll -> emptyList()
+): ImmutableList<ToolApproval> = when (event) {
+    is ApprovalEvent.Requested -> (pending + event.approval).toImmutableList()
+    is ApprovalEvent.Approved -> pending.filter { it.rawServerId != event.rawServerId }.toImmutableList()
+    is ApprovalEvent.Resolved -> pending.filter { it.rawServerId != event.rawServerId }.toImmutableList()
+    ApprovalEvent.ResolvedAll -> persistentListOf()
 }
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
@@ -270,7 +313,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         repo.sessionInvalidated.onEach {
             // Clear all transient state on reconnect — pendingApprovals prevents stuck modal
             resetStreamBuffers()
-            _state.update { it.copy(threadId = null, msgs = emptyList(), pendingApprovals = emptyList()) }
+            _state.update { it.copy(threadId = null, msgs = persistentListOf(), pendingApprovals = persistentListOf()) }
             viewModelScope.launch { settings.clearThreadId() }
         }.launchIn(viewModelScope)
     }
@@ -361,17 +404,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         rawReasoningBuffer.clear()
         resetStreamBuffers()
         _state.update { s ->
-            s.copy(
-                msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, displayContent),
-                thinking = true, toolCalls = emptyList(), reasoning = emptyList(),
-                rawReasoning = "",
-                skillInvocations = emptyList(),
-                mcpToolCalls = emptyList(),
-                planItems = emptyList(),
-                webSearches = emptyList(),
-                fileChanges = emptyList(),
-                pendingAttachments = emptyList(),
-                pendingApprovals = emptyList(),
+            s.resetForNewTurn(
+                newMsgs = (s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, displayContent)).toImmutableList(),
             )
         }
         viewModelScope.launch {
@@ -382,15 +416,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val model = settings.model.first()
                 repo.startThread(model, effort = _state.value.selectedEffort)
             } else {
-                repo.startTurn(tid, text,
-                    attachments = attachments,
-                    model = _state.value.selectedModel,
-                    effort = _state.value.selectedEffort,
-                    images = images,
-                    approvalPolicy = _state.value.selectedApprovalPolicy,
-                    granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
-                        _state.value.granularPolicy else null,
-                    approvalsReviewer = _state.value.selectedReviewer)
+                startTurnWithCurrentPolicy(tid, text, attachments = attachments, images = images)
             }
         }
     }
@@ -400,7 +426,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun removeAttachment(id: String) {
-        _state.update { it.copy(pendingAttachments = it.pendingAttachments.filter { a -> a.id != id }) }
+        _state.update { it.copy(pendingAttachments = it.pendingAttachments.filter { a -> a.id != id }.toImmutableList()) }
     }
 
     fun interrupt() {
@@ -430,7 +456,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { s ->
             val current = s.reactions[msgId] ?: emptySet()
             val updated = if (emoji in current) current - emoji else current + emoji
-            s.copy(reactions = s.reactions + (msgId to updated))
+            s.copy(reactions = (s.reactions + (msgId to updated)).toImmutableMap())
         }
     }
 
@@ -448,31 +474,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         rawReasoningBuffer.clear()
         resetStreamBuffers()
         _state.update { s ->
-            s.copy(
-                msgs = trimmed,
-                editingMessage = null,
-                thinking = true,
-                toolCalls = emptyList(),
-                reasoning = emptyList(),
-                rawReasoning = "",
-                mcpToolCalls = emptyList(),
-                planItems = emptyList(),
-                webSearches = emptyList(),
-                fileChanges = emptyList(),
-                // Discard pending image attachments — edits are text/skill only.
-                pendingAttachments = emptyList(),
-                pendingApprovals = emptyList(),
-            )
+            // Discard pending image attachments — edits are text/skill only.
+            s.resetForNewTurn(newMsgs = trimmed.toImmutableList()).copy(editingMessage = null)
         }
         viewModelScope.launch {
-            repo.startTurn(tid, newText,
-                attachments = attachments,
-                model = _state.value.selectedModel,
-                effort = _state.value.selectedEffort,
-                approvalPolicy = _state.value.selectedApprovalPolicy,
-                granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
-                    _state.value.granularPolicy else null,
-                approvalsReviewer = _state.value.selectedReviewer)
+            startTurnWithCurrentPolicy(tid, newText, attachments = attachments)
         }
     }
 
@@ -484,19 +490,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         resetStreamBuffers()
         _state.update { s ->
             val existing = s.skillInvocations.any { it.skillName.equals(skillName, ignoreCase = true) }
-            s.copy(
-                msgs = s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text),
-                thinking = true,
-                toolCalls = emptyList(),
-                reasoning = emptyList(),
-                rawReasoning = "",
-                mcpToolCalls = emptyList(),
-                skillInvocations = if (existing) s.skillInvocations else s.skillInvocations + inv,
-                pendingApprovals = emptyList(),
-                planItems = emptyList(),
-                webSearches = emptyList(),
-                fileChanges = emptyList(),
-                pendingAttachments = emptyList(),
+            val withInv = if (existing) s else s.copy(skillInvocations = (s.skillInvocations + inv).toImmutableList())
+            withInv.resetForNewTurn(
+                newMsgs = (s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, text)).toImmutableList(),
+                retainSkillInvocations = true,
             )
         }
         viewModelScope.launch {
@@ -507,17 +504,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val model = settings.model.first()
                 repo.startThread(model, effort = _state.value.selectedEffort)
             } else {
-                repo.startTurn(
-                    threadId = tid,
-                    text = text,
+                startTurnWithCurrentPolicy(
+                    tid, text,
                     attachments = listOf(SelectedItem.Skill(skillName, skillPath)),
-                    model = _state.value.selectedModel,
-                    effort = _state.value.selectedEffort,
                     images = images,
-                    approvalPolicy = _state.value.selectedApprovalPolicy,
-                    granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
-                        _state.value.granularPolicy else null,
-                    approvalsReviewer = _state.value.selectedReviewer,
                 )
             }
         }
@@ -575,23 +565,48 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Flow handlers for typed repository events ---
 
+    /**
+     * Call repo.startTurn with the policy, reviewer, model, and effort from current state.
+     * All three send paths (send, sendEdit, sendWithSkill) use the same turn parameters
+     * so they all call this helper rather than duplicating the Granular-policy branch.
+     */
+    private suspend fun startTurnWithCurrentPolicy(
+        tid: String,
+        text: String,
+        attachments: List<SelectedItem> = emptyList(),
+        images: List<tv.tootie.aurora.app.codex.PendingAttachment> = emptyList(),
+    ) {
+        val s = _state.value
+        repo.startTurn(
+            threadId = tid,
+            text = text,
+            attachments = attachments,
+            model = s.selectedModel,
+            effort = s.selectedEffort,
+            images = images,
+            approvalPolicy = s.selectedApprovalPolicy,
+            granularPolicy = if (s.selectedApprovalPolicy == ApprovalPolicy.Granular) s.granularPolicy else null,
+            approvalsReviewer = s.selectedReviewer,
+        )
+    }
+
     private fun handleModels(event: CodexEvent.ModelList) {
         val options = event.models.mapNotNull { obj ->
             val id = obj["id"]?.jsonPrimitive?.content ?: return@mapNotNull null
             val displayName = obj["displayName"]?.jsonPrimitive?.content ?: id
             val defaultEffort = obj["defaultReasoningEffort"]?.jsonPrimitive?.content ?: "medium"
-            val efforts = obj["supportedReasoningEfforts"]?.jsonArray?.mapNotNull { e ->
+            val efforts = (obj["supportedReasoningEfforts"]?.jsonArray?.mapNotNull { e ->
                 val ev = e.jsonObject
                 val v = ev["reasoningEffort"]?.jsonPrimitive?.content ?: return@mapNotNull null
                 val d = ev["description"]?.jsonPrimitive?.content ?: ""
                 ReasoningEffortOption(v, d)
-            } ?: emptyList()
+            } ?: emptyList()).toImmutableList()
             ModelOption(id, displayName, efforts, defaultEffort)
         }
         if (options.isNotEmpty()) {
             _state.update { s ->
                 val defaultEffort = options.find { it.id == s.selectedModel }?.defaultEffort ?: "medium"
-                s.copy(models = options, selectedEffort = defaultEffort)
+                s.copy(models = options.toImmutableList(), selectedEffort = defaultEffort)
             }
         }
     }
@@ -604,7 +619,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             SkillItem(name, desc, path)
         }
         if (skills.isNotEmpty()) {
-            _state.update { it.copy(availableSkills = skills.sortedBy { s -> s.name }) }
+            _state.update { it.copy(availableSkills = skills.sortedBy { s -> s.name }.toImmutableList()) }
         }
     }
 
@@ -676,7 +691,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         _state.update { s ->
                             // Only restore if msgs is still empty — avoids stomping a turn that
                             // arrived in the narrow window between resume and the read response.
-                            if (s.msgs.isEmpty()) s.copy(msgs = history) else s
+                            if (s.msgs.isEmpty()) s.copy(msgs = history.toImmutableList()) else s
                         }
                     }
                     return
@@ -692,7 +707,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     // Steer accepted — append [steer] user message
                     if (text != null) {
                         val steerMsg = ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer] $text")
-                        _state.update { s -> s.copy(msgs = s.msgs + steerMsg) }
+                        _state.update { s -> s.copy(msgs = (s.msgs + steerMsg).toImmutableList()) }
                     }
                     return
                 }
@@ -744,7 +759,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     // seed the buffer so subsequent deltas coalesce.
                     flushStreaming() // commit any prior message's buffered tail first
                     coalescer.startAgentMessage(resolvedId, delta)
-                    _state.update { s -> s.copy(msgs = s.msgs + ChatMsg(resolvedId, MsgRole.Assistant, delta), assistantId = resolvedId) }
+                    _state.update { s -> s.copy(msgs = (s.msgs + ChatMsg(resolvedId, MsgRole.Assistant, delta)).toImmutableList(), assistantId = resolvedId) }
                 }
             }
 
@@ -771,7 +786,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     "commandExecution" -> {
                         val cmd = item["command"]?.jsonPrimitive?.content ?: return
                         val resolvedId = id ?: cmd
-                        _state.update { s -> s.copy(toolCalls = s.toolCalls + ToolCall(resolvedId, cmd)) }
+                        _state.update { s -> s.copy(toolCalls = (s.toolCalls + ToolCall(resolvedId, cmd)).toImmutableList()) }
                     }
                     "mcpToolCall" -> {
                         if (id == null) return
@@ -781,22 +796,22 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                                    catch (_: Exception) { item["arguments"]?.toString() }
                                    ?.take(8000)?.sanitizeForDisplay() ?: ""
                         _state.update { s ->
-                            s.copy(mcpToolCalls = s.mcpToolCalls + McpToolCallItem(id, server, tool, "inProgress", args))
+                            s.copy(mcpToolCalls = (s.mcpToolCalls + McpToolCallItem(id, server, tool, "inProgress", args)).toImmutableList())
                         }
                     }
                     "plan" -> {
                         val text = item["text"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
-                        _state.update { s -> s.copy(planItems = s.planItems + text) }
+                        _state.update { s -> s.copy(planItems = (s.planItems + text).toImmutableList()) }
                     }
                     "webSearch" -> {
                         val query = item["query"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
-                        _state.update { s -> s.copy(webSearches = s.webSearches + query) }
+                        _state.update { s -> s.copy(webSearches = (s.webSearches + query).toImmutableList()) }
                     }
                     "fileChange" -> {
                         if (id == null) return
                         val changes = item["changes"]?.jsonArray
-                        val paths = changes?.mapNotNull { it.jsonObject["path"]?.jsonPrimitive?.contentOrNull } ?: emptyList()
-                        _state.update { s -> s.copy(fileChanges = s.fileChanges + FileChangeItem(id, paths)) }
+                        val paths = (changes?.mapNotNull { it.jsonObject["path"]?.jsonPrimitive?.contentOrNull } ?: emptyList()).toImmutableList()
+                        _state.update { s -> s.copy(fileChanges = (s.fileChanges + FileChangeItem(id, paths)).toImmutableList()) }
                     }
                     "imageView" -> { /* informational only — no state needed */ }
                 }
@@ -817,7 +832,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     "commandExecution" -> {
                         // Flush any buffered output so the final text + done flag land together.
                         flushStreaming()
-                        _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }) }
+                        _state.update { s -> s.copy(toolCalls = s.toolCalls.map { if (it.id == id) it.copy(done = true, failed = failed) else it }.toImmutableList()) }
                     }
                     "mcpToolCall" -> {
                         val output = item["result"]?.toString()?.take(8000)?.sanitizeForDisplay() ?: ""
@@ -828,14 +843,14 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                                     status = if (failed) "failed" else "done",
                                     output = output, error = err
                                 ) else call
-                            })
+                            }.toImmutableList())
                         }
                     }
                     "fileChange" -> {
                         _state.update { s ->
                             s.copy(fileChanges = s.fileChanges.map { fc ->
                                 if (fc.id == id) fc.copy(status = if (failed) "failed" else "done") else fc
-                            })
+                            }.toImmutableList())
                         }
                     }
                 }
@@ -844,12 +859,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             // Command output streaming
             "item/commandExecution/outputDelta" -> {
                 val itemId = params?.get("itemId")?.jsonPrimitive?.content ?: return
-                val out = params["delta"]?.jsonPrimitive?.content ?: return
-                // Append in place (no per-token list rebuild + emit); coalesce the
-                // UI-visible refresh into the debounced flush.
-                val target = _state.value.toolCalls.find { it.id == itemId } ?: return
-                target.out.append(out)
-                coalescer.markCommandDirty()
+                val delta = params["delta"]?.jsonPrimitive?.content ?: return
+                // Accumulate delta into the coalescer buffer; snapshot into state on the
+                // debounced flush rather than rebuilding the immutable list per token.
+                coalescer.appendCommandDelta(itemId, delta, _state.value.toolCalls)
                 scheduleFlush()
             }
 
@@ -893,7 +906,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val hookId = run["id"]?.jsonPrimitive?.content ?: return
                 val skillName = extractSkillName(hookId) ?: return
                 val inv = SkillInvocation(id = hookId, skillName = skillName, done = false, source = SkillSource.HOOK)
-                _state.update { s -> s.copy(skillInvocations = s.skillInvocations + inv) }
+                _state.update { s -> s.copy(skillInvocations = (s.skillInvocations + inv).toImmutableList()) }
             }
             "hook/completed" -> {
                 val run = params?.get("run")?.jsonObject ?: return
@@ -901,7 +914,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { s ->
                     s.copy(skillInvocations = s.skillInvocations.map {
                         if (it.id == hookId) it.copy(done = true) else it
-                    })
+                    }.toImmutableList())
                 }
             }
 
@@ -922,7 +935,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 coalescer.clearAgentBuffer()
                 val errMsg = params?.get("error")?.jsonObject?.get("message")?.jsonPrimitive?.content
                     ?: msg.error?.message
-                _state.update { it.copy(error = errMsg, thinking = false) }
+                _state.update { it.copy(error = errMsg, thinking = false, pendingApprovals = persistentListOf()) }
             }
 
             "item/commandExecution/requestApproval" -> {
