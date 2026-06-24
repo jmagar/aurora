@@ -229,10 +229,21 @@ internal fun reduceApprovals(
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val settings = AppSettings(app)
     private val repo: CodexRepository = (app as CodexApp).repository
-    private var pendingMsg: String? = null
-    private var pendingAttachments: List<SelectedItem> = emptyList()
-    // Pending image attachments for new-thread sends (stored until thread/start response arrives)
-    private var pendingImages: List<PendingAttachment> = emptyList()
+    /**
+     * Holds one queued outbound turn while a thread/start is in flight.
+     *
+     * Prior to this, three scalar fields ([pendingMsg], [pendingAttachments], [pendingImages])
+     * formed a single slot that silently discarded earlier messages if send() was called
+     * more than once before thread/start responded. The queue drains all buffered turns once
+     * the thread id arrives — preserving every user message in the order they were sent.
+     */
+    private data class PendingTurn(
+        val text: String,
+        val attachments: List<SelectedItem>,
+        val images: List<PendingAttachment>,
+    )
+    /** Guarded by the UI/main dispatcher — access is always from viewModelScope coroutines. */
+    private val pendingTurns = ArrayDeque<PendingTurn>()
 
     // Buffer for verbose reasoning text — avoids O(n²) String allocations and prevents
     // unnecessary state emissions on every textDelta. Snapshot to ChatState.rawReasoning
@@ -312,7 +323,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             }
         }.launchIn(viewModelScope)
         repo.sessionInvalidated.onEach {
-            // Clear all transient state on reconnect — pendingApprovals prevents stuck modal
+            // Clear all transient state on reconnect — pendingApprovals prevents stuck modal.
+            // Also discard any pending turns so they don't replay into a stale/new thread.
+            pendingTurns.clear()
             resetStreamBuffers()
             _state.update { it.copy(threadId = null, msgs = persistentListOf(), pendingApprovals = persistentListOf()) }
             viewModelScope.launch { settings.clearThreadId() }
@@ -411,11 +424,14 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
         viewModelScope.launch {
             if (tid == null) {
-                pendingMsg = text
-                pendingAttachments = attachments
-                pendingImages = images
-                val model = settings.model.first()
-                repo.startThread(model, effort = _state.value.selectedEffort)
+                val alreadyPending = pendingTurns.isNotEmpty()
+                pendingTurns.addLast(PendingTurn(text, attachments, images))
+                // Only fire startThread once — if a thread creation is already in flight
+                // (pendingTurns was non-empty before this enqueue), don't open another.
+                if (!alreadyPending) {
+                    val model = settings.model.first()
+                    repo.startThread(model, effort = _state.value.selectedEffort)
+                }
             } else {
                 startTurnWithCurrentPolicy(tid, text, attachments = attachments, images = images)
             }
@@ -499,11 +515,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         }
         viewModelScope.launch {
             if (tid == null) {
-                pendingMsg = text
-                pendingAttachments = listOf(SelectedItem.Skill(skillName, skillPath))
-                pendingImages = images
-                val model = settings.model.first()
-                repo.startThread(model, effort = _state.value.selectedEffort)
+                val alreadyPending = pendingTurns.isNotEmpty()
+                pendingTurns.addLast(PendingTurn(text, listOf(SelectedItem.Skill(skillName, skillPath)), images))
+                if (!alreadyPending) {
+                    val model = settings.model.first()
+                    repo.startThread(model, effort = _state.value.selectedEffort)
+                }
             } else {
                 startTurnWithCurrentPolicy(
                     tid, text,
@@ -721,22 +738,26 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     val name = threadObj["name"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                     _state.update { it.copy(threadId = tid, cwd = cwd ?: it.cwd, threadName = name ?: it.threadName) }
                     viewModelScope.launch { settings.saveThread(tid) }
-                    pendingMsg?.let { text ->
-                        val attachments = pendingAttachments
-                        val images = pendingImages
-                        pendingMsg = null
-                        pendingAttachments = emptyList()
-                        pendingImages = emptyList()
+                    // Drain the pending-turns queue in order. Each turn is sent sequentially
+                    // so message ordering is preserved (startTurn is fire-and-forget on the
+                    // WebSocket; the server queues them per-thread and won't interleave them).
+                    if (pendingTurns.isNotEmpty()) {
+                        val queued = pendingTurns.toList()
+                        pendingTurns.clear()
                         viewModelScope.launch {
-                            repo.startTurn(tid, text,
-                                attachments = attachments,
-                                model = _state.value.selectedModel,
-                                effort = _state.value.selectedEffort,
-                                images = images,
-                                approvalPolicy = _state.value.selectedApprovalPolicy,
-                                granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
-                                    _state.value.granularPolicy else null,
-                                approvalsReviewer = _state.value.selectedReviewer)
+                            for (turn in queued) {
+                                repo.startTurn(
+                                    tid, turn.text,
+                                    attachments = turn.attachments,
+                                    model = _state.value.selectedModel,
+                                    effort = _state.value.selectedEffort,
+                                    images = turn.images,
+                                    approvalPolicy = _state.value.selectedApprovalPolicy,
+                                    granularPolicy = if (_state.value.selectedApprovalPolicy == ApprovalPolicy.Granular)
+                                        _state.value.granularPolicy else null,
+                                    approvalsReviewer = _state.value.selectedReviewer,
+                                )
+                            }
                         }
                     }
                 }
