@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2022",
+    "moduleDetection": "force",
     "lib": [
       "dom",
       "dom.iterable",
