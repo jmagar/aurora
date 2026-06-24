@@ -1,7 +1,6 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 
-// @ts-ignore — .mjs; no type declarations needed for these tests
 import { scanSource } from "../scripts/audit-composition.mjs"
 
 // ---------------------------------------------------------------------------

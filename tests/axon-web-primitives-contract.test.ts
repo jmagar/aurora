@@ -38,9 +38,10 @@ test("NativeSelect keeps native select ref and props compatibility", () => {
 
   assertAllIncludes("aurora-native-select", content, [
     "React.SelectHTMLAttributes<HTMLSelectElement>",
-    "React.forwardRef<HTMLSelectElement, NativeSelectProps>",
+    // React 19 ref-as-prop (migrated from React.forwardRef): ref still forwarded.
+    "React.Ref<HTMLSelectElement>",
     "placeholder?: string",
-    "onFocus, onBlur, ...props",
+    "onFocus, onBlur, ref, ...props",
     "{...props}",
     "disabled:pointer-events-none disabled:opacity-45 disabled:cursor-not-allowed",
   ])
@@ -52,7 +53,8 @@ test("ScrollArea keeps Axon-compatible root ref, root props, and viewport stylin
   assertAllIncludes("aurora-scroll-area", content, [
     "React.HTMLAttributes<HTMLDivElement>",
     "viewportClassName?: string",
-    "React.forwardRef<HTMLDivElement, ScrollAreaProps>",
+    // React 19 ref-as-prop (migrated from React.forwardRef): ref still forwarded.
+    "React.Ref<HTMLDivElement>",
     "max-h-72 overflow-auto aurora-scrollbar",
   ])
 })

@@ -7,6 +7,7 @@ import nextTypescript from "eslint-config-next/typescript";
 const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
   ignores: [
     ".worktrees/**",
+    ".claude/**",
     ".next/**",
     "out/**",
     "storybook-static/**",
