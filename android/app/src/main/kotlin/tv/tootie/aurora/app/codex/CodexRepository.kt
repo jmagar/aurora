@@ -430,6 +430,59 @@ class CodexRepository {
     }
 
     /**
+     * Run a command outside any thread (buffered mode — stdout/stderr returned in response).
+     * Response is routed through [turnEventsFlow] with [RequestKind.ExecCommand].
+     */
+    fun execCommand(
+        command: List<String>,
+        cwd: String? = null,
+        env: Map<String, String> = emptyMap(),
+        timeoutMs: Long? = null,
+    ): String {
+        val rawId = client?.execCommand(command, cwd, env, timeoutMs) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ExecCommand
+        return key
+    }
+
+    /**
+     * Run a command in PTY streaming mode. Stdout/stderr arrive as
+     * [command/exec/outputDelta] push notifications keyed by [processId].
+     * The initial response (routed to [turnEventsFlow] as [RequestKind.ExecCommandPty])
+     * confirms the process was started. Use [execCommandWrite]/[execCommandResize]/
+     * [execCommandTerminate] for follow-up control frames.
+     */
+    fun execCommandPty(
+        command: List<String>,
+        processId: String,
+        cwd: String? = null,
+        env: Map<String, String> = emptyMap(),
+        cols: Int = 80,
+        rows: Int = 24,
+        timeoutMs: Long? = null,
+    ): String {
+        val rawId = client?.execCommandPty(command, processId, cwd, env, cols, rows, timeoutMs) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ExecCommandPty
+        return key
+    }
+
+    /** Write stdin data to a running PTY process. Fire-and-forget — no response expected. */
+    fun execCommandWrite(processId: String, data: String) {
+        client?.execCommandWrite(processId, data)
+    }
+
+    /** Resize the PTY window for a running process. Fire-and-forget. */
+    fun execCommandResize(processId: String, cols: Int, rows: Int) {
+        client?.execCommandResize(processId, cols, rows)
+    }
+
+    /** Send SIGTERM to a running PTY process. Fire-and-forget. */
+    fun execCommandTerminate(processId: String) {
+        client?.execCommandTerminate(processId)
+    }
+
+    /**
      * Manually trigger context window compaction for a thread.
      * Response is routed through [turnEventsFlow] with [RequestKind.CompactStart].
      */
