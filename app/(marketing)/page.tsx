@@ -7,6 +7,7 @@ import { Badge } from "@/registry/aurora/ui/badge"
 import { LabbyMark } from "@/components/labby-brand"
 import { SpectrumBar } from "@/components/site/site-ui"
 import { PaletteWall } from "@/components/site/palette-wall"
+import { ComponentCatalog } from "@/components/site/component-catalog"
 import { panelStrong, tint } from "@/components/site/style-tokens"
 import { AURORA_THEMES, AURORA_SPECTRUM, type AuroraTheme } from "@/lib/themes"
 import registry from "@/registry.json"
@@ -159,6 +160,8 @@ export default function LandingPage() {
       </div>
 
       <PaletteWall />
+
+      <ComponentCatalog heading="The catalog" />
 
       <section className="mt-12 grid gap-[18px] md:grid-cols-3">
         {PILLARS.map((p, i) => (
