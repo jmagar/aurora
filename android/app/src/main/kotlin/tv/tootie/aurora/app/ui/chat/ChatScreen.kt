@@ -855,8 +855,8 @@ private fun AutoApprovalReviewBanner(
 
 /**
  * Fuzzy file picker overlay — full-screen modal dialog with a query field and an
- * incrementally-populated results list. Fires [onSelect] with the chosen path and
- * [onQueryChange] whenever the query text changes so the caller can issue a new
+ * incrementally-populated results list. Fires [onPick] with the chosen path and
+ * [onQueryChanged] whenever the query text changes so the caller can issue a new
  * fuzzyFileSearch RPC. [onDismiss] is called on back-press or outside-click.
  */
 @Composable
