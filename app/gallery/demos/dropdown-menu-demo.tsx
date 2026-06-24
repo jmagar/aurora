@@ -23,8 +23,8 @@ export default function DropdownMenuDemo() {
         description="Menu · separators · danger"
       />
 
-      <div style={{ display: "flex", minHeight: 220, alignItems: "flex-start" }}>
-        <DropdownMenu defaultOpen>
+      <div style={{ display: "flex", minHeight: 280, alignItems: "flex-start" }}>
+        <DropdownMenu open modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="neutral"

@@ -30,6 +30,8 @@ export interface SpotlightProps
   autoFocus?: boolean
   /** Expand the results panel as soon as the field is focused. */
   openOnFocus?: boolean
+  /** Force the results panel open on mount (useful for demos/previews). */
+  defaultOpen?: boolean
   /** Trailing keyboard shortcut hint shown inside the field. */
   shortcut?: string
   /** Message shown when no item matches the query. */
@@ -39,8 +41,8 @@ export interface SpotlightProps
 }
 
 const SIZES = {
-  md: { height: "3.25rem", radius: "var(--aurora-radius-2)", icon: 18, type: "1.05rem", pad: "0 1.05rem", gap: "0.75rem" },
-  lg: { height: "4rem", radius: "var(--aurora-radius-3)", icon: 22, type: "1.5rem", pad: "0 1.4rem", gap: "1rem" },
+  md: { height: "2.5rem", radius: "var(--aurora-radius-2)", icon: 16, type: "0.9rem", pad: "0 0.85rem", gap: "0.6rem" },
+  lg: { height: "3rem", radius: "var(--aurora-radius-3)", icon: 18, type: "1.05rem", pad: "0 1.05rem", gap: "0.7rem" },
 } as const
 
 const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spotlight(
@@ -50,6 +52,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
     size = "md",
     autoFocus = false,
     openOnFocus = false,
+    defaultOpen = false,
     shortcut,
     emptyMessage = "No results found.",
     onSelect,
@@ -95,7 +98,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
     return groups.filter((group) => map.has(group)).map((group) => ({ group, rows: map.get(group)! }))
   }, [filtered, groups])
 
-  const open = openOnFocus ? focused : focused || query.trim() !== ""
+  const open = defaultOpen || (openOnFocus ? focused : focused || query.trim() !== "")
   const activeItem = filtered[activeIndex]
 
   function commit(item: SpotlightItem | undefined) {

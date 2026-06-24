@@ -50,6 +50,7 @@ export default function SpotlightDemo() {
           size="lg"
           autoFocus
           openOnFocus
+          defaultOpen
           shortcut="⌘K"
           placeholder="Search components, themes, tokens…"
           items={[
