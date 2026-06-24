@@ -47,7 +47,8 @@ export function Chart({
       }}
       {...props}
     >
-      <svg viewBox="0 0 100 100" role="img" aria-label="Chart" className="h-48 w-full overflow-visible">
+      {/* viewBox starts at -18 to give room for Y-axis labels on the left */}
+      <svg viewBox="-18 0 118 100" role="img" aria-label="Chart" className="h-48 w-full overflow-visible">
         <defs>
           <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--aurora-accent-strong)" />
@@ -58,10 +59,28 @@ export function Chart({
             <stop offset="100%" stopColor={color} stopOpacity="0" />
           </linearGradient>
         </defs>
+        {/* Gridlines + Y-axis labels */}
         <g stroke="var(--aurora-border-default)" strokeWidth="0.5">
-          {[20, 40, 60, 80].map((y) => (
-            <line key={y} x1="0" x2="100" y1={y} y2={y} />
-          ))}
+          {[20, 40, 60, 80].map((y) => {
+            // Map SVG y-coordinate back to a data value: y = 90 - (v/max)*72 → v = (90-y)/72 * max
+            const tickValue = Math.round(((90 - y) / 72) * max)
+            return (
+              <React.Fragment key={y}>
+                <line x1="0" x2="100" y1={y} y2={y} />
+                <text
+                  x="-2"
+                  y={y}
+                  textAnchor="end"
+                  dominantBaseline="middle"
+                  fontSize="5.5"
+                  fontFamily="var(--aurora-font-mono, monospace)"
+                  fill="var(--aurora-text-muted)"
+                >
+                  {tickValue}
+                </text>
+              </React.Fragment>
+            )
+          })}
         </g>
         {type === "area" ? (
           <>
@@ -116,14 +135,28 @@ export function Chart({
         )}
       </svg>
       {data.some((item) => item.label) && (
-        <div className="mt-3 grid gap-2">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 6,
+            paddingLeft: 18,
+          }}
+        >
           {data.map((item, index) => (
-            <div key={index} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 aurora-text-meta">
-              <span className="truncate">{item.label}</span>
-              <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>
-                {item.value}
-              </span>
-            </div>
+            <span
+              key={index}
+              style={{
+                fontFamily: "var(--aurora-font-mono, monospace)",
+                fontSize: 10,
+                color: "var(--aurora-text-muted)",
+                lineHeight: 1,
+                textAlign: "center",
+                flex: 1,
+              }}
+            >
+              {item.label}
+            </span>
           ))}
         </div>
       )}

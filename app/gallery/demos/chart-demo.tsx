@@ -29,12 +29,10 @@ const grid: React.CSSProperties = {
   gap: "18px",
 }
 
-const toData = (values: number[]): ChartDatum[] =>
-  values.map((value) => ({ label: "", value }))
-
 // CD composition: two token-styled cells in a 2-col grid.
-const requestsData = toData([12, 19, 14, 23, 18, 27, 21, 30])
-const latencyData = toData([40, 38, 44, 36, 33, 35, 30, 28])
+const HOURS = ["12", "13", "14", "15", "16", "17", "18", "19"]
+const requestsData: ChartDatum[] = [12, 19, 14, 23, 18, 27, 21, 30].map((value, i) => ({ label: HOURS[i], value }))
+const latencyData: ChartDatum[] = [40, 38, 44, 36, 33, 35, 30, 28].map((value, i) => ({ label: HOURS[i], value }))
 
 export default function ChartDemo() {
   return (
