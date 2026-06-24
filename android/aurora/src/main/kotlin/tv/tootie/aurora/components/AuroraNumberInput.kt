@@ -25,24 +25,29 @@ import androidx.compose.ui.unit.dp
  * Maps to web `number-input`.
  *
  * Accessibility notes:
- * - Increment and decrement [IconButton]s carry `contentDescription` values that include the
+ * - Increment and decrement [IconButton]s have `contentDescription` values that include the
  *   current [step] amount so TalkBack announces "Decrease by 1" rather than just "Decrease".
- * - When [label] is null a fallback `contentDescription` is applied to the text field so it is
- *   never unlabelled for assistive technology.
- * - Error state is surfaced via [OutlinedTextField]'s `supportingText` slot so M3 applies the
- *   correct TalkBack error semantics (`semantics { error(message) }`) automatically.
+ * - When [label] is provided the text field uses it as its visible label; [contentDescription]
+ *   on the field itself is omitted in that case since the label is already read by TalkBack.
+ * - When [label] is null a [contentDescription] is applied to the field fallback so the field
+ *   is never unlabelled.
+ * - Increment/decrement buttons are disabled at the respective [min]/[max] boundary so the
+ *   interaction model is correct for switch-access and keyboard navigation.
+ *
+ * State hoisting: [value] + [onValueChange] — callers own the number.
  *
  * @param value Current numeric value.
  * @param onValueChange Called with the clamped new value on every change.
  * @param modifier Applied to the root [Row].
- * @param min Minimum allowed value.
- * @param max Maximum allowed value.
- * @param step Amount added/subtracted by the increment/decrement buttons.
+ * @param min Minimum allowed value. Defaults to [Float.NEGATIVE_INFINITY] (unbounded).
+ * @param max Maximum allowed value. Defaults to [Float.POSITIVE_INFINITY] (unbounded).
+ * @param step Amount added or subtracted by the increment/decrement buttons.
  * @param enabled When false the entire control is non-interactive.
  * @param label Optional visible label rendered inside the text field.
  * @param isError Whether the text field is in an error state.
- * @param errorMessage Error text shown via `supportingText` when [isError] is true.
- * @param keyboardOptions Software keyboard configuration.
+ * @param errorMessage Error text shown below the field via [OutlinedTextField]'s supportingText
+ *   slot so M3 applies the correct TalkBack error semantics automatically.
+ * @param keyboardOptions Software keyboard configuration. Defaults to numeric with a Done action.
  * @param keyboardActions Callbacks for IME actions.
  */
 @Composable
@@ -65,12 +70,15 @@ public fun AuroraNumberInput(
 ) {
     fun clamp(v: Float) = v.coerceIn(min, max)
 
+    // Format: show integer when the fractional part is zero (e.g. 3.0 → "3"), otherwise show
+    // the raw float string. Avoids scientific notation for very large step values.
     val displayValue = if (value == value.toLong().toFloat()) {
         value.toLong().toString()
     } else {
         value.toString()
     }
 
+    // Step description used in button contentDescriptions for TalkBack clarity.
     val stepLabel = if (step == step.toLong().toFloat()) {
         step.toLong().toString()
     } else {
@@ -82,14 +90,22 @@ public fun AuroraNumberInput(
             onClick = { onValueChange(clamp(value - step)) },
             enabled = enabled && value > min,
         ) {
-            Icon(Icons.Default.Remove, contentDescription = "Decrease by $stepLabel")
+            Icon(
+                imageVector = Icons.Default.Remove,
+                contentDescription = "Decrease by $stepLabel",
+            )
         }
+
         OutlinedTextField(
             value = displayValue,
-            onValueChange = { raw -> raw.toFloatOrNull()?.let { v -> onValueChange(clamp(v)) } },
+            onValueChange = { raw ->
+                raw.toFloatOrNull()?.let { v -> onValueChange(clamp(v)) }
+            },
             modifier = Modifier
                 .width(80.dp)
                 .then(
+                    // Only attach a fallback contentDescription when there is no visible label;
+                    // when label is present M3 already announces it for TalkBack.
                     if (label == null) {
                         Modifier.semantics { contentDescription = "Numeric value" }
                     } else {
@@ -106,11 +122,15 @@ public fun AuroraNumberInput(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
         )
+
         IconButton(
             onClick = { onValueChange(clamp(value + step)) },
             enabled = enabled && value < max,
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Increase by $stepLabel")
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Increase by $stepLabel",
+            )
         }
     }
 }

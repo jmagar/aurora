@@ -10,6 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
@@ -18,6 +21,10 @@ public enum class AuroraBannerVariant { Info, Success, Warn, Error, Neutral }
 /**
  * Full-width status strip with icon slot and optional dismiss action.
  * Maps to web `banner` component.
+ *
+ * The banner uses [LiveRegionMode.Polite] so TalkBack announces variant changes
+ * without interrupting ongoing speech. Callers should wrap decorative [leadingIcon]
+ * content with `Modifier.clearAndSetSemantics {}` to suppress redundant announcements.
  */
 @Composable
 public fun AuroraBanner(
@@ -37,7 +44,9 @@ public fun AuroraBanner(
     }
 
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { liveRegion = LiveRegionMode.Polite },
         color = bg,
         contentColor = contentColor,
     ) {

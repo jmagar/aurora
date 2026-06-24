@@ -14,6 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
@@ -21,6 +24,10 @@ import tv.tootie.aurora.theme.LocalAuroraColors
 /**
  * Empty state placeholder with icon, title, description, and action slot.
  * Maps to web `empty-state`. Use inside lists/grids when content is absent.
+ *
+ * The [title] is marked as a semantic heading so screen reader users can
+ * navigate directly to it. The [icon] surface is hidden from TalkBack — its
+ * meaning is conveyed by [title] and [description].
  */
 @Composable
 public fun AuroraEmptyState(
@@ -42,7 +49,10 @@ public fun AuroraEmptyState(
     ) {
         if (icon != null) {
             Surface(
-                modifier = Modifier.size(52.dp),
+                // Icon is decorative — meaning conveyed by title/description.
+                modifier = Modifier
+                    .size(52.dp)
+                    .clearAndSetSemantics {},
                 shape = RoundedCornerShape(12.dp),
                 color = MaterialTheme.colorScheme.surfaceVariant,
             ) {
@@ -58,6 +68,7 @@ public fun AuroraEmptyState(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.semantics { heading() },
             )
             if (description != null) {
                 Text(

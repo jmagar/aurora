@@ -14,6 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
@@ -21,6 +25,11 @@ public enum class AuroraCalloutVariant { Info, Success, Warn, Error, Neutral }
 
 /**
  * Tinted info/status block with icon slot. Maps to web `callout`.
+ *
+ * Descendants are merged into a single TalkBack node and announced politely
+ * when content changes. The decorative [icon] slot is hidden from the
+ * accessibility tree via [clearAndSetSemantics] — its meaning is conveyed
+ * by [title] and [message].
  */
 @Composable
 public fun AuroraCallout(
@@ -41,7 +50,8 @@ public fun AuroraCallout(
 
     Surface(
         modifier = modifier
-            .border(1.dp, borderColor, RoundedCornerShape(8.dp)),
+            .border(1.dp, borderColor, RoundedCornerShape(8.dp))
+            .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
         shape = RoundedCornerShape(8.dp),
         color = surfaceColor,
     ) {
@@ -51,7 +61,8 @@ public fun AuroraCallout(
         ) {
             if (icon != null) {
                 Box(
-                    modifier = Modifier.size(18.dp),
+                    // Icon is decorative — meaning conveyed by title/message.
+                    modifier = Modifier.size(18.dp).clearAndSetSemantics {},
                     contentAlignment = Alignment.Center,
                 ) {
                     icon()

@@ -45,17 +45,21 @@ public data class AuroraListboxItem(
  * Accessibility notes:
  * - The outer container has [selectableGroup] semantics so TalkBack treats it as a single
  *   coherent selection group (analogous to ARIA `role="listbox"`).
- * - Each item carries [selected] state so TalkBack announces "selected" / "not selected".
- * - Disabled items have their click action removed and carry a "(unavailable)" suffix in the
- *   accessibility description.
- * - Uses [LazyColumn] so arbitrarily long lists do not cause frame drops from a non-recycling
- *   [Column] + [forEach].
+ * - Each item has [Role.RadioButton] in the semantics tree and carries [selected] state so
+ *   TalkBack announces "selected" / "not selected" automatically.
+ * - Disabled items have their click action removed and carry a `contentDescription` suffix
+ *   of "(unavailable)" for assistive technology clarity.
+ * - Uses [LazyColumn] so arbitrarily long lists do not cause frame drops or OOM from a
+ *   non-recycling [Column] + [forEach].
+ *
+ * State hoisting: [selected] + [onSelect] — the caller owns the selection.
  *
  * @param items Ordered list of options to render.
  * @param selected [AuroraListboxItem.value] of the currently selected item, or null for none.
  * @param onSelect Called with the [AuroraListboxItem.value] of the tapped item.
  * @param modifier Applied to the root container.
- * @param maxHeight Optional maximum height; constrains scrollable area via [heightIn].
+ * @param maxHeight Maximum height of the scrollable list. Defaults to [Dp.Unspecified] (fills
+ *   the available space constrained by the parent).
  */
 @Composable
 public fun AuroraListbox(
@@ -70,28 +74,29 @@ public fun AuroraListbox(
     LazyColumn(
         modifier = modifier
             .border(1.dp, aurora.borderStrong, RoundedCornerShape(8.dp))
+            // selectableGroup informs TalkBack / accessibility services that this is a
+            // coherent single-selection group — equivalent to ARIA role="listbox".
             .semantics { selectableGroup() }
-            .then(
-                if (maxHeight != Dp.Unspecified) Modifier.heightIn(max = maxHeight) else Modifier
-            ),
+            .then(if (maxHeight != Dp.Unspecified) Modifier.heightIn(max = maxHeight) else Modifier),
     ) {
         items(items, key = { it.value }) { item ->
             val isSelected = item.value == selected
 
             Surface(
                 color = when {
-                    isSelected    -> aurora.selectedBg
+                    isSelected -> aurora.selectedBg
                     !item.enabled -> aurora.disabledSurface
-                    else          -> MaterialTheme.colorScheme.surface
+                    else -> MaterialTheme.colorScheme.surface
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .then(
                         if (item.enabled) {
                             Modifier.clickable(
+                                // Role.RadioButton maps to ARIA option semantics — each item in
+                                // the listbox is selectable but the group is single-selection.
                                 role = Role.RadioButton,
-                                onClickLabel = if (isSelected) "Deselect ${item.label}"
-                                               else "Select ${item.label}",
+                                onClickLabel = if (isSelected) "Deselect ${item.label}" else "Select ${item.label}",
                                 onClick = { onSelect(item.value) },
                             )
                         } else {
@@ -99,7 +104,10 @@ public fun AuroraListbox(
                         }
                     )
                     .semantics(mergeDescendants = true) {
+                        // Expose selected state so TalkBack announces "selected" / "not selected".
                         this.selected = isSelected
+                        // Role must be set here (in addition to clickable) for disabled items
+                        // where clickable is not applied.
                         role = Role.RadioButton
                         if (!item.enabled) {
                             contentDescription = "${item.label} (unavailable)"
@@ -112,16 +120,19 @@ public fun AuroraListbox(
                         style = MaterialTheme.typography.bodyMedium,
                         color = when {
                             !item.enabled -> aurora.disabledText
-                            isSelected    -> MaterialTheme.colorScheme.primary
-                            else          -> MaterialTheme.colorScheme.onSurface
+                            isSelected -> MaterialTheme.colorScheme.primary
+                            else -> MaterialTheme.colorScheme.onSurface
                         },
                     )
                     item.description?.let {
                         Text(
                             text = it,
                             style = MaterialTheme.typography.bodySmall,
-                            color = if (item.enabled) MaterialTheme.colorScheme.onSurfaceVariant
-                                    else aurora.disabledText,
+                            color = if (item.enabled) {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            } else {
+                                aurora.disabledText
+                            },
                         )
                     }
                 }

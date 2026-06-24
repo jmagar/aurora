@@ -643,6 +643,35 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     /** Clear the fuzzy search state (user cancelled or picked a file). */
     fun dismissFuzzySearch() = _state.update { it.copy(fuzzySearch = null) }
 
+    /**
+     * Start an AI code review for the current thread.
+     * [targetType]: "uncommittedChanges" | "baseBranch" | "commit" | "custom"
+     * [targetValue]: branch/SHA/instructions (null for uncommittedChanges)
+     * [delivery]: "inline" (default) or "detached"
+     */
+    fun startReview(targetType: String, targetValue: String? = null, delivery: String = "inline") {
+        val tid = _state.value.threadId ?: return
+        repo.startReview(tid, targetType, targetValue, delivery)
+    }
+
+    /**
+     * Send a one-off shell command within the thread's execution sandbox.
+     * Output arrives as a normal turn event in the thread.
+     */
+    fun shellCommand(command: String) {
+        val tid = _state.value.threadId ?: return
+        repo.shellCommand(tid, command)
+    }
+
+    /**
+     * Manually trigger context window compaction for the current thread.
+     * The server emits a thread/compacted notification on completion.
+     */
+    fun compactContext() {
+        val tid = _state.value.threadId ?: return
+        repo.compactStart(tid)
+    }
+
     /** Dismiss a server warning banner by its exact text. */
     fun dismissWarning(warning: String) {
         _state.update { it.copy(serverWarnings = it.serverWarnings.filter { w -> w != warning }.toImmutableList()) }

@@ -563,6 +563,136 @@ class CodexClient(private val url: String, private val token: String? = null) {
     }
 
     /**
+     * Start an AI code review for a thread.
+     *
+     * [targetType]: "uncommittedChanges", "baseBranch", "commit", or "custom".
+     * [targetValue]: branch name, commit SHA, or custom instructions (null for uncommittedChanges).
+     * [delivery]: "inline" (default — uses current thread) or "detached" (creates new thread).
+     */
+    fun startReview(threadId: String, targetType: String, targetValue: String?, delivery: String): Int {
+        val id = ids.incrementAndGet()
+        send("review/start", buildJsonObject {
+            put("threadId", threadId)
+            put("target", buildJsonObject {
+                put("type", targetType)
+                if (targetValue != null) put("value", targetValue)
+            })
+            put("delivery", delivery)
+        }, id)
+        return id
+    }
+
+    /** Send a one-off shell command within the thread's execution sandbox. */
+    fun shellCommand(threadId: String, command: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/shellCommand", buildJsonObject {
+            put("threadId", threadId)
+            put("command", command)
+        }, id)
+        return id
+    }
+
+    /**
+     * Run a command outside any thread (buffered mode — no PTY, no streaming).
+     *
+     * The server captures stdout+stderr and returns them in the response `result`.
+     * [command] is the argv list; [cwd] overrides the working directory; [env] supplies
+     * additional environment variables; [timeoutMs] caps execution time.
+     *
+     * Returns the request id for correlation.
+     */
+    fun execCommand(
+        command: List<String>,
+        cwd: String? = null,
+        env: Map<String, String> = emptyMap(),
+        timeoutMs: Long? = null,
+    ): Int {
+        val id = ids.incrementAndGet()
+        send("command/exec", buildJsonObject {
+            put("command", buildJsonArray { command.forEach { add(it) } })
+            if (cwd != null) put("cwd", cwd)
+            if (env.isNotEmpty()) put("env", JsonObject(env.mapValues { JsonPrimitive(it.value) }))
+            if (timeoutMs != null) put("timeoutMs", timeoutMs)
+        }, id)
+        return id
+    }
+
+    /**
+     * Run a command in PTY streaming mode — allocates a pseudo-terminal and streams
+     * stdout/stderr back as [command/exec/outputDelta] notifications keyed by [processId].
+     * The caller supplies [processId] so it can correlate follow-up write/resize/terminate
+     * requests. [cols] and [rows] set the initial terminal dimensions.
+     *
+     * Returns the request id for correlation.
+     */
+    fun execCommandPty(
+        command: List<String>,
+        processId: String,
+        cwd: String? = null,
+        env: Map<String, String> = emptyMap(),
+        cols: Int = 80,
+        rows: Int = 24,
+        timeoutMs: Long? = null,
+    ): Int {
+        val id = ids.incrementAndGet()
+        send("command/exec", buildJsonObject {
+            put("command", buildJsonArray { command.forEach { add(it) } })
+            put("processId", processId)
+            put("tty", true)
+            put("streamStdin", true)
+            put("streamStdoutStderr", true)
+            put("cols", cols)
+            put("rows", rows)
+            if (cwd != null) put("cwd", cwd)
+            if (env.isNotEmpty()) put("env", JsonObject(env.mapValues { JsonPrimitive(it.value) }))
+            if (timeoutMs != null) put("timeoutMs", timeoutMs)
+        }, id)
+        return id
+    }
+
+    /**
+     * Write data to a running PTY process's stdin.
+     * [processId] must match the one used in [execCommandPty].
+     */
+    fun execCommandWrite(processId: String, data: String) {
+        send("command/exec/write", buildJsonObject {
+            put("processId", processId)
+            put("data", data)
+        })
+    }
+
+    /**
+     * Resize the PTY window for a running process.
+     * [processId] must match the one used in [execCommandPty].
+     */
+    fun execCommandResize(processId: String, cols: Int, rows: Int) {
+        send("command/exec/resize", buildJsonObject {
+            put("processId", processId)
+            put("cols", cols)
+            put("rows", rows)
+        })
+    }
+
+    /**
+     * Send SIGTERM (or equivalent) to a running PTY process.
+     * [processId] must match the one used in [execCommandPty].
+     */
+    fun execCommandTerminate(processId: String) {
+        send("command/exec/terminate", buildJsonObject {
+            put("processId", processId)
+        })
+    }
+
+    /** Manually trigger context window compaction for a thread. */
+    fun compactStart(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/compact/start", buildJsonObject {
+            put("threadId", threadId)
+        }, id)
+        return id
+    }
+
+    /**
      * Respond to an `account/chatgptAuthTokens/refresh` server request.
      *
      * The server sends this request (with its own id) when it needs fresh ChatGPT

@@ -73,7 +73,7 @@ public fun AuroraCommandPalette(
         if (query.isBlank()) commands
         else commands.filter {
             it.label.contains(query, ignoreCase = true) ||
-                it.description?.contains(query, ignoreCase = true) == true
+            it.description?.contains(query, ignoreCase = true) == true
         }
     }
 
@@ -140,7 +140,7 @@ public fun AuroraCommandPalette(
                                 }
                             }
                             cmd.shortcut?.let {
-                                AuroraKbd(it)
+                                AuroraKbd(key = it, contentDescription = it)
                             }
                         }
                     }

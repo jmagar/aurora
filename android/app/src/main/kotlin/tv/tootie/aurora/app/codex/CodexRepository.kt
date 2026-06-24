@@ -56,6 +56,11 @@ public enum class RequestKind {
     AccountRead,         // account/read
     RateLimitsRead,      // account/rateLimits/read
     FuzzySearch,         // fuzzyFileSearch
+    ReviewStart,         // review/start
+    ShellCommand,        // thread/shellCommand
+    ExecCommand,         // command/exec (buffered)
+    ExecCommandPty,      // command/exec (PTY streaming)
+    CompactStart,        // thread/compact/start
     Other,
 }
 
@@ -400,6 +405,40 @@ class CodexRepository {
         accessToken: String,
         chatgptAccountId: String,
     ): Boolean = client?.respondAuthTokensRefresh(requestId, accessToken, chatgptAccountId) ?: false
+
+    /**
+     * Start an AI code review. Target types: uncommittedChanges, baseBranch, commit, custom.
+     * Delivery: inline (default, uses current thread) or detached (creates new thread).
+     * Response is routed through [turnEventsFlow] with [RequestKind.ReviewStart].
+     */
+    fun startReview(threadId: String, targetType: String, targetValue: String? = null, delivery: String = "inline"): String {
+        val rawId = client?.startReview(threadId, targetType, targetValue, delivery) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ReviewStart
+        return key
+    }
+
+    /**
+     * Send a one-off shell command within the thread's execution context.
+     * Response is routed through [turnEventsFlow] with [RequestKind.ShellCommand].
+     */
+    fun shellCommand(threadId: String, command: String): String {
+        val rawId = client?.shellCommand(threadId, command) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ShellCommand
+        return key
+    }
+
+    /**
+     * Manually trigger context window compaction for a thread.
+     * Response is routed through [turnEventsFlow] with [RequestKind.CompactStart].
+     */
+    fun compactStart(threadId: String): String {
+        val rawId = client?.compactStart(threadId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.CompactStart
+        return key
+    }
 
     fun interrupt(threadId: String) {
         client?.interrupt(threadId)

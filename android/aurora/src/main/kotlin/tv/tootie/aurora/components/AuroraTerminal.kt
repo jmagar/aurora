@@ -15,8 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
@@ -29,10 +27,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +35,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.collections.immutable.ImmutableList
@@ -49,17 +42,22 @@ import tv.tootie.aurora.theme.LocalAuroraColors
 
 /** Line type matching the Aurora web terminal. */
 public enum class AuroraTerminalLineType {
-    /** Shell command — prefixed with `$`; rendered in accent/info color. */
+    /** Shell command — prefixed with `$` in the web version; rendered in accent color. */
     Input,
+
     /** Standard stdout output. */
     Output,
-    /** Error output — styled with error color and `✗` prefix. */
+
+    /** Error output — styled with error color. */
     Error,
+
     /** Informational system message. */
     Info,
-    /** Warning output — styled with warn color and `⚠` prefix. */
+
+    /** Warning output — styled with warn color. */
     Warn,
-    /** Success output — styled with success color and `✓` prefix. */
+
+    /** Success output — styled with success color. */
     Success,
 }
 
@@ -81,17 +79,14 @@ public enum class AuroraTerminalStatus { Connected, Idle, Error }
  * The lazy list carries `semantics { liveRegion = LiveRegionMode.Polite }` so
  * TalkBack announces new lines as they arrive, mirroring the web `role="log"`.
  *
- * @param lines       Output lines. Use [ImmutableList] for Compose stability.
- * @param modifier    Applied to the root [Surface].
- * @param title       Optional session name shown in the titlebar.
- * @param status      Connection state rendered as a colored indicator dot.
- * @param autoScroll  When true scrolls to the last line whenever [lines] grows.
- * @param onKill      Optional "kill session" action in the titlebar.
- * @param onClear     Optional "clear output" action in the titlebar.
- * @param onRun       Optional "run" action in the titlebar.
- * @param onSubmit    When non-null, renders an input row at the bottom of the terminal.
- *                    The field uses `ImeAction.Send`; pressing Send or tapping the action
- *                    calls [onSubmit] with the current text and clears the field.
+ * @param lines         Output lines. Use [ImmutableList] for Compose stability.
+ * @param modifier      Applied to the root [Surface].
+ * @param title         Optional session name shown in the titlebar.
+ * @param status        Connection state rendered as a colored indicator dot.
+ * @param autoScroll    When true, scrolls to the last line whenever [lines] grows.
+ * @param onKill        Optional callback for a "kill session" action in the titlebar.
+ * @param onClear       Optional callback for a "clear output" action in the titlebar.
+ * @param onRun         Optional callback for a "run" action in the titlebar.
  */
 @Composable
 public fun AuroraTerminal(
@@ -103,19 +98,9 @@ public fun AuroraTerminal(
     onKill: (() -> Unit)? = null,
     onClear: (() -> Unit)? = null,
     onRun: (() -> Unit)? = null,
-    onSubmit: ((String) -> Unit)? = null,
 ) {
     val aurora = LocalAuroraColors.current
     val listState = rememberLazyListState()
-    var inputText by remember { mutableStateOf("") }
-
-    fun submitInput() {
-        val text = inputText.trim()
-        if (text.isNotEmpty()) {
-            onSubmit?.invoke(text)
-            inputText = ""
-        }
-    }
 
     if (autoScroll) {
         LaunchedEffect(lines.size) {
@@ -138,9 +123,11 @@ public fun AuroraTerminal(
         modifier = modifier,
         color = Color(0xFF070E14), // near-black terminal surface — intentional, not aurora-page-bg
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column {
             // ── Titlebar ────────────────────────────────────────────────────
-            Surface(color = Color(0xFF0D1A24)) {
+            Surface(
+                color = Color(0xFF0D1A24),
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -148,46 +135,60 @@ public fun AuroraTerminal(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
+                    // Status dot
                     Box(
                         modifier = Modifier
                             .size(7.dp)
                             .background(statusColor, CircleShape)
                             .semantics { contentDescription = statusLabel },
                     )
+
                     Text(
                         text = title ?: "terminal",
                         fontFamily = FontFamily.Monospace,
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+
                     Spacer(Modifier.weight(1f))
+
                     onKill?.let {
                         IconButton(onClick = it, modifier = Modifier.size(26.dp)) {
-                            Icon(Icons.Default.Close, contentDescription = "Kill session", modifier = Modifier.size(16.dp))
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Kill session",
+                                modifier = Modifier.size(16.dp),
+                            )
                         }
                     }
                     onClear?.let {
                         IconButton(onClick = it, modifier = Modifier.size(26.dp)) {
-                            Icon(Icons.Default.Clear, contentDescription = "Clear output", modifier = Modifier.size(16.dp))
+                            Icon(
+                                Icons.Default.Clear,
+                                contentDescription = "Clear output",
+                                modifier = Modifier.size(16.dp),
+                            )
                         }
                     }
                     onRun?.let {
                         IconButton(onClick = it, modifier = Modifier.size(26.dp)) {
-                            Icon(Icons.Default.PlayArrow, contentDescription = "Run", modifier = Modifier.size(16.dp))
+                            Icon(
+                                Icons.Default.PlayArrow,
+                                contentDescription = "Run",
+                                modifier = Modifier.size(16.dp),
+                            )
                         }
                     }
                 }
             }
             HorizontalDivider(color = aurora.borderDefault, thickness = 1.dp)
 
-            // ── Output body — weight(1f) so input row below gets space ─────
-            val outputModifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-
+            // ── Output body ─────────────────────────────────────────────────
             if (lines.isEmpty()) {
                 Box(
-                    modifier = outputModifier.padding(12.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(12.dp),
                     contentAlignment = Alignment.TopStart,
                 ) {
                     Text(
@@ -200,7 +201,8 @@ public fun AuroraTerminal(
             } else {
                 LazyColumn(
                     state = listState,
-                    modifier = outputModifier
+                    modifier = Modifier
+                        .fillMaxSize()
                         .padding(12.dp)
                         .semantics {
                             // Mirrors web role="log" + aria-live="polite"
@@ -210,7 +212,7 @@ public fun AuroraTerminal(
                 ) {
                     itemsIndexed(lines, key = { index, _ -> index }) { _, line ->
                         val color = when (line.type) {
-                            AuroraTerminalLineType.Input   -> aurora.info
+                            AuroraTerminalLineType.Input   -> aurora.info          // accent cyan
                             AuroraTerminalLineType.Error   -> aurora.error
                             AuroraTerminalLineType.Info    -> aurora.infoForeground
                             AuroraTerminalLineType.Warn    -> aurora.warn
@@ -233,7 +235,6 @@ public fun AuroraTerminal(
                                     fontSize = 12.sp,
                                     lineHeight = 18.sp,
                                 )
-                                Spacer(Modifier.width(2.dp))
                             }
                             Text(
                                 text = line.text,
@@ -246,22 +247,6 @@ public fun AuroraTerminal(
                         }
                     }
                 }
-            }
-
-            // ── Optional command-input row ───────────────────────────────────
-            if (onSubmit != null) {
-                HorizontalDivider(color = aurora.borderDefault, thickness = 1.dp)
-                AuroraTextField(
-                    value = inputText,
-                    onValueChange = { inputText = it },
-                    placeholder = "Enter command…",
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                    keyboardActions = KeyboardActions(onSend = { submitInput() }),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                )
             }
         }
     }

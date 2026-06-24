@@ -35,11 +35,10 @@ public data class AuroraMarketplaceItem(
  * Grid of installable items. Maps to web `marketplace`.
  *
  * Renders each item in an [AuroraCard] with [AuroraCardVariant.Outlined].
- * Each card carries a `contentDescription` combining title + description so TalkBack
- * gives users a complete summary when focus lands on the card.
+ * Each card carries a `contentDescription` combining title + description for TalkBack.
  *
  * When [isLoading] is true a centered [AuroraSpinner] is shown instead of the grid,
- * announced as "Loading marketplace items".
+ * with `contentDescription = "Loading marketplace items"`.
  *
  * The optional [AuroraMarketplaceItem.badge] field is reserved for future use
  * (e.g. "New", "Beta") and not yet rendered.
@@ -63,7 +62,9 @@ public fun AuroraMarketplace(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            AuroraSpinner(contentDescription = "Loading marketplace items")
+            AuroraSpinner(
+                contentDescription = "Loading marketplace items",
+            )
         }
         return
     }
@@ -76,13 +77,14 @@ public fun AuroraMarketplace(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         items(items, key = { it.id }) { item ->
-            // TalkBack summary: "Title. Description. By author."
+            // Build a TalkBack-readable summary: "Title. Description. By author."
             val itemDescription = buildString {
                 append(item.title)
                 append(". ")
                 append(item.description)
                 item.author?.let { append(". By $it") }
             }
+
             AuroraCard(
                 modifier = Modifier
                     .fillMaxWidth()

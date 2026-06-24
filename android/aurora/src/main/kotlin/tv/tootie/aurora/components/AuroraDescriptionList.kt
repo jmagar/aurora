@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
@@ -20,6 +21,10 @@ public data class AuroraDescriptionItem(
 
 /**
  * Labeled key-value list. Maps to web `description-list`.
+ *
+ * Each row merges its label and value into a single TalkBack node so that
+ * the service reads them as a unit (e.g. "Status: Active") rather than
+ * announcing two disconnected strings.
  */
 @Composable
 public fun AuroraDescriptionList(
@@ -34,7 +39,8 @@ public fun AuroraDescriptionList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 8.dp)
+                    .semantics(mergeDescendants = true) {},
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(

@@ -46,6 +46,8 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * - Clearing the digit in a cell automatically moves focus to the previous cell so users can
  *   step backward through the OTP without manually navigating.
  *
+ * State hoisting: [value] + [onValueChange] — the caller owns the OTP string.
+ *
  * @param value Current OTP string; length 0..[length]. Characters beyond [length] are ignored.
  * @param onValueChange Called with the full updated OTP string on every keystroke or paste.
  * @param modifier Applied to the root [Row].
@@ -87,6 +89,7 @@ public fun AuroraInputOtp(
                             val suffix = value.drop(index + fill.length)
                             val newOtp = (prefix + fill + suffix).take(length)
                             onValueChange(newOtp)
+                            // Move focus to the cell after the last filled cell, clamped to end.
                             val nextFocus = (index + fill.length).coerceAtMost(length - 1)
                             focusRequesters.getOrNull(nextFocus)?.requestFocus()
                         }
@@ -102,7 +105,7 @@ public fun AuroraInputOtp(
 
                         // Empty input: user deleted the digit in this cell (backspace).
                         else -> {
-                            val newOtp = value.take(index) + value.drop(index + 1)
+                            val newOtp = value.take(index) + "" + value.drop(index + 1)
                             onValueChange(newOtp.take(length))
                             if (index > 0) {
                                 focusRequesters.getOrNull(index - 1)?.requestFocus()
@@ -121,12 +124,13 @@ public fun AuroraInputOtp(
                         },
                         shape = RoundedCornerShape(8.dp),
                     )
-                    .focusRequester(focusRequesters[index])
+                    .focusRequester(focusRequesters.getOrElse(index) { FocusRequester() })
                     .onFocusChanged { state ->
                         if (state.isFocused) focusedIndex.value = index
                         else if (focusedIndex.value == index) focusedIndex.value = -1
                     }
                     .semantics {
+                        // Announce position and error state to TalkBack.
                         contentDescription = buildString {
                             append("Digit ${index + 1} of $length")
                             if (char.isNotEmpty()) append(", entered")
