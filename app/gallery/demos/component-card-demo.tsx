@@ -130,7 +130,7 @@ export default function ComponentCardDemo() {
         }}
       >
         <div>
-          <span style={sectionLabel}>variant=&quot;tile&quot; — gallery grid</span>
+          <span style={sectionLabel}>variant=&quot;tile&quot; — gallery grid (with prev/next)</span>
           <div
             style={{
               display: "grid",
