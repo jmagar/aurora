@@ -53,9 +53,9 @@ const PANEL_STYLES = `
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 30px;
-    height: 30px;
-    border-radius: var(--aurora-radius-1);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--aurora-radius-2);
     color: var(--aurora-ael-tone, var(--aurora-accent-primary));
     border: 1px solid color-mix(in srgb, var(--aurora-ael-tone, var(--aurora-accent-primary)) 55%, transparent);
     background: color-mix(in srgb, var(--aurora-ael-tone, var(--aurora-accent-primary)) 12%, transparent);
@@ -76,9 +76,9 @@ const PANEL_STYLES = `
     line-height: 1.2;
   }
   .aurora-ael__title {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     color: var(--aurora-text-primary);
     line-height: 1.2;
   }
@@ -167,8 +167,8 @@ const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
             {icon ? (
               <span className="aurora-ael__icon" aria-hidden="true">
                 <svg
-                  width="18"
-                  height="18"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
