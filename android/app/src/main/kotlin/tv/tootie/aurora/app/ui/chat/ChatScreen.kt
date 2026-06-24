@@ -424,6 +424,17 @@ fun ChatScreen(
                         AuroraThinking(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
                     }
                 }
+
+                // Guardian auto-approval review banner
+                val review = s.autoApprovalReview
+                if (review != null) {
+                    item(key = "auto-approval-review") {
+                        AutoApprovalReviewBanner(
+                            review = review,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+                }
             }
 
             // Feature 2: Editing indicator
@@ -726,5 +737,84 @@ private fun ChatWelcome(
         )
         // Keep welcome content clear of the input bar / IME so suggestions remain tappable.
         Spacer(modifier = Modifier.height(200.dp))
+    }
+}
+
+/**
+ * Shows an "Auto-reviewing…" indicator while the guardian subagent is evaluating
+ * a pending action, then shows the decision (approved / denied) with its reasoning
+ * once [item/autoApprovalReview/completed] arrives.
+ *
+ * Placed in the message list just below the thinking indicator so the review state
+ * is visible without needing to scroll.
+ */
+@Composable
+private fun AutoApprovalReviewBanner(
+    review: AutoApprovalReview,
+    modifier: Modifier = Modifier,
+) {
+    val aurora = LocalAuroraColors.current
+    val inProgress = review.decision == null
+
+    androidx.compose.material3.Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        ),
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (inProgress) {
+                    androidx.compose.material3.CircularProgressIndicator(
+                        modifier = Modifier.size(14.dp),
+                        strokeWidth = 1.5.dp,
+                        color = aurora.accentViolet,
+                    )
+                } else {
+                    val decisionColor = when (review.decision) {
+                        "approved" -> aurora.success
+                        "denied"   -> aurora.error
+                        else       -> MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                    Icon(
+                        imageVector = Icons.Default.Security,
+                        contentDescription = null,
+                        tint = decisionColor,
+                        modifier = Modifier.size(14.dp),
+                    )
+                }
+                Text(
+                    text = if (inProgress) "Auto-reviewing…" else "Guardian: ${review.decision ?: "unknown"}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (inProgress) aurora.accentViolet
+                            else when (review.decision) {
+                                "approved" -> aurora.success
+                                "denied"   -> aurora.error
+                                else       -> MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                )
+            }
+            if (review.actionDescription.isNotBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = review.actionDescription,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
+            }
+            if (!review.reasoning.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = review.reasoning,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                )
+            }
+        }
     }
 }

@@ -118,6 +118,18 @@ data class AutoApprovalReview(
     val reasoning: String? = null,
 )
 
+/**
+ * State for an in-progress or completed fuzzy file search session.
+ * Populated by fuzzyFileSearch/sessionUpdated (incremental results) and
+ * cleared/marked done by fuzzyFileSearch/sessionCompleted.
+ */
+@Immutable
+data class FuzzyFileSearchState(
+    val sessionId: String,
+    val results: ImmutableList<String> = persistentListOf(),
+    val done: Boolean = false,
+)
+
 @Immutable
 data class ChatState(
     val threadId: String? = null,
@@ -158,6 +170,8 @@ data class ChatState(
     val serverWarnings: ImmutableList<String> = persistentListOf(),
     /** Non-null while a guardian auto-review is in progress or just completed. */
     val autoApprovalReview: AutoApprovalReview? = null,
+    /** Non-null while a fuzzy file search session is active or showing results. */
+    val fuzzySearch: FuzzyFileSearchState? = null,
 ) {
     /**
      * Return a copy with all per-turn transient fields zeroed and [newMsgs] installed.
@@ -1046,6 +1060,29 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         type = "fileChange",
                         reason = params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay(),
                     ))))
+                }
+            }
+
+            // Incremental fuzzy file search results — accumulate into the session state.
+            // results is a JSON array of path strings; continuation token is not used in state.
+            "fuzzyFileSearch/sessionUpdated" -> {
+                val sessionId = params?.get("sessionId")?.jsonPrimitive?.contentOrNull ?: return
+                val newResults = params["results"]?.jsonArray
+                    ?.mapNotNull { it.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() }
+                    ?: return
+                _state.update { s ->
+                    val existing = if (s.fuzzySearch?.sessionId == sessionId) s.fuzzySearch else FuzzyFileSearchState(sessionId)
+                    s.copy(fuzzySearch = existing.copy(results = (existing.results + newResults).toImmutableList()))
+                }
+            }
+
+            // Fuzzy file search completed — mark done so the UI can stop showing the spinner.
+            "fuzzyFileSearch/sessionCompleted" -> {
+                val sessionId = params?.get("sessionId")?.jsonPrimitive?.contentOrNull ?: return
+                _state.update { s ->
+                    if (s.fuzzySearch?.sessionId == sessionId) {
+                        s.copy(fuzzySearch = s.fuzzySearch.copy(done = true))
+                    } else s
                 }
             }
 
