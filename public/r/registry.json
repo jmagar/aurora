@@ -241,6 +241,35 @@
       "docs": "Install after aurora-tokens when the consuming app should use Aurora-hosted webfonts instead of system fallbacks.\n\nImport this stylesheet before aurora-tokens or alongside it at the app root."
     },
     {
+      "name": "aurora-inject-once",
+      "type": "registry:lib",
+      "title": "Aurora injectOnce helper",
+      "description": "Idempotent runtime CSS injection helper used by Aurora registry components. Uses a DOM id guard instead of a module boolean so styles survive React Fast Refresh / HMR without duplicate injection.",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/aurora/lib/inject-once.ts",
+          "type": "registry:lib",
+          "target": "@lib/aurora/inject-once.ts"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "lib"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "lib",
+        "requiresTokens": false,
+        "sourcePath": "registry/aurora/lib/inject-once.ts",
+        "installTarget": "@lib/aurora/inject-once.ts"
+      },
+      "docs": "Shared runtime CSS injection helper. Install automatically pulled in as a registryDependency by Aurora components that use runtime style injection."
+    },
+    {
       "name": "aurora-button",
       "type": "registry:ui",
       "title": "Aurora Button",
@@ -250,7 +279,8 @@
         "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-inject-once"
       ],
       "files": [
         {
@@ -449,7 +479,8 @@
         "@radix-ui/react-avatar@^1.1.11"
       ],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-inject-once"
       ],
       "files": [
         {
@@ -1476,6 +1507,41 @@
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-editor.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
     },
     {
+      "name": "aurora-code-workspace",
+      "type": "registry:block",
+      "title": "Aurora Code Workspace",
+      "description": "IDE-style split-pane workspace combining a FileTree explorer rail (with Explorer header and right border) and a flush-embedded CodeEditor. Selecting a file node in the tree swaps the active file shown in the editor. Ships as one bordered container with no double border between rail and editor.",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-file-tree",
+        "@aurora/aurora-code-editor"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/blocks/files/code-workspace/code-workspace.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/code-workspace.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "categories": [
+        "aurora",
+        "block",
+        "files"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "block",
+        "requiresTokens": true,
+        "sourcePath": "registry/aurora/blocks/files/code-workspace/code-workspace.tsx",
+        "installTarget": "@components/aurora/code-workspace.tsx",
+        "taxonomy": "files"
+      },
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-workspace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-file-tree`, `aurora-code-editor`."
+    },
+    {
       "name": "aurora-web-preview",
       "type": "registry:block",
       "title": "Aurora Web Preview",
@@ -1863,7 +1929,8 @@
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
-        "@aurora/aurora-input"
+        "@aurora/aurora-input",
+        "@aurora/aurora-inject-once"
       ],
       "files": [
         {
@@ -2508,7 +2575,8 @@
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
-        "@aurora/aurora-dialog"
+        "@aurora/aurora-dialog",
+        "@aurora/aurora-inject-once"
       ],
       "files": [
         {
@@ -2607,7 +2675,8 @@
       "description": "Composed Aurora card shell with header, content, footer, title, and description slots.",
       "dependencies": [],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-inject-once"
       ],
       "files": [
         {
@@ -2642,7 +2711,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-button"
+        "@aurora/aurora-button",
+        "@aurora/aurora-inject-once"
       ],
       "files": [
         {
@@ -4776,7 +4846,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-inject-once"
       ],
       "files": [
         {
@@ -4842,7 +4913,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-inject-once"
       ],
       "files": [
         {

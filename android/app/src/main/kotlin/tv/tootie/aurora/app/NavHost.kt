@@ -118,6 +118,8 @@ fun CodexNavHost() {
                 onClearGoal = sidebarVm::clearGoal,
                 onHideGoalEditor = sidebarVm::hideGoalEditor,
                 mcpServers = sidebarState.mcpServers,
+                goalError = sidebarState.goalError,
+                onClearGoalError = sidebarVm::clearGoalError,
             )
         },
     ) {

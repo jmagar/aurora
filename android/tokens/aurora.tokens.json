@@ -126,32 +126,6 @@
           "$value": "#f9a8c452",
           "$type": "color"
         }
-      },
-      "violet": {
-        "base": {
-          "$value": "#a78bfa",
-          "$type": "color"
-        },
-        "strong": {
-          "$value": "#c4b5fd",
-          "$type": "color"
-        },
-        "deep": {
-          "$value": "#7c3aed",
-          "$type": "color"
-        },
-        "button": {
-          "$value": "#8b5cf6",
-          "$type": "color"
-        },
-        "surface": {
-          "$value": "#222f48",
-          "$type": "color"
-        },
-        "border": {
-          "$value": "#a78bfa52",
-          "$type": "color"
-        }
       }
     },
     "success": {

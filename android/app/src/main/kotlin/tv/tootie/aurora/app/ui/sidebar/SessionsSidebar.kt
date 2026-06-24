@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -99,6 +100,8 @@ fun SessionsSidebar(
     onClearGoal: () -> Unit = {},
     onHideGoalEditor: () -> Unit = {},
     mcpServers: List<McpServerInfo> = emptyList(),
+    goalError: String? = null,
+    onClearGoalError: () -> Unit = {},
 ) {
     val aurora = LocalAuroraColors.current
 
@@ -169,6 +172,36 @@ fun SessionsSidebar(
                 onClearGoal = onClearGoal,
                 onDismiss = onHideGoalEditor,
             )
+        }
+
+        if (goalError != null) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                    .background(
+                        MaterialTheme.colorScheme.errorContainer,
+                        shape = MaterialTheme.shapes.small,
+                    )
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    goalError,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = onClearGoalError, modifier = Modifier.size(20.dp)) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = "Dismiss error",
+                        modifier = Modifier.size(14.dp),
+                        tint = MaterialTheme.colorScheme.onErrorContainer,
+                    )
+                }
+            }
         }
 
         // Session list — wrapped in a Box(weight 1f) so the footer below always pins to bottom

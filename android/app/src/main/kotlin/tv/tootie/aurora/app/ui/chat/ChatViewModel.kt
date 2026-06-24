@@ -82,6 +82,10 @@ data class FileChangeItem(
     val id: String,
     val paths: ImmutableList<String>,
     val status: String = "pending",
+    /** Accumulated file output streamed via item/fileChange/outputDelta. */
+    val output: String = "",
+    /** Latest unified diff patch from item/fileChange/patchUpdated. */
+    val patch: String = "",
 )
 
 @Immutable
@@ -132,6 +136,8 @@ data class ChatState(
     // Bead nev6: thread name + cwd shown in top bar
     val threadName: String? = null,
     val cwd: String? = null,
+    // Dismissible server warning banners (warning, guardianWarning, deprecationNotice, configWarning)
+    val serverWarnings: ImmutableList<String> = persistentListOf(),
 ) {
     /**
      * Return a copy with all per-turn transient fields zeroed and [newMsgs] installed.
@@ -584,6 +590,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun showSteer() = _state.update { it.copy(showSteerSheet = true) }
     fun hideSteer() = _state.update { it.copy(showSteerSheet = false) }
+
+    /** Dismiss a server warning banner by its exact text. */
+    fun dismissWarning(warning: String) {
+        _state.update { it.copy(serverWarnings = it.serverWarnings.filter { w -> w != warning }.toImmutableList()) }
+    }
 
     // --- Flow handlers for typed repository events ---
 
@@ -1143,6 +1154,49 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                             else ApprovalEvent.Resolved(normalizeServerId(resolvedId))
                 _state.update { s ->
                     s.copy(pendingApprovals = reduceApprovals(s.pendingApprovals, event))
+                }
+            }
+
+            // Streaming plan text delta — appended to the last planItems entry.
+            // item/created with type:plan seeds the entry; subsequent deltas extend it.
+            "item/plan/delta" -> {
+                val delta = params?.get("delta")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                    ?: return
+                _state.update { s ->
+                    if (s.planItems.isEmpty()) {
+                        s.copy(planItems = persistentListOf(delta))
+                    } else {
+                        val updated = s.planItems.toMutableList()
+                        updated[updated.lastIndex] = updated[updated.lastIndex] + delta
+                        s.copy(planItems = updated.toImmutableList())
+                    }
+                }
+            }
+
+            // Raw Responses API item completion — informational only, no UI state needed.
+            // Logged at debug level for protocol tracing.
+            "rawResponseItem/completed" -> {
+                android.util.Log.d("ChatViewModel", "rawResponseItem/completed: ${params?.get("item")?.jsonObject?.get("type")?.jsonPrimitive?.contentOrNull}")
+            }
+
+            // Dismissible server warning banners. All four variants carry a human-readable
+            // "message" field. The type prefix is prepended so the UI can style them differently
+            // (e.g. safety warnings vs deprecation notices). Duplicates are suppressed so rapid
+            // re-sends of the same text don't stack identical banners.
+            "warning", "guardianWarning", "deprecationNotice", "configWarning" -> {
+                val raw = params?.get("message")?.jsonPrimitive?.contentOrNull
+                    ?: params?.get("text")?.jsonPrimitive?.contentOrNull
+                    ?: return
+                val label = when (msg.method) {
+                    "guardianWarning"    -> "[Safety] "
+                    "deprecationNotice"  -> "[Deprecated] "
+                    "configWarning"      -> "[Config] "
+                    else                 -> ""
+                }
+                val text = (label + raw.sanitizeForDisplay()).trim()
+                _state.update { s ->
+                    if (s.serverWarnings.contains(text)) s
+                    else s.copy(serverWarnings = (s.serverWarnings + text).toImmutableList())
                 }
             }
 

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-code-workspace",
+  "title": "Aurora Code Workspace",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "IDE-style split-pane workspace combining a FileTree explorer rail (with Explorer header and right border) and a flush-embedded CodeEditor. Selecting a file node in the tree swaps the active file shown in the editor. Ships as one bordered container with no double border between rail and editor.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@aurora/aurora-tokens",
+    "@aurora/aurora-file-tree",
+    "@aurora/aurora-code-editor"
+  ],
+  "files": [
+    {
+      "path": "registry/aurora/blocks/files/code-workspace/code-workspace.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { FileTree, TreeNode } from \"@/registry/aurora/blocks/files/file-tree/file-tree\"\nimport { CodeEditor } from \"@/registry/aurora/blocks/files/code-editor/code-editor\"\n\n// ---------------------------------------------------------------------------\n// Types\n// ---------------------------------------------------------------------------\n\nexport interface FileEntry {\n  filename: string\n  language: string\n  code: string\n}\n\nexport interface CodeWorkspaceProps {\n  /** The file tree to display in the left rail. */\n  tree: TreeNode[]\n  /** Map from tree node id to file content. Only file nodes need entries. */\n  files: Record<string, FileEntry>\n  /** Id of the node to open on first render. */\n  defaultSelectedId?: string\n  /** Ids of folder nodes to expand on first render. */\n  defaultExpandedIds?: string[]\n  /** Optional fixed height for the workspace container. Defaults to 480px. */\n  height?: number | string\n  /** Optional CSS class for the outermost container. */\n  className?: string\n  style?: React.CSSProperties\n}\n\n// ---------------------------------------------------------------------------\n// Helpers\n// ---------------------------------------------------------------------------\n\n/** Walk a tree and return the first file node id encountered depth-first. */\nfunction firstFileId(nodes: TreeNode[]): string | undefined {\n  for (const node of nodes) {\n    if (node.type === \"file\") return node.id\n    if (node.children) {\n      const found = firstFileId(node.children)\n      if (found) return found\n    }\n  }\n  return undefined\n}\n\n// ---------------------------------------------------------------------------\n// CodeWorkspace\n// ---------------------------------------------------------------------------\n\nexport function CodeWorkspace({\n  tree,\n  files,\n  defaultSelectedId,\n  defaultExpandedIds,\n  height = 480,\n  className,\n  style,\n}: CodeWorkspaceProps) {\n  const initialId = defaultSelectedId ?? firstFileId(tree)\n  const [activeId, setActiveId] = React.useState<string | undefined>(initialId)\n\n  const activeFile = activeId ? files[activeId] : undefined\n\n  function handleSelect(node: TreeNode) {\n    if (node.type === \"file\") setActiveId(node.id)\n  }\n\n  return (\n    <div\n      className={className}\n      style={{\n        display: \"flex\",\n        height,\n        border: \"1px solid var(--aurora-border-default)\",\n        borderRadius: \"var(--aurora-radius-2)\",\n        overflow: \"hidden\",\n        boxShadow: \"var(--aurora-shadow-medium)\",\n        background: \"var(--aurora-panel-medium)\",\n        ...style,\n      }}\n    >\n      {/* Left rail — Explorer */}\n      <div\n        style={{\n          width: \"220px\",\n          flexShrink: 0,\n          display: \"flex\",\n          flexDirection: \"column\",\n          background: \"var(--aurora-panel-medium)\",\n          borderRight: \"1px solid var(--aurora-border-default)\",\n          overflow: \"hidden\",\n        }}\n      >\n        {/* Explorer header */}\n        <div\n          style={{\n            height: \"38px\",\n            flexShrink: 0,\n            display: \"flex\",\n            alignItems: \"center\",\n            paddingLeft: \"12px\",\n            paddingRight: \"8px\",\n            borderBottom: \"1px solid var(--aurora-border-default)\",\n            background: \"var(--aurora-panel-strong)\",\n          }}\n        >\n          <span\n            style={{\n              fontFamily: \"var(--aurora-font-sans)\",\n              fontSize: \"11px\",\n              fontWeight: 600,\n              letterSpacing: \"0.07em\",\n              textTransform: \"uppercase\",\n              color: \"var(--aurora-text-muted)\",\n              userSelect: \"none\",\n            }}\n          >\n            Explorer\n          </span>\n        </div>\n\n        {/* Tree scroll area */}\n        <div style={{ flex: 1, overflowY: \"auto\", padding: \"4px 4px\" }}>\n          <FileTree\n            tree={tree}\n            onSelect={handleSelect}\n            defaultSelectedId={initialId}\n            defaultExpandedIds={defaultExpandedIds}\n          />\n        </div>\n      </div>\n\n      {/* Right side — Code editor (flush / embedded) */}\n      {activeFile ? (\n        <CodeEditor\n          filename={activeFile.filename}\n          language={activeFile.language}\n          code={activeFile.code}\n          embedded\n        />\n      ) : (\n        /* Empty state when no file is selected or file map has no entry */\n        <div\n          style={{\n            flex: 1,\n            display: \"flex\",\n            alignItems: \"center\",\n            justifyContent: \"center\",\n            background: \"var(--aurora-control-surface)\",\n            color: \"var(--aurora-text-muted)\",\n            fontFamily: \"var(--aurora-font-sans)\",\n            fontSize: \"13px\",\n          }}\n        >\n          Select a file to view its contents\n        </div>\n      )}\n    </div>\n  )\n}\n\nexport default CodeWorkspace\n",
+      "type": "registry:component",
+      "target": "@components/aurora/code-workspace.tsx"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "block",
+    "requiresTokens": true,
+    "sourcePath": "registry/aurora/blocks/files/code-workspace/code-workspace.tsx",
+    "installTarget": "@components/aurora/code-workspace.tsx",
+    "taxonomy": "files"
+  },
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-workspace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-file-tree`, `aurora-code-editor`.",
+  "categories": [
+    "aurora",
+    "block",
+    "files"
+  ],
+  "type": "registry:block"
+}

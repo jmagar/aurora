@@ -53,6 +53,8 @@ data class SidebarState(
     val showGoalEditor: Boolean = false,
     val currentThreadId: String? = null,
     val mcpServers: List<McpServerInfo> = emptyList(),
+    /** Non-null when the last setGoal or clearGoal RPC failed. UI dismisses by calling clearGoalError(). */
+    val goalError: String? = null,
 )
 
 class SidebarViewModel(app: Application) : AndroidViewModel(app) {
@@ -104,11 +106,21 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 RequestKind.GoalSet -> {
                     if (event.msg.error != null) {
-                        // Server rejected the goal — re-open the editor so the user can fix their input
-                        _state.update { it.copy(showGoalEditor = true) }
-                        android.util.Log.w("SidebarViewModel", "setGoal failed: ${event.msg.error.message}")
+                        // Server rejected the goal — re-open the editor and surface the error
+                        val msg = event.msg.error.message.sanitizeForDisplay()
+                        _state.update { it.copy(showGoalEditor = true, goalError = msg) }
+                        android.util.Log.w("SidebarViewModel", "setGoal failed: $msg")
                     }
                     // On success: thread/goal/updated notification updates state via handleSidebarNotification
+                }
+                RequestKind.GoalClear -> {
+                    if (event.msg.error != null) {
+                        // Server rejected the clear — surface the error so the user knows the goal is still active
+                        val msg = event.msg.error.message.sanitizeForDisplay()
+                        _state.update { it.copy(goalError = msg) }
+                        android.util.Log.w("SidebarViewModel", "clearGoal failed: $msg")
+                    }
+                    // On success: thread/goal/cleared notification clears currentGoal via handleSidebarNotification
                 }
                 RequestKind.ThreadResume -> {
                     // When ChatViewModel successfully resumes a thread on cold start, sync the
@@ -178,6 +190,7 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
 
     fun showGoalEditor() = _state.update { it.copy(showGoalEditor = true) }
     fun hideGoalEditor() = _state.update { it.copy(showGoalEditor = false) }
+    fun clearGoalError() = _state.update { it.copy(goalError = null) }
 
     private fun handleSidebarNotification(msg: RpcMessage) {
         val params = msg.params?.jsonObject ?: return
@@ -188,9 +201,9 @@ class SidebarViewModel(app: Application) : AndroidViewModel(app) {
                 val status = goalObj["status"]?.jsonPrimitive?.contentOrNull ?: "active"
                 val tokenBudget = goalObj["tokenBudget"]?.jsonPrimitive?.intOrNull
                 val tokensUsed = goalObj["tokensUsed"]?.jsonPrimitive?.intOrNull ?: 0
-                _state.update { it.copy(currentGoal = ThreadGoal(objective, status, tokenBudget, tokensUsed)) }
+                _state.update { it.copy(currentGoal = ThreadGoal(objective, status, tokenBudget, tokensUsed), goalError = null) }
             }
-            "thread/goal/cleared" -> _state.update { it.copy(currentGoal = null) }
+            "thread/goal/cleared" -> _state.update { it.copy(currentGoal = null, goalError = null) }
             "mcpServer/startupStatus/updated" -> loadMcpServers()
         }
     }

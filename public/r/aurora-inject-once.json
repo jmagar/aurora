@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-inject-once",
+  "title": "Aurora injectOnce helper",
+  "author": "jmagar <https://github.com/jmagar>",
+  "description": "Idempotent runtime CSS injection helper used by Aurora registry components. Uses a DOM id guard instead of a module boolean so styles survive React Fast Refresh / HMR without duplicate injection.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/aurora/lib/inject-once.ts",
+      "content": "/**\n * injectOnce — idempotent runtime CSS injection for Aurora registry components.\n *\n * Uses a DOM id guard rather than a module-level boolean so the style survives\n * React Fast Refresh / HMR: when a module re-evaluates under HMR the boolean\n * resets to false and the next render appends a duplicate <style> tag, whereas\n * getElementById still finds the existing tag and skips re-injection.\n *\n * Usage:\n *   import { injectOnce } from \"@/registry/aurora/lib/inject-once\"\n *   injectOnce(\"aurora-my-component\", MY_CSS)\n *\n * Call this at the top of any render function or effect that needs styles\n * present before paint. It is a no-op on the server (SSR / RSC).\n */\nexport function injectOnce(id: string, css: string): void {\n  if (typeof document === \"undefined\") return\n  if (document.getElementById(id)) return\n  const el = document.createElement(\"style\")\n  el.id = id\n  el.textContent = css\n  document.head.appendChild(el)\n}\n",
+      "type": "registry:lib",
+      "target": "@lib/aurora/inject-once.ts"
+    }
+  ],
+  "meta": {
+    "namespace": "@aurora",
+    "style": "aurora",
+    "family": "lib",
+    "requiresTokens": false,
+    "sourcePath": "registry/aurora/lib/inject-once.ts",
+    "installTarget": "@lib/aurora/inject-once.ts"
+  },
+  "docs": "Shared runtime CSS injection helper. Install automatically pulled in as a registryDependency by Aurora components that use runtime style injection.",
+  "categories": [
+    "aurora",
+    "lib"
+  ],
+  "type": "registry:lib"
+}
