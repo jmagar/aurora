@@ -60,6 +60,9 @@ function tokenizeLine(line: string, lang: string): Token[] {
   if (lang === "css" || lang === "scss") return tokenizeCSS(line)
   if (lang === "json") return tokenizeJSON(line)
   if (lang === "bash" || lang === "sh") return tokenizeBash(line)
+  if (lang === "rust" || lang === "rs") return tokenizeRust(line)
+  if (lang === "toml") return tokenizeTOML(line)
+  if (lang === "python" || lang === "py") return tokenizePython(line)
   return [{ type: "plain", text: line }]
 }
 
@@ -149,6 +152,117 @@ function tokenizeBash(line: string): Token[] {
   }
   if (rest) result.push({ type: "plain", text: rest })
   return result
+}
+
+function tokenizeRust(line: string): Token[] {
+  const keywords = /\b(fn|let|mut|const|static|struct|enum|impl|trait|type|use|mod|pub|crate|super|self|Self|return|if|else|for|while|loop|match|break|continue|async|await|move|ref|in|where|dyn|Box|Vec|Option|Result|Some|None|Ok|Err|true|false|as|unsafe|extern|impl|derive|allow|cfg|test|tokio|async_trait)\b/
+  const result: Token[] = []
+  let rest = line
+
+  // Line comment
+  if (rest.trimStart().startsWith("//")) {
+    const indent = rest.slice(0, rest.length - rest.trimStart().length)
+    if (indent) result.push({ type: "plain", text: indent })
+    result.push({ type: "comment", text: rest.trimStart() })
+    return result
+  }
+
+  // Attributes #[…] and #![…]
+  const attrMatch = rest.match(/^(\s*)(#!?\[.*?\])/)
+  if (attrMatch) {
+    if (attrMatch[1]) result.push({ type: "plain", text: attrMatch[1] })
+    result.push({ type: "type", text: attrMatch[2] })
+    rest = rest.slice(attrMatch[0].length)
+    if (rest) result.push({ type: "plain", text: rest })
+    return result
+  }
+
+  while (rest.length > 0) {
+    // String literals
+    const strMatch = rest.match(/^"(?:\\.|[^"\\])*"/)
+    if (strMatch) { result.push({ type: "string", text: strMatch[0] }); rest = rest.slice(strMatch[0].length); continue }
+    // Lifetime 'a
+    const ltMatch = rest.match(/^'[a-z_]+\b/)
+    if (ltMatch) { result.push({ type: "type", text: ltMatch[0] }); rest = rest.slice(ltMatch[0].length); continue }
+    // Char literal 'x'
+    const charMatch = rest.match(/^'(?:\\.|[^'\\])'/)
+    if (charMatch) { result.push({ type: "string", text: charMatch[0] }); rest = rest.slice(charMatch[0].length); continue }
+    // Keywords
+    const kwMatch = rest.match(keywords)
+    if (kwMatch && rest.startsWith(kwMatch[0])) { result.push({ type: "keyword", text: kwMatch[0] }); rest = rest.slice(kwMatch[0].length); continue }
+    // Numbers (including 0x hex, suffixed like 1024usize)
+    const numMatch = rest.match(/^\b(?:0x[\da-fA-F]+|\d+(?:\.\d+)?(?:_\d+)*(?:[uif]\d+)?)\b/)
+    if (numMatch) { result.push({ type: "number", text: numMatch[0] }); rest = rest.slice(numMatch[0].length); continue }
+    // Macro calls: name!
+    const macroMatch = rest.match(/^([a-z_][a-zA-Z0-9_]*)!/)
+    if (macroMatch) { result.push({ type: "function", text: macroMatch[1] }); rest = rest.slice(macroMatch[1].length); continue }
+    // Function call: name(
+    const fnMatch = rest.match(/^([a-z_][a-zA-Z0-9_]*)(?=\s*\()/)
+    if (fnMatch) { result.push({ type: "function", text: fnMatch[0] }); rest = rest.slice(fnMatch[0].length); continue }
+    // Type (PascalCase)
+    const typeMatch = rest.match(/^[A-Z][A-Za-z0-9_]*/)
+    if (typeMatch) { result.push({ type: "type", text: typeMatch[0] }); rest = rest.slice(typeMatch[0].length); continue }
+    result.push({ type: "plain", text: rest[0] }); rest = rest.slice(1)
+  }
+  return mergeAdjacentPlain(result)
+}
+
+function tokenizeTOML(line: string): Token[] {
+  const result: Token[] = []
+  const trimmed = line.trimStart()
+  const indent = line.slice(0, line.length - trimmed.length)
+  if (indent) result.push({ type: "plain", text: indent })
+
+  // Comment
+  if (trimmed.startsWith("#")) { result.push({ type: "comment", text: trimmed }); return result }
+  // Section header [section] or [[array]]
+  const sectionMatch = trimmed.match(/^(\[{1,2}[^\]]+\]{1,2})/)
+  if (sectionMatch) { result.push({ type: "type", text: sectionMatch[1] }); const rest = trimmed.slice(sectionMatch[0].length); if (rest) result.push({ type: "plain", text: rest }); return result }
+  // key = value
+  const kvMatch = trimmed.match(/^([\w.-]+)(\s*=\s*)(.*)$/)
+  if (kvMatch) {
+    result.push({ type: "keyword", text: kvMatch[1] })
+    result.push({ type: "operator", text: kvMatch[2] })
+    const val = kvMatch[3]
+    if (val.startsWith('"') || val.startsWith("'")) {
+      result.push({ type: "string", text: val })
+    } else if (/^(true|false)/.test(val)) {
+      result.push({ type: "operator", text: val })
+    } else if (/^[\d-]/.test(val)) {
+      result.push({ type: "number", text: val })
+    } else {
+      result.push({ type: "plain", text: val })
+    }
+    return result
+  }
+  result.push({ type: "plain", text: trimmed })
+  return result
+}
+
+function tokenizePython(line: string): Token[] {
+  const keywords = /\b(def|class|return|import|from|as|if|elif|else|for|while|try|except|finally|with|yield|lambda|pass|break|continue|raise|del|global|nonlocal|and|or|not|in|is|True|False|None|async|await)\b/
+  const result: Token[] = []
+  let rest = line
+  if (rest.trimStart().startsWith("#")) {
+    const indent = rest.slice(0, rest.length - rest.trimStart().length)
+    if (indent) result.push({ type: "plain", text: indent })
+    result.push({ type: "comment", text: rest.trimStart() })
+    return result
+  }
+  while (rest.length > 0) {
+    const strMatch = rest.match(/^(?:"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')/)
+    if (strMatch) { result.push({ type: "string", text: strMatch[0] }); rest = rest.slice(strMatch[0].length); continue }
+    const kwMatch = rest.match(keywords)
+    if (kwMatch && rest.startsWith(kwMatch[0])) { result.push({ type: "keyword", text: kwMatch[0] }); rest = rest.slice(kwMatch[0].length); continue }
+    const numMatch = rest.match(/^\b\d+(?:\.\d+)?\b/)
+    if (numMatch) { result.push({ type: "number", text: numMatch[0] }); rest = rest.slice(numMatch[0].length); continue }
+    const fnMatch = rest.match(/^([a-z_][a-zA-Z0-9_]*)(?=\s*\()/)
+    if (fnMatch) { result.push({ type: "function", text: fnMatch[0] }); rest = rest.slice(fnMatch[0].length); continue }
+    const typeMatch = rest.match(/^[A-Z][A-Za-z0-9_]*/)
+    if (typeMatch) { result.push({ type: "type", text: typeMatch[0] }); rest = rest.slice(typeMatch[0].length); continue }
+    result.push({ type: "plain", text: rest[0] }); rest = rest.slice(1)
+  }
+  return mergeAdjacentPlain(result)
 }
 
 function mergeAdjacentPlain(tokens: Token[]): Token[] {
