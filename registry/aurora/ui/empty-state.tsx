@@ -21,78 +21,73 @@ export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
 // Component
 // ---------------------------------------------------------------------------
 
-export const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
-  function EmptyState(
-    { icon, title, description, action, className, as: Heading = "p", ...rest },
-    ref,
-  ) {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "flex flex-col items-center justify-center gap-5 px-8 py-14 text-center",
-          className,
-        )}
-        style={{
-          border: `1.5px dashed var(--aurora-border-default)`,
-          borderRadius: "var(--aurora-radius-2)",
-        }}
-        {...rest}
-      >
-        {/* Icon slot */}
-        {icon && (
-          <span
-            aria-hidden
-            className="flex items-center justify-center"
+export function EmptyState(
+  { icon, title, description, action, className, as: Heading = "p", ref, ...rest }: EmptyStateProps & { ref?: React.Ref<HTMLDivElement> },
+) {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex flex-col items-center justify-center gap-5 px-8 py-14 text-center",
+        className,
+      )}
+      style={{
+        border: `1.5px dashed var(--aurora-border-default)`,
+        borderRadius: "var(--aurora-radius-2)",
+      }}
+      {...rest}
+    >
+      {/* Icon slot */}
+      {icon && (
+        <span
+          aria-hidden
+          className="flex items-center justify-center"
+          style={{
+            width: 52,
+            height: 52,
+            background: "var(--aurora-control-surface)",
+            border: `1px solid var(--aurora-border-strong)`,
+            borderRadius: 14,
+            flexShrink: 0,
+            color: "var(--aurora-text-muted)",
+          }}
+        >
+          {icon}
+        </span>
+      )}
+
+      <div className="flex flex-col items-center gap-2">
+        {/* Title */}
+        <Heading
+          style={{
+            fontFamily: "var(--aurora-font-display)",
+            fontSize: "var(--aurora-type-section)",
+            fontWeight: "var(--aurora-weight-display)",
+            lineHeight: "var(--aurora-line-dense)",
+            color: "var(--aurora-text-primary)",
+          }}
+        >
+          {title}
+        </Heading>
+
+        {/* Description */}
+        {description && (
+          <p
             style={{
-              width: 52,
-              height: 52,
-              background: "var(--aurora-control-surface)",
-              border: `1px solid var(--aurora-border-strong)`,
-              borderRadius: 14,
-              flexShrink: 0,
               color: "var(--aurora-text-muted)",
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "var(--aurora-type-control)",
+              lineHeight: "var(--aurora-line-relaxed)",
+              maxWidth: 320,
             }}
           >
-            {icon}
-          </span>
+            {description}
+          </p>
         )}
-
-        <div className="flex flex-col items-center gap-2">
-          {/* Title */}
-          <Heading
-            style={{
-              fontFamily: "var(--aurora-font-display)",
-              fontSize: "var(--aurora-type-section)",
-              fontWeight: "var(--aurora-weight-display)",
-              lineHeight: "var(--aurora-line-dense)",
-              color: "var(--aurora-text-primary)",
-            }}
-          >
-            {title}
-          </Heading>
-
-          {/* Description */}
-          {description && (
-            <p
-              style={{
-                color: "var(--aurora-text-muted)",
-                fontFamily: "var(--aurora-font-sans)",
-                fontSize: "var(--aurora-type-control)",
-                lineHeight: "var(--aurora-line-relaxed)",
-                maxWidth: 320,
-              }}
-            >
-              {description}
-            </p>
-          )}
-        </div>
-
-        {/* Action slot */}
-        {action && <div className="pt-1">{action}</div>}
       </div>
-    );
-  },
-);
 
-EmptyState.displayName = "EmptyState";
+      {/* Action slot */}
+      {action && <div className="pt-1">{action}</div>}
+    </div>
+  );
+}

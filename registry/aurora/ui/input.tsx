@@ -103,27 +103,26 @@ const sizeFontTokens: Record<InputSize, string> = {
   lg: "var(--aurora-type-control)",
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      className,
-      type = "text",
-      startAdornment,
-      endAdornment,
-      style,
-      state: stateProp,
-      error,
-      size = "default",
-      clearable,
-      onClear,
-      value,
-      defaultValue,
-      onChange,
-      unstyled = false,
-      ...props
-    },
-    ref
-  ) => {
+function Input(
+  {
+    ref,
+    className,
+    type = "text",
+    startAdornment,
+    endAdornment,
+    style,
+    state: stateProp,
+    error,
+    size = "default",
+    clearable,
+    onClear,
+    value,
+    defaultValue,
+    onChange,
+    unstyled = false,
+    ...props
+  }: InputProps & { ref?: React.Ref<HTMLInputElement> }
+) {
     // Hold a real ref to the underlying <input> so the clear button can drive the
     // actual DOM element (native value setter + dispatched "input" event) instead
     // of fabricating a detached element. Merge it with any forwarded ref.
@@ -379,9 +378,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     )
-  }
-)
-Input.displayName = "Input"
+}
 
 export { Input }
 export default Input

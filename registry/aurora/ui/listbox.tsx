@@ -4,8 +4,8 @@ import * as React from "react"
 import { Button } from "./button"
 import { cn } from "@/lib/utils"
 
-const Listbox = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, style, ...props }, ref) => (
+function Listbox({ ref, className, style, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       role="listbox"
@@ -19,11 +19,10 @@ const Listbox = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
       {...props}
     />
   )
-)
-Listbox.displayName = "Listbox"
+}
 
-const ListboxGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { heading?: React.ReactNode }>(
-  ({ className, heading, children, ...props }, ref) => (
+function ListboxGroup({ ref, className, heading, children, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement>; heading?: React.ReactNode }) {
+  return (
     <div ref={ref} className={cn("py-1", className)} {...props}>
       {heading ? (
         <div
@@ -42,8 +41,7 @@ const ListboxGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
       {children}
     </div>
   )
-)
-ListboxGroup.displayName = "ListboxGroup"
+}
 
 export interface ListboxItemProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "title"> {
   title: React.ReactNode
@@ -52,8 +50,8 @@ export interface ListboxItemProps extends Omit<React.ButtonHTMLAttributes<HTMLBu
   active?: boolean
 }
 
-const ListboxItem = React.forwardRef<HTMLButtonElement, ListboxItemProps>(
-  ({ className, title, description, meta, active, style, ...props }, ref) => (
+function ListboxItem({ ref, className, title, description, meta, active, style, ...props }: ListboxItemProps & { ref?: React.Ref<HTMLButtonElement> }) {
+  return (
     <Button
       ref={ref}
       variant="plain"
@@ -76,8 +74,7 @@ const ListboxItem = React.forwardRef<HTMLButtonElement, ListboxItemProps>(
       {meta ? <span style={{ color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-mono)", fontSize: "var(--aurora-type-control)", letterSpacing: 0 }}>{meta}</span> : null}
     </Button>
   )
-)
-ListboxItem.displayName = "ListboxItem"
+}
 
 export { Listbox, ListboxGroup, ListboxItem }
 export default Listbox

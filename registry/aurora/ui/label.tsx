@@ -20,8 +20,8 @@ export interface LabelProps
   disabled?: boolean
 }
 
-const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
-  ({ className, style, required, disabled, children, ...props }, ref) => (
+function Label({ ref, className, style, required, disabled, children, ...props }: LabelProps & { ref?: React.Ref<HTMLLabelElement> }) {
+  return (
     <label
       ref={ref}
       data-disabled={disabled ? "" : undefined}
@@ -46,8 +46,7 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
       )}
     </label>
   )
-)
-Label.displayName = "Label"
+}
 
 export { Label }
 export default Label
