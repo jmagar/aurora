@@ -45,16 +45,6 @@ function ReloadIcon() {
   )
 }
 
-function ShareIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <circle cx="11" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.2" />
-      <circle cx="3" cy="7" r="1.5" stroke="currentColor" strokeWidth="1.2" />
-      <circle cx="11" cy="11" r="1.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M4.4 6.3L9.6 3.7M4.4 7.7L9.6 10.3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  )
-}
 
 function LockIcon() {
   return (

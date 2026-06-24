@@ -147,3 +147,38 @@
   -webkit-overflow-scrolling: touch;
   border-radius: var(--aurora-radius-2, 14px);
 }
+
+/* ─── Gallery page shell layout ─────────────────────────────────────────── */
+/* Moved from app/gallery/[section]/page.tsx inline <style> block.           */
+
+.aurora-gallery-page {
+  min-width: 0;
+}
+
+.aurora-gallery-page > * {
+  min-width: 0;
+}
+
+.aurora-gallery-demo-region {
+  display: grid;
+  justify-items: start;
+  width: 100%;
+  max-width: min(100%, 1120px);
+  min-width: 0;
+}
+
+.aurora-gallery-demo-region > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.aurora-gallery-install-region {
+  width: 100%;
+  max-width: min(760px, 100%);
+  min-width: 0;
+}
+
+.aurora-gallery-install-region > * {
+  max-width: 100%;
+  min-width: 0;
+}
