@@ -115,16 +115,18 @@ export function Chart({
           })
         )}
       </svg>
-      <div className="mt-3 grid gap-2">
-        {data.map((item, index) => (
-          <div key={index} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 aurora-text-meta">
-            <span className="truncate">{item.label}</span>
-            <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>
-              {item.value}
-            </span>
-          </div>
-        ))}
-      </div>
+      {data.some((item) => item.label) && (
+        <div className="mt-3 grid gap-2">
+          {data.map((item, index) => (
+            <div key={index} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 aurora-text-meta">
+              <span className="truncate">{item.label}</span>
+              <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>
+                {item.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
