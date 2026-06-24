@@ -55,8 +55,8 @@ const CHAT_SIDEBAR_CSS = `
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 14px 16px;
-  border-radius: var(--radius-1, 14px);
+  padding: 11px 16px;
+  border-radius: 8px;
   border: 1px solid color-mix(in srgb, var(--aurora-accent-primary) 42%, transparent);
   background: linear-gradient(
     180deg,
@@ -105,8 +105,8 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__search-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 12px 14px 12px 44px;
-  border-radius: var(--radius-1, 14px);
+  padding: 9px 14px 9px 40px;
+  border-radius: 8px;
   border: 1px solid var(--aurora-border-default);
   background: var(--aurora-control-surface);
   color: var(--aurora-text-primary);
@@ -129,15 +129,15 @@ const CHAT_SIDEBAR_CSS = `
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 4px 12px 12px;
+  padding: 4px 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 .aurora-chat-sidebar__bucket {
-  padding: 14px 8px 6px;
+  padding: 18px 8px 4px;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.08em;
@@ -147,18 +147,18 @@ const CHAT_SIDEBAR_CSS = `
 .aurora-chat-sidebar__thread {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   box-sizing: border-box;
-  padding: 11px 12px;
-  border-radius: var(--radius-1, 14px);
+  padding: 8px 10px;
+  border-radius: 6px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--aurora-text-muted);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.3;
   text-align: left;
   cursor: pointer;
   transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
@@ -328,8 +328,8 @@ function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
 function ThreadIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      width="18"
-      height="18"
+      width="14"
+      height="14"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -407,22 +407,19 @@ export interface ChatSidebarProps
 /*  Component                                                                 */
 /* -------------------------------------------------------------------------- */
 
-const ChatSidebar = React.forwardRef<HTMLElement, ChatSidebarProps>(
-  function ChatSidebar(
-    {
-      brand,
-      threads = [],
-      defaultActiveId,
-      activeId: controlledActiveId,
-      onSelectThread,
-      onNewChat,
-      searchPlaceholder = "Search conversations...",
-      user,
-      className,
-      ...props
-    },
-    ref,
-  ) {
+function ChatSidebar({
+  ref,
+  brand,
+  threads = [],
+  defaultActiveId,
+  activeId: controlledActiveId,
+  onSelectThread,
+  onNewChat,
+  searchPlaceholder = "Search conversations...",
+  user,
+  className,
+  ...props
+}: ChatSidebarProps & { ref?: React.Ref<HTMLElement> }) {
     useChatSidebarStyles()
 
     const isControlled = controlledActiveId != null
@@ -538,10 +535,7 @@ const ChatSidebar = React.forwardRef<HTMLElement, ChatSidebarProps>(
         ) : null}
       </nav>
     )
-  },
-)
-
-ChatSidebar.displayName = "ChatSidebar"
+}
 
 export { ChatSidebar }
 export default ChatSidebar
