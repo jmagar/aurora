@@ -1,4 +1,6 @@
-FROM node:24-alpine AS base
+# Pin by digest so builds are reproducible; bump with `docker pull node:24-alpine`
+# then update the digest here and in the runner stage.
+FROM node:24-alpine@sha256:156b55f92e98ccd5ef49578a8cea0df4679826564bad1c9d4ef04462b9f0ded6 AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -37,7 +39,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN pnpm build
 
-FROM node:24-alpine AS runner
+FROM node:24-alpine@sha256:156b55f92e98ccd5ef49578a8cea0df4679826564bad1c9d4ef04462b9f0ded6 AS runner
 
 WORKDIR /app
 

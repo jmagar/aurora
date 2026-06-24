@@ -26,6 +26,14 @@ jobs:
           node-version: 24
           cache: pnpm
 
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          # Bust the cache when lockfile or Next config changes.
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'next.config.*') }}
+          restore-keys: nextjs-${{ runner.os }}-
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm run lint
       - run: pnpm run audit:composition
@@ -58,6 +66,15 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+
+      - name: Cache Gradle wrapper and caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/wrapper
+            ~/.gradle/caches
+          key: gradle-${{ runner.os }}-${{ hashFiles('android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
 
       - run: pnpm install --frozen-lockfile
       - run: ./gradlew :app:testDebugUnitTest --no-daemon
