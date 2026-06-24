@@ -172,7 +172,7 @@ function ResponseCodeBlock({ code, language }: { code: string; language: string 
         className="overflow-auto aurora-text-code"
         style={{
           margin: 0,
-          padding: "16px 18px",
+          padding: "14px 16px",
           background: "transparent",
           color: "var(--aurora-text-primary)",
           lineHeight: 1.7,
@@ -503,7 +503,7 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
         className={cn("aurora-text-body", className)}
         style={{
           fontFamily: "var(--aurora-font-sans)",
-          fontSize: 16,
+          fontSize: 15,
           lineHeight: 1.6,
           color: "var(--aurora-text-primary)",
           opacity: streaming ? 0.96 : 1,
