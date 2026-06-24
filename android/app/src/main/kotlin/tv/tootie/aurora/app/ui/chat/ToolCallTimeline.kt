@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Extension
+import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -120,6 +121,22 @@ private fun ToolCallRow(call: ToolCall) {
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+
+            // "Awaiting input" indicator — command is blocked waiting for stdin.
+            // Only shown while the command is still running (not done).
+            if (call.needsInput && !call.done) {
+                Icon(
+                    Icons.Default.Keyboard,
+                    contentDescription = "Awaiting input",
+                    tint = aurora.warn,
+                    modifier = Modifier.size(13.dp),
+                )
+                Text(
+                    "input",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = aurora.warn,
+                )
+            }
 
             // Status icon (done/failed only)
             if (call.done) {
