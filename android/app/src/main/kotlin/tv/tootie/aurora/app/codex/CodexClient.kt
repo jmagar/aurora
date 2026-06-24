@@ -779,6 +779,33 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return ws?.send(frame) ?: false
     }
 
+    /**
+     * Lists all available experimental features and their current enablement state.
+     * Requires `experimentalApi: true` in the initialize capabilities (already set).
+     * [threadId] optionally scopes evaluation to a project directory.
+     */
+    fun listExperimentalFeatures(threadId: String? = null): Int {
+        val id = ids.incrementAndGet()
+        send("experimentalFeature/list", buildJsonObject {
+            threadId?.let { put("threadId", it) }
+        }, id)
+        return id
+    }
+
+    /**
+     * Enables or disables a named experimental feature process-wide.
+     * [name] is the feature identifier as returned by [listExperimentalFeatures].
+     * [enabled] is the desired enablement state.
+     */
+    fun setFeatureEnablement(name: String, enabled: Boolean): Int {
+        val id = ids.incrementAndGet()
+        send("experimentalFeature/enablement/set", buildJsonObject {
+            put("name", name)
+            put("enabled", enabled)
+        }, id)
+        return id
+    }
+
     private fun send(method: String, params: JsonElement, id: Int? = null) {
         val msg = buildJsonObject {
             put("method", method)

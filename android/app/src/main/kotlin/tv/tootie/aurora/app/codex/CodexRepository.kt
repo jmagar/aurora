@@ -54,6 +54,8 @@ public enum class RequestKind {
     Skills,              // skills/list
     ConfigRequirements,  // configRequirements/read
     ConfigRead,          // config/read
+    ExperimentalFeatures,   // experimentalFeature/list
+    ExperimentalEnablement, // experimentalFeature/enablement/set
     AccountRead,         // account/read
     RateLimitsRead,      // account/rateLimits/read
     FuzzySearch,         // fuzzyFileSearch
@@ -104,6 +106,19 @@ sealed class CodexEvent {
     data class ConfigResult(
         val config: JsonObject?,
         val layers: JsonObject?,
+        val error: String? = null,
+    ) : CodexEvent()
+
+    /**
+     * Parsed result from a experimentalFeature/list response.
+     *
+     * Each entry in [features] is a raw feature object with at minimum "name" (String)
+     * and "enabled" (Boolean). Additional metadata fields (description, stability) are
+     * preserved for display but not parsed eagerly.
+     * [error] is non-null when the RPC returned an error.
+     */
+    data class ExperimentalFeatureList(
+        val features: List<JsonObject>,
         val error: String? = null,
     ) : CodexEvent()
 
@@ -193,6 +208,10 @@ class CodexRepository {
     private val _configFlow = MutableSharedFlow<CodexEvent.ConfigResult>(replay = 1)
     /** config/read responses. SettingsViewModel subscribes here. */
     val configFlow: SharedFlow<CodexEvent.ConfigResult> = _configFlow.asSharedFlow()
+
+    private val _experimentalFeaturesFlow = MutableSharedFlow<CodexEvent.ExperimentalFeatureList>(replay = 1)
+    /** experimentalFeature/list responses. SettingsViewModel subscribes here. */
+    val experimentalFeaturesFlow: SharedFlow<CodexEvent.ExperimentalFeatureList> = _experimentalFeaturesFlow.asSharedFlow()
 
     // --- Connection lifecycle ----------------------------------------------
 
@@ -433,6 +452,20 @@ class CodexRepository {
         return key
     }
 
+    fun listExperimentalFeatures(threadId: String? = null): String {
+        val rawId = client?.listExperimentalFeatures(threadId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ExperimentalFeatures
+        return key
+    }
+
+    fun setFeatureEnablement(name: String, enabled: Boolean): String {
+        val rawId = client?.setFeatureEnablement(name, enabled) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ExperimentalEnablement
+        return key
+    }
+
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean =
         client?.sendApproval(rawServerId, decision) ?: false
 
@@ -579,6 +612,19 @@ class CodexRepository {
                 RequestKind.AccountRead -> routeAccountResponse(msg)
                 RequestKind.RateLimitsRead -> routeRateLimitsResponse(msg)
                 RequestKind.ConfigRead -> routeConfigResponse(msg)
+                RequestKind.ExperimentalFeatures -> routeExperimentalFeaturesResponse(msg)
+                RequestKind.ExperimentalEnablement -> {
+                    // On success: refresh the feature list so the UI reflects the new state.
+                    // On error: surface as an ExperimentalFeatureList with the error message.
+                    if (msg.error != null) {
+                        _experimentalFeaturesFlow.tryEmit(
+                            CodexEvent.ExperimentalFeatureList(features = emptyList(), error = msg.error.message)
+                        )
+                    } else {
+                        // Re-fetch the list to pick up the server's authoritative state.
+                        listExperimentalFeatures()
+                    }
+                }
                 // ThreadStart, ThreadResume, Steer, Goal*, Other, null — go to turnEventsFlow
                 // so ChatViewModel handles them with its existing null-method dispatch.
                 // Direct emit (demux is already suspend) — no scope.launch to preserve ordering
@@ -689,5 +735,18 @@ class CodexRepository {
         val config = result["config"]?.jsonObject
         val layers = result["layers"]?.jsonObject
         _configFlow.tryEmit(CodexEvent.ConfigResult(config = config, layers = layers))
+    }
+
+    private fun routeExperimentalFeaturesResponse(msg: RpcMessage) {
+        if (msg.error != null) {
+            _experimentalFeaturesFlow.tryEmit(
+                CodexEvent.ExperimentalFeatureList(features = emptyList(), error = msg.error.message)
+            )
+            return
+        }
+        // Response shape: result.data[] — each entry has at minimum "name" and "enabled"
+        val result = msg.result?.jsonObject ?: return
+        val features = result["data"]?.jsonArray?.mapNotNull { it as? JsonObject } ?: emptyList()
+        _experimentalFeaturesFlow.tryEmit(CodexEvent.ExperimentalFeatureList(features = features))
     }
 }
