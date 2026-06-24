@@ -339,6 +339,65 @@ function tokenizeBash(line: string): Token[] {
   return mergeAdjacentPlain(result)
 }
 
+function tokenizeToml(line: string): Token[] {
+  const result: Token[] = []
+  const trimmed = line.trimStart()
+  if (trimmed.startsWith("#")) return [{ type: "comment", text: line }]
+  if (trimmed.startsWith("[")) return [{ type: "type", text: line }]
+
+  const kvMatch = line.match(/^(\s*[\w.-]+\s*)(=)(.*)$/)
+  if (!kvMatch) return [{ type: "plain", text: line }]
+
+  result.push({ type: "keyword", text: kvMatch[1] })
+  result.push({ type: "operator", text: kvMatch[2] })
+  const value = kvMatch[3]
+  const valueTrimmed = value.trimStart()
+  if (/^"[^"]*"/.test(valueTrimmed) || /^'[^']*'/.test(valueTrimmed)) {
+    result.push({ type: "string", text: value })
+  } else if (/^\d/.test(valueTrimmed)) {
+    result.push({ type: "number", text: value })
+  } else if (/^(true|false)\b/.test(valueTrimmed)) {
+    result.push({ type: "keyword", text: value })
+  } else {
+    result.push({ type: "plain", text: value })
+  }
+  return result
+}
+
+const PY_KEYWORDS = /^(and|as|assert|async|await|break|class|continue|def|del|elif|else|except|False|finally|for|from|global|if|import|in|is|lambda|None|nonlocal|not|or|pass|raise|return|True|try|while|with|yield|self|cls)\b/
+
+function tokenizePython(line: string): Token[] {
+  const result: Token[] = []
+  let rest = line
+
+  while (rest.length > 0) {
+    if (rest.startsWith("#")) { result.push({ type: "comment", text: rest }); break }
+    if (rest[0] === '"' || rest[0] === "'") {
+      const q = rest[0]
+      let i = 1
+      while (i < rest.length) {
+        if (rest[i] === "\\") { i += 2; continue }
+        if (rest[i] === q) { i++; break }
+        i++
+      }
+      rest = eat(result, rest, i, "string")
+      continue
+    }
+    const kwMatch = rest.match(PY_KEYWORDS)
+    if (kwMatch) { rest = eat(result, rest, kwMatch[0].length, "keyword"); continue }
+    const typeMatch = rest.match(/^[A-Z][A-Za-z0-9_]*/)
+    if (typeMatch) { rest = eat(result, rest, typeMatch[0].length, "type"); continue }
+    const fnMatch = rest.match(/^([a-z_][A-Za-z0-9_]*)(?=\s*\()/)
+    if (fnMatch) { rest = eat(result, rest, fnMatch[0].length, "function"); continue }
+    const numMatch = rest.match(/^\b\d+(\.\d+)?\b/)
+    if (numMatch) { rest = eat(result, rest, numMatch[0].length, "number"); continue }
+    const opMatch = rest.match(/^(?:==|!=|<=|>=|:=|[+\-*/%<>=.,:;()[\]{}])/)
+    if (opMatch) { rest = eat(result, rest, opMatch[0].length, "operator"); continue }
+    result.push({ type: "plain", text: rest[0] }); rest = rest.slice(1)
+  }
+  return mergeAdjacentPlain(result)
+}
+
 // ---------------------------------------------------------------------------
 // Top-level dispatcher
 // ---------------------------------------------------------------------------
@@ -355,6 +414,10 @@ function tokenizeLine(line: string, lang: string): Token[] {
       return tokenizeJSON(line)
     case "bash": case "sh": case "zsh":
       return tokenizeBash(line)
+    case "toml":
+      return tokenizeToml(line)
+    case "python": case "py":
+      return tokenizePython(line)
     default:
       // Best-effort: try TS tokenizer for unknown langs (handles most C-family syntax gracefully)
       return tokenizeTS(line)
