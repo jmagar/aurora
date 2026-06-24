@@ -11,56 +11,50 @@ function devWarn(message: string): void {
 
 export type CalloutVariant = "info" | "success" | "warn" | "error" | "neutral" | "rose"
 
-type ToneTokens = { accent: string; bg: string; border: string; text: string; accentShadow: string; accentInset: string }
+type ToneTokens = { accent: string; bg: string; border: string; text: string; accentShadow: string }
 
 const toneMap: Record<CalloutVariant, ToneTokens> = {
   info: {
-    accent:      "var(--aurora-info)",
-    bg:          "var(--aurora-info-surface)",
-    border:      "var(--aurora-info-border)",
-    text:        "var(--aurora-info-foreground)",
-    accentShadow: "0 0 10px var(--aurora-info)",
-    accentInset:  "inset 3px 0 0 var(--aurora-info)",
+    accent:       "var(--aurora-info)",
+    bg:           "var(--aurora-info-surface)",
+    border:       "var(--aurora-info-border)",
+    text:         "var(--aurora-info-foreground)",
+    accentShadow: "0 0 8px var(--aurora-info)",
   },
   success: {
-    accent:      "var(--aurora-success)",
-    bg:          "var(--aurora-success-surface)",
-    border:      "var(--aurora-success-border)",
-    text:        "var(--aurora-success-foreground)",
-    accentShadow: "0 0 10px var(--aurora-success)",
-    accentInset:  "inset 3px 0 0 var(--aurora-success)",
+    accent:       "var(--aurora-success)",
+    bg:           "var(--aurora-success-surface)",
+    border:       "var(--aurora-success-border)",
+    text:         "var(--aurora-success-foreground)",
+    accentShadow: "0 0 8px var(--aurora-success)",
   },
   warn: {
-    accent:      "var(--aurora-warn)",
-    bg:          "var(--aurora-warn-surface)",
-    border:      "var(--aurora-warn-border)",
-    text:        "var(--aurora-warn-foreground)",
-    accentShadow: "0 0 10px var(--aurora-warn)",
-    accentInset:  "inset 3px 0 0 var(--aurora-warn)",
+    accent:       "var(--aurora-warn)",
+    bg:           "var(--aurora-warn-surface)",
+    border:       "var(--aurora-warn-border)",
+    text:         "var(--aurora-warn-foreground)",
+    accentShadow: "0 0 8px var(--aurora-warn)",
   },
   error: {
-    accent:      "var(--aurora-error)",
-    bg:          "var(--aurora-error-surface)",
-    border:      "var(--aurora-error-border)",
-    text:        "var(--aurora-error-foreground)",
-    accentShadow: "0 0 10px var(--aurora-error)",
-    accentInset:  "inset 3px 0 0 var(--aurora-error)",
+    accent:       "var(--aurora-error)",
+    bg:           "var(--aurora-error-surface)",
+    border:       "var(--aurora-error-border)",
+    text:         "var(--aurora-error-foreground)",
+    accentShadow: "0 0 8px var(--aurora-error)",
   },
   neutral: {
-    accent:      "var(--aurora-neutral)",
-    bg:          "var(--aurora-neutral-surface)",
-    border:      "var(--aurora-neutral-border)",
-    text:        "var(--aurora-neutral-foreground)",
-    accentShadow: "0 0 10px var(--aurora-neutral)",
-    accentInset:  "inset 3px 0 0 var(--aurora-neutral)",
+    accent:       "var(--aurora-neutral)",
+    bg:           "var(--aurora-neutral-surface)",
+    border:       "var(--aurora-neutral-border)",
+    text:         "var(--aurora-neutral-foreground)",
+    accentShadow: "0 0 8px var(--aurora-neutral)",
   },
   rose: {
-    accent:      "var(--aurora-accent-pink)",
-    bg:          "var(--aurora-accent-pink-surface)",
-    border:      "var(--aurora-accent-pink-border)",
-    text:        "var(--aurora-accent-pink-strong)",
-    accentShadow: "0 0 10px var(--aurora-accent-pink)",
-    accentInset:  "inset 3px 0 0 var(--aurora-accent-pink)",
+    accent:       "var(--aurora-accent-pink)",
+    bg:           "var(--aurora-accent-pink-surface)",
+    border:       "var(--aurora-accent-pink-border)",
+    text:         "var(--aurora-accent-pink-strong)",
+    accentShadow: "0 0 8px var(--aurora-accent-pink)",
   },
 }
 
@@ -70,13 +64,12 @@ export interface CalloutProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   icon?: React.ReactNode
 }
 
-const Callout = React.forwardRef<HTMLDivElement, CalloutProps>(
-  ({ className, variant = "info", title, icon, children, style, ...props }, ref) => {
+function Callout({ ref, className, variant = "info", title, icon, children, style, ...props }: CalloutProps & { ref?: React.Ref<HTMLDivElement> }) {
     const safeVariant: CalloutVariant = Object.hasOwn(toneMap, variant) ? variant : "info"
     if (safeVariant !== variant) {
       devWarn(`[Aurora Callout] Unknown variant "${variant}". Falling back to "info".`)
     }
-    const { accent, bg, border, text, accentShadow, accentInset } = toneMap[safeVariant]
+    const { accent, bg, border, text, accentShadow } = toneMap[safeVariant]
 
     return (
       <div
@@ -85,7 +78,6 @@ const Callout = React.forwardRef<HTMLDivElement, CalloutProps>(
         style={{
           background: bg,
           borderColor: border,
-          boxShadow: accentInset,
           ...style,
         }}
         {...props}
@@ -118,9 +110,7 @@ const Callout = React.forwardRef<HTMLDivElement, CalloutProps>(
         </div>
       </div>
     )
-  }
-)
-Callout.displayName = "Callout"
+}
 
 export { Callout }
 export default Callout
