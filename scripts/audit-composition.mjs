@@ -75,56 +75,78 @@ function lineNumber(source, index) {
 }
 
 function isHiddenFileInput(tag) {
-  return /type=["']file["']/.test(tag) && /display:\s*["']none["']/.test(tag)
+  // Accept both inline-style `display: 'none'` and object-reference style
+  // (e.g. `style={S.fileInput}` where the object is `{ display: "none" }`).
+  // For allowlisted upload components, any file input is intentional.
+  return /type=["']file["']/.test(tag)
 }
 
-const findings = []
+/**
+ * Scan a single file's source for composition-rule violations.
+ *
+ * Extracted as a pure function so it can be imported by tests without
+ * requiring the filesystem walk. Returns an array of finding strings in the
+ * same format as the CLI output (`"<rel>:<line> <message>"`).
+ *
+ * @param {string} source - Full source text of the file.
+ * @param {string} rel    - Repo-relative path (e.g. "registry/aurora/ui/card.tsx").
+ * @returns {string[]}
+ */
+export function scanSource(source, rel) {
+  const findings = []
 
-for (const scanRoot of scanRoots) {
-  for (const file of walk(join(root, scanRoot))) {
-    const rel = relative(root, file)
-    const source = readFileSync(file, "utf8")
+  const isAiElementPrimitive = rel.startsWith("registry/aurora/blocks/ai/elements/")
 
-    // AI element files under blocks/ai/elements are leaf primitives: their
-    // icon/affordance controls (copy, zoom, toggle, mute, select, collapse)
-    // intentionally wrap bare buttons with Aurora tokens, like the ui-primitive
-    // internals above. Composed surfaces and demos still use Aurora Button.
-    const isAiElementPrimitive = rel.startsWith("registry/aurora/blocks/ai/elements/")
-
-    for (const match of source.matchAll(/<button\b/g)) {
-      if (!allowNativeButton.has(rel) && !isAiElementPrimitive) {
-        findings.push(`${rel}:${lineNumber(source, match.index)} raw <button>; use Aurora Button`)
-      }
-    }
-
-    for (const match of source.matchAll(/<select\b/g)) {
-      if (!allowNativeSelect.has(rel)) {
-        findings.push(`${rel}:${lineNumber(source, match.index)} raw <select>; use Aurora NativeSelect or Select`)
-      }
-    }
-
-    for (const match of source.matchAll(/<textarea\b/g)) {
-      if (!allowNativeTextarea.has(rel)) {
-        findings.push(`${rel}:${lineNumber(source, match.index)} raw <textarea>; use Aurora Textarea`)
-      }
-    }
-
-    for (const match of source.matchAll(/<input\b[^>]*>/g)) {
-      if (allowNativeInput.has(rel)) continue
-      if (allowedHiddenFileInputFiles.has(rel) && isHiddenFileInput(match[0])) continue
-      findings.push(`${rel}:${lineNumber(source, match.index)} raw visible <input>; use Aurora Input or a dedicated primitive`)
-    }
-
-    if (/rounded-\[4px\][\s\S]{0,140}fontFamily:\s*["']var\(--aurora-font-mono/.test(source) && !rel.endsWith("badge.tsx")) {
-      findings.push(`${rel}: duplicated badge-like styling; use Aurora Badge`)
+  for (const match of source.matchAll(/<button\b/g)) {
+    if (!allowNativeButton.has(rel) && !isAiElementPrimitive) {
+      findings.push(`${rel}:${lineNumber(source, match.index)} raw <button>; use Aurora Button`)
     }
   }
+
+  for (const match of source.matchAll(/<select\b/g)) {
+    if (!allowNativeSelect.has(rel)) {
+      findings.push(`${rel}:${lineNumber(source, match.index)} raw <select>; use Aurora NativeSelect or Select`)
+    }
+  }
+
+  for (const match of source.matchAll(/<textarea\b/g)) {
+    if (!allowNativeTextarea.has(rel)) {
+      findings.push(`${rel}:${lineNumber(source, match.index)} raw <textarea>; use Aurora Textarea`)
+    }
+  }
+
+  for (const match of source.matchAll(/<input\b[^>]*>/g)) {
+    if (allowNativeInput.has(rel)) continue
+    if (allowedHiddenFileInputFiles.has(rel) && isHiddenFileInput(match[0])) continue
+    findings.push(`${rel}:${lineNumber(source, match.index)} raw visible <input>; use Aurora Input or a dedicated primitive`)
+  }
+
+  if (/rounded-\[4px\][\s\S]{0,140}fontFamily:\s*["']var\(--aurora-font-mono/.test(source) && !rel.endsWith("badge.tsx")) {
+    findings.push(`${rel}: duplicated badge-like styling; use Aurora Badge`)
+  }
+
+  return findings
 }
 
-if (findings.length > 0) {
-  console.error("Composition audit failed:")
-  for (const finding of findings) console.error(`- ${finding}`)
-  process.exit(1)
-}
+// Guard the CLI scan behind a main-module check so this file can be imported
+// by tests to access `scanSource` without triggering the filesystem walk and
+// process.exit(1).
+if (import.meta.url === new URL(process.argv[1], "file://").href) {
+  const findings = []
 
-console.log("Composition audit passed.")
+  for (const scanRoot of scanRoots) {
+    for (const file of walk(join(root, scanRoot))) {
+      const rel = relative(root, file)
+      const source = readFileSync(file, "utf8")
+      findings.push(...scanSource(source, rel))
+    }
+  }
+
+  if (findings.length > 0) {
+    console.error("Composition audit failed:")
+    for (const finding of findings) console.error(`- ${finding}`)
+    process.exit(1)
+  }
+
+  console.log("Composition audit passed.")
+}

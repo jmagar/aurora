@@ -183,6 +183,11 @@ test("resolveVars uses the fallback for an unknown var()", () => {
   assert.equal(resolveVars("var(--aurora-missing, #ff0000)", {}), "#ff0000")
 })
 
-test("resolveVars leaves an unknown var() with no fallback intact", () => {
-  assert.equal(resolveVars("var(--aurora-missing)", {}), "var(--aurora-missing)")
+test("resolveVars throws for an unknown var() with no fallback", () => {
+  // resolveVars was hardened to throw instead of silently returning the
+  // unresolved token — broken token exports now fail loudly at build time.
+  assert.throws(
+    () => resolveVars("var(--aurora-missing)", {}),
+    /Unresolvable var\(\) reference/,
+  )
 })

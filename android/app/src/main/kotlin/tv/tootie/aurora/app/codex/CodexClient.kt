@@ -319,45 +319,118 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
-    fun steerTurn(threadId: String, text: String, expectedTurnId: String): Int {
+    /**
+     * Builds the raw JSON string for a `turn/steer` request.
+     * Extracted as `internal` so unit tests can assert on the serialised frame
+     * without a real WebSocket connection.
+     */
+    internal fun buildSteerFrame(threadId: String, text: String, expectedTurnId: String): Pair<String, Int> {
         val id = ids.incrementAndGet()
-        send("turn/steer", buildJsonObject {
-            put("threadId", threadId)
-            put("input", buildJsonArray {
-                add(buildJsonObject { put("type", "text"); put("text", text) })
+        val frame = json.encodeToString(buildJsonObject {
+            put("method", "turn/steer")
+            put("id", id)
+            put("params", buildJsonObject {
+                put("threadId", threadId)
+                put("input", buildJsonArray {
+                    add(buildJsonObject { put("type", "text"); put("text", text) })
+                })
+                put("expectedTurnId", expectedTurnId)
             })
-            put("expectedTurnId", expectedTurnId)
-        }, id)
+        })
+        return frame to id
+    }
+
+    fun steerTurn(threadId: String, text: String, expectedTurnId: String): Int {
+        val (frame, id) = buildSteerFrame(threadId, text, expectedTurnId)
+        ws?.send(frame)
         return id
+    }
+
+    /**
+     * Builds the raw JSON string for a `thread/goal/set` request.
+     * Extracted as `internal` so unit tests can assert on the serialised frame
+     * without a real WebSocket connection.
+     */
+    internal fun buildSetGoalFrame(threadId: String, objective: String, tokenBudget: Int? = null): Pair<String, Int> {
+        val id = ids.incrementAndGet()
+        val frame = json.encodeToString(buildJsonObject {
+            put("method", "thread/goal/set")
+            put("id", id)
+            put("params", buildJsonObject {
+                put("threadId", threadId)
+                put("objective", objective)
+                tokenBudget?.let { put("tokenBudget", it) }
+            })
+        })
+        return frame to id
     }
 
     fun setGoal(threadId: String, objective: String, tokenBudget: Int? = null): Int {
-        val id = ids.incrementAndGet()
-        send("thread/goal/set", buildJsonObject {
-            put("threadId", threadId)
-            put("objective", objective)
-            tokenBudget?.let { put("tokenBudget", it) }
-        }, id)
+        val (frame, id) = buildSetGoalFrame(threadId, objective, tokenBudget)
+        ws?.send(frame)
         return id
+    }
+
+    /**
+     * Builds the raw JSON string for a `thread/goal/get` request.
+     * Extracted as `internal` so unit tests can assert on the serialised frame
+     * without a real WebSocket connection.
+     */
+    internal fun buildGetGoalFrame(threadId: String): Pair<String, Int> {
+        val id = ids.incrementAndGet()
+        val frame = json.encodeToString(buildJsonObject {
+            put("method", "thread/goal/get")
+            put("id", id)
+            put("params", buildJsonObject { put("threadId", threadId) })
+        })
+        return frame to id
     }
 
     fun getGoal(threadId: String): Int {
-        val id = ids.incrementAndGet()
-        send("thread/goal/get", buildJsonObject { put("threadId", threadId) }, id)
+        val (frame, id) = buildGetGoalFrame(threadId)
+        ws?.send(frame)
         return id
+    }
+
+    /**
+     * Builds the raw JSON string for a `thread/goal/clear` request.
+     * Extracted as `internal` so unit tests can assert on the serialised frame
+     * without a real WebSocket connection.
+     */
+    internal fun buildClearGoalFrame(threadId: String): Pair<String, Int> {
+        val id = ids.incrementAndGet()
+        val frame = json.encodeToString(buildJsonObject {
+            put("method", "thread/goal/clear")
+            put("id", id)
+            put("params", buildJsonObject { put("threadId", threadId) })
+        })
+        return frame to id
     }
 
     fun clearGoal(threadId: String): Int {
-        val id = ids.incrementAndGet()
-        send("thread/goal/clear", buildJsonObject { put("threadId", threadId) }, id)
+        val (frame, id) = buildClearGoalFrame(threadId)
+        ws?.send(frame)
         return id
     }
 
-    fun listMcpServers(): Int {
+    /**
+     * Builds the raw JSON string for a `mcpServerStatus/list` request.
+     * Extracted as `internal` so unit tests can assert on the serialised frame
+     * without a real WebSocket connection.
+     */
+    internal fun buildListMcpServersFrame(): Pair<String, Int> {
         val id = ids.incrementAndGet()
-        send("mcpServerStatus/list", buildJsonObject {
-            put("detail", "toolsAndAuthOnly")
-        }, id)
+        val frame = json.encodeToString(buildJsonObject {
+            put("method", "mcpServerStatus/list")
+            put("id", id)
+            put("params", buildJsonObject { put("detail", "toolsAndAuthOnly") })
+        })
+        return frame to id
+    }
+
+    fun listMcpServers(): Int {
+        val (frame, id) = buildListMcpServersFrame()
+        ws?.send(frame)
         return id
     }
 
