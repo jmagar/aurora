@@ -100,6 +100,24 @@ data class ToolApproval(
     val availableDecisions: ImmutableList<String> = persistentListOf("accept", "decline"),
 )
 
+/**
+ * Tracks an in-progress or completed auto-approval review by the guardian subagent.
+ *
+ * Created on [item/autoApprovalReview/started] (decision = null, reasoning = null).
+ * Updated on [item/autoApprovalReview/completed] (decision and reasoning populated).
+ * Cleared from ChatState when the parent turn completes via [ChatState.resetForNewTurn].
+ */
+@Immutable
+data class AutoApprovalReview(
+    val itemId: String,
+    /** The action description sent for guardian review (from the started notification). */
+    val actionDescription: String,
+    /** null while review is in progress; "approved"/"denied" once completed. */
+    val decision: String? = null,
+    /** Guardian's reasoning, populated on completion. Already sanitized. */
+    val reasoning: String? = null,
+)
+
 @Immutable
 data class ChatState(
     val threadId: String? = null,
@@ -138,6 +156,8 @@ data class ChatState(
     val cwd: String? = null,
     // Dismissible server warning banners (warning, guardianWarning, deprecationNotice, configWarning)
     val serverWarnings: ImmutableList<String> = persistentListOf(),
+    /** Non-null while a guardian auto-review is in progress or just completed. */
+    val autoApprovalReview: AutoApprovalReview? = null,
 ) {
     /**
      * Return a copy with all per-turn transient fields zeroed and [newMsgs] installed.
@@ -162,6 +182,7 @@ data class ChatState(
         fileChanges = persistentListOf(),
         pendingAttachments = persistentListOf(),
         pendingApprovals = persistentListOf(),
+        autoApprovalReview = null,
     )
 }
 
@@ -994,6 +1015,28 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     ))))
                 }
             }
+            // Streaming file content as the agent writes a file — append to the item's output buffer.
+            "item/fileChange/outputDelta" -> {
+                val itemId = params?.get("itemId")?.jsonPrimitive?.content ?: return
+                val delta = params["delta"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
+                _state.update { s ->
+                    s.copy(fileChanges = s.fileChanges.map { fc ->
+                        if (fc.id == itemId) fc.copy(output = fc.output + delta) else fc
+                    }.toImmutableList())
+                }
+            }
+
+            // Unified diff patch for a file change — replace the patch snapshot.
+            "item/fileChange/patchUpdated" -> {
+                val itemId = params?.get("itemId")?.jsonPrimitive?.content ?: return
+                val patch = params["patch"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
+                _state.update { s ->
+                    s.copy(fileChanges = s.fileChanges.map { fc ->
+                        if (fc.id == itemId) fc.copy(patch = patch) else fc
+                    }.toImmutableList())
+                }
+            }
+
             "item/fileChange/requestApproval" -> {
                 val rawId = normalizeServerId(event.msg.id ?: return)
                 _state.update { s ->
@@ -1003,6 +1046,29 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                         type = "fileChange",
                         reason = params?.get("reason")?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay(),
                     ))))
+                }
+            }
+
+            // Guardian subagent has started reviewing the pending action automatically.
+            // Show an "Auto-reviewing…" indicator in the approval UI.
+            "item/autoApprovalReview/started" -> {
+                val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
+                val actionDesc = params["action"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                    ?: params["description"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                    ?: "action"
+                _state.update { it.copy(autoApprovalReview = AutoApprovalReview(itemId, actionDesc)) }
+            }
+
+            // Guardian review completed — show the decision and reasoning.
+            "item/autoApprovalReview/completed" -> {
+                val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
+                val decision = params["decision"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
+                val reasoning = params["reasoning"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                _state.update { s ->
+                    // Only update if this review matches the current item (guard against stale events).
+                    if (s.autoApprovalReview?.itemId == itemId) {
+                        s.copy(autoApprovalReview = s.autoApprovalReview.copy(decision = decision, reasoning = reasoning))
+                    } else s
                 }
             }
 
@@ -1179,6 +1245,32 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 android.util.Log.d("ChatViewModel", "rawResponseItem/completed: ${params?.get("item")?.jsonObject?.get("type")?.jsonPrimitive?.contentOrNull}")
             }
 
+            // Guardian auto-approval review: a subagent is reviewing a pending action.
+            // started  → show "Auto-reviewing..." banner with the action description.
+            // completed → update banner with the guardian's decision and reasoning.
+            "item/autoApprovalReview/started" -> {
+                val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
+                val action = params["action"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                    ?: params["description"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                    ?: "pending action"
+                _state.update { it.copy(autoApprovalReview = AutoApprovalReview(itemId, action)) }
+            }
+
+            "item/autoApprovalReview/completed" -> {
+                val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
+                val decision = params["decision"]?.jsonPrimitive?.contentOrNull ?: "unknown"
+                val reasoning = params["reasoning"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
+                _state.update { s ->
+                    val cur = s.autoApprovalReview
+                    if (cur != null && cur.itemId == itemId) {
+                        s.copy(autoApprovalReview = cur.copy(decision = decision, reasoning = reasoning))
+                    } else {
+                        // Completed without a matching started — create a synthetic record.
+                        s.copy(autoApprovalReview = AutoApprovalReview(itemId, "", decision, reasoning))
+                    }
+                }
+            }
+
             // Dismissible server warning banners. All four variants carry a human-readable
             // "message" field. The type prefix is prepended so the UI can style them differently
             // (e.g. safety warnings vs deprecation notices). Duplicates are suppressed so rapid
@@ -1238,6 +1330,53 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     // On success the server will resume the upstream request transparently.
                     // No UI state change needed — the session continues without interruption.
+                }
+            }
+
+            // MCP OAuth login completed — clear any login-pending state.
+            // status field: "success" | "error"; on error `message` has the reason.
+            "mcpServer/oauthLogin/completed" -> {
+                val status = params?.get("status")?.jsonPrimitive?.contentOrNull
+                if (status == "error") {
+                    val reason = params?.get("message")?.jsonPrimitive?.contentOrNull
+                        ?.sanitizeForDisplay() ?: "MCP OAuth login failed"
+                    android.util.Log.w("ChatViewModel", "mcpServer/oauthLogin/completed error: $reason")
+                    _state.update { s ->
+                        if (s.serverWarnings.contains(reason)) s
+                        else s.copy(serverWarnings = (s.serverWarnings + reason).toImmutableList())
+                    }
+                }
+                // On success: sidebar refreshes server list via sidebarNotificationsFlow.
+            }
+
+            // MCP server startup progress — sidebar owns the live server list update;
+            // ChatViewModel just logs for protocol tracing.
+            "mcpServer/startupStatus/updated" -> {
+                val name = params?.get("name")?.jsonPrimitive?.contentOrNull ?: "unknown"
+                val status = params?.get("status")?.jsonPrimitive?.contentOrNull ?: "unknown"
+                android.util.Log.d("ChatViewModel", "mcpServer/startupStatus/updated: $name \u2192 $status")
+            }
+
+            // MCP tool call progress update — update matching McpToolCallItem output
+            // with a progress note built from progress / total / progressMessage.
+            "item/mcpToolCall/progress" -> {
+                val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
+                val progress = params["progress"]?.jsonPrimitive?.intOrNull
+                val total = params["total"]?.jsonPrimitive?.intOrNull
+                val label = params["progressMessage"]?.jsonPrimitive?.contentOrNull
+                    ?.sanitizeForDisplay()
+                if (progress != null) {
+                    val progressNote = buildString {
+                        append(progress)
+                        if (total != null) append("/$total")
+                        if (label != null) append(" \u2014 $label")
+                    }
+                    _state.update { s ->
+                        val updated = s.mcpToolCalls.map { call ->
+                            if (call.id == itemId) call.copy(output = progressNote) else call
+                        }
+                        s.copy(mcpToolCalls = updated.toImmutableList())
+                    }
                 }
             }
         }
