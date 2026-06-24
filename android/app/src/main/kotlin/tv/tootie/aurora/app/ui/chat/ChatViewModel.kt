@@ -33,7 +33,7 @@ import tv.tootie.aurora.app.data.AppSettings
 enum class MsgRole { User, Assistant }
 
 data class ChatMsg(val id: String, val role: MsgRole, val content: String)
-data class ToolCall(val id: String, val cmd: String, val out: StringBuilder = StringBuilder(), val done: Boolean = false, val failed: Boolean = false)
+data class ToolCall(val id: String, val cmd: String, val out: StringBuilder = StringBuilder(), val done: Boolean = false, val failed: Boolean = false, val needsInput: Boolean = false)
 enum class SkillSource { HOOK, EXPLICIT }
 
 data class SkillItem(val name: String, val description: String, val path: String? = null)
@@ -777,6 +777,24 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 target.out.append(out)
                 coalescer.markCommandDirty()
                 scheduleFlush()
+            }
+
+            // Terminal interaction — agent-initiated command is waiting for stdin or a PTY resize.
+            // "terminalInput": mark the matching ToolCall as needsInput so the UI can surface
+            //   an "Awaiting input…" indicator. Mobile clients cannot provide a real PTY, so
+            //   no stdin is sent — the command will time out or receive empty input from the server.
+            // "ptyResize": silently ignored on mobile (screen dimensions aren't reported).
+            "item/commandExecution/terminalInteraction" -> {
+                val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
+                val type = params["type"]?.jsonPrimitive?.contentOrNull ?: return
+                if (type == "terminalInput") {
+                    _state.update { s ->
+                        s.copy(toolCalls = s.toolCalls.map { tc ->
+                            if (tc.id == itemId) tc.copy(needsInput = true) else tc
+                        })
+                    }
+                }
+                // ptyResize: no-op on mobile
             }
 
             // Reasoning summary — extends the current (last) step with streamed characters
