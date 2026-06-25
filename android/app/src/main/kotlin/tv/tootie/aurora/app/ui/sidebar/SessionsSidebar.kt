@@ -51,9 +51,7 @@ import tv.tootie.aurora.components.AuroraButtonVariant
 import tv.tootie.aurora.components.AuroraStatusIndicator
 import tv.tootie.aurora.components.AuroraStatusTone
 import tv.tootie.aurora.theme.LocalAuroraColors
-import java.time.Instant
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
+import java.util.Calendar
 
 data class SessionItem(
     val id: String,
@@ -79,17 +77,16 @@ data class ProjectGroup(
 )
 
 fun relativeTime(epochSeconds: Long): String {
-    val now = Instant.now()
-    val then = Instant.ofEpochSecond(epochSeconds)
-    val minutes = ChronoUnit.MINUTES.between(then, now)
+    val thenMillis = epochSeconds * 1000L
+    val minutes = ((System.currentTimeMillis() - thenMillis) / 60_000L).coerceAtLeast(0L)
     return when {
         minutes < 1 -> "just now"
         minutes < 60 -> "${minutes}m ago"
         minutes < 1440 -> "${minutes / 60}h ago"
         minutes < 10080 -> "${minutes / 1440}d ago"
         else -> {
-            val date = then.atZone(ZoneId.systemDefault()).toLocalDate()
-            "${date.monthValue}/${date.dayOfMonth}"
+            val calendar = Calendar.getInstance().apply { timeInMillis = thenMillis }
+            "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.DAY_OF_MONTH)}"
         }
     }
 }

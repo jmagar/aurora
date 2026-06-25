@@ -257,8 +257,8 @@ internal fun String.sanitizeForDisplay(): String {
         .replace(ESC, "")                                             // stray ESC byte
         .replace(Regex("[\u0000-\u0008\u000B\u000C\u000E-\u001F]"), "") // C0 (keep \t\n\r)
         .replace(Regex("[\u0080-\u009F]"), "")                        // C1 controls
-        .replace(Regex("[‎‏‪-‮⁦-⁩]"), "") // Bidi overrides
-        .replace(Regex("[​-‍﻿]"), "")                  // zero-width + BOM
+        .replace(Regex("""[\u200E\u200F\u202A-\u202E\u2066-\u2069]"""), "") // Bidi overrides
+        .replace(Regex("""[\u200B-\u200D\uFEFF]"""), "")                  // zero-width + BOM
 }
 
 /**
@@ -1053,7 +1053,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     _state.update { s ->
                         s.copy(toolCalls = s.toolCalls.map { tc ->
                             if (tc.id == itemId) tc.copy(needsInput = true) else tc
-                        })
+                        }.toImmutableList())
                     }
                 }
                 // ptyResize: no-op on mobile
@@ -1232,20 +1232,22 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
                 val actionDesc = params["action"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                     ?: params["description"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
-                    ?: "action"
+                    ?: "pending action"
                 _state.update { it.copy(autoApprovalReview = AutoApprovalReview(itemId, actionDesc)) }
             }
 
             // Guardian review completed — show the decision and reasoning.
             "item/autoApprovalReview/completed" -> {
                 val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
-                val decision = params["decision"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: return
+                val decision = params["decision"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay() ?: "unknown"
                 val reasoning = params["reasoning"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
                 _state.update { s ->
-                    // Only update if this review matches the current item (guard against stale events).
-                    if (s.autoApprovalReview?.itemId == itemId) {
-                        s.copy(autoApprovalReview = s.autoApprovalReview.copy(decision = decision, reasoning = reasoning))
-                    } else s
+                    val current = s.autoApprovalReview
+                    if (current?.itemId == itemId) {
+                        s.copy(autoApprovalReview = current.copy(decision = decision, reasoning = reasoning))
+                    } else {
+                        s.copy(autoApprovalReview = AutoApprovalReview(itemId, "", decision, reasoning))
+                    }
                 }
             }
 
@@ -1413,32 +1415,6 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             // Logged at debug level for protocol tracing.
             "rawResponseItem/completed" -> {
                 android.util.Log.d("ChatViewModel", "rawResponseItem/completed: ${params?.get("item")?.jsonObject?.get("type")?.jsonPrimitive?.contentOrNull}")
-            }
-
-            // Guardian auto-approval review: a subagent is reviewing a pending action.
-            // started  → show "Auto-reviewing..." banner with the action description.
-            // completed → update banner with the guardian's decision and reasoning.
-            "item/autoApprovalReview/started" -> {
-                val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
-                val action = params["action"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
-                    ?: params["description"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
-                    ?: "pending action"
-                _state.update { it.copy(autoApprovalReview = AutoApprovalReview(itemId, action)) }
-            }
-
-            "item/autoApprovalReview/completed" -> {
-                val itemId = params?.get("itemId")?.jsonPrimitive?.contentOrNull ?: return
-                val decision = params["decision"]?.jsonPrimitive?.contentOrNull ?: "unknown"
-                val reasoning = params["reasoning"]?.jsonPrimitive?.contentOrNull?.sanitizeForDisplay()
-                _state.update { s ->
-                    val cur = s.autoApprovalReview
-                    if (cur != null && cur.itemId == itemId) {
-                        s.copy(autoApprovalReview = cur.copy(decision = decision, reasoning = reasoning))
-                    } else {
-                        // Completed without a matching started — create a synthetic record.
-                        s.copy(autoApprovalReview = AutoApprovalReview(itemId, "", decision, reasoning))
-                    }
-                }
             }
 
             // Dismissible server warning banners. All four variants carry a human-readable

@@ -309,7 +309,9 @@ function BrowserChrome({
             {VIEWPORTS.map(({ id, Icon, label }) => {
               const active = viewport === id
               return (
-                <button
+                <Button
+                  variant="plain"
+                  size="unstyled"
                   key={id}
                   type="button"
                   aria-label={label}
@@ -330,7 +332,7 @@ function BrowserChrome({
                   }}
                 >
                   <Icon />
-                </button>
+                </Button>
               )
             })}
           </div>
@@ -389,7 +391,9 @@ function BrowserChrome({
             background: "var(--aurora-panel-strong)",
           }}
         >
-          <button
+          <Button
+            variant="plain"
+            size="unstyled"
             type="button"
             onClick={() => setConsoleOpen((o) => !o)}
             style={{
@@ -430,7 +434,7 @@ function BrowserChrome({
                 {consoleCount}
               </span>
             )}
-          </button>
+          </Button>
           {consoleOpen && (
             <div
               style={{
