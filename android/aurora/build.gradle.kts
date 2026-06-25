@@ -86,7 +86,6 @@ dependencies {
     // Compose UI testing on JVM via Robolectric (no emulator needed).
     // ui-test-manifest is debugImplementation so AGP merges its AndroidManifest
     // with the test APK, enabling Robolectric to resolve Activity themes.
-    val bom = platform(libs.compose.bom)
     testImplementation(bom)
     testImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)

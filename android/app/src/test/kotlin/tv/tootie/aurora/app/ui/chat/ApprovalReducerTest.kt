@@ -1,5 +1,6 @@
 package tv.tootie.aurora.app.ui.chat
 
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import org.junit.Assert.assertEquals
@@ -23,12 +24,13 @@ class ApprovalReducerTest {
     private val idA: JsonElement = JsonPrimitive("req-A")
     private val idB: JsonElement = JsonPrimitive("req-B")
     private val idC: JsonElement = JsonPrimitive(42) // numeric server id
+    private fun pending(vararg approvals: ToolApproval) = persistentListOf(*approvals)
 
     @Test
     fun `requested appends to the pending list preserving order`() {
         val a = approval(idA, "item-A")
         val b = approval(idB, "item-B")
-        var state = reduceApprovals(emptyList(), ApprovalEvent.Requested(a))
+        var state = reduceApprovals(pending(), ApprovalEvent.Requested(a))
         state = reduceApprovals(state, ApprovalEvent.Requested(b))
         assertEquals(listOf(a, b), state)
     }
@@ -39,7 +41,7 @@ class ApprovalReducerTest {
         // first -- the reducer must target by identity.
         val a = approval(idA, "item-A")
         val b = approval(idB, "item-B")
-        val pending = listOf(a, b)
+        val pending = pending(a, b)
         val after = reduceApprovals(pending, ApprovalEvent.Approved(idB))
         assertEquals(listOf(a), after)
     }
@@ -48,7 +50,7 @@ class ApprovalReducerTest {
     fun `approved by first id leaves the rest intact`() {
         val a = approval(idA, "item-A")
         val b = approval(idB, "item-B")
-        val after = reduceApprovals(listOf(a, b), ApprovalEvent.Approved(idA))
+        val after = reduceApprovals(pending(a, b), ApprovalEvent.Approved(idA))
         assertEquals(listOf(b), after)
     }
 
@@ -56,7 +58,7 @@ class ApprovalReducerTest {
     fun `approved with a numeric server id correlates correctly`() {
         val a = approval(idA, "item-A")
         val c = approval(idC, "item-C")
-        val after = reduceApprovals(listOf(a, c), ApprovalEvent.Approved(idC))
+        val after = reduceApprovals(pending(a, c), ApprovalEvent.Approved(idC))
         assertEquals(listOf(a), after)
     }
 
@@ -64,7 +66,7 @@ class ApprovalReducerTest {
     fun `resolved with id removes only that approval`() {
         val a = approval(idA, "item-A")
         val b = approval(idB, "item-B")
-        val after = reduceApprovals(listOf(a, b), ApprovalEvent.Resolved(idA))
+        val after = reduceApprovals(pending(a, b), ApprovalEvent.Resolved(idA))
         assertEquals(listOf(b), after)
     }
 
@@ -72,14 +74,14 @@ class ApprovalReducerTest {
     fun `resolvedAll clears all pending approvals`() {
         val a = approval(idA, "item-A")
         val b = approval(idB, "item-B")
-        val after = reduceApprovals(listOf(a, b), ApprovalEvent.ResolvedAll)
+        val after = reduceApprovals(pending(a, b), ApprovalEvent.ResolvedAll)
         assertTrue(after.isEmpty())
     }
 
     @Test
     fun `resolved with unknown id is a no-op`() {
         val a = approval(idA, "item-A")
-        val after = reduceApprovals(listOf(a), ApprovalEvent.Resolved(JsonPrimitive("does-not-exist")))
+        val after = reduceApprovals(pending(a), ApprovalEvent.Resolved(JsonPrimitive("does-not-exist")))
         assertEquals(listOf(a), after)
     }
 
@@ -87,7 +89,7 @@ class ApprovalReducerTest {
     fun `request with default empty itemId does not crash and is retained`() {
         // Mirrors the requestApproval branch where itemId may be absent ("").
         val missing = ToolApproval.FileChange(itemId = "", rawServerId = idA)
-        val after = reduceApprovals(emptyList(), ApprovalEvent.Requested(missing))
+        val after = reduceApprovals(pending(), ApprovalEvent.Requested(missing))
         assertEquals(listOf(missing), after)
     }
 
@@ -97,7 +99,7 @@ class ApprovalReducerTest {
         val a1 = approval(idA, "item-A1")
         val a2 = approval(idA, "item-A2")
         val b = approval(idB, "item-B")
-        val after = reduceApprovals(listOf(a1, a2, b), ApprovalEvent.Approved(idA))
+        val after = reduceApprovals(pending(a1, a2, b), ApprovalEvent.Approved(idA))
         assertEquals(listOf(b), after)
     }
 }

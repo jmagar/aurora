@@ -34,11 +34,11 @@ import tv.tootie.aurora.tokens.AuroraColors
 //   onSecondaryFixed     <- accentForeground (#051520) — near-black on bright pink
 //   onSecondaryFixedDim  <- accentPinkDeep   (#C46B88) — deeper pink as variant text
 //
-// TERTIARY FAMILY (Violet — AI/automation identity color, handled via LocalAuroraColors too)
-//   tertiary             <- accentVioletBase (#A78BFA)
+// TERTIARY FAMILY (AI/automation accent; legacy violet slots now alias cyan tokens)
+//   tertiary             <- accentStrong    (#67CBFA)
 //   onTertiary           <- accentForeground (#051520)
-//   tertiaryContainer    <- accentVioletSurface(#222F48)
-//   onTertiaryContainer  <- accentVioletStrong(#C4B5FD)
+//   tertiaryContainer    <- selectedBg
+//   onTertiaryContainer  <- accentStrong    (#67CBFA)
 //
 // SURFACE CONTAINER HIERARCHY (darkest → lightest, fits Aurora's navy-to-panel progression)
 //   surfaceContainerLowest  <- pageBg          (#07131C) — absolute darkest canvas
@@ -104,11 +104,11 @@ private val AuroraDarkColorScheme = darkColorScheme(
     onSecondaryFixed         = AuroraColors.accentForeground,
     onSecondaryFixedVariant  = AuroraColors.accentPinkDeep,
 
-    // Tertiary — violet family (AI/automation identity)
-    tertiary                 = AuroraColors.accentVioletBase,
+    // Tertiary — AI/automation accent, aliased to the surviving cyan family.
+    tertiary                 = AuroraColors.accentStrong,
     onTertiary               = AuroraColors.accentForeground,
-    tertiaryContainer        = AuroraColors.accentVioletSurface,
-    onTertiaryContainer      = AuroraColors.accentVioletStrong,
+    tertiaryContainer        = AuroraColors.selectedBg,
+    onTertiaryContainer      = AuroraColors.accentStrong,
 
     // Backgrounds
     background               = AuroraColors.pageBg,

@@ -124,7 +124,7 @@ fun ThreadListScreen(
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                             ) {
                                 if (session.isLive) {
-                                    AuroraStatusIndicator(tone = AuroraStatusTone.Success)
+                                    AuroraStatusIndicator(tone = AuroraStatusTone.Online)
                                 }
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(

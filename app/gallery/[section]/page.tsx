@@ -192,6 +192,10 @@ const DEMOS: Record<string, React.ComponentType> = {
   lightmode:      dynamic(() => import("../demos/lightmode-demo")),
 }
 
+const NON_REGISTRY_DEMOS = new Set<string>([
+  "new-components",
+])
+
 export function generateStaticParams() {
   // Build-time assertion: every DEMOS key that is not a redirect alias must
   // resolve to registry meta, otherwise the rendered page silently renders
@@ -202,6 +206,7 @@ export function generateStaticParams() {
   const unmapped: string[] = []
   for (const slug of Object.keys(DEMOS)) {
     if (slug in SECTION_REDIRECTS) continue
+    if (NON_REGISTRY_DEMOS.has(slug)) continue
     if (getRegistryMeta(slug) === null) unmapped.push(slug)
   }
   if (unmapped.length > 0) {

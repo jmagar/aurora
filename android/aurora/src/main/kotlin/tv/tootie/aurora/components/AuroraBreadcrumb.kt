@@ -47,7 +47,7 @@ public fun AuroraBreadcrumb(
                         else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = when {
                     isLast -> Modifier.semantics { selected = true }
-                    onClick != null -> Modifier.clickable(role = Role.Link) { onClick() }
+                    onClick != null -> Modifier.clickable(role = Role.Button) { onClick() }
                     else -> Modifier
                 },
             )

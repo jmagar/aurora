@@ -22,8 +22,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -398,7 +401,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     thinking = false,
                     showSteerSheet = false,
                     msgs = if (lostSteer != null)
-                        s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer not sent — connection lost]")
+                        (s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer not sent — connection lost]")).toImmutableList()
                     else s.msgs,
                 )
             }
@@ -522,7 +525,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun addImageAttachment(attachment: PendingAttachment) {
-        _state.update { it.copy(pendingAttachments = it.pendingAttachments + attachment) }
+        _state.update { it.copy(pendingAttachments = (it.pendingAttachments + attachment).toImmutableList()) }
     }
 
     fun removeAttachment(id: String) {
@@ -634,7 +637,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
      * decision string. All other approval types use [repo.sendApproval] as before.
      */
     fun approveToolCall(approval: ToolApproval, decision: String) {
-        val sent = if (approval.type == "elicitation") {
+        val sent = if (approval is ToolApproval.Elicitation) {
             // MCP elicitation response: { id, result: { action: "accept"|"cancel", content?: {} } }
             // On accept we send an empty content object — full field collection is a future feature.
             repo.respondElicitation(approval.rawServerId, decision)
@@ -1057,7 +1060,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 flushStreaming()
                 coalescer.resetReasoningLine()
                 _state.update { s ->
-                    s.copy(reasoning = s.reasoning + "")
+                    s.copy(reasoning = (s.reasoning + "").toImmutableList())
                 }
             }
 
