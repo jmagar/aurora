@@ -49,6 +49,7 @@ public enum class RequestKind {
     ThreadArchive, // thread/archive
     ThreadUnarchive, // thread/unarchive
     ThreadFork,    // thread/fork
+    GitDiff,       // gitDiffToRemote
     Steer,         // turn/steer
     GoalSet,       // thread/goal/set
     GoalGet,       // thread/goal/get
@@ -455,6 +456,13 @@ class CodexRepository {
         ) ?: return "-1"
         val key = rawId.toString()
         pendingKinds[key] = RequestKind.ThreadFork
+        return key
+    }
+
+    fun gitDiffToRemote(threadId: String): String {
+        val rawId = client?.gitDiffToRemote(threadId) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.GitDiff
         return key
     }
 

@@ -385,6 +385,14 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    fun gitDiffToRemote(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("gitDiffToRemote", buildJsonObject {
+            put("threadId", threadId)
+        }, id)
+        return id
+    }
+
     fun setThreadName(threadId: String, name: String): Int {
         val id = ids.incrementAndGet()
         send("thread/name/set", buildJsonObject {

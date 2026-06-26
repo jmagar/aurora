@@ -271,6 +271,9 @@ fun ChatScreen(
                             tint = auroraColors.accentViolet,
                         )
                     }
+                    IconButton(onClick = vm::fetchRemoteDiff, enabled = s.threadId != null) {
+                        Icon(Icons.Default.FolderOpen, contentDescription = "Changes vs remote")
+                    }
                     if (s.thinking && s.activeTurnId != null) {
                         IconButton(onClick = { vm.showSteer() }) {
                             Icon(Icons.Default.Assistant, contentDescription = "Steer agent")
@@ -419,6 +422,16 @@ fun ChatScreen(
                         AuroraChainOfThought(
                             steps = s.reasoning.toPersistentList(),
                             title = "Reasoning",
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+                }
+
+                // Remote diff card — shown when remoteDiff has been fetched
+                s.remoteDiff?.let { remoteDiff ->
+                    item(key = "remotediff") {
+                        RemoteDiffCard(
+                            diff = remoteDiff,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
                         )
                     }

@@ -214,6 +214,8 @@ data class ChatState(
     val autoApprovalReview: AutoApprovalReview? = null,
     /** Non-null while a fuzzy file search session is active or showing results. */
     val fuzzySearch: FuzzyFileSearchState? = null,
+    /** Null until fetched; empty string means no local changes versus remote. */
+    val remoteDiff: String? = null,
 ) {
     /**
      * Return a copy with all per-turn transient fields zeroed and [newMsgs] installed.
@@ -239,6 +241,7 @@ data class ChatState(
         pendingAttachments = persistentListOf(),
         pendingApprovals = persistentListOf(),
         autoApprovalReview = null,
+        remoteDiff = null,
     )
 }
 
@@ -718,6 +721,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
         repo.compactStart(tid)
     }
 
+    fun fetchRemoteDiff() {
+        val tid = _state.value.threadId ?: return
+        repo.gitDiffToRemote(tid)
+    }
+
     /** Dismiss a server warning banner by its exact text. */
     fun dismissWarning(warning: String) {
         _state.update { it.copy(serverWarnings = it.serverWarnings.filter { w -> w != warning }.toImmutableList()) }
@@ -886,6 +894,17 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                             _state.update { it.copy(error = "Configuration incomplete: $detail. Please check Settings.") }
                         }
                     }
+                    return
+                }
+
+                if (event.originKind == RequestKind.GitDiff) {
+                    if (msg.error != null) {
+                        android.util.Log.w("ChatViewModel", "gitDiffToRemote error: ${msg.error.message}")
+                        _state.update { it.copy(remoteDiff = "") }
+                        return
+                    }
+                    val diff = result?.get("diff")?.jsonPrimitive?.contentOrNull ?: ""
+                    _state.update { it.copy(remoteDiff = diff) }
                     return
                 }
 
