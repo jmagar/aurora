@@ -229,6 +229,18 @@ data class ToolRequestUserInputParams(
     val requestedSchema: JsonObject? = null,
 )
 
+enum class ConfigMergeStrategy(val wire: String) {
+    Replace("replace"),
+    Upsert("upsert"),
+}
+
+@Serializable
+data class ConfigEditEntry(
+    val key: String,
+    val value: JsonElement? = null,
+    val strategy: String = ConfigMergeStrategy.Upsert.wire,
+)
+
 /**
  * Result sent back to the server in response to either
  * `mcpServer/elicitation/request` or `item/tool/requestUserInput`.

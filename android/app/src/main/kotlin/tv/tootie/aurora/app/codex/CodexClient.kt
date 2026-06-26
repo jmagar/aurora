@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.add
@@ -613,6 +614,46 @@ class CodexClient(private val url: String, private val token: String? = null) {
         send("config/read", buildJsonObject {
             cwd?.let { put("cwd", it) }
             if (includeLayers) put("includeLayers", true)
+        }, id)
+        return id
+    }
+
+    fun writeConfigValue(
+        key: String,
+        value: JsonElement?,
+        strategy: String = ConfigMergeStrategy.Upsert.wire,
+        filePath: String? = null,
+    ): Int {
+        val id = ids.incrementAndGet()
+        send("config/value/write", buildJsonObject {
+            put("key", key)
+            put("value", value ?: JsonNull)
+            put("strategy", strategy)
+            filePath?.let { put("filePath", it) }
+        }, id)
+        return id
+    }
+
+    fun batchWriteConfig(
+        edits: List<ConfigEditEntry>,
+        expectedVersion: String? = null,
+        filePath: String? = null,
+        reloadUserConfig: Boolean = false,
+    ): Int {
+        val id = ids.incrementAndGet()
+        send("config/batchWrite", buildJsonObject {
+            put("edits", buildJsonArray {
+                edits.forEach { edit ->
+                    add(buildJsonObject {
+                        put("key", edit.key)
+                        put("value", edit.value ?: JsonNull)
+                        put("strategy", edit.strategy)
+                    })
+                }
+            })
+            expectedVersion?.let { put("expectedVersion", it) }
+            filePath?.let { put("filePath", it) }
+            put("reloadUserConfig", reloadUserConfig)
         }, id)
         return id
     }

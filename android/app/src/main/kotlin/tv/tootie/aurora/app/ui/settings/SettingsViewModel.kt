@@ -1,6 +1,7 @@
 package tv.tootie.aurora.app.ui.settings
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CancellationException
@@ -21,12 +22,17 @@ import kotlinx.serialization.json.jsonPrimitive
 import tv.tootie.aurora.app.CodexApp
 import tv.tootie.aurora.app.codex.CodexClient
 import tv.tootie.aurora.app.codex.CodexEvent
+import tv.tootie.aurora.app.codex.ConfigEditEntry
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.data.AuthRepository
+
+private const val TAG = "SettingsViewModel"
 
 sealed class SettingsUiEvent {
     /** Emitted once after a successful logout — UI should navigate away. */
     object LoggedOut : SettingsUiEvent()
+    object ConfigLoaded : SettingsUiEvent()
+    object ConfigSaved : SettingsUiEvent()
 }
 
 /**
@@ -79,6 +85,7 @@ data class SettingsState(
     val rateLimits: RateLimitsInfo? = null,
     // --- Config viewer ---
     val isLoadingConfig: Boolean = false,
+    val isSavingConfig: Boolean = false,
     val configEntries: List<ConfigEntry> = emptyList(),
     val configError: String? = null,
     // --- Experimental features ---
@@ -175,6 +182,90 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         if (_state.value.isLoadingConfig) return
         _state.update { it.copy(isLoadingConfig = true, configError = null) }
         repo.readConfig(cwd = cwd, includeLayers = true)
+    }
+
+    fun loadConfigFromServer(onResult: (Map<String, String>) -> Unit) {
+        if (_state.value.isLoadingConfig) return
+        _state.update { it.copy(isLoadingConfig = true, configError = null) }
+
+        viewModelScope.launch {
+            try {
+                withTimeout(8_000L) {
+                    repo.readConfig(includeLayers = false)
+                    val result = repo.configFlow.first()
+                    if (result.error != null) {
+                        _state.update {
+                            it.copy(
+                                isLoadingConfig = false,
+                                configError = result.error,
+                            )
+                        }
+                        return@withTimeout
+                    }
+                    val flat = result.config?.mapValues { (_, value) ->
+                        (value as? JsonPrimitive)?.contentOrNull ?: value.toString()
+                    } ?: emptyMap()
+                    _state.update {
+                        it.copy(
+                            isLoadingConfig = false,
+                            pendingEvent = SettingsUiEvent.ConfigLoaded,
+                        )
+                    }
+                    onResult(flat)
+                }
+            } catch (t: Throwable) {
+                if (t is CancellationException && t !is TimeoutCancellationException) throw t
+                Log.w(TAG, "config/read failed: ${t.message}")
+                _state.update {
+                    it.copy(
+                        isLoadingConfig = false,
+                        configError = "Couldn't load server config: ${t.message ?: "timeout"}",
+                    )
+                }
+            }
+        }
+    }
+
+    fun saveConfigToServer(
+        edits: List<ConfigEditEntry>,
+        reloadUserConfig: Boolean = true,
+    ) {
+        if (_state.value.isSavingConfig) return
+        _state.update { it.copy(isSavingConfig = true, configError = null) }
+
+        viewModelScope.launch {
+            try {
+                withTimeout(8_000L) {
+                    repo.batchWriteConfig(edits, reloadUserConfig = reloadUserConfig)
+                    val ack = repo.configWriteFlow.first()
+                    if (ack.success) {
+                        _state.update {
+                            it.copy(
+                                isSavingConfig = false,
+                                pendingEvent = SettingsUiEvent.ConfigSaved,
+                            )
+                        }
+                        loadConfig()
+                    } else {
+                        _state.update {
+                            it.copy(
+                                isSavingConfig = false,
+                                configError = ack.error ?: "Server rejected config write",
+                            )
+                        }
+                    }
+                }
+            } catch (t: Throwable) {
+                if (t is CancellationException && t !is TimeoutCancellationException) throw t
+                Log.w(TAG, "config/batchWrite failed: ${t.message}")
+                _state.update {
+                    it.copy(
+                        isSavingConfig = false,
+                        configError = "Couldn't save server config: ${t.message ?: "timeout"}",
+                    )
+                }
+            }
+        }
     }
 
     /** Trigger an experimentalFeature/list RPC. Response arrives on [state].experimentalFeatures. */

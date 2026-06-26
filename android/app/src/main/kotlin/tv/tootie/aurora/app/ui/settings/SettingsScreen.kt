@@ -41,6 +41,8 @@ import tv.tootie.aurora.app.CodexApp
 import tv.tootie.aurora.app.codex.ApprovalPolicy
 import tv.tootie.aurora.app.codex.ApprovalsReviewer
 import android.widget.Toast
+import tv.tootie.aurora.app.codex.ConfigEditEntry
+import tv.tootie.aurora.app.codex.ConfigMergeStrategy
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.data.SecretPersistException
 import tv.tootie.aurora.components.AuroraButton
@@ -50,6 +52,7 @@ import tv.tootie.aurora.components.AuroraField
 import tv.tootie.aurora.components.AuroraMenuEntry
 import tv.tootie.aurora.components.AuroraSwitch
 import tv.tootie.aurora.components.AuroraTextField
+import kotlinx.serialization.json.JsonPrimitive
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,11 +86,22 @@ fun SettingsScreen(
         vm.loadExperimentalFeatures()
     }
 
-    // Navigate away when logout completes
+    // Navigate away when logout completes; show toast on ConfigLoaded/ConfigSaved.
     LaunchedEffect(state.pendingEvent) {
-        if (state.pendingEvent is SettingsUiEvent.LoggedOut) {
-            vm.consumeEvent()
-            onLogout()
+        when (state.pendingEvent) {
+            is SettingsUiEvent.LoggedOut -> {
+                vm.consumeEvent()
+                onLogout()
+            }
+            is SettingsUiEvent.ConfigLoaded -> {
+                vm.consumeEvent()
+                Toast.makeText(ctx, "Config loaded from server", Toast.LENGTH_SHORT).show()
+            }
+            is SettingsUiEvent.ConfigSaved -> {
+                vm.consumeEvent()
+                Toast.makeText(ctx, "Config saved to server", Toast.LENGTH_SHORT).show()
+            }
+            null -> Unit
         }
     }
 
@@ -134,6 +148,18 @@ fun SettingsScreen(
                     onValueChange = { token = it },
                     placeholder = "optional",
                     modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            Spacer(Modifier.height(4.dp))
+            Text("Codex Config", style = MaterialTheme.typography.titleMedium)
+
+            // Config error banner
+            if (state.configError != null) {
+                Text(
+                    text = state.configError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
 
@@ -189,6 +215,51 @@ fun SettingsScreen(
                         ) { Text(selectedReviewer.displayName) }
                     },
                 )
+            }
+
+            // Config read/write row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                // "Load from server" — issues config/read and populates form fields
+                AuroraButton(
+                    onClick = {
+                        vm.loadConfigFromServer { flat ->
+                            flat["model"]?.let { model = it }
+                            flat["approvalPolicy"]?.let {
+                                selectedApprovalPolicy = ApprovalPolicy.fromWire(it)
+                            }
+                        }
+                    },
+                    variant = AuroraButtonVariant.Outlined,
+                    loading = state.isLoadingConfig,
+                    modifier = Modifier.weight(1f),
+                ) { Text("Load from server") }
+
+                // "Push to server" — issues config/batchWrite with current form values
+                AuroraButton(
+                    onClick = {
+                        vm.saveConfigToServer(
+                            edits = listOf(
+                                ConfigEditEntry(
+                                    key = "model",
+                                    value = JsonPrimitive(model),
+                                    strategy = ConfigMergeStrategy.Upsert.wire,
+                                ),
+                                ConfigEditEntry(
+                                    key = "approvalPolicy",
+                                    value = JsonPrimitive(selectedApprovalPolicy.wire),
+                                    strategy = ConfigMergeStrategy.Upsert.wire,
+                                ),
+                            ),
+                            reloadUserConfig = true,
+                        )
+                    },
+                    variant = AuroraButtonVariant.Outlined,
+                    loading = state.isSavingConfig,
+                    modifier = Modifier.weight(1f),
+                ) { Text("Push to server") }
             }
 
             AuroraButton(

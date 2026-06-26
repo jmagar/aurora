@@ -60,6 +60,7 @@ public enum class RequestKind {
     InstalledPlugins,    // plugin/installed
     ConfigRequirements,  // configRequirements/read
     ConfigRead,          // config/read
+    ConfigWrite,         // config/value/write or config/batchWrite
     ExperimentalFeatures,   // experimentalFeature/list
     ExperimentalEnablement, // experimentalFeature/enablement/set
     AccountRead,         // account/read
@@ -115,6 +116,12 @@ sealed class CodexEvent {
     data class ConfigResult(
         val config: JsonObject?,
         val layers: JsonObject?,
+        val error: String? = null,
+    ) : CodexEvent()
+
+    data class ConfigWriteAck(
+        val success: Boolean,
+        val raw: JsonObject? = null,
         val error: String? = null,
     ) : CodexEvent()
 
@@ -236,6 +243,10 @@ class CodexRepository {
     private val _configFlow = MutableSharedFlow<CodexEvent.ConfigResult>(replay = 1)
     /** config/read responses. SettingsViewModel subscribes here. */
     val configFlow: SharedFlow<CodexEvent.ConfigResult> = _configFlow.asSharedFlow()
+
+    private val _configWriteFlow = MutableSharedFlow<CodexEvent.ConfigWriteAck>(replay = 1)
+    /** config/value/write and config/batchWrite responses. */
+    val configWriteFlow: SharedFlow<CodexEvent.ConfigWriteAck> = _configWriteFlow.asSharedFlow()
 
     private val _experimentalFeaturesFlow = MutableSharedFlow<CodexEvent.ExperimentalFeatureList>(replay = 1)
     /** experimentalFeature/list responses. SettingsViewModel subscribes here. */
@@ -542,6 +553,31 @@ class CodexRepository {
         return key
     }
 
+    fun writeConfigValue(
+        key: String,
+        value: JsonElement?,
+        strategy: ConfigMergeStrategy = ConfigMergeStrategy.Upsert,
+        filePath: String? = null,
+    ): String {
+        val rawId = client?.writeConfigValue(key, value, strategy.wire, filePath) ?: return "-1"
+        val reqKey = rawId.toString()
+        pendingKinds[reqKey] = RequestKind.ConfigWrite
+        return reqKey
+    }
+
+    fun batchWriteConfig(
+        edits: List<ConfigEditEntry>,
+        expectedVersion: String? = null,
+        filePath: String? = null,
+        reloadUserConfig: Boolean = false,
+    ): String {
+        val rawId = client?.batchWriteConfig(edits, expectedVersion, filePath, reloadUserConfig)
+            ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ConfigWrite
+        return key
+    }
+
     fun listExperimentalFeatures(threadId: String? = null): String {
         val rawId = client?.listExperimentalFeatures(threadId) ?: return "-1"
         val key = rawId.toString()
@@ -708,6 +744,7 @@ class CodexRepository {
                 RequestKind.AccountRead -> routeAccountResponse(msg)
                 RequestKind.RateLimitsRead -> routeRateLimitsResponse(msg)
                 RequestKind.ConfigRead -> routeConfigResponse(msg)
+                RequestKind.ConfigWrite -> routeConfigWriteResponse(msg)
                 RequestKind.ExperimentalFeatures -> routeExperimentalFeaturesResponse(msg)
                 RequestKind.ExperimentalEnablement -> {
                     // On success: refresh the feature list so the UI reflects the new state.
@@ -889,6 +926,18 @@ class CodexRepository {
         val config = result["config"]?.jsonObject
         val layers = result["layers"]?.jsonObject
         _configFlow.tryEmit(CodexEvent.ConfigResult(config = config, layers = layers))
+    }
+
+    private fun routeConfigWriteResponse(msg: RpcMessage) {
+        val success = msg.error == null
+        if (!success) Log.w(TAG, "config write failed: ${msg.error?.message}")
+        _configWriteFlow.tryEmit(
+            CodexEvent.ConfigWriteAck(
+                success = success,
+                raw = msg.result?.jsonObject,
+                error = msg.error?.message,
+            )
+        )
     }
 
     private fun routeExperimentalFeaturesResponse(msg: RpcMessage) {
