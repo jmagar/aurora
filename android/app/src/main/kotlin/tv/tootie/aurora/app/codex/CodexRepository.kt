@@ -601,6 +601,129 @@ class CodexRepository {
         return key
     }
 
+    private fun trackOther(rawId: Int?): String {
+        val key = rawId?.toString() ?: return "-1"
+        pendingKinds[key] = RequestKind.Other
+        return key
+    }
+
+    fun startRealtimeThread(
+        voice: String = "alloy",
+        outputModalities: List<String> = listOf("text", "audio"),
+        model: String? = null,
+    ): String {
+        val rawId = client?.startRealtimeThread(voice, outputModalities, model) ?: return "-1"
+        val key = rawId.toString()
+        pendingKinds[key] = RequestKind.ThreadStart
+        return key
+    }
+
+    fun writeSkillConfig(enabled: Boolean, name: String? = null, path: String? = null): String =
+        trackOther(client?.writeSkillConfig(enabled, name, path))
+
+    fun mcpServerOauthLogin(serverName: String, scopes: List<String>? = null, timeoutSecs: Int? = null): String =
+        trackOther(client?.mcpServerOauthLogin(serverName, scopes, timeoutSecs))
+
+    fun reloadMcpConfig(): String = trackOther(client?.reloadMcpConfig())
+
+    fun callMcpTool(server: String, tool: String, threadId: String, arguments: JsonObject? = null): String =
+        trackOther(client?.callMcpTool(server, tool, threadId, arguments))
+
+    fun readMcpResource(server: String, uri: String, threadId: String? = null): String =
+        trackOther(client?.readMcpResource(server, uri, threadId))
+
+    fun fsGetMetadata(path: String): String = trackOther(client?.fsGetMetadata(path))
+
+    fun fsReadDirectory(path: String): String = trackOther(client?.fsReadDirectory(path))
+
+    fun fsCreateDirectory(path: String, recursive: Boolean = true): String =
+        trackOther(client?.fsCreateDirectory(path, recursive))
+
+    fun fsRemove(path: String, force: Boolean = false, recursive: Boolean = false): String =
+        trackOther(client?.fsRemove(path, force, recursive))
+
+    fun fsCopy(sourcePath: String, destinationPath: String, recursive: Boolean = false): String =
+        trackOther(client?.fsCopy(sourcePath, destinationPath, recursive))
+
+    fun fsReadFile(path: String): String = trackOther(client?.fsReadFile(path))
+
+    fun fsWriteFile(path: String, base64Content: String): String =
+        trackOther(client?.fsWriteFile(path, base64Content))
+
+    fun fsWatch(path: String, watchId: String): String = trackOther(client?.fsWatch(path, watchId))
+
+    fun fsUnwatch(watchId: String): String = trackOther(client?.fsUnwatch(watchId))
+
+    fun marketplaceAdd(source: String, refName: String? = null, sparsePaths: List<String>? = null): String =
+        trackOther(client?.marketplaceAdd(source, refName, sparsePaths))
+
+    fun marketplaceRemove(name: String): String = trackOther(client?.marketplaceRemove(name))
+
+    fun marketplaceUpgrade(marketplaceName: String? = null): String =
+        trackOther(client?.marketplaceUpgrade(marketplaceName))
+
+    fun pluginInstall(pluginName: String, marketplacePath: String? = null, remoteMarketplaceName: String? = null): String =
+        trackOther(client?.pluginInstall(pluginName, marketplacePath, remoteMarketplaceName))
+
+    fun pluginUninstall(pluginId: String): String = trackOther(client?.pluginUninstall(pluginId))
+
+    fun detectExternalAgentConfig(cwds: List<String>, includeHome: Boolean = false): String =
+        trackOther(client?.detectExternalAgentConfig(cwds, includeHome))
+
+    fun importExternalAgentConfig(cwds: List<String>, includeHome: Boolean = false): String =
+        trackOther(client?.importExternalAgentConfig(cwds, includeHome))
+
+    fun listHooks(cwds: List<String>): String = trackOther(client?.listHooks(cwds))
+
+    fun readPluginSkill(remoteMarketplaceName: String, remotePluginId: String, skillName: String): String =
+        trackOther(client?.readPluginSkill(remoteMarketplaceName, remotePluginId, skillName))
+
+    fun pluginShareSave(pluginId: String, discoverability: String = "UNLISTED", shareTargets: List<String>? = null): String =
+        trackOther(client?.pluginShareSave(pluginId, discoverability, shareTargets))
+
+    fun pluginShareUpdateTargets(shareId: String, discoverability: String, shareTargets: List<String>? = null): String =
+        trackOther(client?.pluginShareUpdateTargets(shareId, discoverability, shareTargets))
+
+    fun pluginShareList(cursor: String? = null, limit: Int? = null): String =
+        trackOther(client?.pluginShareList(cursor, limit))
+
+    fun pluginShareCheckout(shareId: String): String = trackOther(client?.pluginShareCheckout(shareId))
+
+    fun pluginShareDelete(shareId: String): String = trackOther(client?.pluginShareDelete(shareId))
+
+    fun windowsSandboxSetupStart(params: JsonObject = JsonObject(emptyMap())): String =
+        trackOther(client?.windowsSandboxSetupStart(params))
+
+    fun windowsSandboxReadiness(): String = trackOther(client?.windowsSandboxReadiness())
+
+    fun uploadFeedback(
+        classification: String,
+        threadId: String,
+        reason: String? = null,
+        tags: Map<String, String>? = null,
+        includeLogs: Boolean = false,
+        extraLogFiles: List<String>? = null,
+    ): String =
+        trackOther(client?.uploadFeedback(classification, threadId, reason, tags, includeLogs, extraLogFiles))
+
+    fun getConversationSummary(threadId: String): String = trackOther(client?.getConversationSummary(threadId))
+
+    fun listApps(cursor: String? = null, limit: Int? = null, threadId: String? = null, forceRefetch: Boolean = false): String =
+        trackOther(client?.listApps(cursor, limit, threadId, forceRefetch))
+
+    fun listPermissionProfiles(cwd: String? = null, cursor: String? = null, limit: Int? = null): String =
+        trackOther(client?.listPermissionProfiles(cwd, cursor, limit))
+
+    fun readModelProviderCapabilities(): String = trackOther(client?.readModelProviderCapabilities())
+
+    fun sendAddCreditsNudgeEmail(creditType: String = "credits"): String =
+        trackOther(client?.sendAddCreditsNudgeEmail(creditType))
+
+    fun unsubscribeThread(threadId: String): String = trackOther(client?.unsubscribeThread(threadId))
+
+    fun injectThreadItems(threadId: String, items: List<JsonObject>): String =
+        trackOther(client?.injectThreadItems(threadId, items))
+
     fun sendApproval(rawServerId: JsonElement, decision: String): Boolean =
         client?.sendApproval(rawServerId, decision) ?: false
 

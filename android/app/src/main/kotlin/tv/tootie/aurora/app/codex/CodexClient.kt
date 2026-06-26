@@ -933,6 +933,343 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
+    fun startRealtimeThread(
+        voice: String = "alloy",
+        outputModalities: List<String> = listOf("text", "audio"),
+        model: String? = null,
+    ): Int {
+        val id = ids.incrementAndGet()
+        send("thread/start", buildJsonObject {
+            put("realtimeMode", buildJsonObject {
+                put("voice", voice)
+                put("outputModalities", buildJsonArray { outputModalities.forEach { add(it) } })
+            })
+            model?.let { put("model", it) }
+        }, id)
+        return id
+    }
+
+    fun writeSkillConfig(enabled: Boolean, name: String? = null, path: String? = null): Int {
+        val id = ids.incrementAndGet()
+        send("skills/config/write", buildJsonObject {
+            put("enabled", enabled)
+            name?.let { put("name", it) }
+            path?.let { put("path", it) }
+        }, id)
+        return id
+    }
+
+    fun mcpServerOauthLogin(serverName: String, scopes: List<String>? = null, timeoutSecs: Int? = null): Int {
+        val id = ids.incrementAndGet()
+        send("mcpServer/oauth/login", buildJsonObject {
+            put("name", serverName)
+            scopes?.let { put("scopes", buildJsonArray { it.forEach { scope -> add(scope) } }) }
+            timeoutSecs?.let { put("timeoutSecs", it) }
+        }, id)
+        return id
+    }
+
+    fun reloadMcpConfig(): Int {
+        val id = ids.incrementAndGet()
+        send("config/mcpServer/reload", JsonObject(emptyMap()), id)
+        return id
+    }
+
+    fun callMcpTool(server: String, tool: String, threadId: String, arguments: JsonObject? = null): Int {
+        val id = ids.incrementAndGet()
+        send("mcpServer/tool/call", buildJsonObject {
+            put("server", server)
+            put("tool", tool)
+            put("threadId", threadId)
+            arguments?.let { put("arguments", it) }
+        }, id)
+        return id
+    }
+
+    fun readMcpResource(server: String, uri: String, threadId: String? = null): Int {
+        val id = ids.incrementAndGet()
+        send("mcpServer/resource/read", buildJsonObject {
+            put("server", server)
+            put("uri", uri)
+            threadId?.let { put("threadId", it) }
+        }, id)
+        return id
+    }
+
+    fun fsGetMetadata(path: String): Int {
+        val id = ids.incrementAndGet()
+        send("fs/getMetadata", buildJsonObject { put("path", path) }, id)
+        return id
+    }
+
+    fun fsReadDirectory(path: String): Int {
+        val id = ids.incrementAndGet()
+        send("fs/readDirectory", buildJsonObject { put("path", path) }, id)
+        return id
+    }
+
+    fun fsCreateDirectory(path: String, recursive: Boolean = true): Int {
+        val id = ids.incrementAndGet()
+        send("fs/createDirectory", buildJsonObject {
+            put("path", path)
+            put("recursive", recursive)
+        }, id)
+        return id
+    }
+
+    fun fsRemove(path: String, force: Boolean = false, recursive: Boolean = false): Int {
+        val id = ids.incrementAndGet()
+        send("fs/remove", buildJsonObject {
+            put("path", path)
+            if (force) put("force", true)
+            if (recursive) put("recursive", true)
+        }, id)
+        return id
+    }
+
+    fun fsCopy(sourcePath: String, destinationPath: String, recursive: Boolean = false): Int {
+        val id = ids.incrementAndGet()
+        send("fs/copy", buildJsonObject {
+            put("sourcePath", sourcePath)
+            put("destinationPath", destinationPath)
+            if (recursive) put("recursive", true)
+        }, id)
+        return id
+    }
+
+    fun fsReadFile(path: String): Int {
+        val id = ids.incrementAndGet()
+        send("fs/readFile", buildJsonObject { put("path", path) }, id)
+        return id
+    }
+
+    fun fsWriteFile(path: String, base64Content: String): Int {
+        val id = ids.incrementAndGet()
+        send("fs/writeFile", buildJsonObject {
+            put("path", path)
+            put("content", base64Content)
+        }, id)
+        return id
+    }
+
+    fun fsWatch(path: String, watchId: String): Int {
+        val id = ids.incrementAndGet()
+        send("fs/watch", buildJsonObject {
+            put("path", path)
+            put("watchId", watchId)
+        }, id)
+        return id
+    }
+
+    fun fsUnwatch(watchId: String): Int {
+        val id = ids.incrementAndGet()
+        send("fs/unwatch", buildJsonObject { put("watchId", watchId) }, id)
+        return id
+    }
+
+    fun marketplaceAdd(source: String, refName: String? = null, sparsePaths: List<String>? = null): Int {
+        val id = ids.incrementAndGet()
+        send("marketplace/add", buildJsonObject {
+            put("source", source)
+            refName?.let { put("refName", it) }
+            sparsePaths?.let { put("sparsePaths", buildJsonArray { it.forEach { path -> add(path) } }) }
+        }, id)
+        return id
+    }
+
+    fun marketplaceRemove(name: String): Int {
+        val id = ids.incrementAndGet()
+        send("marketplace/remove", buildJsonObject { put("name", name) }, id)
+        return id
+    }
+
+    fun marketplaceUpgrade(marketplaceName: String? = null): Int {
+        val id = ids.incrementAndGet()
+        send("marketplace/upgrade", buildJsonObject {
+            marketplaceName?.let { put("marketplaceName", it) }
+        }, id)
+        return id
+    }
+
+    fun pluginInstall(pluginName: String, marketplacePath: String? = null, remoteMarketplaceName: String? = null): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/install", buildJsonObject {
+            put("pluginName", pluginName)
+            marketplacePath?.let { put("marketplacePath", it) }
+            remoteMarketplaceName?.let { put("remoteMarketplaceName", it) }
+        }, id)
+        return id
+    }
+
+    fun pluginUninstall(pluginId: String): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/uninstall", buildJsonObject { put("pluginId", pluginId) }, id)
+        return id
+    }
+
+    fun detectExternalAgentConfig(cwds: List<String>, includeHome: Boolean = false): Int {
+        val id = ids.incrementAndGet()
+        send("externalAgentConfig/detect", buildJsonObject {
+            put("cwds", buildJsonArray { cwds.forEach { add(it) } })
+            if (includeHome) put("includeHome", true)
+        }, id)
+        return id
+    }
+
+    fun importExternalAgentConfig(cwds: List<String>, includeHome: Boolean = false): Int {
+        val id = ids.incrementAndGet()
+        send("externalAgentConfig/import", buildJsonObject {
+            put("cwds", buildJsonArray { cwds.forEach { add(it) } })
+            if (includeHome) put("includeHome", true)
+        }, id)
+        return id
+    }
+
+    fun listHooks(cwds: List<String>): Int {
+        val id = ids.incrementAndGet()
+        send("hooks/list", buildJsonObject {
+            put("cwds", buildJsonArray { cwds.forEach { add(it) } })
+        }, id)
+        return id
+    }
+
+    fun readPluginSkill(remoteMarketplaceName: String, remotePluginId: String, skillName: String): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/skill/read", buildJsonObject {
+            put("remoteMarketplaceName", remoteMarketplaceName)
+            put("remotePluginId", remotePluginId)
+            put("skillName", skillName)
+        }, id)
+        return id
+    }
+
+    fun pluginShareSave(pluginId: String, discoverability: String = "UNLISTED", shareTargets: List<String>? = null): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/share/save", buildJsonObject {
+            put("pluginId", pluginId)
+            put("discoverability", discoverability)
+            shareTargets?.let { put("shareTargets", buildJsonArray { it.forEach { target -> add(target) } }) }
+        }, id)
+        return id
+    }
+
+    fun pluginShareUpdateTargets(shareId: String, discoverability: String, shareTargets: List<String>? = null): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/share/updateTargets", buildJsonObject {
+            put("shareId", shareId)
+            put("discoverability", discoverability)
+            shareTargets?.let { put("shareTargets", buildJsonArray { it.forEach { target -> add(target) } }) }
+        }, id)
+        return id
+    }
+
+    fun pluginShareList(cursor: String? = null, limit: Int? = null): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/share/list", buildJsonObject {
+            cursor?.let { put("cursor", it) }
+            limit?.let { put("limit", it) }
+        }, id)
+        return id
+    }
+
+    fun pluginShareCheckout(shareId: String): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/share/checkout", buildJsonObject { put("shareId", shareId) }, id)
+        return id
+    }
+
+    fun pluginShareDelete(shareId: String): Int {
+        val id = ids.incrementAndGet()
+        send("plugin/share/delete", buildJsonObject { put("shareId", shareId) }, id)
+        return id
+    }
+
+    fun windowsSandboxSetupStart(params: JsonObject = JsonObject(emptyMap())): Int {
+        val id = ids.incrementAndGet()
+        send("windowsSandbox/setupStart", params, id)
+        return id
+    }
+
+    fun windowsSandboxReadiness(): Int {
+        val id = ids.incrementAndGet()
+        send("windowsSandbox/readiness", JsonObject(emptyMap()), id)
+        return id
+    }
+
+    fun uploadFeedback(
+        classification: String,
+        threadId: String,
+        reason: String? = null,
+        tags: Map<String, String>? = null,
+        includeLogs: Boolean = false,
+        extraLogFiles: List<String>? = null,
+    ): Int {
+        val id = ids.incrementAndGet()
+        send("feedback/upload", buildJsonObject {
+            put("classification", classification)
+            put("threadId", threadId)
+            reason?.let { put("reason", it) }
+            tags?.let { put("tags", JsonObject(it.mapValues { entry -> JsonPrimitive(entry.value) })) }
+            put("includeLogs", includeLogs)
+            extraLogFiles?.let { put("extraLogFiles", buildJsonArray { it.forEach { file -> add(file) } }) }
+        }, id)
+        return id
+    }
+
+    fun getConversationSummary(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("getConversationSummary", buildJsonObject { put("threadId", threadId) }, id)
+        return id
+    }
+
+    fun listApps(cursor: String? = null, limit: Int? = null, threadId: String? = null, forceRefetch: Boolean = false): Int {
+        val id = ids.incrementAndGet()
+        send("app/list", buildJsonObject {
+            cursor?.let { put("cursor", it) }
+            limit?.let { put("limit", it) }
+            threadId?.let { put("threadId", it) }
+            if (forceRefetch) put("forceRefetch", true)
+        }, id)
+        return id
+    }
+
+    fun listPermissionProfiles(cwd: String? = null, cursor: String? = null, limit: Int? = null): Int {
+        val id = ids.incrementAndGet()
+        send("permissionProfile/list", buildJsonObject {
+            cwd?.let { put("cwd", it) }
+            cursor?.let { put("cursor", it) }
+            limit?.let { put("limit", it) }
+        }, id)
+        return id
+    }
+
+    fun readModelProviderCapabilities(): Int {
+        val id = ids.incrementAndGet()
+        send("modelProvider/capabilities/read", JsonObject(emptyMap()), id)
+        return id
+    }
+
+    fun sendAddCreditsNudgeEmail(creditType: String = "credits"): Int {
+        val id = ids.incrementAndGet()
+        send("account/sendAddCreditsNudgeEmail", buildJsonObject { put("creditType", creditType) }, id)
+        return id
+    }
+
+    fun unsubscribeThread(threadId: String): Int {
+        val id = ids.incrementAndGet()
+        send("thread/unsubscribe", buildJsonObject { put("threadId", threadId) }, id)
+        return id
+    }
+
+    fun injectThreadItems(threadId: String, items: List<JsonObject>): Int {
+        val id = ids.incrementAndGet()
+        send("thread/inject_items", buildJsonObject {
+            put("threadId", threadId)
+            put("items", buildJsonArray { items.forEach { add(it) } })
+        }, id)
+        return id
+    }
+
     private fun send(method: String, params: JsonElement, id: Int? = null) {
         val msg = buildJsonObject {
             put("method", method)
