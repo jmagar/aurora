@@ -57,6 +57,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -522,6 +523,22 @@ fun ChatScreen(
                     )
                     TextButton(onClick = { pendingSkillInvocation = null }) { Text("Clear") }
                 }
+            }
+
+            // Working directory override — shown for new threads (no threadId yet) or when
+            // a selectedCwd is already set. User can type a path; blank clears the override.
+            if (s.threadId == null || s.selectedCwd != null) {
+                OutlinedTextField(
+                    value = s.selectedCwd ?: "",
+                    onValueChange = { vm.setSelectedCwd(it) },
+                    label = { Text("Working directory (optional)") },
+                    placeholder = { Text("e.g. /home/user/project", style = MaterialTheme.typography.bodySmall) },
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                )
             }
 
             AuroraPromptInput(

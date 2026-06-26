@@ -129,11 +129,12 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     fun disconnect() { ws?.close(1000, "bye"); ws = null }
 
-    fun startThread(model: String? = null, effort: String? = null): Int {
+    fun startThread(model: String? = null, effort: String? = null, cwd: String? = null): Int {
         val id = ids.incrementAndGet()
         send("thread/start", buildJsonObject {
             model?.let { put("model", it) }
             effort?.let { put("effort", it) }
+            cwd?.let { put("cwd", it) }
         }, id)
         return id
     }
@@ -160,6 +161,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
         granularPolicy: GranularPolicy? = null,
         approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
         sandboxPolicy: SandboxPolicy = SandboxPolicy.DangerFullAccess,
+        cwd: String? = null,
     ): Pair<String, Int> {
         val id = ids.incrementAndGet()
         val frame = json.encodeToString(
@@ -204,6 +206,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
                     })
                     model?.let { put("model", it) }
                     effort?.let { put("effort", it) }
+                    cwd?.let { put("cwd", it) }
                     put("approvalPolicy", approvalPolicy.wire)
                     put("approvalsReviewer", approvalsReviewer.wire)
                     if (approvalPolicy == ApprovalPolicy.Granular && granularPolicy != null) {
@@ -249,10 +252,11 @@ class CodexClient(private val url: String, private val token: String? = null) {
         granularPolicy: GranularPolicy? = null,
         approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
         sandboxPolicy: SandboxPolicy = SandboxPolicy.DangerFullAccess,
+        cwd: String? = null,
     ): Int {
         val (frame, id) = buildTurnFrame(
             threadId, text, attachments, model, effort, images,
-            approvalPolicy, granularPolicy, approvalsReviewer, sandboxPolicy,
+            approvalPolicy, granularPolicy, approvalsReviewer, sandboxPolicy, cwd,
         )
         ws?.send(frame)
         return id

@@ -216,6 +216,8 @@ data class ChatState(
     val fuzzySearch: FuzzyFileSearchState? = null,
     /** Null until fetched; empty string means no local changes versus remote. */
     val remoteDiff: String? = null,
+    /** User-selected cwd override for thread/start and turn/start. Null uses server default. */
+    val selectedCwd: String? = null,
 ) {
     /**
      * Return a copy with all per-turn transient fields zeroed and [newMsgs] installed.
@@ -525,7 +527,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 // (pendingTurns was non-empty before this enqueue), don't open another.
                 if (!alreadyPending) {
                     val model = settings.model.first()
-                    repo.startThread(model, effort = _state.value.selectedEffort)
+                    repo.startThread(
+                        model,
+                        effort = _state.value.selectedEffort,
+                        cwd = _state.value.selectedCwd,
+                    )
                 }
             } else {
                 startTurnWithCurrentPolicy(tid, text, attachments = attachments, images = images)
@@ -558,6 +564,10 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
 
     fun selectEffort(effort: String) {
         _state.update { it.copy(selectedEffort = effort) }
+    }
+
+    fun setSelectedCwd(path: String?) {
+        _state.update { it.copy(selectedCwd = path?.takeIf { candidate -> candidate.isNotBlank() }) }
     }
 
     // Feature 2: Message reactions + edit
@@ -614,7 +624,11 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                 pendingTurns.addLast(PendingTurn(text, listOf(SelectedItem.Skill(skillName, skillPath)), images))
                 if (!alreadyPending) {
                     val model = settings.model.first()
-                    repo.startThread(model, effort = _state.value.selectedEffort)
+                    repo.startThread(
+                        model,
+                        effort = _state.value.selectedEffort,
+                        cwd = _state.value.selectedCwd,
+                    )
                 }
             } else {
                 startTurnWithCurrentPolicy(
@@ -756,6 +770,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             granularPolicy = if (s.selectedApprovalPolicy == ApprovalPolicy.Granular) s.granularPolicy else null,
             approvalsReviewer = s.selectedReviewer,
             sandboxPolicy = s.selectedSandboxPolicy,
+            cwd = s.selectedCwd,
         )
     }
 

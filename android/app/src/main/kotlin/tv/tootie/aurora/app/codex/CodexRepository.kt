@@ -321,8 +321,8 @@ class CodexRepository {
 
     // --- Request helpers ---------------------------------------------------
 
-    fun startThread(model: String?, effort: String? = null): Int {
-        val id = client?.startThread(model, effort) ?: return -1
+    fun startThread(model: String?, effort: String? = null, cwd: String? = null): Int {
+        val id = client?.startThread(model, effort, cwd) ?: return -1
         pendingKinds[id.toString()] = RequestKind.ThreadStart  // response goes to turnEventsFlow
         return id
     }
@@ -338,10 +338,11 @@ class CodexRepository {
         granularPolicy: GranularPolicy? = null,
         approvalsReviewer: ApprovalsReviewer = ApprovalsReviewer.User,
         sandboxPolicy: SandboxPolicy = SandboxPolicy.DangerFullAccess,
+        cwd: String? = null,
     ): Int {
         val id = client?.startTurn(
             threadId, text, attachments, model, effort, images,
-            approvalPolicy, granularPolicy, approvalsReviewer, sandboxPolicy,
+            approvalPolicy, granularPolicy, approvalsReviewer, sandboxPolicy, cwd,
         ) ?: return -1
         pendingKinds[id.toString()] = RequestKind.Other
         return id
