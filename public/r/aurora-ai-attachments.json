@@ -15,7 +15,7 @@
   "files": [
     {
       "path": "registry/aurora/blocks/ai/elements/attachments.tsx",
-      "content": "\"use client\"\n\nexport { AttachmentChip as Attachments } from \"@/registry/aurora/blocks/files/attachment/attachment\"\n",
+      "content": "\"use client\"\n\nexport { AttachmentChip as Attachments } from \"@/components/aurora/attachment\"\n",
       "type": "registry:component",
       "target": "@components/aurora/ai/attachments.tsx"
     }

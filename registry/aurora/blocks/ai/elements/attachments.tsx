@@ -1,3 +1,3 @@
 "use client"
 
-export { AttachmentChip as Attachments } from "@/registry/aurora/blocks/files/attachment/attachment"
+export { AttachmentChip as Attachments } from "@/components/aurora/attachment"
