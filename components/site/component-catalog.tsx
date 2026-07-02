@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { ArrowUpRight, LayoutGrid, Search, X } from "lucide-react"
+import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Search, X } from "lucide-react"
 import { NAV } from "@/app/gallery/nav-data"
 import { DEMOS } from "@/app/gallery/demo-map"
 import { getRegistryMeta } from "@/lib/registry-meta"
@@ -100,18 +100,76 @@ function LazyPreview({ slug }: { slug: string }) {
   )
 }
 
-/* ── Detail drawer — CD LiveDrawer ─────────────────────────────────────── */
-function LiveDrawer({ item, onClose }: { item: CatalogItem; onClose: () => void }) {
+function DrawerArrow({
+  dir,
+  target,
+  onPick,
+}: {
+  dir: "left" | "right"
+  target: CatalogItem | null
+  onPick: (item: CatalogItem) => void
+}) {
+  return (
+    <button
+      type="button"
+      disabled={!target}
+      onClick={(e) => {
+        e.stopPropagation()
+        if (target) onPick(target)
+      }}
+      aria-label={target ? `${dir === "left" ? "Previous" : "Next"}: ${target.label}` : undefined}
+      title={target ? `${dir === "left" ? "Previous" : "Next"}: ${target.label}` : undefined}
+      className="grid size-[46px] flex-none place-items-center self-center rounded-[12px]"
+      style={{
+        background: "var(--aurora-control-surface)",
+        border: "1px solid var(--aurora-border-strong)",
+        color: "var(--aurora-text-primary)",
+        boxShadow: "var(--aurora-highlight-medium)",
+        opacity: target ? 1 : 0.4,
+        cursor: target ? "pointer" : "default",
+      }}
+    >
+      {dir === "left" ? <ArrowLeft size={18} strokeWidth={1.75} /> : <ArrowRight size={18} strokeWidth={1.75} />}
+    </button>
+  )
+}
+
+/* ── Detail drawer — CD LiveDrawer, with prev/next arrows (CD
+ * HeroComponentView parity): ←/→ keys and flanking arrow buttons cycle
+ * through the currently filtered list. ─────────────────────────────────── */
+function LiveDrawer({
+  item,
+  list,
+  onPick,
+  onClose,
+}: {
+  item: CatalogItem
+  list: CatalogItem[]
+  onPick: (item: CatalogItem) => void
+  onClose: () => void
+}) {
   const Demo = DEMOS[item.slug]
   const meta = getRegistryMeta(item.slug)
 
+  const idx = list.findIndex((c) => c.slug === item.slug)
+  const has = idx >= 0 && list.length > 1
+  const prev = has ? list[(idx - 1 + list.length) % list.length] : null
+  const next = has ? list[(idx + 1) % list.length] : null
+
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
+      if (e.key === "Escape") {
+        onClose()
+        return
+      }
+      const tag = (e.target as HTMLElement | null)?.tagName
+      if (tag && /INPUT|TEXTAREA|SELECT/.test(tag)) return
+      if (e.key === "ArrowLeft" && prev) onPick(prev)
+      else if (e.key === "ArrowRight" && next) onPick(next)
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [onClose])
+  }, [onClose, onPick, prev, next])
 
   return (
     <div
@@ -124,18 +182,20 @@ function LiveDrawer({ item, onClose }: { item: CatalogItem; onClose: () => void 
         background: "color-mix(in srgb, var(--aurora-page-bg) 62%, transparent)",
         backdropFilter: "blur(2px)",
         display: "flex",
-        alignItems: "center",
+        alignItems: "stretch",
         justifyContent: "center",
+        gap: 12,
         padding: "5vh 20px",
       }}
     >
+      <DrawerArrow dir="left" target={prev} onPick={onPick} />
       <aside
         role="dialog"
         aria-modal="true"
         aria-label={item.label}
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "min(760px, 96vw)",
+          width: "min(760px, 92vw)",
           maxHeight: "90vh",
           display: "flex",
           flexDirection: "column",
@@ -164,6 +224,7 @@ function LiveDrawer({ item, onClose }: { item: CatalogItem; onClose: () => void 
             </div>
             <div className="aurora-text-code" style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
               aurora · {item.group.toLowerCase()}
+              {has ? ` · ${idx + 1} / ${list.length}` : null}
             </div>
           </div>
           <Link
@@ -213,6 +274,7 @@ function LiveDrawer({ item, onClose }: { item: CatalogItem; onClose: () => void 
           ) : null}
         </div>
       </aside>
+      <DrawerArrow dir="right" target={next} onPick={onPick} />
     </div>
   )
 }
@@ -417,7 +479,14 @@ export function ComponentCatalog({ heading = "The catalog" }: { heading?: string
         </div>
       )}
 
-      {open ? <LiveDrawer item={open} onClose={() => setOpen(null)} /> : null}
+      {open ? (
+        <LiveDrawer
+          item={open}
+          list={list.length > 0 ? list : ITEMS}
+          onPick={setOpen}
+          onClose={() => setOpen(null)}
+        />
+      ) : null}
     </section>
   )
 }
