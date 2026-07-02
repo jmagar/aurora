@@ -572,10 +572,21 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
           }}
         >
           {list.map((c) => (
-            <button
+            // Not a <button>: the live preview inside renders real demos that
+            // contain their own buttons/inputs, and interactive content can't
+            // nest inside a button (invalid HTML → hydration errors).
+            <div
               key={c.slug}
-              type="button"
+              role="button"
+              tabIndex={0}
+              aria-label={`Open ${c.label}`}
               onClick={() => pick(c)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  pick(c)
+                }
+              }}
               className="aurora-card"
               style={{
                 display: "flex",
@@ -634,7 +645,7 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
                   )}
                 </span>
               </div>
-            </button>
+            </div>
           ))}
         </div>
       )}
