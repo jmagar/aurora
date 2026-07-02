@@ -45,6 +45,9 @@ const allowNativeButton = new Set([
   "registry/aurora/ui/segmented.tsx",
   "registry/aurora/ui/rating.tsx",
   "registry/aurora/ui/tag-input.tsx",
+  // Badge's dismissible "×" affordance — a bare icon button by design, same as
+  // tag-input's remove control; full Button chrome would break the chip.
+  "registry/aurora/ui/badge.tsx",
   "registry/aurora/ui/copy-button.tsx",
   "registry/aurora/ui/component-card.tsx",
   "registry/aurora/ui/chat-sidebar.tsx",

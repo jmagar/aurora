@@ -46,6 +46,12 @@
   --aurora-accent-pink-surface: color-mix(in srgb, var(--aurora-accent-pink) 12%, var(--aurora-panel-medium));
   --aurora-accent-pink-border:  color-mix(in srgb, var(--aurora-accent-pink) 32%, transparent);
 
+  /* Expressive surface tokens — cyan (primary). Mirror the rose family so the
+     cyan tone tracks the theme instead of hand-mixing colors in the component. */
+  --aurora-accent-primary-surface:    color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-panel-medium));
+  --aurora-accent-primary-border:     color-mix(in srgb, var(--aurora-accent-primary) 34%, transparent);
+  --aurora-accent-primary-foreground: color-mix(in srgb, var(--aurora-accent-primary) 88%, white);
+
   /* Status — muted, never neon */
   --aurora-success: #7dd3c7;
   --aurora-warn:    #c6a36b;
@@ -265,6 +271,12 @@
   /* Rose surfaces (light) */
   --aurora-accent-pink-surface: color-mix(in srgb, var(--aurora-accent-pink) 10%, var(--aurora-panel-medium));
   --aurora-accent-pink-border:  color-mix(in srgb, var(--aurora-accent-pink) 26%, transparent);
+
+  /* Cyan (primary) surfaces (light) — foreground darkens for contrast on the
+     light tinted surface (the dark-theme 88%-white mix would be illegible here). */
+  --aurora-accent-primary-surface:    color-mix(in srgb, var(--aurora-accent-primary) 10%, var(--aurora-panel-medium));
+  --aurora-accent-primary-border:     color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent);
+  --aurora-accent-primary-foreground: color-mix(in srgb, var(--aurora-accent-primary) 45%, #07131c);
 
   --aurora-success: #2d7d6e;
   --aurora-warn:    #8a6914;
@@ -586,5 +598,31 @@
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 1ms !important;
+  }
+}
+
+/* Badge live-dot pulse. Lives here (not injected at runtime by the component)
+   so it is SSR-safe, CSP-safe, and present on first paint. The dot sets
+   --badge-dot-color inline; this one keyframe works across every tone. */
+@keyframes aurora-badge-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 color-mix(in srgb, var(--badge-dot-color) 40%, transparent),
+      0 0 4px var(--badge-dot-color);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px transparent,
+      0 0 6px var(--badge-dot-color);
+  }
+}
+
+.aurora-badge-dot--pulse {
+  animation: aurora-badge-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-badge-dot--pulse {
+    animation: none;
   }
 }

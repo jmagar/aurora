@@ -3,12 +3,18 @@
 // BREAKING: badgeVariants export removed in this version. See badgeVariants deprecation shim below.
 
 import * as React from "react"
+import { Slot, Slottable } from "@radix-ui/react-slot"
+import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
+// Warn-once so repeated renders (and React strict-mode double-invokes) don't
+// spam the console with the same deprecation notice.
+const warned = new Set<string>()
 function devWarn(message: string): void {
-  if (process.env.NODE_ENV !== "production") {
-    console.warn(message)
-  }
+  if (process.env.NODE_ENV === "production") return
+  if (warned.has(message)) return
+  warned.add(message)
+  console.warn(message)
 }
 
 // ---------------------------------------------------------------------------
@@ -85,49 +91,15 @@ const badgeToneMap: Record<BadgeTone, ToneTokens> = {
     bg:        "var(--aurora-accent-pink-surface)",
     solidText: "var(--aurora-page-bg)",
   },
+  // Consumes the same token family as every other tone, so the cyan badge
+  // tracks the theme (light mode included) instead of hand-mixing colors.
   cyan: {
     accent:    "var(--aurora-accent-primary)",
-    text:      "color-mix(in srgb, var(--aurora-accent-primary) 88%, white)",
-    border:    "color-mix(in srgb, var(--aurora-accent-primary) 34%, transparent)",
-    bg:        "color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-panel-medium))",
+    text:      "var(--aurora-accent-primary-foreground)",
+    border:    "var(--aurora-accent-primary-border)",
+    bg:        "var(--aurora-accent-primary-surface)",
     solidText: "var(--aurora-page-bg)",
   },
-}
-
-// ---------------------------------------------------------------------------
-// Pulse keyframe injection
-// ---------------------------------------------------------------------------
-
-const PULSE_ID = "aurora-badge-pulse"
-
-function injectPulse() {
-  if (typeof document === "undefined") return
-  if (document.getElementById(PULSE_ID)) return
-  const style = document.createElement("style")
-  style.id = PULSE_ID
-  style.textContent = `
-    @keyframes aurora-badge-pulse {
-      0%, 100% {
-        box-shadow:
-          0 0 0 0 color-mix(in srgb, var(--badge-dot-color) 40%, transparent),
-          0 0 4px var(--badge-dot-color);
-      }
-      50% {
-        box-shadow:
-          0 0 0 4px transparent,
-          0 0 6px var(--badge-dot-color);
-      }
-    }
-    .aurora-badge-dot--pulse {
-      animation: aurora-badge-pulse 1.6s ease-in-out infinite;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .aurora-badge-dot--pulse {
-        animation: none;
-      }
-    }
-  `
-  document.head.appendChild(style)
 }
 
 // ---------------------------------------------------------------------------
@@ -159,6 +131,36 @@ function resolveTone(value: BadgeTone | "default" | "violet" | undefined): Badge
   return value
 }
 
+/**
+ * Resolve an icon slot to a node. A React node is returned as-is; a raw SVG
+ * path string is wrapped (deprecated — string icons are a `dangerouslySetInnerHTML`
+ * foot-gun and non-idiomatic; pass a lucide-react icon instead).
+ */
+function resolveIcon(
+  icon: string | React.ReactNode | undefined,
+  isSm: boolean,
+  slot: "icon" | "iconTrailing"
+): React.ReactNode {
+  if (icon == null) return null
+  if (typeof icon === "string") {
+    devWarn(
+      `[Aurora Badge] Passing \`${slot}\` as an SVG path string is deprecated and will be removed. Pass a React node (e.g. a lucide-react icon) instead.`
+    )
+    return (
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width={isSm ? 11 : 12}
+        height={isSm ? 11 : 12}
+        fill="currentColor"
+        style={{ flexShrink: 0 }}
+        dangerouslySetInnerHTML={{ __html: icon }}
+      />
+    )
+  }
+  return icon
+}
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -179,10 +181,39 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Render a status dot to the left of the label. */
   dot?: boolean
   /**
-   * Inline leading icon. Pass an SVG `<path>` body string (the `d=`/markup
-   * inside an `<svg viewBox="0 0 24 24">`), or any React node for full control.
+   * Leading icon. Prefer a React node (a lucide-react icon). A raw SVG `<path>`
+   * body string is still accepted but deprecated.
    */
   icon?: string | React.ReactNode
+  /**
+   * Trailing icon, rendered after the label (before any remove button). Same
+   * string/node contract as `icon`.
+   */
+  iconTrailing?: string | React.ReactNode
+  /**
+   * Make the badge dismissible: renders a trailing "×" button. The handler
+   * receives the button click; propagation to the badge's own `onClick` is
+   * stopped automatically.
+   */
+  onRemove?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  /** Accessible label for the remove button. Defaults to "Remove". */
+  removeLabel?: string
+  /**
+   * Numeric notification count. Renders the number as the badge content (when
+   * no children are given), capped at `max` (→ "{max}+"). Hidden at 0 unless
+   * `showZero`.
+   */
+  count?: number
+  /** Overflow cap for `count`. Values above render as "{max}+". Defaults to 99. */
+  max?: number
+  /** Render the count badge even when `count` is 0. Defaults to false. */
+  showZero?: boolean
+  /**
+   * Absolutely position the badge at the top-right corner of a
+   * `position: relative` parent — the classic notification bubble on an icon
+   * or avatar.
+   */
+  anchored?: boolean
   /**
    * Animate the dot with a pulse ring — use for "live", "recording", or
    * "connected" indicators. Has no effect when `dot` is false.
@@ -203,6 +234,19 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
    * When `onClick` is also provided, `role="button"` is applied automatically.
    */
   interactive?: boolean
+  /**
+   * Toggle state for an interactive chip. Drives `aria-pressed` and a selected
+   * emphasis ring. Leave undefined for non-toggle chips.
+   */
+  selected?: boolean
+  /** Disable an interactive chip — suppresses activation, removal, and focus. */
+  disabled?: boolean
+  /**
+   * Render the consumer's own element (e.g. an `<a>`) via Radix `Slot` instead
+   * of a `<span>`, so a navigational chip is a real link. Decorations (dot,
+   * icons, remove button) wrap around the slotted child.
+   */
+  asChild?: boolean
 }
 
 // ---------------------------------------------------------------------------
@@ -217,10 +261,20 @@ function Badge({
   fill: fillProp,
   dot = false,
   icon,
+  iconTrailing,
+  onRemove,
+  removeLabel = "Remove",
+  count,
+  max = 99,
+  showZero = false,
+  anchored = false,
   pulse = false,
   size = "md",
   shape = "label",
   interactive = false,
+  selected,
+  disabled = false,
+  asChild = false,
   style,
   children,
   onClick,
@@ -239,17 +293,22 @@ function Badge({
   const fill: BadgeFill = fillProp ?? variantFill ?? "soft"
   const { accent, text, border, bg, solidText } = badgeToneMap[tone]
 
-  // Inject pulse keyframes lazily — only when the feature is first used.
-  React.useEffect(() => {
-    if (pulse && dot) injectPulse()
-  }, [pulse, dot])
+  // -----------------------------------------------------------------------
+  // Count resolution
+  // -----------------------------------------------------------------------
+  const hasCount = typeof count === "number"
+  const countText = hasCount ? (count! > max ? `${max}+` : String(count)) : null
+  // Notification convention: a 0 count renders nothing unless asked. The actual
+  // `return null` happens after all hooks run (rules-of-hooks), see below.
+  const hiddenByZero = hasCount && count === 0 && !showZero
+  const isCount = countText !== null && children == null
 
   // -----------------------------------------------------------------------
   // Size tokens
   // -----------------------------------------------------------------------
   const isSm = size === "sm"
   const dotSize = isSm ? "4px" : "5px"
-  const badgeRadius = shape === "pill" ? "999px" : "4px"
+  const badgeRadius = shape === "pill" || isCount ? "999px" : "4px"
   const badgeFontSize = isSm
     ? "var(--aurora-type-caption)"
     : "var(--aurora-type-micro)"
@@ -257,7 +316,7 @@ function Badge({
   // -----------------------------------------------------------------------
   // Shape tokens
   // -----------------------------------------------------------------------
-  const isLabel = shape === "label"
+  const isLabel = shape === "label" && !isCount
   const fontFamily = isLabel
     ? "var(--aurora-font-mono, 'JetBrains Mono', monospace)"
     : "var(--aurora-font-sans, Inter, sans-serif)"
@@ -297,79 +356,105 @@ function Badge({
   }
 
   // -----------------------------------------------------------------------
-  // Icon resolution — string path body vs node
+  // Icon / content resolution
   // -----------------------------------------------------------------------
-  const iconNode: React.ReactNode =
-    typeof icon === "string" ? (
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        width={isSm ? 11 : 12}
-        height={isSm ? 11 : 12}
-        fill="currentColor"
-        style={{ flexShrink: 0 }}
-        dangerouslySetInnerHTML={{ __html: icon }}
-      />
-    ) : (
-      icon ?? null
-    )
+  const leadingIcon = resolveIcon(icon, isSm, "icon")
+  const trailingIcon = resolveIcon(iconTrailing, isSm, "iconTrailing")
+  const content = children ?? countText
 
   // -----------------------------------------------------------------------
-  // Interactive keyboard handler
+  // Interaction
   // -----------------------------------------------------------------------
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent<HTMLSpanElement>) => {
+      if (disabled) {
+        e.preventDefault()
+        return
+      }
+      onClick?.(e)
+    },
+    [disabled, onClick]
+  )
+
   const handleKeyDown = React.useCallback(
     (e: React.KeyboardEvent<HTMLSpanElement>) => {
       onKeyDown?.(e)
+      if (disabled) return
       if (interactive && onClick && (e.key === "Enter" || e.key === " ")) {
         e.preventDefault()
         onClick(e as unknown as React.MouseEvent<HTMLSpanElement>)
       }
     },
-    [interactive, onClick, onKeyDown]
+    [interactive, disabled, onClick, onKeyDown]
   )
 
-  // -----------------------------------------------------------------------
-  // Derived accessibility attributes
-  // -----------------------------------------------------------------------
-  const interactiveProps = interactive
-    ? {
-        tabIndex: 0,
-        role: onClick ? ("button" as const) : undefined,
-        onKeyDown: handleKeyDown,
-        onClick,
-      }
-    : { onClick }
+  const handleRemove = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      // Never let dismissal bubble into the chip's own click/toggle.
+      e.stopPropagation()
+      if (disabled) return
+      onRemove?.(e)
+    },
+    [disabled, onRemove]
+  )
 
-  return (
-    <span
-      ref={ref}
+  // Safe now that every hook above has run unconditionally.
+  if (hiddenByZero) return null
+
+  // Behavior/ARIA props applied to the badge element itself. Native keyboard,
+  // role, and tabIndex are skipped under `asChild` — the consumer's element
+  // (e.g. an <a>) provides them — but pressed/disabled semantics still merge.
+  const behaviorProps: React.HTMLAttributes<HTMLSpanElement> & {
+    tabIndex?: number
+    role?: "button"
+    "aria-pressed"?: boolean
+    "aria-disabled"?: boolean
+  } = {}
+  if (interactive) {
+    if (!asChild) {
+      behaviorProps.tabIndex = disabled ? -1 : 0
+      if (onClick) behaviorProps.role = "button"
+      behaviorProps.onKeyDown = handleKeyDown
+    }
+    if (typeof selected === "boolean") behaviorProps["aria-pressed"] = selected
+    if (disabled) behaviorProps["aria-disabled"] = true
+  }
+  if (onClick) behaviorProps.onClick = handleClick
+
+  // -----------------------------------------------------------------------
+  // Remove button
+  // -----------------------------------------------------------------------
+  const removeNode = onRemove ? (
+    <button
+      type="button"
+      aria-label={removeLabel}
+      onClick={handleRemove}
+      tabIndex={disabled ? -1 : 0}
       className={cn(
-        "inline-flex items-center gap-1.5 leading-none border whitespace-nowrap",
-        // Size
-        isSm ? "px-1.5 py-0" : "px-2 py-0.5",
-        // Shape: uppercase only for "label"
-        isLabel && "uppercase",
-        // Interactive
-        interactive && [
-          "cursor-pointer",
-          "transition-[box-shadow,filter,transform] duration-150",
-          "hover:brightness-125",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)]",
-        ],
-        className
+        "-mr-0.5 inline-flex items-center justify-center rounded-[3px] opacity-70",
+        "transition-opacity hover:opacity-100",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)]"
       )}
       style={{
-        borderRadius: badgeRadius,
-        fontFamily,
-        fontSize: badgeFontSize,
-        fontWeight: 650,
-        letterSpacing,
-        ...fillStyle,
-        ...style,
+        color: "currentColor",
+        background: "transparent",
+        border: 0,
+        cursor: disabled ? "default" : "pointer",
+        lineHeight: 0,
+        padding: 0,
       }}
-      {...interactiveProps}
-      {...props}
     >
+      <X size={isSm ? 11 : 12} aria-hidden="true" />
+    </button>
+  ) : null
+
+  // -----------------------------------------------------------------------
+  // Assembly
+  // -----------------------------------------------------------------------
+  const Comp: React.ElementType = asChild ? Slot : "span"
+
+  const inner = (
+    <>
       {dot && (
         <span
           aria-hidden="true"
@@ -381,17 +466,74 @@ function Badge({
             borderRadius: "50%",
             backgroundColor: dotColor,
             flexShrink: 0,
-            // Static glow when not pulsing; animation handles it when pulsing.
+            // Static glow when not pulsing; the keyframe (in aurora.css)
+            // handles it when pulsing.
             boxShadow: pulse ? undefined : dotShadow,
-            // CSS custom property consumed by the keyframe so one rule
-            // works across all tones.
+            // Consumed by the pulse keyframe so one CSS rule spans all tones.
             ["--badge-dot-color" as string]: dotColor,
           }}
         />
       )}
-      {iconNode}
-      {children}
-    </span>
+      {leadingIcon}
+      {asChild ? <Slottable>{content}</Slottable> : content}
+      {trailingIcon}
+      {removeNode}
+    </>
+  )
+
+  return (
+    <Comp
+      ref={ref}
+      className={cn(
+        "inline-flex items-center gap-1.5 leading-none border whitespace-nowrap",
+        // Size
+        isSm ? "px-1.5 py-0" : "px-2 py-0.5",
+        // Count bubbles read best centered with tight symmetric padding.
+        isCount && (isSm ? "px-1" : "px-1.5"),
+        // Shape: uppercase only for a plain "label"
+        isLabel && "uppercase",
+        // Interactive
+        interactive && [
+          "cursor-pointer",
+          "transition-[box-shadow,filter,transform] duration-150",
+          "hover:brightness-125",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)]",
+        ],
+        // Selected (toggle) emphasis
+        interactive && selected && "ring-2 ring-[var(--aurora-focus-ring)]",
+        // Disabled
+        disabled && "cursor-default opacity-45",
+        className
+      )}
+      style={{
+        borderRadius: badgeRadius,
+        fontFamily,
+        fontSize: badgeFontSize,
+        fontWeight: 650,
+        letterSpacing,
+        ...(isCount
+          ? {
+              justifyContent: "center",
+              minWidth: isSm ? "16px" : "18px",
+              fontVariantNumeric: "tabular-nums",
+            }
+          : null),
+        ...(anchored
+          ? {
+              position: "absolute",
+              top: 0,
+              right: 0,
+              transform: "translate(50%, -50%)",
+            }
+          : null),
+        ...fillStyle,
+        ...style,
+      }}
+      {...behaviorProps}
+      {...props}
+    >
+      {inner}
+    </Comp>
   )
 }
 

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Sparkles, Tag } from "lucide-react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { Badge } from "@/registry/aurora/ui/badge"
 
@@ -33,10 +34,8 @@ const demoSurface: React.CSSProperties = {
   border: "1px solid var(--aurora-border-default)",
 }
 
-const aiSparkle = '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>'
-
-// Interactive filter-chip row — toggles a live/keyboard-activatable selection so
-// the `interactive` axis reads as a real control, not a static swatch.
+// Interactive filter-chip row — a toggleable, keyboard-activatable selection.
+// `selected` drives aria-pressed on the component; the fill swap is just visual.
 const FILTERS = ["Errors", "Warnings", "Info", "AI"] as const
 
 function FilterChips() {
@@ -61,13 +60,44 @@ function FilterChips() {
             shape="pill"
             fill={on ? "solid" : "outline"}
             interactive
+            selected={on}
             onClick={() => toggle(name)}
-            aria-pressed={on}
           >
             {name}
           </Badge>
         )
       })}
+    </div>
+  )
+}
+
+// Dismissible chips — each removes itself via the `onRemove` "×" affordance.
+function RemovableTags() {
+  const [tags, setTags] = React.useState(["design", "frontend", "aurora", "wip"])
+  const remove = (t: string) => setTags((prev) => prev.filter((x) => x !== t))
+
+  if (tags.length === 0) {
+    return (
+      <Badge tone="neutral" shape="tag" fill="outline">
+        All cleared
+      </Badge>
+    )
+  }
+
+  return (
+    <div style={row}>
+      {tags.map((t) => (
+        <Badge
+          key={t}
+          tone="cyan"
+          shape="tag"
+          icon={<Tag size={12} aria-hidden />}
+          onRemove={() => remove(t)}
+          removeLabel={`Remove ${t}`}
+        >
+          {t}
+        </Badge>
+      ))}
     </div>
   )
 }
@@ -78,7 +108,7 @@ export default function BadgesDemo() {
       <GalleryPageIntro
         eyebrow="Controls"
         heading="Badge"
-        description="Semantic badges communicate system meaning. Seven tones, three fills, three shapes, an optional live dot, inline icons, and interactive filter chips."
+        description="Semantic badges communicate system meaning. Seven tones, three fills, three shapes, a live pulse dot, inline icons, dismissible chips, and numeric counts."
       />
 
       <div style={demoSurface}>
@@ -90,7 +120,7 @@ export default function BadgesDemo() {
           <Badge tone="info" dot>Info</Badge>
           <Badge tone="cyan" dot>Syncing</Badge>
           <Badge tone="neutral" dot>Idle</Badge>
-          <Badge tone="rose" icon={aiSparkle}>AI</Badge>
+          <Badge tone="rose" icon={<Sparkles size={12} aria-hidden />}>AI</Badge>
         </div>
 
         <div style={lbl}>Fills</div>
@@ -116,6 +146,19 @@ export default function BadgesDemo() {
 
         <div style={lbl}>Interactive · filter chips</div>
         <FilterChips />
+
+        <div style={lbl}>Dismissible</div>
+        <RemovableTags />
+
+        <div style={lbl}>Count · notification</div>
+        <div style={row}>
+          <Badge tone="cyan" count={3} />
+          <Badge tone="error" fill="solid" count={12} />
+          <Badge tone="neutral" fill="outline" count={128} max={99} />
+          <Badge tone="rose" shape="tag" icon={<Sparkles size={12} aria-hidden />}>
+            Inbox
+          </Badge>
+        </div>
 
         <div style={lbl}>Sizes</div>
         <div style={{ ...row, marginBottom: 0 }}>

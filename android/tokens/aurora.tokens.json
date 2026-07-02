@@ -78,8 +78,18 @@
     },
     "accent": {
       "primary": {
-        "$value": "#29b6f6",
-        "$type": "color"
+        "base": {
+          "$value": "#29b6f6",
+          "$type": "color"
+        },
+        "surface": {
+          "$value": "#133548",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#29b6f657",
+          "$type": "color"
+        }
       },
       "strong": {
         "$value": "#67cbfa",
