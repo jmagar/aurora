@@ -113,5 +113,9 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
 - **See also:** `AGENTS.md` (agent shell rules), `SKILL.md` (Aurora usage skill),
   `docs/component-kotlin-map.md` (Kotlin/Compose parity matrix).
 - **SWAG upstream contract:** `aurora.tootie.tv` is reverse-proxied by SWAG on `squirts`
-  (`/mnt/appdata/swag/nginx/proxy-confs/aurora.subdomain.conf`) → upstream `tootie:50000`,
-  scheme HTTP, Authelia enabled. Changes to port/host must be mirrored in that proxy config.
+  (`/mnt/appdata/swag/nginx/proxy-confs/aurora.subdomain.conf`) → upstream is the
+  `aurora-design-system` container on **dookie**, port `50000→3000` (this repo's
+  `docker-compose.yaml` `aurora-design-system` dev service, bind-mounting the primary
+  checkout — merges to `main` go live without a deploy step; an `aurora-prod`
+  standalone-build service exists as the production alternative). Scheme HTTP, Authelia
+  enabled. Changes to port/host must be mirrored in that proxy config.
