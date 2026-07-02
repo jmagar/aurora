@@ -128,6 +128,9 @@ export default function LandingPage() {
         >
           <LabbyMark size={78} />
         </div>
+        <div className="aurora-reveal aurora-text-eyebrow mb-4" style={{ animationDelay: "40ms" }}>
+          Operator-grade design system
+        </div>
         <h1 className="aurora-reveal aurora-text-display-hero mx-auto max-w-[18ch]" style={{ animationDelay: "60ms" }}>
           One palette.
           <br />

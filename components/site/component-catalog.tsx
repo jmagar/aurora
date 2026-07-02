@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ArrowUpRight, LayoutGrid, Search, X } from "lucide-react"
 import { NAV } from "@/app/gallery/nav-data"
 import { getRegistryMeta } from "@/lib/registry-meta"
+import { fuzzy } from "@/lib/fuzzy"
 import { tint } from "@/components/site/style-tokens"
 
 /**
@@ -31,37 +32,6 @@ const ITEMS: CatalogItem[] = NAV.flatMap((g) =>
   })),
 )
 const GROUPS = NAV.map((g) => g.group)
-
-/** fuzzy subsequence scorer — higher is better, 0 = no match (ported from CD) */
-function fuzzy(q: string, text: string): number {
-  if (!q) return 1
-  q = q.toLowerCase()
-  text = text.toLowerCase()
-  let ti = 0
-  let score = 0
-  let streak = 0
-  let started = false
-  for (let qi = 0; qi < q.length; qi++) {
-    const ch = q[qi]
-    let found = false
-    while (ti < text.length) {
-      if (text[ti] === ch) {
-        found = true
-        streak += 1
-        score += streak * 2
-        if (ti === 0 || /[\s\-_./]/.test(text[ti - 1])) score += 8
-        if (!started && ti < 4) score += 4
-        started = true
-        ti += 1
-        break
-      }
-      streak = 0
-      ti += 1
-    }
-    if (!found) return 0
-  }
-  return score - text.length * 0.05
-}
 
 export function ComponentCatalog({ heading = "The catalog" }: { heading?: string }) {
   const [q, setQ] = React.useState("")

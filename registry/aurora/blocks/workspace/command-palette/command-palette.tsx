@@ -10,11 +10,17 @@ import { Input } from "@/registry/aurora/ui/input"
 
 export type CommandSection = "recent" | "actions" | "skills" | "navigate"
 
+export interface CommandSectionDef {
+  id: string
+  label: string
+}
+
 export interface CommandItem {
   id: string
   label: string
   description?: string
-  section: CommandSection
+  /** Section id — one of the palette's `sections` (defaults to recent/actions/skills/navigate) */
+  section: string
   /** Keyboard shortcut display (e.g. ["⌘", "K"]) */
   shortcut?: string[]
   /** Inline SVG icon element */
@@ -27,6 +33,15 @@ export interface CommandPaletteProps {
   onOpenChange: (open: boolean) => void
   items: CommandItem[]
   onSelect?: (item: CommandItem) => void
+  /** Section order + labels. Defaults to the recent/actions/skills/navigate set. */
+  sections?: CommandSectionDef[]
+  placeholder?: string
+  /**
+   * Optional scorer: return 0 to drop an item, higher to rank it earlier.
+   * When omitted, a case-insensitive substring match on label/description is
+   * used and the incoming item order is kept.
+   */
+  filter?: (query: string, item: CommandItem) => number
 }
 
 // ---------------------------------------------------------------------------
@@ -170,14 +185,12 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
 ]
 
-const SECTION_LABELS: Record<CommandSection, string> = {
-  recent: "Recent",
-  actions: "Actions",
-  skills: "Skills",
-  navigate: "Navigate",
-}
-
-const SECTION_ORDER: CommandSection[] = ["recent", "actions", "skills", "navigate"]
+const DEFAULT_SECTIONS: CommandSectionDef[] = [
+  { id: "recent", label: "Recent" },
+  { id: "actions", label: "Actions" },
+  { id: "skills", label: "Skills" },
+  { id: "navigate", label: "Navigate" },
+]
 
 // ---------------------------------------------------------------------------
 // Keyboard shortcut badge
@@ -236,6 +249,9 @@ export function CommandPalette({
   onOpenChange,
   items = DEFAULT_ITEMS,
   onSelect,
+  sections = DEFAULT_SECTIONS,
+  placeholder = "Search commands, skills, files…",
+  filter,
 }: CommandPaletteProps) {
   const [query, setQuery] = React.useState("")
   const [activeIdx, setActiveIdx] = React.useState(0)
@@ -244,18 +260,24 @@ export function CommandPalette({
 
   // Filter
   const filtered = query.trim()
-    ? items.filter(
-        (item) =>
-          item.label.toLowerCase().includes(query.toLowerCase()) ||
-          item.description?.toLowerCase().includes(query.toLowerCase())
-      )
+    ? filter
+      ? items
+          .map((item) => ({ item, score: filter(query, item) }))
+          .filter((x) => x.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .map((x) => x.item)
+      : items.filter(
+          (item) =>
+            item.label.toLowerCase().includes(query.toLowerCase()) ||
+            item.description?.toLowerCase().includes(query.toLowerCase())
+        )
     : items
 
   // Group by section in order
-  const grouped = SECTION_ORDER.flatMap((section) => {
-    const sectionItems = filtered.filter((i) => i.section === section)
+  const grouped = sections.flatMap(({ id, label }) => {
+    const sectionItems = filtered.filter((i) => i.section === id)
     if (sectionItems.length === 0) return []
-    return [{ section, items: sectionItems }]
+    return [{ section: id, label, items: sectionItems }]
   })
 
   const flatItems = grouped.flatMap((g) => g.items)
@@ -385,7 +407,7 @@ export function CommandPalette({
               setQuery(e.target.value)
               setActiveIdx(0)
             }}
-            placeholder="Search commands, skills, files…"
+            placeholder={placeholder}
             aria-label="Search commands"
             className="h-auto border-none px-0 py-0 focus-visible:outline-none"
             style={{
@@ -426,7 +448,7 @@ export function CommandPalette({
               No results for &ldquo;{query}&rdquo;
             </div>
           ) : (
-            grouped.map(({ section, items: sItems }) => (
+            grouped.map(({ section, label, items: sItems }) => (
               <div key={section}>
                 {/* Section header */}
                 <div
@@ -439,7 +461,7 @@ export function CommandPalette({
                     color: "var(--aurora-text-muted)",
                   }}
                 >
-                  {SECTION_LABELS[section]}
+                  {label}
                 </div>
 
                 {sItems.map((item) => {

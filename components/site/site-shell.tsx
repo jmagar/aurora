@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Sun, Moon } from "lucide-react"
+import { ChevronDown, Monitor, Moon, Search, Smartphone, Sun } from "lucide-react"
 
 function GithubIcon({ size = 15 }: { size?: number }) {
   return (
@@ -14,13 +14,32 @@ function GithubIcon({ size = 15 }: { size?: number }) {
 }
 import { LabbyMark, AuroraWordmark } from "@/components/labby-brand"
 import { SITE_STYLES } from "@/components/site/site-ui"
+import { SiteCommandPalette } from "@/components/site/site-command-palette"
+import { useCommandPalette } from "@/registry/aurora/blocks/workspace/command-palette/command-palette"
 import { tint } from "@/components/site/style-tokens"
 
 const NAV = [
-  { label: "Overview", href: "/" },
-  { label: "Components", href: "/gallery/buttons" },
+  { label: "Components", href: "/gallery/buttons", split: true },
   { label: "Themes", href: "/themes" },
   { label: "Tokens", href: "/tokens" },
+  { label: "Icons", href: "/icons" },
+  { label: "Docs", href: "/docs" },
+]
+
+/** The Components split menu — CD parity: shadcn · React vs Android · Compose. */
+const FLAVORS = [
+  {
+    href: "/gallery/buttons",
+    icon: <Monitor size={16} strokeWidth={1.6} />,
+    label: "shadcn · React",
+    sub: "web registry & gallery",
+  },
+  {
+    href: "/docs/install",
+    icon: <Smartphone size={16} strokeWidth={1.6} />,
+    label: "Android · Compose",
+    sub: "tonal · Material 3",
+  },
 ]
 
 const GITHUB_URL = "https://github.com/jmagar/aurora-design-system"
@@ -28,13 +47,96 @@ const GITHUB_URL = "https://github.com/jmagar/aurora-design-system"
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/"
   if (href === "/themes") return pathname === "/themes" || pathname.startsWith("/themes/")
+  if (href.startsWith("/gallery")) return pathname.startsWith("/gallery")
+  if (href === "/docs") return pathname === "/docs" || pathname.startsWith("/docs/")
   return pathname.startsWith(href)
+}
+
+/** Nav link chrome shared by plain links and the split-menu trigger. */
+function navLinkStyle(active: boolean): React.CSSProperties {
+  return {
+    color: active ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
+    background: active ? "var(--aurora-control-surface)" : "transparent",
+    borderColor: active ? tint("--aurora-accent-primary", 28) : "transparent",
+    boxShadow: active ? `0 0 0 1px ${tint("--aurora-accent-primary", 12)}` : "none",
+  }
+}
+
+/** Components nav entry with the CD hover split menu (shadcn / Android). */
+function ComponentsNavItem({ active }: { active: boolean }) {
+  const [menu, setMenu] = React.useState(false)
+  const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const openMenu = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setMenu(true)
+  }
+  const closeMenu = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    closeTimer.current = setTimeout(() => setMenu(false), 160)
+  }
+  React.useEffect(() => () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+  }, [])
+
+  return (
+    <div style={{ position: "relative" }} onMouseEnter={openMenu} onMouseLeave={closeMenu}>
+      <Link
+        href="/gallery/buttons"
+        className="aurora-text-control flex items-center gap-1.5 rounded-[10px] border px-3 py-[7px] transition-colors"
+        style={navLinkStyle(active)}
+        aria-haspopup="menu"
+        aria-expanded={menu}
+        onFocus={openMenu}
+        onBlur={closeMenu}
+      >
+        Components
+        <ChevronDown size={13} strokeWidth={1.75} style={{ opacity: 0.7 }} />
+      </Link>
+      {menu && (
+        <div style={{ position: "absolute", top: "100%", left: 0, paddingTop: 6, zIndex: 45 }}>
+          <div
+            role="menu"
+            className="rounded-[var(--aurora-radius-2)] p-[5px]"
+            style={{
+              width: 196,
+              background: "var(--aurora-panel-strong)",
+              border: "1px solid var(--aurora-border-strong)",
+              boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
+            }}
+          >
+            {FLAVORS.map((f) => (
+              <Link
+                key={f.href}
+                role="menuitem"
+                href={f.href}
+                onClick={() => setMenu(false)}
+                onFocus={openMenu}
+                onBlur={closeMenu}
+                className="flex items-center gap-2.5 rounded-[10px] px-2.5 py-[9px] transition-colors hover:bg-[var(--aurora-hover-bg)]"
+              >
+                <span style={{ color: "var(--aurora-text-muted)", display: "flex" }}>{f.icon}</span>
+                <span className="flex flex-col">
+                  <span className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>
+                    {f.label}
+                  </span>
+                  <span className="aurora-text-caption" style={{ color: "var(--aurora-text-muted)" }}>
+                    {f.sub}
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [light, setLight] = React.useState(false)
   const [still, setStill] = React.useState(false)
+  const { open: cmdOpen, onOpenChange: onCmdOpenChange, setOpen: setCmdOpen } = useCommandPalette()
 
   // Sync external client-only state (persisted theme + URL flags) into React on
   // mount. setState-in-effect is the correct tool here — the values aren't known
@@ -89,17 +191,13 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <nav className="ml-2 hidden items-center gap-1 md:flex">
           {NAV.map((item) => {
             const active = isActive(pathname, item.href)
+            if (item.split) return <ComponentsNavItem key={item.href} active={active} />
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className="aurora-text-control rounded-[10px] border px-3 py-[7px] transition-colors"
-                style={{
-                  color: active ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
-                  background: active ? "var(--aurora-control-surface)" : "transparent",
-                  borderColor: active ? tint("--aurora-accent-primary", 28) : "transparent",
-                  boxShadow: active ? `0 0 0 1px ${tint("--aurora-accent-primary", 12)}` : "none",
-                }}
+                style={navLinkStyle(active)}
               >
                 {item.label}
               </Link>
@@ -109,6 +207,38 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
         <div className="flex-1" />
 
+        <button
+          onClick={() => setCmdOpen(true)}
+          aria-label="Search — open the command palette"
+          className="hidden h-[34px] items-center gap-2 rounded-[10px] px-3 sm:flex"
+          style={{
+            background: "linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.1))",
+            border: "1px solid var(--aurora-border-strong)",
+            color: "var(--aurora-text-muted)",
+            boxShadow: "var(--aurora-highlight-medium)",
+          }}
+        >
+          <Search size={14} strokeWidth={1.75} />
+          <span className="aurora-text-control" style={{ color: "var(--aurora-text-muted)" }}>
+            Search
+          </span>
+          <span className="ml-1 flex gap-[3px]">
+            {["⌘", "K"].map((k) => (
+              <kbd
+                key={k}
+                className="aurora-text-code rounded-[5px] px-[5px] py-[1px]"
+                style={{
+                  fontSize: 10,
+                  background: "var(--aurora-control-surface)",
+                  border: "1px solid var(--aurora-border-default)",
+                  color: "var(--aurora-text-muted)",
+                }}
+              >
+                {k}
+              </kbd>
+            ))}
+          </span>
+        </button>
         <button
           onClick={() => setLight((v) => !v)}
           aria-label={light ? "Switch to dark mode" : "Switch to light mode"}
@@ -145,6 +275,8 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
+      <SiteCommandPalette open={cmdOpen} onOpenChange={onCmdOpenChange} />
+
       <footer
         className="relative z-10 mt-20 px-5 py-8 md:px-10"
         style={{ borderTop: "1px solid var(--aurora-border-default)" }}
@@ -154,7 +286,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           style={{ color: "var(--aurora-text-muted)" }}
         >
           <span className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)" }}>
-            Aurora design system — operator-first, built for Labby.
+            Aurora design system — operator-first, built for Labby &amp; Axon.
           </span>
           <span className="aurora-text-code">aurora.tootie.tv</span>
         </div>
