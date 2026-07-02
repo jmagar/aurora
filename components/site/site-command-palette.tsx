@@ -36,7 +36,7 @@ const SECTIONS = [
 
 const PAGE_ITEMS: { label: string; href: string; icon: React.ReactNode }[] = [
   { label: "Overview", href: "/", icon: <House size={15} strokeWidth={1.6} /> },
-  { label: "Components", href: "/gallery/buttons", icon: <Blocks size={15} strokeWidth={1.6} /> },
+  { label: "Components", href: "/components", icon: <Blocks size={15} strokeWidth={1.6} /> },
   { label: "Themes", href: "/themes", icon: <Palette size={15} strokeWidth={1.6} /> },
   { label: "Tokens", href: "/tokens", icon: <SlidersHorizontal size={15} strokeWidth={1.6} /> },
   { label: "Icons", href: "/icons", icon: <LayoutGrid size={15} strokeWidth={1.6} /> },

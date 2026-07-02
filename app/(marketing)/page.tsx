@@ -30,8 +30,8 @@ const PILLARS = [
     tone: "--aurora-accent-primary",
     title: "Components",
     body: `${REGISTRY_ITEM_COUNT} registry items — ${UI_PRIMITIVE_COUNT} UI primitives plus ${BLOCK_COUNT} composed AI, workspace, files, auth, and feedback blocks. Install one with the shadcn CLI.`,
-    meta: "Open the gallery",
-    href: "/gallery/buttons",
+    meta: "Browse the catalog",
+    href: "/components",
   },
   {
     icon: <Palette size={20} strokeWidth={1.6} />,

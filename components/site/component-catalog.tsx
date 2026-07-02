@@ -4,15 +4,17 @@ import * as React from "react"
 import Link from "next/link"
 import { ArrowUpRight, LayoutGrid, Search, X } from "lucide-react"
 import { NAV } from "@/app/gallery/nav-data"
+import { DEMOS } from "@/app/gallery/demo-map"
 import { getRegistryMeta } from "@/lib/registry-meta"
 import { fuzzy } from "@/lib/fuzzy"
+import { CopyLine } from "@/components/site/site-ui"
 import { tint } from "@/components/site/style-tokens"
 
 /**
- * ComponentCatalog — the searchable component grid from the CD aurora-site home,
- * wired to OUR gallery so it can never drift: every tile is a NAV entry linking
- * to `/gallery/<slug>`, with the description pulled from the registry. Fuzzy
- * search + category (NAV group) chips, ported from the CD `palette.jsx` scorer.
+ * ComponentCatalog — the CD `aurora-site` LiveCatalog, wired to OUR gallery so
+ * it can never drift: every tile is a gallery NAV entry rendering its real
+ * gallery demo as a scaled live preview (lazy-mounted on scroll), and opening
+ * a tile shows the interactive demo in a drawer with its install line.
  */
 
 interface CatalogItem {
@@ -33,9 +35,192 @@ const ITEMS: CatalogItem[] = NAV.flatMap((g) =>
 )
 const GROUPS = NAV.map((g) => g.group)
 
+/* ── Lazy live preview — CD LazyFrame, sans iframe ─────────────────────────
+ * The demo renders at full width inside a scaled, non-interactive wrapper.
+ * The scale transform also acts as a containing block, so demos that use
+ * position:fixed (dialogs, drawers, palettes) stay inside their tile. */
+const PREVIEW_W = 760
+const PREVIEW_SCALE = 0.31
+const PREVIEW_H = 470
+
+function LazyPreview({ slug }: { slug: string }) {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = React.useState(false)
+  const Demo = DEMOS[slug]
+
+  React.useEffect(() => {
+    const node = ref.current
+    if (!node) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) setVisible(true)
+      },
+      { rootMargin: "300px" },
+    )
+    io.observe(node)
+    return () => io.disconnect()
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      aria-hidden
+      style={{
+        width: PREVIEW_W * PREVIEW_SCALE,
+        height: PREVIEW_H * PREVIEW_SCALE,
+        overflow: "hidden",
+        pointerEvents: "none",
+        flexShrink: 0,
+      }}
+    >
+      {visible && Demo ? (
+        <div
+          style={{
+            width: PREVIEW_W,
+            height: PREVIEW_H,
+            overflow: "hidden",
+            transform: `scale(${PREVIEW_SCALE})`,
+            transformOrigin: "top left",
+            padding: 16,
+          }}
+        >
+          <Demo />
+        </div>
+      ) : (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            background:
+              "radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--aurora-accent-primary) 5%, transparent), transparent 60%)",
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
+/* ── Detail drawer — CD LiveDrawer ─────────────────────────────────────── */
+function LiveDrawer({ item, onClose }: { item: CatalogItem; onClose: () => void }) {
+  const Demo = DEMOS[item.slug]
+  const meta = getRegistryMeta(item.slug)
+
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [onClose])
+
+  return (
+    <div
+      role="presentation"
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 120,
+        background: "color-mix(in srgb, var(--aurora-page-bg) 62%, transparent)",
+        backdropFilter: "blur(2px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "5vh 20px",
+      }}
+    >
+      <aside
+        role="dialog"
+        aria-modal="true"
+        aria-label={item.label}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "min(760px, 96vw)",
+          maxHeight: "90vh",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          borderRadius: "var(--aurora-radius-3)",
+          background: "var(--aurora-panel-strong)",
+          border: "1px solid var(--aurora-border-strong)",
+          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
+        }}
+      >
+        <div
+          className="flex items-center gap-3 px-5 py-4"
+          style={{ borderBottom: "1px solid var(--aurora-border-default)" }}
+        >
+          <div className="min-w-0 flex-1">
+            <div
+              style={{
+                fontFamily: "var(--aurora-font-display)",
+                fontWeight: 800,
+                fontSize: 18,
+                letterSpacing: "-0.02em",
+                color: "var(--aurora-text-primary)",
+              }}
+            >
+              {item.label}
+            </div>
+            <div className="aurora-text-code" style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
+              aurora · {item.group.toLowerCase()}
+            </div>
+          </div>
+          <Link
+            href={`/gallery/${item.slug}`}
+            className="aurora-text-control flex items-center gap-1.5 rounded-[9px] border px-3 py-[7px]"
+            style={{
+              color: "var(--aurora-accent-strong)",
+              borderColor: tint("--aurora-accent-primary", 34),
+              background: tint("--aurora-accent-primary", 10),
+            }}
+          >
+            Open in gallery <ArrowUpRight size={13} strokeWidth={2} />
+          </Link>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="grid size-[32px] place-items-center rounded-[9px]"
+            style={{ color: "var(--aurora-text-muted)" }}
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="aurora-scrollbar min-h-0 flex-1 overflow-y-auto p-5">
+          <div className="aurora-text-eyebrow mb-2.5" style={{ fontSize: 10 }}>
+            Live preview · interactive
+          </div>
+          <div
+            className="mb-5 overflow-hidden rounded-[var(--aurora-radius-2)] p-4"
+            style={{
+              background:
+                "radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--aurora-accent-primary) 6%, transparent), transparent 60%), var(--aurora-control-surface)",
+              border: "1px solid var(--aurora-border-default)",
+            }}
+          >
+            {Demo ? <Demo /> : null}
+          </div>
+
+          {meta ? (
+            <>
+              <div className="aurora-text-eyebrow mb-2.5" style={{ fontSize: 10 }}>
+                Install
+              </div>
+              <CopyLine cmd={`npx shadcn@latest add ${meta.installUrl}`} />
+            </>
+          ) : null}
+        </div>
+      </aside>
+    </div>
+  )
+}
+
 export function ComponentCatalog({ heading = "The catalog" }: { heading?: string }) {
   const [q, setQ] = React.useState("")
   const [cat, setCat] = React.useState<string>("all")
+  const [open, setOpen] = React.useState<CatalogItem | null>(null)
 
   const list = React.useMemo(() => {
     let l = ITEMS
@@ -69,7 +254,13 @@ export function ComponentCatalog({ heading = "The catalog" }: { heading?: string
             color: "var(--aurora-text-primary)",
           }}
         >
-          {ITEMS.length} components, one palette
+          Components{" "}
+          <span
+            className="aurora-text-code"
+            style={{ fontWeight: 500, fontSize: "0.6em", color: "var(--aurora-text-muted)" }}
+          >
+            {ITEMS.length} live
+          </span>
         </h2>
       </div>
 
@@ -158,68 +349,75 @@ export function ComponentCatalog({ heading = "The catalog" }: { heading?: string
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(232px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(236px, 1fr))",
             gap: 16,
           }}
         >
           {list.map((c) => (
-            <Link
+            <button
               key={c.slug}
-              href={`/gallery/${c.slug}`}
+              type="button"
+              onClick={() => setOpen(c)}
               className="aurora-card"
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 7,
-                padding: "16px 16px 15px",
+                overflow: "hidden",
+                cursor: "pointer",
+                textAlign: "left",
+                padding: 0,
                 borderRadius: "var(--aurora-radius-2)",
-                border: "1px solid var(--aurora-border-strong)",
-                background: "var(--aurora-panel-strong)",
-                boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
-                transition: "transform 160ms var(--motion-ease-out), border-color 160ms var(--motion-ease-out)",
+                border: "1px solid var(--aurora-border-default)",
+                background: "var(--aurora-panel-medium)",
+                boxShadow: "var(--aurora-shadow-subtle), var(--aurora-highlight-medium)",
+                transition:
+                  "transform 160ms var(--motion-ease-out), border-color 160ms var(--motion-ease-out)",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+              <div
+                style={{
+                  display: "grid",
+                  justifyItems: "center",
+                  overflow: "hidden",
+                  background:
+                    "radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--aurora-accent-primary) 6%, transparent), transparent 60%), var(--aurora-control-surface)",
+                  borderBottom: "1px solid var(--aurora-border-default)",
+                }}
+              >
+                <LazyPreview slug={c.slug} />
+              </div>
+              <div style={{ padding: "11px 13px 13px", display: "flex", flexDirection: "column", gap: 6 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                  <span
+                    style={{
+                      fontFamily: "var(--aurora-font-display)",
+                      fontWeight: 800,
+                      fontSize: 14.5,
+                      letterSpacing: "-0.01em",
+                      color: "var(--aurora-text-primary)",
+                    }}
+                  >
+                    {c.label}
+                  </span>
+                  <ArrowUpRight size={14} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
+                </div>
                 <span
                   style={{
-                    fontFamily: "var(--aurora-font-display)",
-                    fontWeight: 800,
-                    fontSize: 14.5,
-                    letterSpacing: "-0.01em",
-                    color: "var(--aurora-text-primary)",
+                    marginTop: 2,
+                    fontSize: 10.5,
+                    fontFamily: "var(--aurora-font-mono)",
+                    color: "var(--aurora-text-muted)",
                   }}
                 >
-                  {c.label}
+                  {c.group}
                 </span>
-                <ArrowUpRight size={14} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
               </div>
-              <span
-                style={{
-                  fontSize: 12,
-                  color: "var(--aurora-text-muted)",
-                  lineHeight: 1.45,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
-              >
-                {c.desc}
-              </span>
-              <span
-                style={{
-                  marginTop: 2,
-                  fontSize: 10.5,
-                  fontFamily: "var(--aurora-font-mono)",
-                  color: "var(--aurora-text-muted)",
-                }}
-              >
-                {c.group}
-              </span>
-            </Link>
+            </button>
           ))}
         </div>
       )}
+
+      {open ? <LiveDrawer item={open} onClose={() => setOpen(null)} /> : null}
     </section>
   )
 }

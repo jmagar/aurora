@@ -19,7 +19,7 @@ import { useCommandPalette } from "@/registry/aurora/blocks/workspace/command-pa
 import { tint } from "@/components/site/style-tokens"
 
 const NAV = [
-  { label: "Components", href: "/gallery/buttons", split: true },
+  { label: "Components", href: "/components", split: true },
   { label: "Themes", href: "/themes" },
   { label: "Tokens", href: "/tokens" },
   { label: "Icons", href: "/icons" },
@@ -29,10 +29,10 @@ const NAV = [
 /** The Components split menu — CD parity: shadcn · React vs Android · Compose. */
 const FLAVORS = [
   {
-    href: "/gallery/buttons",
+    href: "/components",
     icon: <Monitor size={16} strokeWidth={1.6} />,
     label: "shadcn · React",
-    sub: "web registry & gallery",
+    sub: "live catalog & gallery",
   },
   {
     href: "/docs/install",
@@ -47,7 +47,7 @@ const GITHUB_URL = "https://github.com/jmagar/aurora-design-system"
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/"
   if (href === "/themes") return pathname === "/themes" || pathname.startsWith("/themes/")
-  if (href.startsWith("/gallery")) return pathname.startsWith("/gallery")
+  if (href === "/components") return pathname.startsWith("/components") || pathname.startsWith("/gallery")
   if (href === "/docs") return pathname === "/docs" || pathname.startsWith("/docs/")
   return pathname.startsWith(href)
 }
@@ -81,7 +81,7 @@ function ComponentsNavItem({ active }: { active: boolean }) {
   return (
     <div style={{ position: "relative" }} onMouseEnter={openMenu} onMouseLeave={closeMenu}>
       <Link
-        href="/gallery/buttons"
+        href="/components"
         className="aurora-text-control flex items-center gap-1.5 rounded-[10px] border px-3 py-[7px] transition-colors"
         style={navLinkStyle(active)}
         aria-haspopup="menu"

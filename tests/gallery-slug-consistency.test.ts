@@ -21,12 +21,12 @@ import { SLUG_TO_REGISTRY, slugToRegistry } from "../lib/slug-map.ts"
 // item has no built public/r artifact.
 // ---------------------------------------------------------------------------
 
-// DEMOS keys are bound to next/dynamic() imports, so the page module cannot be
-// imported under node:test. Parse its demo keys textually instead — the same
+// DEMOS keys are bound to next/dynamic() imports, so the demo-map module cannot
+// be imported under node:test. Parse its demo keys textually instead — the same
 // approach other tests in this suite use for source artifacts.
 function loadDemoKeys(): Set<string> {
   const pageSrc = readFileSync(
-    new URL("../app/gallery/[section]/page.tsx", import.meta.url),
+    new URL("../app/gallery/demo-map.tsx", import.meta.url),
     "utf8",
   )
   const keys = new Set<string>()
@@ -37,7 +37,7 @@ function loadDemoKeys(): Set<string> {
   // AI_DEMOS keys also get a canonical `ai-<key>` route via AI_CANONICAL_DEMOS.
   const aiStart = pageSrc.indexOf("AI_DEMOS: Record")
   const aiEnd = pageSrc.indexOf("AI_CANONICAL_DEMOS")
-  assert.ok(aiStart >= 0 && aiEnd > aiStart, "could not locate AI_DEMOS block in page.tsx")
+  assert.ok(aiStart >= 0 && aiEnd > aiStart, "could not locate AI_DEMOS block in demo-map.tsx")
   const aiBlock = pageSrc.slice(aiStart, aiEnd)
   for (const m of aiBlock.matchAll(/(?:"([^"]+)"|([a-zA-Z0-9-]+))\s*:\s*dynamic\(/g)) {
     keys.add(`ai-${m[1] ?? m[2]}`)
@@ -47,7 +47,7 @@ function loadDemoKeys(): Set<string> {
 
 const DEMO_KEYS = loadDemoKeys()
 
-// Parse-floor tripwire: the demo keys are extracted from page.tsx by regex, so a
+// Parse-floor tripwire: the demo keys are extracted from demo-map.tsx by regex, so a
 // refactor that breaks the regex could yield an empty set and make every
 // consistency assertion below pass vacuously. The real count is ~140; a floor of
 // 50 catches a broken parser without being brittle to normal churn.
