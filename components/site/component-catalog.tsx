@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Search, X } from "lucide-react"
+import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Monitor, Search, Smartphone, X } from "lucide-react"
 import { NAV } from "@/app/gallery/nav-data"
 import { DEMOS } from "@/app/gallery/demo-map"
 import { getRegistryMeta } from "@/lib/registry-meta"
@@ -17,23 +17,33 @@ import { tint } from "@/components/site/style-tokens"
  * a tile shows the interactive demo in a drawer with its install line.
  */
 
+type Flavor = "shadcn" | "android"
+
 interface CatalogItem {
   slug: string
   label: string
   group: string
   desc: string
+  /** registry item name (e.g. "aurora-button") — join key for the Kotlin map */
+  registry: string | null
 }
 
 // Flatten the gallery NAV into a searchable catalog once, at module load.
 const ITEMS: CatalogItem[] = NAV.flatMap((g) =>
-  g.items.map((it) => ({
-    slug: it.slug,
-    label: it.label,
-    group: g.group,
-    desc: getRegistryMeta(it.slug)?.description ?? "",
-  })),
+  g.items.map((it) => {
+    const meta = getRegistryMeta(it.slug)
+    return {
+      slug: it.slug,
+      label: it.label,
+      group: g.group,
+      desc: meta?.description ?? "",
+      registry: meta?.name ?? null,
+    }
+  }),
 )
 const GROUPS = NAV.map((g) => g.group)
+
+const GRADLE_LINE = 'implementation("tv.tootie.aurora:aurora")'
 
 /* ── Lazy live preview — CD LazyFrame, sans iframe ─────────────────────────
  * The demo renders at full width inside a scaled, non-interactive wrapper.
@@ -140,11 +150,14 @@ function DrawerArrow({
 function LiveDrawer({
   item,
   list,
+  kotlin,
   onPick,
   onClose,
 }: {
   item: CatalogItem
   list: CatalogItem[]
+  /** Kotlin counterpart file when viewing the Android flavor */
+  kotlin?: string
   onPick: (item: CatalogItem) => void
   onClose: () => void
 }) {
@@ -224,6 +237,12 @@ function LiveDrawer({
             </div>
             <div className="aurora-text-code" style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
               aurora · {item.group.toLowerCase()}
+              {kotlin ? (
+                <>
+                  {" · "}
+                  <span style={{ color: "var(--aurora-accent-strong)" }}>{kotlin}</span>
+                </>
+              ) : null}
               {has ? ` · ${idx + 1} / ${list.length}` : null}
             </div>
           </div>
@@ -251,7 +270,7 @@ function LiveDrawer({
 
         <div className="aurora-scrollbar min-h-0 flex-1 overflow-y-auto p-5">
           <div className="aurora-text-eyebrow mb-2.5" style={{ fontSize: 10 }}>
-            Live preview · interactive
+            {kotlin ? "Live preview · web parity render" : "Live preview · interactive"}
           </div>
           <div
             className="mb-5 overflow-hidden rounded-[var(--aurora-radius-2)] p-4"
@@ -264,7 +283,19 @@ function LiveDrawer({
             {Demo ? <Demo /> : null}
           </div>
 
-          {meta ? (
+          {kotlin ? (
+            <>
+              <div className="aurora-text-eyebrow mb-2.5" style={{ fontSize: 10 }}>
+                Install · Android
+              </div>
+              <div className="flex flex-col gap-2">
+                <CopyLine cmd={GRADLE_LINE} />
+                <div className="aurora-text-code" style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
+                  android/aurora · components/{kotlin} — theme via AuroraTheme, tokens via AxonTheme.colors
+                </div>
+              </div>
+            </>
+          ) : meta ? (
             <>
               <div className="aurora-text-eyebrow mb-2.5" style={{ fontSize: 10 }}>
                 Install
@@ -279,13 +310,31 @@ function LiveDrawer({
   )
 }
 
-export function ComponentCatalog({ heading = "The catalog" }: { heading?: string }) {
+export function ComponentCatalog({
+  heading = "The catalog",
+  kotlinMap,
+}: {
+  heading?: string
+  /**
+   * Registry item name → Kotlin counterpart file (from lib/kotlin-map.ts).
+   * When provided, the catalog shows the shadcn/Android flavor toggle; the
+   * Android flavor filters to ported components and swaps install lines.
+   */
+  kotlinMap?: Record<string, string>
+}) {
   const [q, setQ] = React.useState("")
   const [cat, setCat] = React.useState<string>("all")
+  const [flavor, setFlavor] = React.useState<Flavor>("shadcn")
   const [open, setOpen] = React.useState<CatalogItem | null>(null)
 
+  const android = !!kotlinMap && flavor === "android"
+  const flavorItems = React.useMemo(
+    () => (android ? ITEMS.filter((i) => i.registry && kotlinMap[i.registry]) : ITEMS),
+    [android, kotlinMap],
+  )
+
   const list = React.useMemo(() => {
-    let l = ITEMS
+    let l = flavorItems
     if (cat !== "all") l = l.filter((i) => i.group === cat)
     if (q) {
       l = l
@@ -298,32 +347,81 @@ export function ComponentCatalog({ heading = "The catalog" }: { heading?: string
         .map((x) => x.i)
     }
     return l
-  }, [q, cat])
+  }, [flavorItems, q, cat])
 
   return (
     <section style={{ marginTop: "clamp(48px, 7vw, 84px)" }}>
-      <div style={{ marginBottom: 16 }}>
-        <span className="aurora-text-eyebrow" style={{ color: "var(--aurora-text-muted)" }}>
-          {heading}
-        </span>
-        <h2
-          style={{
-            fontFamily: "var(--aurora-font-display)",
-            fontWeight: 800,
-            fontSize: "clamp(24px, 3vw, 30px)",
-            letterSpacing: "-0.03em",
-            margin: "8px 0 0",
-            color: "var(--aurora-text-primary)",
-          }}
-        >
-          Components{" "}
-          <span
-            className="aurora-text-code"
-            style={{ fontWeight: 500, fontSize: "0.6em", color: "var(--aurora-text-muted)" }}
-          >
-            {ITEMS.length} live
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
+        <div>
+          <span className="aurora-text-eyebrow" style={{ color: "var(--aurora-text-muted)" }}>
+            {heading}
           </span>
-        </h2>
+          <h2
+            style={{
+              fontFamily: "var(--aurora-font-display)",
+              fontWeight: 800,
+              fontSize: "clamp(24px, 3vw, 30px)",
+              letterSpacing: "-0.03em",
+              margin: "8px 0 0",
+              color: "var(--aurora-text-primary)",
+            }}
+          >
+            {android ? "Android · Compose" : "Components"}{" "}
+            <span
+              className="aurora-text-code"
+              style={{ fontWeight: 500, fontSize: "0.6em", color: "var(--aurora-text-muted)" }}
+            >
+              {flavorItems.length} {android ? "ported" : "live"}
+            </span>
+          </h2>
+        </div>
+        {kotlinMap ? (
+          <div style={{ display: "inline-flex" }}>
+            {(
+              [
+                ["shadcn", <Monitor key="i" size={15} strokeWidth={1.6} />, "shadcn · React"],
+                ["android", <Smartphone key="i" size={15} strokeWidth={1.6} />, "Android · Compose"],
+              ] as [Flavor, React.ReactNode, string][]
+            ).map(([id, icon, label], i) => {
+              const on = flavor === id
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setFlavor(id)}
+                  aria-pressed={on}
+                  className="aurora-text-control flex items-center gap-2 px-3.5"
+                  style={{
+                    height: 34,
+                    cursor: "pointer",
+                    borderRadius: i === 0 ? "9px 0 0 9px" : "0 9px 9px 0",
+                    marginLeft: i ? -1 : 0,
+                    zIndex: on ? 1 : 0,
+                    position: "relative",
+                    border: `1px solid ${on ? tint("--aurora-accent-primary", 42) : "var(--aurora-border-strong)"}`,
+                    background: on
+                      ? tint("--aurora-accent-primary", 14)
+                      : "var(--aurora-control-surface)",
+                    color: on ? "var(--aurora-accent-strong)" : "var(--aurora-text-muted)",
+                    boxShadow: on ? "var(--aurora-active-glow)" : "var(--aurora-highlight-medium)",
+                  }}
+                >
+                  {icon}
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        ) : null}
       </div>
 
       {/* search + category chips */}
@@ -471,7 +569,11 @@ export function ComponentCatalog({ heading = "The catalog" }: { heading?: string
                     color: "var(--aurora-text-muted)",
                   }}
                 >
-                  {c.group}
+                  {android && c.registry ? (
+                    <span style={{ color: "var(--aurora-accent-strong)" }}>{kotlinMap?.[c.registry]}</span>
+                  ) : (
+                    c.group
+                  )}
                 </span>
               </div>
             </button>
@@ -482,7 +584,8 @@ export function ComponentCatalog({ heading = "The catalog" }: { heading?: string
       {open ? (
         <LiveDrawer
           item={open}
-          list={list.length > 0 ? list : ITEMS}
+          list={list.length > 0 ? list : flavorItems}
+          kotlin={android && open.registry ? kotlinMap?.[open.registry] : undefined}
           onPick={setOpen}
           onClose={() => setOpen(null)}
         />

@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ChevronDown, Monitor, Moon, Search, Smartphone, Sun } from "lucide-react"
+import { Moon, Search, Sun } from "lucide-react"
 
 function GithubIcon({ size = 15 }: { size?: number }) {
   return (
@@ -19,27 +19,11 @@ import { useCommandPalette } from "@/registry/aurora/blocks/workspace/command-pa
 import { tint } from "@/components/site/style-tokens"
 
 const NAV = [
-  { label: "Components", href: "/components", split: true },
+  { label: "Components", href: "/components" },
   { label: "Themes", href: "/themes" },
   { label: "Tokens", href: "/tokens" },
   { label: "Icons", href: "/icons" },
   { label: "Docs", href: "/docs" },
-]
-
-/** The Components split menu — CD parity: shadcn · React vs Android · Compose. */
-const FLAVORS = [
-  {
-    href: "/components",
-    icon: <Monitor size={16} strokeWidth={1.6} />,
-    label: "shadcn · React",
-    sub: "live catalog & gallery",
-  },
-  {
-    href: "/docs/install",
-    icon: <Smartphone size={16} strokeWidth={1.6} />,
-    label: "Android · Compose",
-    sub: "tonal · Material 3",
-  },
 ]
 
 const GITHUB_URL = "https://github.com/jmagar/aurora-design-system"
@@ -52,7 +36,7 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href)
 }
 
-/** Nav link chrome shared by plain links and the split-menu trigger. */
+/** Nav link chrome. */
 function navLinkStyle(active: boolean): React.CSSProperties {
   return {
     color: active ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)",
@@ -60,76 +44,6 @@ function navLinkStyle(active: boolean): React.CSSProperties {
     borderColor: active ? tint("--aurora-accent-primary", 28) : "transparent",
     boxShadow: active ? `0 0 0 1px ${tint("--aurora-accent-primary", 12)}` : "none",
   }
-}
-
-/** Components nav entry with the CD hover split menu (shadcn / Android). */
-function ComponentsNavItem({ active }: { active: boolean }) {
-  const [menu, setMenu] = React.useState(false)
-  const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
-  const openMenu = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-    setMenu(true)
-  }
-  const closeMenu = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-    closeTimer.current = setTimeout(() => setMenu(false), 160)
-  }
-  React.useEffect(() => () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-  }, [])
-
-  return (
-    <div style={{ position: "relative" }} onMouseEnter={openMenu} onMouseLeave={closeMenu}>
-      <Link
-        href="/components"
-        className="aurora-text-control flex items-center gap-1.5 rounded-[10px] border px-3 py-[7px] transition-colors"
-        style={navLinkStyle(active)}
-        aria-haspopup="menu"
-        aria-expanded={menu}
-        onFocus={openMenu}
-        onBlur={closeMenu}
-      >
-        Components
-        <ChevronDown size={13} strokeWidth={1.75} style={{ opacity: 0.7 }} />
-      </Link>
-      {menu && (
-        <div style={{ position: "absolute", top: "100%", left: 0, paddingTop: 6, zIndex: 45 }}>
-          <div
-            role="menu"
-            className="rounded-[var(--aurora-radius-2)] p-[5px]"
-            style={{
-              width: 196,
-              background: "var(--aurora-panel-strong)",
-              border: "1px solid var(--aurora-border-strong)",
-              boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
-            }}
-          >
-            {FLAVORS.map((f) => (
-              <Link
-                key={f.href}
-                role="menuitem"
-                href={f.href}
-                onClick={() => setMenu(false)}
-                onFocus={openMenu}
-                onBlur={closeMenu}
-                className="flex items-center gap-2.5 rounded-[10px] px-2.5 py-[9px] transition-colors hover:bg-[var(--aurora-hover-bg)]"
-              >
-                <span style={{ color: "var(--aurora-text-muted)", display: "flex" }}>{f.icon}</span>
-                <span className="flex flex-col">
-                  <span className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>
-                    {f.label}
-                  </span>
-                  <span className="aurora-text-caption" style={{ color: "var(--aurora-text-muted)" }}>
-                    {f.sub}
-                  </span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
 }
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
@@ -191,7 +105,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <nav className="ml-2 hidden items-center gap-1 md:flex">
           {NAV.map((item) => {
             const active = isActive(pathname, item.href)
-            if (item.split) return <ComponentsNavItem key={item.href} active={active} />
             return (
               <Link
                 key={item.href}
