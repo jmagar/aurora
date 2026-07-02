@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Monitor, Search, Smartphone, X } from "lucide-react"
 import { NAV } from "@/app/gallery/nav-data"
 import { DEMOS } from "@/app/gallery/demo-map"
@@ -310,10 +311,7 @@ function LiveDrawer({
   )
 }
 
-export function ComponentCatalog({
-  heading = "The catalog",
-  kotlinMap,
-}: {
+interface CatalogProps {
   heading?: string
   /**
    * Registry item name → Kotlin counterpart file (from lib/kotlin-map.ts).
@@ -321,11 +319,62 @@ export function ComponentCatalog({
    * Android flavor filters to ported components and swaps install lines.
    */
   kotlinMap?: Record<string, string>
-}) {
+  /**
+   * Mirror catalog state into the URL (?flavor, ?q, ?c) so views are
+   * shareable and ⌘K can deep-link a component drawer. Enabled on
+   * /components; the landing catalog stays state-only.
+   */
+  syncUrl?: boolean
+}
+
+function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogProps) {
+  const searchParams = useSearchParams()
   const [q, setQ] = React.useState("")
   const [cat, setCat] = React.useState<string>("all")
   const [flavor, setFlavor] = React.useState<Flavor>("shadcn")
   const [open, setOpen] = React.useState<CatalogItem | null>(null)
+
+  // URL → state. Runs on mount and whenever navigation (⌘K, back/forward)
+  // changes the params. setState-in-effect is the correct tool: the URL is
+  // external state that isn't known during SSG prerender.
+  React.useEffect(() => {
+    if (!syncUrl) return
+    /* eslint-disable react-hooks/set-state-in-effect */
+    const uq = searchParams.get("q") ?? ""
+    const uf: Flavor = searchParams.get("flavor") === "android" && kotlinMap ? "android" : "shadcn"
+    const uc = searchParams.get("c")
+    setQ((cur) => (cur === uq ? cur : uq))
+    setFlavor((cur) => (cur === uf ? cur : uf))
+    setOpen((cur) => {
+      const target = uc ? (ITEMS.find((i) => i.slug === uc) ?? null) : null
+      return (cur?.slug ?? null) === (target?.slug ?? null) ? cur : target
+    })
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [syncUrl, searchParams, kotlinMap])
+
+  // State → URL (replaceState keeps history clean while typing; Next syncs
+  // the native history API back into useSearchParams).
+  const updateUrl = React.useCallback(
+    (patch: Record<string, string | null>) => {
+      if (!syncUrl) return
+      const params = new URLSearchParams(window.location.search)
+      for (const [k, v] of Object.entries(patch)) {
+        if (v == null || v === "") params.delete(k)
+        else params.set(k, v)
+      }
+      const qs = params.toString()
+      window.history.replaceState(null, "", window.location.pathname + (qs ? `?${qs}` : ""))
+    },
+    [syncUrl],
+  )
+
+  const pick = React.useCallback(
+    (item: CatalogItem | null) => {
+      setOpen(item)
+      updateUrl({ c: item?.slug ?? null })
+    },
+    [updateUrl],
+  )
 
   const android = !!kotlinMap && flavor === "android"
   const flavorItems = React.useMemo(
@@ -397,7 +446,10 @@ export function ComponentCatalog({
                 <button
                   key={id}
                   type="button"
-                  onClick={() => setFlavor(id)}
+                  onClick={() => {
+                    setFlavor(id)
+                    updateUrl({ flavor: id === "android" ? "android" : null })
+                  }}
                   aria-pressed={on}
                   className="aurora-text-control flex items-center gap-2 px-3.5"
                   style={{
@@ -442,7 +494,10 @@ export function ComponentCatalog({
           <Search size={16} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
           <input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => {
+              setQ(e.target.value)
+              updateUrl({ q: e.target.value })
+            }}
             placeholder="Fuzzy-search components…"
             className="aurora-text-control"
             style={{
@@ -457,7 +512,10 @@ export function ComponentCatalog({
           {q ? (
             <button
               type="button"
-              onClick={() => setQ("")}
+              onClick={() => {
+                setQ("")
+                updateUrl({ q: null })
+              }}
               aria-label="Clear search"
               style={{ display: "flex", color: "var(--aurora-text-muted)" }}
             >
@@ -517,7 +575,7 @@ export function ComponentCatalog({
             <button
               key={c.slug}
               type="button"
-              onClick={() => setOpen(c)}
+              onClick={() => pick(c)}
               className="aurora-card"
               style={{
                 display: "flex",
@@ -586,11 +644,23 @@ export function ComponentCatalog({
           item={open}
           list={list.length > 0 ? list : flavorItems}
           kotlin={android && open.registry ? kotlinMap?.[open.registry] : undefined}
-          onPick={setOpen}
-          onClose={() => setOpen(null)}
+          onPick={pick}
+          onClose={() => pick(null)}
         />
       ) : null}
     </section>
+  )
+}
+
+/**
+ * useSearchParams requires a Suspense boundary under static prerendering, so
+ * the exported catalog wraps the stateful inner component.
+ */
+export function ComponentCatalog(props: CatalogProps) {
+  return (
+    <React.Suspense fallback={null}>
+      <CatalogInner {...props} />
+    </React.Suspense>
   )
 }
 

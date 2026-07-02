@@ -73,6 +73,8 @@ export function SiteCommandPalette({
         icon: p.icon,
         onSelect: go(p.href),
       })),
+      // Components open in the /components drawer (deep-linked via ?c=…),
+      // matching the CD behavior of showing the component in place.
       ...GALLERY_NAV.flatMap((g) =>
         g.items.map((it) => ({
           id: `comp-${it.slug}`,
@@ -80,7 +82,7 @@ export function SiteCommandPalette({
           description: g.group,
           section: "components",
           icon: <Blocks size={15} strokeWidth={1.6} />,
-          onSelect: go(`/gallery/${it.slug}`),
+          onSelect: go(`/components?c=${it.slug}`),
         })),
       ),
       ...AURORA_THEMES.map((t) => ({

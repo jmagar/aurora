@@ -143,8 +143,8 @@ function StartPage() {
           terminal, and shell.
         </Li>
         <Li>
-          <Strong>Border + glow, never flooded fill.</Strong> Selection and focus wrap the edge,
-          they don&apos;t paint the middle.
+          <Strong>Border + glow, never flooded fill.</Strong>{" "}
+          Selection and focus wrap the edge, they don&apos;t paint the middle.
         </Li>
         <Li>
           <Strong>Status is calm.</Strong> A successful deploy looks measured, not Vegas. No neon,

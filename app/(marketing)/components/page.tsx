@@ -11,7 +11,7 @@ export const metadata = {
 export default function ComponentsPage() {
   return (
     <div style={{ paddingTop: 18 }}>
-      <ComponentCatalog heading="Components" kotlinMap={getKotlinMap()} />
+      <ComponentCatalog heading="Components" kotlinMap={getKotlinMap()} syncUrl />
     </div>
   )
 }
