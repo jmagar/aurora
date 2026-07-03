@@ -23,7 +23,7 @@ The non-negotiables Aurora gives you and that every consumer must respect:
 
 - Dark-first, navy lift tiers — flat page, raised toolbars/headers, strongly raised inspector panels
 - Cyan primary accent, rose secondary, violet for AI/automation identity, muted status colors (never neon)
-- Manrope for display, Inter for working UI, JetBrains Mono **only** for code/paths/IDs/hashes
+- Manrope for display, Inter for working UI, JetBrains Mono **only** for code and terminal content (code blocks, inline code, shell commands, terminal output) — never for paths/IDs/chips/tables/labels shown as data
 - Tokenized everything via `--aurora-*` CSS custom properties — never inline hex in product code
 - Selection and focus are **border + glow**, not flooded fills
 - Sentence case copy, matter-of-fact status text, no marketing voice
@@ -203,9 +203,9 @@ Use the `.aurora-text-*` classes from `registry/aurora/styles/aurora.css`. Pick 
 | `.aurora-text-caption` | Inter 560, 11px | Captions |
 | `.aurora-text-meta` | Inter 560, 11px muted | Metadata, timestamps |
 | `.aurora-text-eyebrow` | Inter 650, 11px uppercase | Eyebrows, badge labels |
-| `.aurora-text-code` | JetBrains Mono 520 | Inline code, IDs, paths |
+| `.aurora-text-code` | JetBrains Mono 520 | Inline code, code blocks, terminal output |
 
-**Mono is restricted.** Use `JetBrains Mono` / `.aurora-text-code` only for code blocks, terminal output, file paths, IDs/hashes, badge chips in code contexts, and inline code snippets. Never for form labels, file tree names, body prose, general UI copy, or breadcrumb text.
+**Mono is restricted.** Use `JetBrains Mono` / `.aurora-text-code` **only** for code and terminal content: code blocks, inline code snippets, shell commands, and console/terminal output. Never for data tables, log-row UI, version/dependency chips, file paths or IDs/hashes shown as data, timestamps, section labels, form labels, file tree names, body prose, general UI copy, or breadcrumb text — those use the sans stack. Mono must read as literal code/terminal, not as generic "techy" decoration.
 
 ## Visual rules
 
@@ -294,7 +294,7 @@ Style A1 (elevated + glowing dot + dismiss) for high-priority alerts (error, war
    />
    ```
 4. Headers/toolbars sit on Tier 1: `background: var(--aurora-panel-medium)`, `boxShadow: var(--aurora-shadow-medium)`.
-5. Type: pick from the `.aurora-text-*` ramp. Manrope for display/section titles, Inter everywhere else, mono only for code/paths/IDs.
+5. Type: pick from the `.aurora-text-*` ramp. Manrope for display/section titles, Inter everywhere else, mono only for code and terminal content (never paths/IDs/chips/tables/labels shown as data).
 6. Use tokenized tint fills: `color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent)`.
 7. Selection: border + glow (`--aurora-active-glow`). Focus-visible: `--aurora-focus-ring-strong`.
 8. Use registry components (`Button`, `Badge`, `Banner`, `StatCard`, `DataTable`, etc.) before hand-rolling.

@@ -30,7 +30,7 @@ Do not hard-code component counts, gallery route counts, or active branch names 
 
 - **Tokens live in `registry/aurora/styles/aurora.css`.** Never use raw hex in product code. Reach for `--aurora-*` semantic vars or `color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent)` for tinted fills.
 - **Dark-first.** Apply `.dark` or the default root variables for canonical visuals. `.light` remaps the same token surface and must remain usable.
-- **Manrope** is for display: titles, section headers, metric numbers, and card titles. **Inter** is for working UI: controls, body, tables, forms, and metadata. **JetBrains Mono** is only for code, terminal output, paths, IDs, hashes, inline code, and badge chips.
+- **Manrope** is for display: titles, section headers, metric numbers, and card titles. **Inter** is for working UI: controls, body, tables, forms, and metadata. **JetBrains Mono** is only for code and terminal content: code blocks, inline code, shell commands, and console/terminal output — never for paths/IDs/hashes shown as data, chips, tables, labels, or decoration.
 - **Locked type ramp.** Use the semantic type classes in `registry/aurora/styles/aurora.css`; once a slot is chosen, override color before inventing a new size.
 - **Page shell:** use `.aurora-page-shell` for the canonical two-radial navy page wash and `.aurora-nav-shell` for sidebars/navs.
 
@@ -76,7 +76,7 @@ Style B (left rule) was explored and removed.
 
 ## Mono Font Usage
 
-Mono (`JetBrains Mono`) is for code blocks, terminal output, file paths, IDs/hashes, badge chips in code contexts, and inline code snippets. It is not for form labels, file tree names, body prose, general UI copy, or breadcrumb text.
+Mono (`JetBrains Mono`) is **only** for code and terminal content: code blocks, inline code snippets, shell commands, and console/terminal output. Nothing else. Do NOT use mono for data tables, log-row UI, version/dependency chips, file paths shown as data, IDs/hashes shown as data, timestamps, section labels, form labels, file tree names, body prose, general UI copy, or breadcrumb text — those all use the sans stack (Inter / `--aurora-font-sans`). Mono must read as *literal code or terminal*, never as generic "techy" decoration.
 
 ## Content Rules
 
@@ -91,7 +91,7 @@ Mono (`JetBrains Mono`) is for code blocks, terminal output, file paths, IDs/has
 1. Add `className="aurora-page-shell"` or `class="aurora-page-shell"` to the page shell when the surface owns the page background.
 2. Build working areas on Tier 2 panels with `borderColor: "var(--aurora-border-strong)"`, `borderRadius: "var(--aurora-radius-3)"`, and `boxShadow: "var(--aurora-shadow-strong), inset 0 1px 0 rgba(255,255,255,0.05)"`.
 3. Use the semantic typography ramp from `registry/aurora/styles/aurora.css`; never invent sizes unless the ramp is missing a real use case.
-4. Keep mono strictly for code, paths, IDs, hashes, terminals, and badges.
+4. Keep mono strictly for code and terminal content — never for paths/IDs/labels/chips shown as data.
 5. Use tokenized tint fills through `color-mix()` and Aurora semantic vars.
 6. Make selected and focus states use border + glow, not flooded color.
 7. Use the registry `Button` variants everywhere a React surface can import them.
