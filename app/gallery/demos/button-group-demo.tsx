@@ -1,72 +1,144 @@
 "use client"
 
 import * as React from "react"
+import {
+  List,
+  LayoutGrid,
+  Network,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Bold,
+  Italic,
+  Underline,
+} from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
-import { ButtonGroup } from "@/registry/aurora/ui/button-group"
+import { ButtonGroup, ButtonGroupItem } from "@/registry/aurora/ui/button-group"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 
-const heading: React.CSSProperties = {
-  color: "var(--aurora-text-primary)",
-  fontFamily: "var(--aurora-font-display)",
-  fontSize: 22,
-  fontWeight: 760,
-  lineHeight: 1.2,
-  marginBottom: 6,
-}
-
-const copy: React.CSSProperties = {
+const lbl: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.16em",
+  textTransform: "uppercase",
   color: "var(--aurora-text-muted)",
-  fontSize: 13,
-  lineHeight: 1.55,
+  margin: "0 0 12px",
 }
 
-// CD .gi segment styling (ButtonGroup.dsCard.html) ported as a local component.
-const segment: React.CSSProperties = {
-  height: 28,
-  padding: "0 14px",
-  border: "none",
-  background: "none",
-  color: "var(--aurora-text-muted)",
-  font: "560 13px var(--font-sans)",
-  borderRadius: 7,
-  cursor: "pointer",
+const row: React.CSSProperties = {
+  display: "flex",
+  gap: 14,
+  alignItems: "center",
+  flexWrap: "wrap",
+  marginBottom: 22,
 }
 
-const segmentActive: React.CSSProperties = {
-  color: "var(--aurora-accent-strong)",
-  background:
-    "color-mix(in srgb, var(--aurora-accent-primary) 14%, var(--aurora-control-surface))",
-  boxShadow:
-    "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent)",
-}
+const VIEWS = [
+  { k: "list", Icon: List },
+  { k: "board", Icon: LayoutGrid },
+  { k: "graph", Icon: Network },
+] as const
 
-const views = ["list", "board", "graph"] as const
+const ALIGN = [
+  { k: "left", Icon: AlignLeft },
+  { k: "center", Icon: AlignCenter },
+  { k: "right", Icon: AlignRight },
+] as const
 
 export default function ButtonGroupDemo() {
-  const [view, setView] = React.useState<(typeof views)[number]>("list")
+  const [view, setView] = React.useState<string>("board")
+  const [align, setAlign] = React.useState<string>("left")
+  const [marks, setMarks] = React.useState<Record<string, boolean>>({ bold: true })
+  const toggleMark = (k: string) => setMarks((m) => ({ ...m, [k]: !m[k] }))
 
   return (
-    <div style={{ display: "grid", gap: 24, padding: 0 }}>
-      <div>
-        <h2 style={heading}>Button group</h2>
-        <p style={copy}>Segmented container with a shared outline for related, mutually exclusive choices.</p>
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+      <GalleryPageIntro
+        eyebrow="Controls"
+        heading="Button group"
+        description="Segmented container for related, mutually-exclusive choices. Pair with ButtonGroupItem for the ready-made segment styling — idle, hover, selected, focus, and disabled states, no hand-rolled CSS."
+      />
 
-      <ButtonGroup>
-        {views.map((k) => {
-          const pressed = view === k
-          return (
-            <Button variant="plain" size="unstyled"
-              key={k}
-              type="button"
-              aria-pressed={pressed}
-              onClick={() => setView(k)}
-              style={pressed ? { ...segment, ...segmentActive } : segment}
-            >
-              {k}
-            </Button>
-          )
-        })}
-      </ButtonGroup>
+      <div>
+        <div style={lbl}>Segmented control · text</div>
+        <div style={row}>
+          <ButtonGroup>
+            {VIEWS.map(({ k }) => (
+              <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
+                {k}
+              </ButtonGroupItem>
+            ))}
+          </ButtonGroup>
+        </div>
+
+        <div style={lbl}>Icon + label</div>
+        <div style={row}>
+          <ButtonGroup>
+            {VIEWS.map(({ k, Icon }) => (
+              <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
+                <Icon size={15} aria-hidden />
+                {k}
+              </ButtonGroupItem>
+            ))}
+          </ButtonGroup>
+        </div>
+
+        <div style={lbl}>Icon-only · alignment</div>
+        <div style={row}>
+          <ButtonGroup>
+            {ALIGN.map(({ k, Icon }) => (
+              <ButtonGroupItem
+                key={k}
+                selected={align === k}
+                onClick={() => setAlign(k)}
+                aria-label={`Align ${k}`}
+                style={{ padding: "0 10px" }}
+              >
+                <Icon size={15} aria-hidden />
+              </ButtonGroupItem>
+            ))}
+          </ButtonGroup>
+
+          {/* Multi-select formatting cluster (not mutually exclusive). */}
+          <ButtonGroup>
+            <ButtonGroupItem selected={marks.bold} onClick={() => toggleMark("bold")} aria-label="Bold" style={{ padding: "0 10px" }}>
+              <Bold size={15} aria-hidden />
+            </ButtonGroupItem>
+            <ButtonGroupItem selected={marks.italic} onClick={() => toggleMark("italic")} aria-label="Italic" style={{ padding: "0 10px" }}>
+              <Italic size={15} aria-hidden />
+            </ButtonGroupItem>
+            <ButtonGroupItem selected={marks.underline} onClick={() => toggleMark("underline")} aria-label="Underline" style={{ padding: "0 10px" }}>
+              <Underline size={15} aria-hidden />
+            </ButtonGroupItem>
+          </ButtonGroup>
+        </div>
+
+        <div style={lbl}>Joined toolbar · real buttons</div>
+        <div style={row}>
+          <ButtonGroup>
+            <Button variant="neutral" size="sm">Cut</Button>
+            <Button variant="neutral" size="sm">Copy</Button>
+            <Button variant="neutral" size="sm">Paste</Button>
+          </ButtonGroup>
+        </div>
+
+        <div style={lbl}>Vertical · disabled state</div>
+        <div style={{ ...row, alignItems: "flex-start", marginBottom: 0 }}>
+          <ButtonGroup orientation="vertical">
+            {VIEWS.map(({ k, Icon }) => (
+              <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
+                <Icon size={15} aria-hidden />
+                {k}
+              </ButtonGroupItem>
+            ))}
+          </ButtonGroup>
+
+          <ButtonGroup>
+            <ButtonGroupItem selected>Enabled</ButtonGroupItem>
+            <ButtonGroupItem disabled>Disabled</ButtonGroupItem>
+          </ButtonGroup>
+        </div>
+      </div>
     </div>
   )
 }

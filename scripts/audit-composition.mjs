@@ -48,6 +48,9 @@ const allowNativeButton = new Set([
   // Badge's dismissible "×" affordance — a bare icon button by design, same as
   // tag-input's remove control; full Button chrome would break the chip.
   "registry/aurora/ui/badge.tsx",
+  // ButtonGroupItem — a bare segmented-control button, styled via
+  // @layer aurora-components; full Button chrome would break the segment look.
+  "registry/aurora/ui/button-group.tsx",
   "registry/aurora/ui/copy-button.tsx",
   "registry/aurora/ui/component-card.tsx",
   "registry/aurora/ui/chat-sidebar.tsx",

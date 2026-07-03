@@ -4,9 +4,11 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 /**
- * Layout-only segmented container. It renders the shared raised surface and
- * `role="group"`, but does NOT coordinate selection — manage the pressed/active
- * state of the child controls yourself. (There is no `value`/`onValueChange`.)
+ * Segmented container for related, mutually-exclusive controls. Renders the
+ * shared raised surface and `role="group"`. It does NOT coordinate selection —
+ * pair with `ButtonGroupItem` and manage the pressed state yourself (there is no
+ * `value`/`onValueChange`). Any children work; `ButtonGroupItem` supplies the
+ * ready-made segment styling.
  */
 export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Lay the items in a row (default) or a column. */
@@ -18,8 +20,9 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
     <div
       ref={ref}
       role="group"
+      data-orientation={orientation}
       className={cn(
-        "inline-flex border",
+        "aurora-btn-group inline-flex border",
         orientation === "vertical" ? "flex-col" : "items-center",
         className
       )}
@@ -42,5 +45,30 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
 )
 ButtonGroup.displayName = "ButtonGroup"
 
-export { ButtonGroup }
+/**
+ * A segment inside a `ButtonGroup`. Bare `<button>` with the Aurora segmented
+ * look (idle / hover / selected / focus-visible / disabled) supplied by
+ * `@layer aurora-components` — no hand-rolled inline styles. Drive selection via
+ * the `selected` prop, which sets `aria-pressed`.
+ */
+export interface ButtonGroupItemProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Selected/active segment — sets `aria-pressed` and the lit styling. */
+  selected?: boolean
+}
+
+const ButtonGroupItem = React.forwardRef<HTMLButtonElement, ButtonGroupItemProps>(
+  ({ className, selected, type = "button", ...props }, ref) => (
+    <button
+      ref={ref}
+      type={type}
+      aria-pressed={selected}
+      className={cn("aurora-btn-group-item", className)}
+      {...props}
+    />
+  )
+)
+ButtonGroupItem.displayName = "ButtonGroupItem"
+
+export { ButtonGroup, ButtonGroupItem }
 export default ButtonGroup

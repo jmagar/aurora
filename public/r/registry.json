@@ -2438,7 +2438,8 @@
       "description": "Grouped action container for segmented command clusters and compact toolbar controls.",
       "dependencies": [],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-components"
       ],
       "files": [
         {

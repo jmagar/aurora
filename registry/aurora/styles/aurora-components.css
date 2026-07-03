@@ -2356,6 +2356,35 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+  /* ─── button-group ─── */
+  .aurora-btn-group-item {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: 28px; padding: 0 14px; border: none; background: none;
+    color: var(--aurora-text-muted);
+    font: 560 13px var(--aurora-font-sans, Inter, sans-serif);
+    border-radius: 7px; white-space: nowrap; cursor: pointer; user-select: none;
+    transition: color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+  }
+  .aurora-btn-group-item > svg { flex: none; display: block; }
+  .aurora-btn-group-item:hover:not([aria-pressed="true"]):not(:disabled) {
+    color: var(--aurora-text-primary);
+    background: color-mix(in srgb, var(--aurora-control-surface) 60%, transparent);
+  }
+  .aurora-btn-group-item[aria-pressed="true"] {
+    color: var(--aurora-accent-strong);
+    background: color-mix(in srgb, var(--aurora-accent-primary) 14%, var(--aurora-control-surface));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent);
+  }
+  .aurora-btn-group-item:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--aurora-focus-ring, color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent));
+  }
+  .aurora-btn-group-item:disabled { opacity: 0.45; cursor: not-allowed; }
+  /* Vertical groups: items stretch and left-align. */
+  .aurora-btn-group[data-orientation="vertical"] .aurora-btn-group-item {
+    width: 100%; justify-content: flex-start;
+  }
 }
 
 /* Global keyframes (deduped; layers don't meaningfully scope @keyframes). */
