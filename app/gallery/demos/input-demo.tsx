@@ -12,6 +12,7 @@ import {
   TriangleAlert,
 } from "lucide-react"
 import { Input } from "@/registry/aurora/ui/input"
+import { Button } from "@/registry/aurora/ui/button"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 
 // CD dsCard chrome ports: `.lbl` uppercase eyebrow + `.field` constrained column.
@@ -128,7 +129,9 @@ export default function InputDemo() {
             onChange={(e) => setSecret(e.target.value)}
             startAdornment={<KeyRound size={15} strokeWidth={1.75} />}
             endAdornment={
-              <button
+              <Button
+                variant="plain"
+                size="unstyled"
                 type="button"
                 aria-label={showSecret ? "Hide secret" : "Show secret"}
                 onClick={() => setShowSecret((v) => !v)}
@@ -138,9 +141,6 @@ export default function InputDemo() {
                   justifyContent: "center",
                   cursor: "pointer",
                   color: "var(--aurora-text-muted)",
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
                 }}
               >
                 {showSecret ? (
@@ -148,7 +148,7 @@ export default function InputDemo() {
                 ) : (
                   <Eye size={15} strokeWidth={1.75} />
                 )}
-              </button>
+              </Button>
             }
           />
           <p style={hint}>API keys stay masked until you explicitly reveal them.</p>

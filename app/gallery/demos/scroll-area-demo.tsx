@@ -160,7 +160,7 @@ export default function ScrollAreaDemo() {
                   padding: "7px 12px",
                   borderBottom: "1px solid var(--aurora-border-default)",
                   font: "var(--aurora-type-table)",
-                  fontFamily: "var(--aurora-font-mono)",
+                  fontFamily: "var(--aurora-font-sans)",
                 }}
               >
                 <Icon size={14} aria-hidden style={{ color }} />
@@ -194,7 +194,7 @@ export default function ScrollAreaDemo() {
                   border: "1px solid var(--aurora-border-default)",
                   background: "var(--aurora-control-surface)",
                   font: "var(--aurora-type-table)",
-                  fontFamily: "var(--aurora-font-mono)",
+                  fontFamily: "var(--aurora-font-sans)",
                   color: "var(--aurora-text-primary)",
                 }}
               >
@@ -228,15 +228,15 @@ export default function ScrollAreaDemo() {
                 return (
                   <tr key={f.path}>
                     <td style={cell}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--aurora-font-mono)" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--aurora-font-sans)" }}>
                         <Icon size={14} aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
                         {f.path}
                       </span>
                     </td>
-                    <td style={{ ...cell, textAlign: "right", color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-mono)" }}>
+                    <td style={{ ...cell, textAlign: "right", color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-sans)" }}>
                       {f.size}
                     </td>
-                    <td style={{ ...cell, color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-mono)" }}>{f.changed}</td>
+                    <td style={{ ...cell, color: "var(--aurora-text-muted)", fontFamily: "var(--aurora-font-sans)" }}>{f.changed}</td>
                     <td style={{ ...cell, color: "var(--aurora-accent-pink)" }}>{f.author}</td>
                     <td style={{ ...cell }}>
                       <span style={{ color: statusTone[f.status], fontWeight: "var(--aurora-weight-label)" as CSSProperties["fontWeight"] }}>
