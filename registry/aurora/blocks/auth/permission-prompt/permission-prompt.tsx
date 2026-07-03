@@ -557,15 +557,16 @@ function InlinePrompt({
   return (
     <div
       style={{
+        // Uniform border on all four sides — no left-only accent spine. A thick
+        // colored left border + border-radius arcs the accent around the rounded
+        // corners (a lopsided "halo"); danger stays obvious via the tinted
+        // surface, error-toned border, warning strip, red buttons, and shield.
         background: isDangerous
-          ? "color-mix(in srgb, var(--aurora-error) 6%, var(--aurora-panel-medium))"
+          ? "color-mix(in srgb, var(--aurora-error) 7%, var(--aurora-panel-medium))"
           : "var(--aurora-panel-medium)",
         border: isDangerous
-          ? "1px solid color-mix(in srgb, var(--aurora-error) 35%, transparent)"
+          ? "1px solid color-mix(in srgb, var(--aurora-error) 45%, transparent)"
           : "1px solid var(--aurora-border-default)",
-        borderLeft: isDangerous
-          ? "3px solid var(--aurora-error)"
-          : "3px solid var(--aurora-accent-primary)",
         borderRadius: "var(--aurora-radius-1)",
         padding: "14px 16px",
         ...style,
