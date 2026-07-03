@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Monitor, Search, Smartphone, X } from "lucide-react"
 import { NAV } from "@/app/gallery/nav-data"
 import { DEMOS } from "@/app/gallery/demo-map"
+import { PortalContainerContext } from "@/registry/aurora/lib/portal-container"
 import { getRegistryMeta } from "@/lib/registry-meta"
 import { fuzzy } from "@/lib/fuzzy"
 import { CopyLine } from "@/components/site/site-ui"
@@ -57,6 +58,9 @@ const PREVIEW_H = 470
 function LazyPreview({ slug }: { slug: string }) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [visible, setVisible] = React.useState(false)
+  // Scoped portal target so overlay demos (Sheet/Drawer, which portal to body
+  // and can auto-open) stay contained in the tile instead of covering the page.
+  const [portalHost, setPortalHost] = React.useState<HTMLElement | null>(null)
   const Demo = DEMOS[slug]
 
   React.useEffect(() => {
@@ -86,7 +90,9 @@ function LazyPreview({ slug }: { slug: string }) {
     >
       {visible && Demo ? (
         <div
+          ref={setPortalHost}
           style={{
+            position: "relative",
             width: PREVIEW_W,
             height: PREVIEW_H,
             overflow: "hidden",
@@ -95,7 +101,11 @@ function LazyPreview({ slug }: { slug: string }) {
             padding: 16,
           }}
         >
-          <Demo />
+          {portalHost ? (
+            <PortalContainerContext.Provider value={portalHost}>
+              <Demo />
+            </PortalContainerContext.Provider>
+          ) : null}
         </div>
       ) : (
         <div

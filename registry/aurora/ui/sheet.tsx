@@ -4,6 +4,7 @@ import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/registry/aurora/lib/portal-container"
 
 const Sheet = DialogPrimitive.Root
 const SheetTrigger = DialogPrimitive.Trigger
@@ -25,8 +26,11 @@ const sideClass: Record<SheetSide, string> = {
 }
 
 function SheetContent({ ref, className, children, side = "right", style, hideClose = false, ...props }: SheetContentProps & { ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>> }) {
+  // Portal into a scoped container when one is provided (e.g. a scaled catalog
+  // preview tile) so the overlay stays contained instead of escaping to body.
+  const portalContainer = usePortalContainer()
   return (
-    <SheetPortal>
+    <SheetPortal container={portalContainer ?? undefined}>
       <DialogPrimitive.Overlay
         className="fixed inset-0 z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
         style={{ backgroundColor: "var(--aurora-overlay)" }}

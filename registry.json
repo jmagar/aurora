@@ -2053,7 +2053,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-portal-container"
       ],
       "files": [
         {
@@ -5547,6 +5548,34 @@
         "sourcePath": "registry/aurora/blocks/ai/elements/source.tsx",
         "installTarget": "@components/aurora/ai/source.tsx"
       }
+    },
+    {
+      "name": "aurora-portal-container",
+      "type": "registry:lib",
+      "title": "Aurora portal container context",
+      "description": "Optional React context that scopes Aurora overlay portals (Sheet, Drawer) to a container instead of document.body — used so overlays stay contained inside scaled preview tiles.",
+      "files": [
+        {
+          "path": "registry/aurora/lib/portal-container.tsx",
+          "type": "registry:lib",
+          "target": "@lib/aurora/portal-container.tsx"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [],
+      "categories": [
+        "aurora",
+        "lib"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "lib",
+        "requiresTokens": false,
+        "sourcePath": "registry/aurora/lib/portal-container.tsx"
+      },
+      "docs": "Wrap a scaled/clipped preview in <PortalContainerContext.Provider value={el}> so Sheet/Drawer portal into it. Null value = default document.body (normal apps unaffected)."
     }
   ]
 }

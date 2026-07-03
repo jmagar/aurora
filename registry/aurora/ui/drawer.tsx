@@ -3,6 +3,7 @@
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/registry/aurora/lib/portal-container"
 
 /**
  * Aurora Drawer — a bottom-sheet overlay extension.
@@ -47,8 +48,9 @@ export interface DrawerContentProps
 }
 
 function DrawerContent({ ref, className, children, showHandle = true, ...props }: DrawerContentProps & { ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>> }) {
+  const portalContainer = usePortalContainer()
   return (
-    <DrawerPortal>
+    <DrawerPortal container={portalContainer ?? undefined}>
       <DrawerOverlay />
       <DialogPrimitive.Content ref={ref} className={cn("aurora-drawer-content", className)} {...props}>
         {showHandle ? <DrawerHandle /> : null}
@@ -114,8 +116,11 @@ export interface DrawerProps
  * parts (DrawerContent, DrawerHeader, …) directly.
  */
 function Drawer({ ref, title, description, showHandle = true, trigger, children, className, ...rootProps }: DrawerProps & { ref?: React.Ref<React.ComponentRef<typeof DialogPrimitive.Content>> }) {
+  // Inside a scoped preview container, force non-modal so an auto-open drawer
+  // preview never scroll-locks / focus-traps the surrounding page.
+  const portalContainer = usePortalContainer()
   return (
-    <DrawerRoot {...rootProps}>
+    <DrawerRoot {...rootProps} modal={portalContainer ? false : rootProps.modal}>
       {trigger ? <DrawerTrigger asChild>{trigger}</DrawerTrigger> : null}
       <DrawerContent ref={ref} showHandle={showHandle} className={className}>
         {title || description ? (
