@@ -275,12 +275,7 @@ function TabButton({
 // Main dialog
 // ---------------------------------------------------------------------------
 
-const KEYFRAMES_SHARE = `
-@keyframes aurora-share-in {
-  from { opacity: 0; transform: translate(-50%, calc(-50% - 10px)); }
-  to   { opacity: 1; transform: translate(-50%, -50%); }
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 export function ShareDialog({
   open,
@@ -331,8 +326,6 @@ export function ShareDialog({
 
   return (
     <>
-      <style>{KEYFRAMES_SHARE}</style>
-
       {/* Backdrop */}
       <div
         role="presentation"

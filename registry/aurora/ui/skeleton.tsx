@@ -4,35 +4,7 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-// ---------------------------------------------------------------------------
-// Keyframe injection
-// ---------------------------------------------------------------------------
-
-const SHIMMER_ID = "aurora-skeleton-shimmer";
-
-function injectShimmer() {
-  if (typeof document === "undefined") return;
-  if (document.getElementById(SHIMMER_ID)) return;
-  const style = document.createElement("style");
-  style.id = SHIMMER_ID;
-  style.textContent = `
-    @keyframes aurora-shimmer {
-      0%   { background-position: -800px 0; }
-      100% { background-position:  800px 0; }
-    }
-    .aurora-shimmer {
-      background: linear-gradient(
-        90deg,
-        var(--aurora-panel-strong) 25%,
-        color-mix(in srgb, var(--aurora-border-strong) 60%, transparent) 37%,
-        var(--aurora-panel-strong) 63%
-      );
-      background-size: 800px 100%;
-      animation: aurora-shimmer 1.4s ease-in-out infinite;
-    }
-  `;
-  document.head.appendChild(style);
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // CVA variants
@@ -75,8 +47,6 @@ export interface SkeletonProps
 export function Skeleton(
   { ref, variant, width, height, circle, className, style, ...rest }: SkeletonProps & { ref?: React.Ref<HTMLDivElement> },
 ) {
-  React.useEffect(injectShimmer, []);
-
   // `width` is a Tailwind/utility class escape hatch only when it's a class
   // token (no digits-with-unit, no %). Explicit sizes go through inline style.
   const widthIsClass =
@@ -114,8 +84,6 @@ export function Skeleton(
 export type SkeletonRowProps = React.HTMLAttributes<HTMLDivElement>
 
 export function SkeletonRow({ ref, className, ...rest }: SkeletonRowProps & { ref?: React.Ref<HTMLDivElement> }) {
-  React.useEffect(injectShimmer, []);
-
   return (
     <div
       ref={ref}

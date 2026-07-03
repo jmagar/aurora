@@ -3,28 +3,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-// ─── Keyframes ────────────────────────────────────────────────────────────────
-
-const SHIMMER_KEYFRAMES = `
-@keyframes aurora-progress-shimmer {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(400%); }
-}
-@keyframes aurora-progress-indeterminate {
-  0%   { left: -35%; right: 100%; }
-  60%  { left: 100%; right: -90%; }
-  100% { left: 100%; right: -90%; }
-}
-`
-
-let shimmerInjected = false
-function ensureShimmerKeyframes() {
-  if (shimmerInjected || typeof document === "undefined") return
-  const style = document.createElement("style")
-  style.textContent = SHIMMER_KEYFRAMES
-  document.head.appendChild(style)
-  shimmerInjected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ─── Fill color map ───────────────────────────────────────────────────────────
 
@@ -109,10 +88,6 @@ function Progress(
     ...props
   }: ProgressProps & { ref?: React.Ref<HTMLDivElement> }
 ) {
-    React.useEffect(() => {
-      ensureShimmerKeyframes()
-    }, [])
-
     const isIndeterminate =
       indeterminate === true || value === undefined || value === null
     const clampedValue = isIndeterminate ? 0 : Math.min(Math.max(value ?? 0, 0), max)

@@ -229,20 +229,7 @@ function KbdBadge({ keys }: { keys: string[] }) {
 // Main component
 // ---------------------------------------------------------------------------
 
-const KEYFRAMES_CMD = `
-@keyframes aurora-cmd-in {
-  from { opacity: 0; transform: translate(-50%, calc(-50% - 8px)); }
-  to   { opacity: 1; transform: translate(-50%, -50%); }
-}
-@keyframes aurora-backdrop-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-.aurora-cmd-search-row:focus-within {
-  border-bottom-color: var(--aurora-border-strong);
-  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent);
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 export function CommandPalette({
   open,
@@ -336,8 +323,6 @@ export function CommandPalette({
 
   return (
     <>
-      <style>{KEYFRAMES_CMD}</style>
-
       {/* Backdrop */}
       <div
         role="presentation"

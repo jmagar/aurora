@@ -356,12 +356,7 @@ function TreeRow({
 // FileTree — main export
 // ---------------------------------------------------------------------------
 
-const FILE_TREE_FOCUS_STYLE = `
-.aurora-tree-item:focus-visible {
-  outline: 2px solid var(--aurora-focus-ring-strong);
-  outline-offset: -1px;
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, defaultSelectedId }: FileTreeProps) {
   const [selected, setSelected] = React.useState<string | null>(defaultSelectedId ?? null)
@@ -398,8 +393,6 @@ export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, 
   }
 
   return (
-    <>
-    <style>{FILE_TREE_FOCUS_STYLE}</style>
     <div
       role="tree"
       style={{
@@ -434,7 +427,6 @@ export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, 
         />
       )}
     </div>
-    </>
   )
 }
 

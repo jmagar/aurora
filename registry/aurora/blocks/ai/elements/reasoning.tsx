@@ -16,14 +16,8 @@ import { Button } from "@/registry/aurora/ui/button"
 // shared Chain-of-thought / Plan variants.
 // ---------------------------------------------------------------------------
 
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 const ROSE = "var(--aurora-accent-pink)"
-
-const KEYFRAMES = `
-  @keyframes aurora-reasoning-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-`
 
 export interface ReasoningProps {
   /** Streaming summary tail — shows the "Reasoning…" rose label, bullet and cursor. */
@@ -67,10 +61,6 @@ const Reasoning = React.forwardRef<HTMLDivElement, ReasoningProps>(
 
     return (
       <div ref={ref} style={{ display: "block", width: "100%", minWidth: 0 }}>
-        <style href="aurora-reasoning-keyframes" precedence="default">
-          {KEYFRAMES}
-        </style>
-
         {/* Header — brain glyph + label + disclosure chevron */}
         <Button
           variant="plain"

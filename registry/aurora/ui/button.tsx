@@ -4,8 +4,9 @@
  * Aurora Button — operator-grade action control.
  * Border + glow (the tight hard ring), never a flooded fill or soft corner halo.
  *
- * Visual layer is ported verbatim from the Claude Design source (injected once,
- * reads only `--aurora-*` tokens) so it renders pixel-identical in dark + `.light`.
+ * Visual layer lives in registry/aurora/styles/aurora-components.css
+ * (`@layer components`, reads only `--aurora-*` tokens) so it renders
+ * pixel-identical in dark + `.light` and Tailwind utilities can override it.
  * Architecture stays shadcn: `Slot`/`asChild`, `cva` `buttonVariants`, `VariantProps`,
  * `React.memo`.
  */
@@ -26,106 +27,6 @@ export type ButtonVariant =
   | "plain"
 
 export type ButtonSize = "sm" | "default" | "lg" | "icon" | "unstyled"
-
-// ─── Visual layer (ported from Claude Design) ──────────────────────────────────
-
-const CSS = `
-.aurora-btn {
-  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-  white-space: nowrap; cursor: pointer; user-select: none; font-family: var(--font-sans, Inter, sans-serif);
-  font-weight: 560; border: 1px solid var(--aurora-border-strong); background: var(--aurora-control-surface);
-  color: var(--aurora-text-primary); height: 32px; padding: 0 14px; border-radius: 9px; font-size: 13px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 1px 2px rgba(0,0,0,0.34), 0 2px 6px rgba(0,0,0,0.16); text-decoration: none; box-sizing: border-box;
-  transition: background 150ms var(--motion-ease-out, ease), border-color 150ms var(--motion-ease-out, ease), box-shadow 200ms var(--motion-ease-out, ease), color 150ms var(--motion-ease-out, ease), transform 80ms ease-out;
-}
-.aurora-btn:active { transform: translateY(1px); }
-.aurora-btn:focus-visible { outline: none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent), 0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent); }
-.aurora-btn:disabled, .aurora-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; transform: none; }
-.aurora-btn--block { width: 100%; }
-.aurora-btn--pill { border-radius: 999px; }
-.aurora-btn--sm { height: 27px; padding: 0 11px; border-radius: 7px; font-size: 12px; gap: 6px; }
-.aurora-btn--lg { height: 40px; padding: 0 20px; border-radius: 11px; font-size: 14px; gap: 8px; }
-.aurora-btn--icon { width: 32px; padding: 0; }
-.aurora-btn--sm.aurora-btn--icon { width: 27px; }
-.aurora-btn--lg.aurora-btn--icon { width: 40px; }
-
-.aurora-btn--aurora {
-  border-color: color-mix(in srgb, var(--aurora-accent-primary) 42%, var(--aurora-border-strong));
-  background: linear-gradient(180deg, color-mix(in srgb, var(--aurora-accent-primary) 11%, transparent), transparent 58%), var(--aurora-control-surface);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 1px 2px rgba(0,0,0,0.34), 0 2px 6px rgba(0,0,0,0.16), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent);
-}
-.aurora-btn--aurora:hover { border-color: color-mix(in srgb, var(--aurora-accent-primary) 70%, var(--aurora-border-strong)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 1px 2px rgba(0,0,0,0.4), 0 3px 9px rgba(0,0,0,0.22), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 38%, transparent); }
-
-.aurora-btn--neutral:hover { background: var(--aurora-hover-bg); border-color: var(--aurora-border-strong); box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 1px 2px rgba(0,0,0,0.4), 0 3px 9px rgba(0,0,0,0.22); }
-
-.aurora-btn--rose {
-  border-color: color-mix(in srgb, var(--aurora-accent-pink) 52%, var(--aurora-border-strong));
-  background: linear-gradient(180deg, color-mix(in srgb, var(--aurora-accent-pink) 14%, transparent), transparent 58%), var(--aurora-control-surface);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-pink) 24%, transparent);
-}
-.aurora-btn--rose:hover { border-color: color-mix(in srgb, var(--aurora-accent-pink) 76%, var(--aurora-border-strong)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-pink) 40%, transparent); }
-
-.aurora-btn--success {
-  color: var(--aurora-success); border-color: color-mix(in srgb, var(--aurora-success) 46%, var(--aurora-border-strong));
-  background: linear-gradient(180deg, color-mix(in srgb, var(--aurora-success) 12%, transparent), transparent 58%), var(--aurora-control-surface);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 1px color-mix(in srgb, var(--aurora-success) 22%, transparent);
-}
-.aurora-btn--success:hover { border-color: color-mix(in srgb, var(--aurora-success) 72%, var(--aurora-border-strong)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px color-mix(in srgb, var(--aurora-success) 42%, transparent); }
-
-.aurora-btn--warn {
-  color: var(--aurora-warn); border-color: color-mix(in srgb, var(--aurora-warn) 48%, var(--aurora-border-strong));
-  background: linear-gradient(180deg, color-mix(in srgb, var(--aurora-warn) 12%, transparent), transparent 58%), var(--aurora-control-surface);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 1px color-mix(in srgb, var(--aurora-warn) 22%, transparent);
-}
-.aurora-btn--warn:hover { border-color: color-mix(in srgb, var(--aurora-warn) 74%, var(--aurora-border-strong)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px color-mix(in srgb, var(--aurora-warn) 42%, transparent); }
-
-.aurora-btn--ghost { border-color: transparent; background: transparent; box-shadow: none; color: var(--aurora-text-muted); }
-.aurora-btn--ghost:hover { color: var(--aurora-text-primary); background: var(--aurora-hover-bg); }
-
-/* plain — structural escape hatch: a bare clickable button with no Aurora fill */
-.aurora-btn--plain { border-color: transparent; background: transparent; box-shadow: none; color: inherit; }
-.aurora-btn--plain:hover { background: transparent; }
-
-/* unstyled — strip the base dimensions/typography (pairs with --plain for a raw wrapper) */
-.aurora-btn--unstyled { height: auto; min-height: 0; padding: 0; border: 0; border-radius: 0; font-size: inherit; font-weight: inherit; gap: 0; box-shadow: none; }
-
-/* filled — the one flooded hero action (flooded fills are allowed; keep to one per surface) */
-.aurora-btn--filled.aurora-btn--rose { background: var(--aurora-accent-pink); border-color: var(--aurora-accent-pink-deep); color: #2a0f18; box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-pink-deep) 50%, transparent); }
-.aurora-btn--filled.aurora-btn--rose:hover { background: var(--aurora-accent-pink-strong); border-color: var(--aurora-accent-pink-deep); }
-.aurora-btn--filled.aurora-btn--aurora { background: var(--aurora-accent-primary); border-color: var(--aurora-accent-deep); color: #06131c; }
-.aurora-btn--filled.aurora-btn--aurora:hover { background: color-mix(in srgb, var(--aurora-accent-primary) 86%, #fff); }
-.aurora-btn--filled.aurora-btn--success { background: var(--aurora-success); border-color: color-mix(in srgb, var(--aurora-success) 60%, #000); color: #06201b; }
-.aurora-btn--filled.aurora-btn--warn { background: var(--aurora-warn); border-color: color-mix(in srgb, var(--aurora-warn) 60%, #000); color: #211803; }
-
-.aurora-btn--destructive {
-  color: var(--aurora-error); border-color: color-mix(in srgb, var(--aurora-error) 42%, var(--aurora-border-strong));
-  background: linear-gradient(180deg, color-mix(in srgb, var(--aurora-error) 9%, transparent), transparent 58%), var(--aurora-control-surface);
-}
-.aurora-btn--destructive:hover { border-color: color-mix(in srgb, var(--aurora-error) 62%, var(--aurora-border-strong)); }
-
-.aurora-btn--pulse:not(:disabled):not([aria-disabled="true"]) { animation: aurora-btn-pulse 2.4s ease-in-out infinite; }
-@keyframes aurora-btn-pulse {
-  0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent); }
-  50% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 60%, transparent); }
-}
-@media (prefers-reduced-motion: reduce) { .aurora-btn--pulse { animation: none; } }
-
-.aurora-btn--loading { cursor: progress; }
-.aurora-btn__spinner { width: 1em; height: 1em; border-radius: 50%; border: 2px solid currentColor; border-top-color: transparent; animation: aurora-btn-spin 0.62s linear infinite; flex-shrink: 0; }
-@keyframes aurora-btn-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .aurora-btn__spinner { animation-duration: 1.4s; } }
-.aurora-btn__icon { display: inline-flex; align-items: center; flex-shrink: 0; }
-`
-
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-button", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
 
 // ─── cva (class selection + buttonVariants export) ─────────────────────────────
 
@@ -201,10 +102,9 @@ function Button({
   onClick,
   ...props
 }: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }) {
-  React.useEffect(() => {
-    ensureCSS()
-  }, [])
-
+  // Visual layer lives in registry/aurora/styles/aurora-components.css
+  // (@layer components), shipped via the `aurora-components` registry item — no
+  // runtime <style> injection.
   const isDisabled = disabled || loading
 
   const cls = cn(

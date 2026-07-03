@@ -169,23 +169,7 @@ function ChromeButton({
 // Skeleton shimmer
 // ---------------------------------------------------------------------------
 
-const SHIMMER_STYLE = `
-@keyframes aurora-shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position:  400px 0; }
-}
-.aurora-shimmer-block {
-  background: linear-gradient(
-    90deg,
-    var(--aurora-panel-medium) 25%,
-    var(--aurora-hover-bg) 50%,
-    var(--aurora-panel-medium) 75%
-  );
-  background-size: 800px 100%;
-  animation: aurora-shimmer 1.4s ease-in-out infinite;
-  border-radius: 6px;
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 function SkeletonBlock({ width = "100%", height = "14px", style }: { width?: string; height?: string; style?: React.CSSProperties }) {
   return (
@@ -354,7 +338,6 @@ function BrowserChrome({
       >
         {isLoading ? (
           <div style={{ width: "100%", padding: "24px", display: "flex", flexDirection: "column", gap: "10px" }}>
-            <style>{SHIMMER_STYLE}</style>
             <SkeletonBlock height="20px" width="60%" />
             <SkeletonBlock height="14px" width="90%" />
             <SkeletonBlock height="14px" width="75%" />
@@ -565,7 +548,6 @@ function SkeletonVariant({ url }: { url: string }) {
         boxShadow: "var(--aurora-shadow-medium)",
       }}
     >
-      <style>{SHIMMER_STYLE}</style>
       {/* Skeleton titlebar */}
       <div
         style={{

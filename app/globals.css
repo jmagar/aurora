@@ -1,6 +1,12 @@
+/* Declare layer order up front: our component layer sits BEFORE `utilities` so
+   Tailwind utilities win over Aurora component base styles. A custom layer name
+   (not Tailwind's own `components`) so v4 doesn't manage/discard the rules. */
+@layer theme, base, components, aurora-components, utilities;
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../registry/aurora/styles/aurora.css";
+@import "../registry/aurora/styles/aurora-components.css";
+@import "./site-chrome.css";
 
 @custom-variant dark (&:is(.dark *));
 

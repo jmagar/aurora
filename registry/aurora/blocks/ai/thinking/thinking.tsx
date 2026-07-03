@@ -33,27 +33,7 @@ export interface ThinkingProps {
   content?: string
 }
 
-// ---------------------------------------------------------------------------
-// Keyframe styles (injected once)
-// ---------------------------------------------------------------------------
-
-const KEYFRAMES = `
-  @keyframes aurora-border-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  @keyframes aurora-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-  @keyframes aurora-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-  @keyframes aurora-spin {
-    to { transform: rotate(360deg); }
-  }
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Step status icon
@@ -105,7 +85,7 @@ function SkeletonLines() {
             background:
               "linear-gradient(90deg, var(--aurora-border-default) 25%, var(--aurora-hover-bg) 50%, var(--aurora-border-default) 75%)",
             backgroundSize: "200% 100%",
-            animation: `aurora-shimmer 1.4s ease ${i * 0.12}s infinite`,
+            animation: `aurora-thinking-shimmer 1.4s ease ${i * 0.12}s infinite`,
           }}
         />
       ))}
@@ -522,7 +502,6 @@ export function Thinking({
 }: ThinkingProps) {
   return (
     <>
-      <style href="aurora-thinking-keyframes" precedence="default">{KEYFRAMES}</style>
       {type === "thinking" && (
         <ThinkingBlock
           isStreaming={isStreaming}

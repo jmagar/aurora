@@ -30,11 +30,7 @@ export interface PlanProps extends React.HTMLAttributes<HTMLDivElement> {
 // Accents -------------------------------------------------------------------
 const PLAN_ACCENT = "var(--aurora-accent-pink)" // rose — plan identity / active step
 
-// Keyframes (injected once) -------------------------------------------------
-const KEYFRAMES = `
-  @keyframes aurora-plan-spin { to { transform: rotate(360deg); } }
-  @keyframes aurora-plan-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Blinking cursor
@@ -156,26 +152,22 @@ export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
   const progress = total > 0 ? doneCount / total : 0
 
   return (
-    <>
-      <style href="aurora-plan-keyframes" precedence="default">
-        {KEYFRAMES}
-      </style>
-      <div
-        ref={ref}
-        role="group"
-        aria-label={title}
-        style={{
-          background: "var(--aurora-surface-raised)",
-          border: "1px solid var(--aurora-border-default)",
-          borderRadius: "var(--aurora-radius-2)",
-          boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
-          padding: "20px 22px",
-          width: "100%",
-          boxSizing: "border-box",
-          ...style,
-        }}
-        {...rest}
-      >
+    <div
+      ref={ref}
+      role="group"
+      aria-label={title}
+      style={{
+        background: "var(--aurora-surface-raised)",
+        border: "1px solid var(--aurora-border-default)",
+        borderRadius: "var(--aurora-radius-2)",
+        boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
+        padding: "20px 22px",
+        width: "100%",
+        boxSizing: "border-box",
+        ...style,
+      }}
+      {...rest}
+    >
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <ListChecks
@@ -314,8 +306,7 @@ export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
             )
           })}
         </ol>
-      </div>
-    </>
+    </div>
   )
 })
 

@@ -1,5 +1,7 @@
 "use client"
 
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
+
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 
@@ -413,13 +415,6 @@ export function Terminal({
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes aurora-cursor-blink {
-          0%, 100% { opacity: 0.7; }
-          50% { opacity: 0; }
-        }
-      `}</style>
     </div>
   )
 }

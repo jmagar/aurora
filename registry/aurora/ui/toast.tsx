@@ -40,31 +40,7 @@ export function useToast(): ToastContextValue {
   return ctx;
 }
 
-// ---------------------------------------------------------------------------
-// Keyframe injection (once)
-// ---------------------------------------------------------------------------
-
-const SLIDE_ID = "aurora-toast-slide";
-
-function injectSlideKeyframes() {
-  if (typeof document === "undefined") return;
-  if (document.getElementById(SLIDE_ID)) return;
-  const style = document.createElement("style");
-  style.id = SLIDE_ID;
-  style.textContent = `
-    @keyframes toast-slide-in {
-      from { transform: translateX(28px); opacity: 0; }
-      to   { transform: translateX(0);    opacity: 1; }
-    }
-    @keyframes aurora-toast-out {
-      from { transform: translateX(0);    opacity: 1; max-height: 120px; margin-bottom: 10px; }
-      to   { transform: translateX(28px); opacity: 0; max-height: 0;    margin-bottom: 0; }
-    }
-    .aurora-toast-enter { animation: toast-slide-in  0.28s cubic-bezier(0.16,1,0.3,1) forwards; }
-    .aurora-toast-exit  { animation: aurora-toast-out 0.22s ease-in             forwards; }
-  `;
-  document.head.appendChild(style);
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Status dismiss-button colour map
@@ -251,10 +227,6 @@ export function ToastProvider({ children, position = "top-right" }: ToastProvide
   const [items, setItems] = React.useState<ToastItem[]>([]);
   const [exiting, setExiting] = React.useState<Set<string>>(new Set());
   const timersRef = React.useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
-
-  React.useEffect(() => {
-    injectSlideKeyframes();
-  }, []);
 
   const removeItem = React.useCallback((id: string) => {
     setExiting((prev) => new Set(prev).add(id));

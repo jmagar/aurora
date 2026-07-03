@@ -34,102 +34,7 @@ export interface StepperProps
   current?: number;
 }
 
-const STYLE_ID = "aurora-stepper-style";
-
-const CSS = `
-.aurora-stepper {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-family: var(--font-sans, "Inter", system-ui, sans-serif);
-}
-.aurora-stepper__step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  min-width: 96px;
-}
-.aurora-stepper__node {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 9999px;
-  border: 2px solid transparent;
-  font-family: var(--font-sans, "Inter", system-ui, sans-serif);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  box-sizing: border-box;
-  transition:
-    background-color var(--motion-fast, 140ms) ease,
-    border-color var(--motion-fast, 140ms) ease,
-    color var(--motion-fast, 140ms) ease;
-}
-.aurora-stepper__step[data-status="complete"] .aurora-stepper__node {
-  background: var(--aurora-accent-primary);
-  border-color: var(--aurora-accent-primary);
-  color: var(--aurora-accent-foreground);
-}
-.aurora-stepper__step[data-status="active"] .aurora-stepper__node {
-  background: color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent);
-  border-color: var(--aurora-accent-primary);
-  color: var(--aurora-accent-primary);
-}
-.aurora-stepper__step[data-status="upcoming"] .aurora-stepper__node {
-  background: transparent;
-  border-color: var(--aurora-border-default);
-  color: var(--aurora-text-muted);
-}
-.aurora-stepper__check {
-  width: 20px;
-  height: 20px;
-}
-.aurora-stepper__text {
-  display: block;
-  text-align: center;
-}
-.aurora-stepper__label {
-  display: block;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.2;
-  text-align: center;
-}
-.aurora-stepper__step[data-status="upcoming"] .aurora-stepper__label {
-  color: var(--aurora-text-muted);
-  font-weight: 600;
-}
-.aurora-stepper__step[data-status="complete"] .aurora-stepper__label,
-.aurora-stepper__step[data-status="active"] .aurora-stepper__label {
-  color: var(--aurora-text-primary);
-}
-.aurora-stepper__description {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.3;
-  text-align: center;
-  color: var(--aurora-text-muted);
-}
-`;
-
-function useStepperStyle() {
-  React.useEffect(() => {
-    if (typeof document === "undefined") return;
-    if (document.getElementById(STYLE_ID)) return;
-    const el = document.createElement("style");
-    el.id = STYLE_ID;
-    el.textContent = CSS;
-    document.head.appendChild(el);
-  }, []);
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 function statusFor(index: number, current: number): StepperStatus {
   if (index < current) return "complete";
@@ -153,7 +58,6 @@ const CheckIcon = () => (
 );
 
 export function Stepper({ ref, steps, current = 0, className, ...props }: StepperProps & { ref?: React.Ref<HTMLOListElement> }) {
-  useStepperStyle();
   return (
     <ol
       ref={ref}

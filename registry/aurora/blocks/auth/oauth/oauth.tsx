@@ -1,5 +1,7 @@
 "use client"
 
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
+
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 
@@ -88,16 +90,6 @@ function AnimatedCheckIcon() {
           }}
         />
       </svg>
-      <style>{`
-        @keyframes aurora-check-pop {
-          0% { transform: scale(0.5); opacity: 0; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes aurora-check-draw {
-          from { stroke-dashoffset: 30; }
-          to   { stroke-dashoffset: 0; }
-        }
-      `}</style>
     </div>
   )
 }

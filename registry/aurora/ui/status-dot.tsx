@@ -48,52 +48,7 @@ const STATUS_ROLE_LABEL: Record<StatusDotStatus, string> = {
   neutral: "idle",
 };
 
-// ---------------------------------------------------------------------------
-// Glow + pulse keyframe injection
-// ---------------------------------------------------------------------------
-
-const STYLE_ID = "aurora-status-dot";
-
-function injectStyles() {
-  if (typeof document === "undefined") return;
-  if (document.getElementById(STYLE_ID)) return;
-  const style = document.createElement("style");
-  style.id = STYLE_ID;
-  style.textContent = `
-    .aurora-status-dot {
-      position: relative;
-      flex: none;
-      width: 9px;
-      height: 9px;
-      border-radius: 9999px;
-      background: var(--status-dot-color);
-      box-shadow:
-        0 0 0 0 color-mix(in srgb, var(--status-dot-color) 36%, transparent),
-        0 0 6px color-mix(in srgb, var(--status-dot-color) 70%, transparent);
-    }
-    .aurora-status-dot--pulse {
-      animation: aurora-status-dot-pulse 1.8s var(--motion-ease-in-out, ease-in-out) infinite;
-    }
-    @keyframes aurora-status-dot-pulse {
-      0%, 100% {
-        box-shadow:
-          0 0 0 0 color-mix(in srgb, var(--status-dot-color) 42%, transparent),
-          0 0 6px color-mix(in srgb, var(--status-dot-color) 70%, transparent);
-      }
-      50% {
-        box-shadow:
-          0 0 0 5px transparent,
-          0 0 9px color-mix(in srgb, var(--status-dot-color) 85%, transparent);
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .aurora-status-dot--pulse {
-        animation: none;
-      }
-    }
-  `;
-  document.head.appendChild(style);
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // StatusDot
@@ -112,10 +67,6 @@ export interface StatusDotProps
 function StatusDot(
   { ref, status = "neutral", pulse = false, label, className, style, ...props }: StatusDotProps & { ref?: React.Ref<HTMLSpanElement> }
 ) {
-  React.useEffect(() => {
-    injectStyles();
-  }, []);
-
   const color = STATUS_COLOR[status] ?? STATUS_COLOR.neutral;
   const roleLabel = STATUS_ROLE_LABEL[status] ?? STATUS_ROLE_LABEL.neutral;
 

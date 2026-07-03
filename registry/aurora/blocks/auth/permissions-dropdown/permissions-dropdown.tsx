@@ -3,25 +3,7 @@
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 
-// ---------------------------------------------------------------------------
-// CSS injected once
-// ---------------------------------------------------------------------------
-
-const PD_CSS = `
-@keyframes aurora-pd-in {
-  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-`
-
-let pdCSSInjected = false
-function ensurePDCSS() {
-  if (pdCSSInjected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.textContent = PD_CSS
-  document.head.appendChild(el)
-  pdCSSInjected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Types
@@ -312,10 +294,6 @@ export function PermissionsDropdown({
   className,
   style,
 }: PermissionsDropdownProps) {
-  React.useEffect(() => {
-    ensurePDCSS()
-  }, [])
-
   const [internalMaster, setInternalMaster] = React.useState(masterEnabled)
   const isEnabled = onMasterToggle !== undefined ? masterEnabled : internalMaster
 

@@ -8,82 +8,11 @@ import { cn } from "@/lib/utils"
 // Loader — thinking / busy indicator.
 //
 // Icon-only by default (spinner / dots / bars / pulse), with an optional muted
-// label. Self-contained: keyframes + tone colours are injected once so the
-// indicator animates even when no shared stylesheet is mounted. All colour is
-// derived from `--aurora-*` tokens (rose default, cyan via `tone="accent"`).
+// label. All colour is derived from `--aurora-*` tokens (rose default, cyan via
+// `tone="accent"`).
+//
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 // ---------------------------------------------------------------------------
-
-const LOADER_ID = "aurora-ai-loader-keyframes"
-
-function injectLoader() {
-  if (typeof document === "undefined") return
-  if (document.getElementById(LOADER_ID)) return
-  const style = document.createElement("style")
-  style.id = LOADER_ID
-  style.textContent = `
-    @keyframes aurora-loader-spin {
-      to { transform: rotate(360deg); }
-    }
-    @keyframes aurora-loader-dot {
-      0%, 80%, 100% { opacity: 0.25; transform: scale(0.7); }
-      40%           { opacity: 1;    transform: scale(1); }
-    }
-    @keyframes aurora-loader-bar {
-      0%, 100% { transform: scaleY(0.35); }
-      50%      { transform: scaleY(1); }
-    }
-    @keyframes aurora-loader-pulse-ring {
-      0%   { transform: scale(0.45); opacity: 0.9; }
-      100% { transform: scale(1);    opacity: 0; }
-    }
-    @keyframes aurora-loader-pulse-core {
-      0%, 100% { opacity: 1;    transform: scale(1); }
-      50%      { opacity: 0.55; transform: scale(0.82); }
-    }
-    .aurora-ai-loader__spinner {
-      border: 2px solid color-mix(in srgb, var(--aurora-loader-tone) 22%, transparent);
-      border-top-color: var(--aurora-loader-tone);
-      border-radius: 9999px;
-      animation: aurora-loader-spin 0.7s linear infinite;
-    }
-    .aurora-ai-loader__dot {
-      background: var(--aurora-loader-tone);
-      border-radius: 9999px;
-      animation: aurora-loader-dot 1.2s ease-in-out infinite;
-    }
-    .aurora-ai-loader__bar {
-      background: var(--aurora-loader-tone);
-      border-radius: 9999px;
-      transform-origin: center bottom;
-      animation: aurora-loader-bar 1s ease-in-out infinite;
-    }
-    .aurora-ai-loader__pulse-frame {
-      border: 1px solid color-mix(in srgb, var(--aurora-loader-tone) 38%, transparent);
-      border-radius: 9999px;
-    }
-    .aurora-ai-loader__pulse-ring {
-      border: 1.5px solid var(--aurora-loader-tone);
-      border-radius: 9999px;
-      animation: aurora-loader-pulse-ring 1.4s ease-out infinite;
-    }
-    .aurora-ai-loader__pulse-core {
-      background: var(--aurora-loader-tone);
-      border-radius: 9999px;
-      animation: aurora-loader-pulse-core 1.4s ease-in-out infinite;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .aurora-ai-loader__spinner,
-      .aurora-ai-loader__dot,
-      .aurora-ai-loader__bar,
-      .aurora-ai-loader__pulse-ring,
-      .aurora-ai-loader__pulse-core {
-        animation-duration: 0.001ms;
-        animation-iteration-count: 1;
-      }
-    }
-  `
-  document.head.appendChild(style)
-}
 
 // ---------------------------------------------------------------------------
 // CVA — tone (rose default / cyan accent) drives a single CSS custom property.
@@ -136,10 +65,6 @@ const Loader = React.forwardRef<HTMLDivElement, LoaderProps>(
     },
     ref
   ) => {
-    React.useEffect(() => {
-      injectLoader()
-    }, [])
-
     const toneToken = TONE_TOKEN[tone ?? "rose"]
 
     const a11y = {

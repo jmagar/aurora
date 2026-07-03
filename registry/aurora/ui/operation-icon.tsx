@@ -10,7 +10,7 @@
  *   - Async jobs     → orange (crawl, extract, embed, ingest)
  *   - Reason         → rose   (ask, summarize, research, suggest)
  *
- * The visual layer is injected once and reads only `--aurora-*` tokens so it
+ * The visual layer reads only `--aurora-*` tokens so it
  * renders identically in dark + `.light`. Architecture stays shadcn: a glyph map,
  * `forwardRef`, `displayName`, named + default export, and a11y (role/aria-label
  * with an option to mark the glyph decorative).
@@ -58,53 +58,7 @@ const TONE_BY_NAME: Record<OperationName, OperationTone> = {
 }
 
 // ─── Visual layer (ported from Claude Design) ──────────────────────────────────
-
-const CSS = `
-.aurora-op-icon {
-  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
-  border-radius: 8px; box-sizing: border-box;
-  background: var(--aurora-op-surface);
-  border: 1px solid var(--aurora-op-border);
-  color: var(--aurora-op-fg);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-}
-.aurora-op-icon svg { display: block; }
-
-/* cyan — fetch / read */
-.aurora-op-icon--cyan {
-  --aurora-op-fg: var(--aurora-accent-strong);
-  --aurora-op-surface: color-mix(in srgb, var(--aurora-accent-primary) 13%, var(--aurora-control-surface));
-  --aurora-op-border: color-mix(in srgb, var(--aurora-accent-primary) 34%, transparent);
-}
-/* orange — async jobs */
-.aurora-op-icon--orange {
-  --aurora-op-fg: var(--axon-orange-strong);
-  --aurora-op-surface: color-mix(in srgb, var(--axon-orange) 14%, var(--aurora-control-surface));
-  --aurora-op-border: color-mix(in srgb, var(--axon-orange) 36%, transparent);
-}
-/* rose — reason */
-.aurora-op-icon--rose {
-  --aurora-op-fg: var(--aurora-accent-pink-strong);
-  --aurora-op-surface: color-mix(in srgb, var(--aurora-accent-pink) 13%, var(--aurora-control-surface));
-  --aurora-op-border: color-mix(in srgb, var(--aurora-accent-pink) 34%, transparent);
-}
-/* neutral — fallback */
-.aurora-op-icon--neutral {
-  --aurora-op-fg: var(--aurora-text-muted);
-  --aurora-op-surface: color-mix(in srgb, var(--aurora-text-muted) 8%, var(--aurora-control-surface));
-  --aurora-op-border: color-mix(in srgb, var(--aurora-border-default) 70%, transparent);
-}
-`
-
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-operation-icon", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ─── Glyphs ────────────────────────────────────────────────────────────────────
 // Each glyph draws on a 24×24 grid with currentColor strokes.
@@ -278,10 +232,6 @@ function OperationIcon(
     ...props
   }: OperationIconProps & { ref?: React.Ref<HTMLSpanElement> }
 ) {
-    React.useEffect(() => {
-      ensureCSS()
-    }, [])
-
     const resolvedTone: OperationTone =
       tone ?? TONE_BY_NAME[name] ?? "neutral"
     const Glyph = GLYPHS[name]

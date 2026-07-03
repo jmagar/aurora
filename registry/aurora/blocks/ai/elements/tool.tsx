@@ -137,9 +137,7 @@ function renderJson(value: unknown): React.ReactNode {
   return parts
 }
 
-const TOOL_KEYFRAMES = `
-@keyframes aurora-tool-spin { to { transform: rotate(360deg); } }
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 const ToolImpl = React.forwardRef<HTMLDivElement, ToolProps>(function Tool(
   {
@@ -187,10 +185,6 @@ const ToolImpl = React.forwardRef<HTMLDivElement, ToolProps>(function Tool(
       }}
       {...rest}
     >
-      <style href="aurora-tool-keyframes" precedence="default">
-        {TOOL_KEYFRAMES}
-      </style>
-
       <Button
         variant="plain"
         size="unstyled"

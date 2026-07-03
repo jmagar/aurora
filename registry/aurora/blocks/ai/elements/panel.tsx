@@ -27,110 +27,7 @@ const toneColor: Record<PanelTone, string> = {
   neutral: "var(--aurora-text-muted)",
 }
 
-const PANEL_STYLES = `
-  .aurora-ael {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-width: 0;
-    border-radius: var(--aurora-radius-2);
-    background: var(--aurora-surface-raised);
-    border: 1px solid var(--aurora-border-strong);
-    box-shadow: var(--aurora-shadow-medium), var(--aurora-highlight-medium);
-    color: var(--aurora-text-primary);
-    font-family: var(--aurora-font-sans);
-    overflow: hidden;
-  }
-  .aurora-ael__head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-  }
-  .aurora-ael__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    border-radius: var(--aurora-radius-1);
-    color: var(--aurora-ael-tone, var(--aurora-accent-primary));
-    border: 1px solid color-mix(in srgb, var(--aurora-ael-tone, var(--aurora-accent-primary)) 55%, transparent);
-    background: color-mix(in srgb, var(--aurora-ael-tone, var(--aurora-accent-primary)) 12%, transparent);
-  }
-  .aurora-ael__titles {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-    flex: 1;
-  }
-  .aurora-ael__eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--aurora-ael-tone, var(--aurora-accent-primary));
-    line-height: 1.2;
-  }
-  .aurora-ael__title {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--aurora-text-primary);
-    line-height: 1.2;
-  }
-  .aurora-ael__actions {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-    margin-left: auto;
-  }
-  .aurora-ael__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border-radius: var(--aurora-radius-1);
-    border: 1px solid var(--aurora-border-strong);
-    background: color-mix(in srgb, var(--aurora-page-bg) 60%, transparent);
-    color: var(--aurora-text-muted);
-    cursor: pointer;
-    font-family: var(--aurora-font-sans);
-    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-  }
-  .aurora-ael__btn:hover {
-    color: var(--aurora-text-primary);
-    border-color: var(--aurora-accent-primary);
-  }
-  .aurora-ael__btn:focus-visible {
-    outline: 2px solid var(--aurora-focus-ring-strong);
-    outline-offset: 2px;
-  }
-  .aurora-ael__btn.icon {
-    padding: 0;
-  }
-  .aurora-ael__btn.sm {
-    width: 26px;
-    height: 26px;
-  }
-  .aurora-ael__body {
-    padding: 12px 14px;
-    border-top: 1px solid color-mix(in srgb, var(--aurora-border-strong) 60%, transparent);
-    font-size: 14px;
-    line-height: 1.55;
-    color: var(--aurora-text-primary);
-  }
-  .aurora-ael__foot {
-    padding: 9px 14px;
-    border-top: 1px solid color-mix(in srgb, var(--aurora-border-strong) 60%, transparent);
-    font-size: 12px;
-    color: var(--aurora-text-muted);
-  }
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Tone-colored uppercase label above the title. */
@@ -158,10 +55,6 @@ const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
         style={{ ["--aurora-ael-tone" as string]: toneColor[tone], ...style }}
         {...props}
       >
-        <style href="aurora-panel-styles" precedence="default">
-          {PANEL_STYLES}
-        </style>
-
         {hasHeader ? (
           <div className="aurora-ael__head">
             {icon ? (

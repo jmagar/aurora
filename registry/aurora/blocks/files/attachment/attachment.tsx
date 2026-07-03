@@ -497,12 +497,7 @@ export interface AttachmentAudioChipProps {
   waveform?: [number, number, number, number, number]
 }
 
-const KEYFRAMES_AUDIO = `
-@keyframes aurora-bar-bounce {
-  0%, 100% { transform: scaleY(0.35); }
-  50%       { transform: scaleY(1); }
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 export function AttachmentAudioChip({
   title,
@@ -517,20 +512,18 @@ export function AttachmentAudioChip({
   const waveHeight = compact ? 16 : 22
 
   return (
-    <>
-      <style>{KEYFRAMES_AUDIO}</style>
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: compact ? "8px" : "12px",
-          padding: compact ? "7px 12px" : "10px 14px",
-          background: "color-mix(in srgb, var(--aurora-accent-primary) 7%, var(--aurora-panel-medium))",
-          border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 24%, var(--aurora-border-default))",
-          borderRadius: "12px",
-          maxWidth: "320px",
-        }}
-      >
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: compact ? "8px" : "12px",
+        padding: compact ? "7px 12px" : "10px 14px",
+        background: "color-mix(in srgb, var(--aurora-accent-primary) 7%, var(--aurora-panel-medium))",
+        border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 24%, var(--aurora-border-default))",
+        borderRadius: "12px",
+        maxWidth: "320px",
+      }}
+    >
         {/* Play/pause toggle — circular outline */}
         <Button
           type="button"
@@ -628,7 +621,6 @@ export function AttachmentAudioChip({
           </div>
         )}
       </div>
-    </>
   )
 }
 

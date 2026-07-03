@@ -406,44 +406,36 @@ function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
   )
 }
 
-const TOOL_CALLS_KEYFRAMES = `
-@keyframes aurora-spin {
-  to { transform: rotate(360deg); }
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 export function ToolCalls({ calls }: ToolCallsProps) {
   const groups = React.useMemo(() => groupConsecutiveCalls(calls), [calls])
 
   return (
-    <>
-      <style href="aurora-tool-calls-keyframes" precedence="default">{TOOL_CALLS_KEYFRAMES}</style>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: 8,
+        width: "100%",
+      }}
+    >
+      {groups.map((group) => (
+        <ToolCallGroupRow key={group.id} group={group} />
+      ))}
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          gap: 8,
-          width: "100%",
-        }}
-      >
-        {groups.map((group) => (
-          <ToolCallGroupRow key={group.id} group={group} />
-        ))}
-
-        {calls.length === 0 && (
-          <div
-            style={{
-              color: "var(--aurora-text-muted)",
-              fontSize: 12,
-            }}
-          >
-            No tool calls yet
-          </div>
-        )}
-      </div>
-    </>
+      {calls.length === 0 && (
+        <div
+          style={{
+            color: "var(--aurora-text-muted)",
+            fontSize: 12,
+          }}
+        >
+          No tool calls yet
+        </div>
+      )}
+    </div>
   )
 }
 

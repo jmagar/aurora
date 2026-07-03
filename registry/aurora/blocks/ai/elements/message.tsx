@@ -25,23 +25,7 @@ export interface MessageContentProps extends React.HTMLAttributes<HTMLDivElement
   streaming?: boolean
 }
 
-// ─── Streaming caret keyframes injected once ─────────────────────────────────
-
-const CARET_KEYFRAMES = `
-@keyframes aurora-msg-caret {
-  0%, 45%  { opacity: 1; }
-  55%, 100% { opacity: 0; }
-}`
-
-let caretInjected = false
-
-function ensureCaretKeyframes() {
-  if (caretInjected || typeof document === "undefined") return
-  const style = document.createElement("style")
-  style.textContent = CARET_KEYFRAMES
-  document.head.appendChild(style)
-  caretInjected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ─── Message ─────────────────────────────────────────────────────────────────
 // Turn row: avatar + bubble, with a timestamp/actions meta row revealed on hover.
@@ -180,10 +164,6 @@ const bubbleTone = {
 
 const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
   ({ className, style, tone = "assistant", streaming = false, children, ...props }, ref) => {
-    React.useEffect(() => {
-      if (streaming) ensureCaretKeyframes()
-    }, [streaming])
-
     return (
       <div
         ref={ref}

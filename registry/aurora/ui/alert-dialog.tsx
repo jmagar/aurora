@@ -59,71 +59,7 @@ const AlertDialogCancel = DialogClose
 const AlertDialogAction = DialogClose
 
 // ─── Visual layer (ported from Claude Design — reads only --aurora-* tokens) ────
-
-const CSS = `
-.aurora-alert {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 16px;
-  padding: 28px;
-  border-radius: var(--aurora-radius-3);
-  border: 1px solid color-mix(in srgb, var(--aurora-border-default) 55%, var(--aurora-page-bg));
-  background: linear-gradient(180deg, var(--aurora-panel-strong-top), var(--aurora-panel-strong));
-  box-shadow: var(--aurora-shadow-strong), var(--aurora-highlight-strong);
-  box-sizing: border-box;
-}
-.aurora-alert__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid var(--aurora-accent-pink-border);
-  background: var(--aurora-accent-pink-surface);
-  color: var(--aurora-accent-pink);
-  flex-shrink: 0;
-}
-.aurora-alert--info .aurora-alert__icon {
-  border-color: color-mix(in srgb, var(--aurora-accent-primary) 32%, transparent);
-  background: color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-panel-medium));
-  color: var(--aurora-accent-primary);
-}
-.aurora-alert__main { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.aurora-alert__title {
-  margin: 0;
-  font-family: var(--font-display, var(--font-sans, Manrope, sans-serif));
-  font-weight: 700;
-  font-size: 19px;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: var(--aurora-text-primary);
-}
-.aurora-alert__desc {
-  margin: 0;
-  font-family: var(--font-sans, Inter, sans-serif);
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--aurora-text-muted);
-}
-.aurora-alert__footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 14px;
-}
-`
-
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-alert-dialog", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ─── Prop-driven CD-parity card ────────────────────────────────────────────────
 
@@ -157,10 +93,6 @@ function AlertDialogCard({
   onCancel,
   ...props
 }: AlertDialogCardProps & { ref?: React.Ref<HTMLDivElement> }) {
-  React.useEffect(() => {
-    ensureCSS()
-  }, [])
-
   const Icon = destructive ? TriangleAlert : Info
 
   return (

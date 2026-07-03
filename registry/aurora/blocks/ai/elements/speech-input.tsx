@@ -25,20 +25,7 @@ const ROSE = "var(--aurora-accent-pink)"
 // 14 pill bars. Relative heights (0..1) drive the live meter while recording.
 const BAR_LEVELS = [0.4, 0.62, 0.5, 0.78, 0.46, 1, 0.84, 0.58, 0.7, 0.94, 0.66, 0.52, 0.74, 0.34]
 
-const KEYFRAMES = `
-  @keyframes aurora-speech-meter {
-    0%, 100% { transform: scaleY(0.42); }
-    50%      { transform: scaleY(1); }
-  }
-  @keyframes aurora-speech-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: 0.45; transform: scale(0.82); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .aurora-speech-bar { animation: none !important; }
-    .aurora-speech-dot { animation: none !important; }
-  }
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 export interface SpeechInputProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   /** Start in the recording (listening) state — shows the live meter + LISTENING status. */
@@ -61,10 +48,6 @@ const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
           boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
         }}
       >
-        <style href="aurora-speech-input-keyframes" precedence="default">
-          {KEYFRAMES}
-        </style>
-
         {/* Header — mic glyph + title + LISTENING status, stop/mic toggle on the right */}
         <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
           <Mic size={18} strokeWidth={1.8} aria-hidden="true" style={{ color: ROSE, flexShrink: 0 }} />

@@ -3,19 +3,7 @@
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 
-// ---------------------------------------------------------------------------
-// Keyframes (React 19 deduplication via href)
-// ---------------------------------------------------------------------------
-
-const ARTIFACT_KEYFRAMES = `
-@keyframes aurora-blink-cursor {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-@keyframes aurora-spin {
-  to { transform: rotate(360deg); }
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Types
@@ -657,7 +645,6 @@ export function Artifact({
 
   return (
     <>
-      <style href="aurora-artifact-keyframes" precedence="default">{ARTIFACT_KEYFRAMES}</style>
       {variant === "card" && <ArtifactCard {...props} variant={variant} />}
       {variant === "inline" && <ArtifactInline {...props} variant={variant} />}
       {variant === "panel" && <ArtifactPanel {...props} variant={variant} />}

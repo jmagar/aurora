@@ -887,88 +887,7 @@ function FileListRow({ file, selected, onToggle }: { file: FileItem; selected: b
   )
 }
 
-// ---------------------------------------------------------------------------
-// Drag-drop overlay (CSS keyframes + responsive overrides)
-// ---------------------------------------------------------------------------
-
-const KEYFRAMES_FP = `
-@keyframes aurora-fp-in {
-  from { opacity: 0; transform: translate(-50%, calc(-50% - 12px)); }
-  to   { opacity: 1; transform: translate(-50%, -50%); }
-}
-
-.aurora-file-picker-search:focus-within {
-  border-color: var(--aurora-border-strong);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent);
-}
-
-@media (max-width: 640px) {
-  .aurora-file-picker-dialog {
-    width: calc(100vw - 24px) !important;
-    height: calc(100vh - 48px) !important;
-    max-height: calc(100vh - 48px) !important;
-  }
-
-  .aurora-file-picker-body {
-    flex-direction: column !important;
-  }
-
-  .aurora-file-picker-sidebar {
-    width: 100% !important;
-    max-height: 126px !important;
-    border-right: 0 !important;
-    border-bottom: 1px solid var(--aurora-border-default) !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    gap: 6px !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-  }
-
-  .aurora-file-picker-sidebar-title,
-  .aurora-file-picker-upload-spacer {
-    display: none !important;
-  }
-
-  .aurora-file-picker-sidebar button {
-    flex: 1 1 calc(33.333% - 6px) !important;
-    justify-content: flex-start !important;
-    min-width: 0 !important;
-  }
-
-  .aurora-file-picker-main {
-    min-height: 0 !important;
-  }
-
-  .aurora-file-picker-toolbar {
-    flex-wrap: wrap !important;
-    align-items: stretch !important;
-  }
-
-  .aurora-file-picker-search {
-    flex-basis: 100% !important;
-  }
-
-  .aurora-file-picker-filters {
-    overflow-x: auto !important;
-    max-width: 100% !important;
-  }
-
-  .aurora-file-picker-footer {
-    align-items: stretch !important;
-    flex-direction: column !important;
-  }
-
-  .aurora-file-picker-actions {
-    width: 100% !important;
-  }
-
-  .aurora-file-picker-actions button {
-    flex: 1 !important;
-  }
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Main FilePicker
@@ -1065,8 +984,6 @@ export function FilePicker({
 
   return (
     <>
-      <style>{KEYFRAMES_FP}</style>
-
       {/* Backdrop */}
       <div
         role="presentation"

@@ -37,24 +37,7 @@ export interface MessageContentProps
   onRetry?: () => void
 }
 
-// ─── Streaming caret keyframes injected once ─────────────────────────────────
-
-const CARET_KEYFRAMES = `
-@keyframes aurora-msg-caret {
-  0%, 45%  { opacity: 1; }
-  55%, 100% { opacity: 0; }
-}`
-
-let caretInjected = false
-
-function ensureCaretKeyframes() {
-  if (caretInjected || typeof document === "undefined") return
-  const style = document.createElement("style")
-  style.setAttribute("data-aurora-message-content", "")
-  style.textContent = CARET_KEYFRAMES
-  document.head.appendChild(style)
-  caretInjected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ─── Tone styling ────────────────────────────────────────────────────────────
 // assistant: neutral panel (cyan-leaning border), user: cyan tint, error: rose tint.
@@ -158,10 +141,6 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
     },
     ref
   ) => {
-    React.useEffect(() => {
-      if (streaming) ensureCaretKeyframes()
-    }, [streaming])
-
     const isUser = tone === "user"
     const palette = bubbleTone[tone]
     const showTopMeta = sender != null || (time != null && !isUser)

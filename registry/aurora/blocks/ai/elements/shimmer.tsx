@@ -4,40 +4,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-// ---------------------------------------------------------------------------
-// Keyframe + base shimmer surface injection
-//
-// Self-contained so the component renders its sweeping skeleton gradient even
-// when the shared aurora-skeleton stylesheet has not been mounted. Stops are
-// opaque -> opaque (panel-strong -> border-strong mix -> panel-strong) to avoid
-// the translucent gradient-seam banding called out in the conversion contract.
-// ---------------------------------------------------------------------------
-
-const SHIMMER_ID = "aurora-ai-shimmer-keyframes"
-
-function injectShimmer() {
-  if (typeof document === "undefined") return
-  if (document.getElementById(SHIMMER_ID)) return
-  const style = document.createElement("style")
-  style.id = SHIMMER_ID
-  style.textContent = `
-    @keyframes aurora-shimmer {
-      0%   { background-position: -800px 0; }
-      100% { background-position:  800px 0; }
-    }
-    .aurora-ai-shimmer-bar {
-      background: linear-gradient(
-        90deg,
-        var(--aurora-panel-strong) 25%,
-        color-mix(in srgb, var(--aurora-border-strong) 60%, transparent) 37%,
-        var(--aurora-panel-strong) 63%
-      );
-      background-size: 800px 100%;
-      animation: aurora-shimmer 1.4s ease-in-out infinite;
-    }
-  `
-  document.head.appendChild(style)
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // CVA variants
@@ -89,10 +56,6 @@ function ShimmerBar({
 
 const Shimmer = React.forwardRef<HTMLDivElement, ShimmerProps>(
   ({ className, style, variant = "line", lines = 3, role, ...props }, ref) => {
-    React.useEffect(() => {
-      injectShimmer()
-    }, [])
-
     const a11y = {
       role: role ?? "status",
       "aria-busy": true as const,

@@ -48,93 +48,7 @@ export interface EdgeProps extends React.HTMLAttributes<HTMLDivElement> {
   animated?: boolean
 }
 
-const CSS = `
-.aurora-edge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: var(--radius-pill, 999px);
-  border: 1px solid var(--edge-border);
-  background: var(--edge-surface);
-  box-shadow: var(--aurora-highlight-medium);
-  box-sizing: border-box;
-  font-family: var(--font-sans, Inter, sans-serif);
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  color: var(--edge-tone);
-  --edge-tone: var(--aurora-text-muted);
-  --edge-border: color-mix(in srgb, var(--edge-tone) 34%, transparent);
-  --edge-surface: color-mix(in srgb, var(--edge-tone) 12%, var(--aurora-panel-medium));
-}
-.aurora-edge[data-tone="active"]  { --edge-tone: var(--aurora-accent-primary); }
-.aurora-edge[data-tone="success"] { --edge-tone: var(--aurora-success); }
-.aurora-edge[data-tone="warn"]    { --edge-tone: var(--aurora-warn); }
-.aurora-edge[data-tone="error"]   { --edge-tone: var(--aurora-error); }
-.aurora-edge[data-tone="muted"]   { --edge-tone: var(--aurora-text-muted); }
-
-.aurora-edge[data-tone="active"] {
-  box-shadow: var(--aurora-highlight-medium),
-    0 0 0 1px color-mix(in srgb, var(--edge-tone) 26%, transparent),
-    0 0 18px color-mix(in srgb, var(--edge-tone) 22%, transparent);
-}
-
-.aurora-edge__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--edge-tone);
-  flex-shrink: 0;
-}
-.aurora-edge[data-tone="active"] .aurora-edge__dot {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--edge-tone) 26%, transparent);
-}
-
-.aurora-edge__arrow {
-  font-family: var(--font-mono, monospace);
-  font-weight: 500;
-  color: color-mix(in srgb, var(--edge-tone) 78%, transparent);
-  flex-shrink: 0;
-}
-
-.aurora-edge[data-dashed="true"] {
-  border-style: dashed;
-}
-.aurora-edge[data-flowing="true"] {
-  border-style: dashed;
-  background-image: var(--edge-surface),
-    repeating-linear-gradient(
-      90deg,
-      var(--edge-tone) 0,
-      var(--edge-tone) 6px,
-      transparent 6px,
-      transparent 12px
-    );
-  background-position: 0 0, 0 0;
-  background-size: 100% 100%, 12px 1px;
-  background-repeat: no-repeat, repeat-x;
-  animation: aurora-edge-flow var(--motion-duration-slow, 360ms) linear infinite;
-}
-@keyframes aurora-edge-flow {
-  to { background-position: 0 0, 12px 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .aurora-edge[data-flowing="true"] { animation: none; }
-}
-`
-
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-edge", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 const ARROW_BACK = "←" // ←
 const ARROW_FORWARD = "→" // →
@@ -152,10 +66,6 @@ const Edge = React.forwardRef<HTMLDivElement, EdgeProps>(
     },
     ref
   ) => {
-    React.useEffect(() => {
-      ensureCSS()
-    }, [])
-
     const flowing = animated
     const showBack = direction === "back" || direction === "both"
     const showForward = direction === "forward" || direction === "both"

@@ -5,6 +5,8 @@ import { Clock, Database, Eye, Hexagon, RotateCcw, Save } from "lucide-react"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
+
 /**
  * Checkpoint — a saved agent checkpoint card.
  *
@@ -150,12 +152,6 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
           }
           {...props}
         >
-          {interactive ? (
-            <style>{`
-              .aurora-checkpoint--interactive:hover { border-color: var(--aurora-border-strong); background: var(--aurora-hover-bg); }
-              .aurora-checkpoint--interactive:focus-visible { outline: none; box-shadow: var(--aurora-active-glow), var(--aurora-shadow-medium); }
-            `}</style>
-          ) : null}
           {tile}
           <div
             className="min-w-0 flex-1 truncate"

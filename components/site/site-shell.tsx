@@ -13,7 +13,6 @@ function GithubIcon({ size = 15 }: { size?: number }) {
   )
 }
 import { LabbyMark, AuroraWordmark } from "@/components/labby-brand"
-import { SITE_STYLES } from "@/components/site/site-ui"
 import { SiteCommandPalette } from "@/components/site/site-command-palette"
 import { useCommandPalette } from "@/registry/aurora/blocks/workspace/command-palette/command-palette"
 import { tint } from "@/components/site/style-tokens"
@@ -86,7 +85,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       className={`aurora-page-shell${still ? " aurora-still" : ""}`}
       style={{ position: "relative", overflow: "clip", minHeight: "100vh" }}
     >
-      <style>{SITE_STYLES}</style>
       <div aria-hidden className="aurora-grain" />
 
       <header

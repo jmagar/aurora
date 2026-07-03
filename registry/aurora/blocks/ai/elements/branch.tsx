@@ -98,13 +98,12 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
     const showActions = typeof onCopy === "function" || typeof onRegenerate === "function"
     const showMeta = version != null && (version.model != null || version.time != null)
 
-    const styleId = React.useId().replace(/[^a-zA-Z0-9_-]/g, "")
-    const scope = `aurora-branch-${styleId}`
+    // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
     return (
       <div
         ref={ref}
-        className={cn(scope, "overflow-hidden", className)}
+        className={cn("aurora-branch", "overflow-hidden", className)}
         style={{
           background: "var(--aurora-surface-raised)",
           border: "1px solid var(--aurora-border-strong)",
@@ -114,73 +113,6 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
         }}
         {...props}
       >
-        <style>{`
-          .${scope} .aurora-branch__content {
-            font-family: var(--font-sans);
-            font-size: 17px;
-            line-height: 1.5;
-            color: var(--aurora-text-primary);
-            padding: 18px 20px 20px;
-          }
-          .${scope} .aurora-branch__toolbar {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 14px;
-            border-top: 1px solid var(--aurora-border-default);
-            background: color-mix(in srgb, var(--aurora-accent-primary) 4%, transparent);
-          }
-          .${scope} .aurora-branch__label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-display);
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--aurora-text-muted);
-            white-space: nowrap;
-          }
-          .${scope} .aurora-branch__dots {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-          }
-          .${scope} .aurora-branch__dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 999px;
-            background: color-mix(in srgb, var(--aurora-accent-primary) 55%, transparent);
-            transition: width var(--motion-duration-fast, 140ms) var(--motion-ease-out, ease),
-              background var(--motion-duration-fast, 140ms) var(--motion-ease-out, ease);
-          }
-          .${scope} .aurora-branch__dot[data-active="true"] {
-            width: 22px;
-            background: var(--aurora-rose-gradient);
-            box-shadow: 0 0 6px color-mix(in srgb, var(--aurora-accent-pink) 50%, transparent);
-          }
-          .${scope} .aurora-branch__meta {
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: var(--aurora-text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            min-width: 0;
-          }
-          .${scope} .aurora-branch__counter {
-            font-family: var(--font-mono);
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--aurora-text-primary);
-            white-space: nowrap;
-            font-variant-numeric: tabular-nums;
-          }
-          .${scope} .aurora-branch__spacer { flex: 1 1 auto; min-width: 8px; }
-          .${scope} .aurora-branch__group { display: inline-flex; align-items: center; gap: 8px; }
-        `}</style>
-
         <div className="aurora-branch__content" aria-live="polite">
           {version?.content}
         </div>

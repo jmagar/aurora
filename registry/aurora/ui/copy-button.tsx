@@ -16,51 +16,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-// ─── Visual layer (ported from Claude Design) ──────────────────────────────────
-
-const CSS = `
-.aurora-copy-btn {
-  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-  white-space: nowrap; cursor: pointer; user-select: none; font-family: var(--font-sans, Inter, sans-serif);
-  font-weight: 560; border: 1px solid var(--aurora-border-strong); background: var(--aurora-control-surface);
-  color: var(--aurora-text-primary); height: 32px; padding: 0 14px; border-radius: 9px; font-size: 13px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 1px 2px rgba(0,0,0,0.34), 0 2px 6px rgba(0,0,0,0.16);
-  text-decoration: none; box-sizing: border-box;
-  transition: background 150ms var(--motion-ease-out, ease), border-color 150ms var(--motion-ease-out, ease), box-shadow 200ms var(--motion-ease-out, ease), color 150ms var(--motion-ease-out, ease), transform 80ms ease-out;
-}
-.aurora-copy-btn:hover { background: var(--aurora-hover-bg); border-color: var(--aurora-border-strong); box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 1px 2px rgba(0,0,0,0.4), 0 3px 9px rgba(0,0,0,0.22); }
-.aurora-copy-btn:active { transform: translateY(1px); }
-.aurora-copy-btn:focus-visible { outline: none; box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent), 0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent); }
-.aurora-copy-btn:disabled, .aurora-copy-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; transform: none; }
-
-/* icon-only square when there is no label */
-.aurora-copy-btn--icon { width: 32px; padding: 0; }
-
-/* copied state — brief success glow */
-.aurora-copy-btn--copied {
-  color: var(--aurora-success);
-  border-color: color-mix(in srgb, var(--aurora-success) 46%, var(--aurora-border-strong));
-  background: linear-gradient(180deg, color-mix(in srgb, var(--aurora-success) 12%, transparent), transparent 58%), var(--aurora-control-surface);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 1px color-mix(in srgb, var(--aurora-success) 22%, transparent);
-}
-.aurora-copy-btn--copied:hover {
-  border-color: color-mix(in srgb, var(--aurora-success) 72%, var(--aurora-border-strong));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px color-mix(in srgb, var(--aurora-success) 42%, transparent);
-}
-
-.aurora-copy-btn__icon { display: inline-flex; align-items: center; flex-shrink: 0; }
-.aurora-copy-btn__icon svg { display: block; }
-`
-
-let injected = false
-function ensureCSS() {
-  if (injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-copy-button", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  injected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ─── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -134,10 +90,6 @@ function CopyButton(
 ) {
     const [copied, setCopied] = React.useState(false)
     const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
-
-    React.useEffect(() => {
-      ensureCSS()
-    }, [])
 
     React.useEffect(
       () => () => {

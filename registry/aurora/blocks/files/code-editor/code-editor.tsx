@@ -652,21 +652,7 @@ function LanguageBadge({ language }: { language: string }) {
   return <span style={CE.langBadge}>{language}</span>
 }
 
-// ---------------------------------------------------------------------------
-// Squiggly underline style injection
-// ---------------------------------------------------------------------------
-
-const SQUIGGLE_STYLE = `
-@keyframes aurora-error-squiggle {}
-.aurora-squiggle {
-  text-decoration: underline wavy var(--aurora-error) 1px;
-  text-underline-offset: 2px;
-}
-.aurora-warn-squiggle {
-  text-decoration: underline wavy var(--aurora-warn) 1px;
-  text-underline-offset: 2px;
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Code line renderer
@@ -829,8 +815,6 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
 
     return (
       <div ref={ref} style={rootStyle}>
-        <style>{SQUIGGLE_STYLE}</style>
-
         {/* Title bar */}
         <div style={CE.titleBar}>
           {/* File icon */}

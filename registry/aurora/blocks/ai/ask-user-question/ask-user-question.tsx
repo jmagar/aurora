@@ -4,16 +4,7 @@ import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 
-// ---------------------------------------------------------------------------
-// Keyframes (React 19 deduplication via href)
-// ---------------------------------------------------------------------------
-
-const AUQ_KEYFRAMES = `
-@keyframes aurora-auq-fadein {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Types
@@ -367,7 +358,6 @@ export function AskUserQuestion({
       }}
       role={type === "radio" ? "radiogroup" : undefined}
     >
-      <style href="aurora-auq-keyframes" precedence="default">{AUQ_KEYFRAMES}</style>
       {/* Question */}
       <p
         style={{

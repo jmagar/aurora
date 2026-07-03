@@ -25,108 +25,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-const STYLE_ID = "aurora-actions-style"
-
-const ACTIONS_CSS = `
-.aurora-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  min-width: 0;
-}
-.aurora-action {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  flex: none;
-  margin: 0;
-  font-family: var(--font-sans, Inter, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1;
-  color: var(--aurora-text-muted);
-  background: none;
-  border: 1px solid transparent;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  transition:
-    color var(--motion-fast, 140ms) ease,
-    background var(--motion-fast, 140ms) ease,
-    border-color var(--motion-fast, 140ms) ease,
-    box-shadow var(--motion-fast, 140ms) ease;
-}
-.aurora-action > svg {
-  flex: none;
-  display: block;
-}
-/* icon-only: framed square */
-.aurora-action[data-shape="icon"] {
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border-radius: 12px;
-  border-color: var(--aurora-border-strong);
-  background: linear-gradient(
-    180deg,
-    var(--aurora-panel-strong-top),
-    var(--aurora-panel-strong)
-  );
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-.aurora-action[data-shape="icon"]:hover:not(:disabled) {
-  color: var(--aurora-text-primary);
-  background: var(--aurora-hover-bg);
-}
-/* icon + text: ghost */
-.aurora-action[data-shape="text"] {
-  height: 34px;
-  padding: 0 4px;
-  border-radius: 8px;
-  background: none;
-}
-.aurora-action[data-shape="text"]:hover:not(:disabled) {
-  color: var(--aurora-text-primary);
-}
-/* pressed / toggled */
-.aurora-action[data-pressed="true"] {
-  color: var(--aurora-text-primary);
-  border-color: color-mix(
-    in srgb,
-    var(--aurora-accent-primary) 38%,
-    var(--aurora-border-strong)
-  );
-  background: color-mix(
-    in srgb,
-    var(--aurora-accent-primary) 12%,
-    var(--aurora-panel-strong)
-  );
-}
-.aurora-action:focus-visible {
-  outline: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 45%, transparent),
-    0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent);
-}
-.aurora-action:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-`
-
-function ActionsStyle() {
-  return (
-    <style
-      id={STYLE_ID}
-       
-      dangerouslySetInnerHTML={{ __html: ACTIONS_CSS }}
-    />
-  )
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 export type ActionsProps = React.HTMLAttributes<HTMLDivElement>
 
@@ -138,7 +37,6 @@ const Actions = React.forwardRef<HTMLDivElement, ActionsProps>(
       className={cn("aurora-actions", className)}
       {...props}
     >
-      <ActionsStyle />
       {children}
     </div>
   )

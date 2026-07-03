@@ -22,56 +22,7 @@ const sizeConfig = {
 
 type SwitchSize = keyof typeof sizeConfig
 
-// ─── Visual layer (Claude Design parity, keyed to Radix data-state) ─────────────
-
-const SWITCH_CSS = `
-[data-aurora-switch] {
-  background: var(--aurora-control-surface);
-  border: 1px solid var(--aurora-border-strong);
-  transition: background 160ms var(--motion-ease-out, ease), border-color 160ms var(--motion-ease-out, ease), box-shadow 160ms var(--motion-ease-out, ease);
-}
-[data-aurora-switch]:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent);
-}
-[data-aurora-switch][data-state="checked"] {
-  background: color-mix(in srgb, var(--aurora-accent-primary) 32%, var(--aurora-control-surface));
-  border-color: color-mix(in srgb, var(--aurora-accent-primary) 50%, var(--aurora-border-strong));
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent);
-}
-[data-aurora-switch]:disabled { opacity: 0.45; cursor: not-allowed; }
-
-[data-aurora-switch] [data-radix-switch-thumb] {
-  background: var(--aurora-text-muted);
-  transition: transform 160ms var(--motion-ease-out, ease), background 160ms var(--motion-ease-out, ease), box-shadow 160ms var(--motion-ease-out, ease);
-  pointer-events: none;
-}
-[data-aurora-switch][data-state="checked"] [data-radix-switch-thumb] {
-  background: var(--aurora-accent-strong);
-  box-shadow: 0 0 8px var(--aurora-accent-primary);
-}
-
-[data-aurora-switch="sm"]      [data-radix-switch-thumb]                       { transform: translateX(2px);  }
-[data-aurora-switch="sm"][data-state="checked"]      [data-radix-switch-thumb] { transform: translateX(16px); }
-[data-aurora-switch="default"] [data-radix-switch-thumb]                       { transform: translateX(2px);  }
-[data-aurora-switch="default"][data-state="checked"] [data-radix-switch-thumb] { transform: translateX(19px); }
-[data-aurora-switch="lg"]      [data-radix-switch-thumb]                       { transform: translateX(3px);  }
-[data-aurora-switch="lg"][data-state="checked"]      [data-radix-switch-thumb] { transform: translateX(23px); }
-
-@media (prefers-reduced-motion: reduce) {
-  [data-aurora-switch], [data-aurora-switch] [data-radix-switch-thumb] { transition: none; }
-}
-`
-
-let switchCSSInjected = false
-function ensureSwitchCSS() {
-  if (switchCSSInjected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-switch-styles", "")
-  el.textContent = SWITCH_CSS
-  document.head.appendChild(el)
-  switchCSSInjected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ─── Component ──────────────────────────────────────────────────────────────────
 
@@ -81,10 +32,6 @@ export interface SwitchProps
 }
 
 function Switch({ ref, className, size = "default", style, ...props }: SwitchProps & { ref?: React.Ref<React.ElementRef<typeof SwitchPrimitive.Root>> }) {
-  React.useEffect(() => {
-    ensureSwitchCSS()
-  }, [])
-
   const { trackW, trackH, thumbSize } = sizeConfig[size]
 
   return (

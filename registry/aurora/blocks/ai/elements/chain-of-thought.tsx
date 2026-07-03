@@ -42,15 +42,7 @@ export interface ChainOfThoughtProps
   title?: string
 }
 
-// ---------------------------------------------------------------------------
-// Keyframes (injected once, shared href so it dedupes)
-// ---------------------------------------------------------------------------
-
-const KEYFRAMES = `
-  @keyframes aurora-cot-spin { to { transform: rotate(360deg); } }
-  @keyframes aurora-cot-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-  @keyframes aurora-cot-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
-`
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 const ROSE = "var(--aurora-accent-pink)"
 
@@ -212,10 +204,6 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
         }}
         {...rest}
       >
-        <style href="aurora-cot-keyframes" precedence="default">
-          {KEYFRAMES}
-        </style>
-
         {/* Header */}
         <Button
           variant="plain"

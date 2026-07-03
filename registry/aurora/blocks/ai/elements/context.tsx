@@ -335,13 +335,6 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
             </span>
           </div>
         ) : null}
-
-        <style
-          dangerouslySetInnerHTML={{
-            __html:
-              "@keyframes aurora-context-shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}",
-          }}
-        />
       </div>
     )
   }

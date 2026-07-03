@@ -25,29 +25,7 @@ const statusColorMap: Record<StatusColor, string> = {
   offline: "var(--aurora-status-offline)",
 }
 
-// ─── Keyframes injected once ──────────────────────────────────────────────────
-
-const BEACON_KEYFRAMES = `
-@keyframes aurora-beacon-ping {
-  0%   { transform: scale(1);    opacity: 0.6; }
-  70%  { transform: scale(1.55); opacity: 0;   }
-  100% { transform: scale(1.55); opacity: 0;   }
-}
-@keyframes aurora-beacon-ring {
-  0%, 100% { opacity: 0.7; }
-  50%       { opacity: 1;   }
-}
-`
-
-let keyframesInjected = false
-
-function ensureBeaconKeyframes() {
-  if (keyframesInjected || typeof document === "undefined") return
-  const style = document.createElement("style")
-  style.textContent = BEACON_KEYFRAMES
-  document.head.appendChild(style)
-  keyframesInjected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ─── Avatar component ─────────────────────────────────────────────────────────
 
@@ -125,10 +103,6 @@ function Avatar({
   const hasStatus = status != null || variant === "status"
   const resolvedStatus: StatusColor = status ?? "online"
   const label = initials ?? fallback ?? alt?.slice(0, 2) ?? "?"
-
-  React.useEffect(() => {
-    if (isBeacon) ensureBeaconKeyframes()
-  }, [isBeacon])
 
   // Tone-tinted surface + soft tone ring (CD default treatment).
   const toneSurface = `color-mix(in srgb, ${tone} 15%, var(--aurora-panel-strong))`

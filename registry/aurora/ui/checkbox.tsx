@@ -3,51 +3,7 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-// ---------------------------------------------------------------------------
-// CSS injection — data-state driven, matches CD exactly
-// ---------------------------------------------------------------------------
-
-const CSS = `
-.aurora-checkbox {
-  display: inline-grid; place-items: center; flex-shrink: 0; cursor: pointer;
-  width: 19px; height: 19px; border-radius: 5px; padding: 0;
-  background: var(--aurora-control-surface); border: 1px solid var(--aurora-border-strong);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-  transition: background 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
-  position: relative;
-}
-.aurora-checkbox:hover {
-  border-color: color-mix(in srgb, var(--aurora-accent-primary) 40%, var(--aurora-border-strong));
-}
-.aurora-checkbox:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent);
-}
-.aurora-checkbox[data-state="checked"],
-.aurora-checkbox[data-state="indeterminate"] {
-  background: color-mix(in srgb, var(--aurora-accent-primary) 30%, var(--aurora-control-surface));
-  border-color: color-mix(in srgb, var(--aurora-accent-primary) 60%, var(--aurora-border-strong));
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent);
-}
-.aurora-checkbox:disabled { opacity: 0.45; cursor: not-allowed; }
-.aurora-checkbox svg {
-  color: var(--aurora-accent-strong); opacity: 0;
-  transition: opacity 120ms ease;
-  position: absolute;
-}
-.aurora-checkbox[data-state="checked"] svg.aurora-checkbox__check { opacity: 1; }
-.aurora-checkbox[data-state="indeterminate"] svg.aurora-checkbox__dash { opacity: 1; }
-`
-
-let _injected = false
-function ensureCSS() {
-  if (_injected || typeof document === "undefined") return
-  const el = document.createElement("style")
-  el.setAttribute("data-aurora-checkbox", "")
-  el.textContent = CSS
-  document.head.appendChild(el)
-  _injected = true
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 // ---------------------------------------------------------------------------
 // Checkbox
@@ -77,8 +33,6 @@ function Checkbox({
   id,
   ...props
 }: CheckboxProps & { ref?: React.Ref<HTMLButtonElement> }) {
-  React.useEffect(() => { ensureCSS() }, [])
-
   const isControlled = checked !== undefined
   const [internal, setInternal] = React.useState(defaultChecked)
   const on = isControlled ? checked : internal

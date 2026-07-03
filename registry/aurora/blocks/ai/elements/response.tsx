@@ -455,46 +455,13 @@ function parseBlocks(markdown: string): Block[] {
 /* Response                                                            */
 /* ------------------------------------------------------------------ */
 
-const STYLE_ID = "aurora-response-style"
-const STYLE_CSS = `
-@keyframes aurora-response-fade-in {
-  from { opacity: 0; transform: translateY(2px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes aurora-response-caret {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-.aurora-response-block { animation: aurora-response-fade-in var(--aurora-motion, 240ms) ease-out both; }
-.aurora-response-caret {
-  display: inline-block;
-  width: 0.55em;
-  height: 1.05em;
-  margin-left: 2px;
-  vertical-align: text-bottom;
-  border-radius: 1px;
-  background: var(--aurora-accent-primary);
-  animation: aurora-response-caret 1s step-end infinite;
-}
-`
-
-function useResponseStyle() {
-  React.useEffect(() => {
-    if (typeof document === "undefined") return
-    if (document.getElementById(STYLE_ID)) return
-    const el = document.createElement("style")
-    el.id = STYLE_ID
-    el.textContent = STYLE_CSS
-    document.head.appendChild(el)
-  }, [])
-}
+// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
   (
     { markdown, sources, onCitationClick, streaming = false, className, style, ...props },
     ref
   ) => {
-    useResponseStyle()
     const blocks = React.useMemo(() => parseBlocks(markdown), [markdown])
     const lastIndex = blocks.length - 1
 
