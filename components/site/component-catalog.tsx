@@ -61,6 +61,12 @@ function LazyPreview({ slug }: { slug: string }) {
   // Scoped portal target so overlay demos (Sheet/Drawer, which portal to body
   // and can auto-open) stay contained in the tile instead of covering the page.
   const [portalHost, setPortalHost] = React.useState<HTMLElement | null>(null)
+  // Guarded callback ref: a bare `setState` ref loops here, because React
+  // detaches (null) then reattaches (node) during search show/hide, and each
+  // call re-renders. Ignore detach, and bail when the node is unchanged.
+  const attachHost = React.useCallback((node: HTMLDivElement | null) => {
+    if (node) setPortalHost((prev) => (prev === node ? prev : node))
+  }, [])
   const Demo = DEMOS[slug]
 
   React.useEffect(() => {
@@ -90,7 +96,7 @@ function LazyPreview({ slug }: { slug: string }) {
     >
       {visible && Demo ? (
         <div
-          ref={setPortalHost}
+          ref={attachHost}
           style={{
             position: "relative",
             width: PREVIEW_W,
