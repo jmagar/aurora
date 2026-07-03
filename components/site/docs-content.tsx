@@ -165,6 +165,14 @@ function InstallPage({ counts }: { counts: DocCounts }) {
         custom property on <M>:root</M> plus the <M>.light</M> remap.
       </P>
       <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-tokens.json</DocCode>
+      <H>Layer order (Tailwind v4)</H>
+      <P>
+        Aurora ships component base styles in <M>@layer aurora-components</M> so your Tailwind
+        utilities always win over them. Declare the layer order once, on the first line of your
+        globals — <Strong>above</Strong> <M>@import &quot;tailwindcss&quot;</M>. Skip it and the
+        layer lands after <M>utilities</M>, so utilities can no longer override component styles.
+      </P>
+      <DocCode>@layer theme, base, components, aurora-components, utilities;</DocCode>
       <H>Per component</H>
       <P>
         Each of the {counts.registryItems} registry items installs the same way — primitives and
