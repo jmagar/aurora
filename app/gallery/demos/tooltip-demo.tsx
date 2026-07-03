@@ -1,139 +1,120 @@
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
+import {
+  RotateCcw,
+  SquareTerminal,
+  Settings,
+  Trash2,
+  Info,
+  ArrowUp,
+  ArrowRight,
+  ArrowDown,
+  ArrowLeft,
+} from "lucide-react"
+import { Button } from "@/registry/aurora/ui/button"
+import { Kbd } from "@/registry/aurora/ui/kbd"
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
   TooltipProvider,
-} from "@/registry/aurora/ui/tooltip";
+} from "@/registry/aurora/ui/tooltip"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 
-// ─── CD demo chrome ─────────────────────────────────────────────────────────
-// Ports the dsCard's injected CSS (.ib / .kb / .row / .hint) as inline styles.
-
-function Icon({ d }: { d: string }) {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      dangerouslySetInnerHTML={{ __html: d }}
-    />
-  );
+const lbl: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.16em",
+  textTransform: "uppercase",
+  color: "var(--aurora-text-muted)",
+  margin: "0 0 12px",
 }
 
-function IconBox({
+const row: React.CSSProperties = {
+  display: "flex",
+  gap: 12,
+  alignItems: "center",
+  flexWrap: "wrap",
+  marginBottom: 24,
+}
+
+// A tooltip on an Aurora Button (asChild forwards ref + Radix props correctly).
+function Tip({
+  label,
+  name,
+  side,
   children,
   color,
 }: {
-  children: React.ReactNode;
-  color?: string;
+  label: React.ReactNode
+  /** Accessible name for the icon button (required when `label` is rich JSX). */
+  name?: string
+  side?: "top" | "right" | "bottom" | "left"
+  children: React.ReactNode
+  color?: string
 }) {
-  const [hover, setHover] = React.useState(false);
   return (
-    <span
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        display: "inline-grid",
-        placeItems: "center",
-        width: 34,
-        height: 34,
-        borderRadius: 9,
-        color: color ?? (hover ? "var(--aurora-text-primary)" : "var(--aurora-text-muted)"),
-        background: hover ? "var(--aurora-hover-bg)" : "var(--aurora-control-surface)",
-        border: "1px solid var(--aurora-border-strong)",
-        cursor: "pointer",
-      }}
-    >
-      {children}
-    </span>
-  );
-}
-
-function Kbd({ children }: { children: React.ReactNode }) {
-  return (
-    <span
-      style={{
-        fontFamily: "var(--font-mono)",
-        fontSize: 10.5,
-        color: "var(--aurora-text-muted)",
-        border: "1px solid var(--aurora-border-strong)",
-        borderRadius: 5,
-        padding: "1px 5px",
-        marginLeft: 7,
-      }}
-    >
-      {children}
-    </span>
-  );
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label={name ?? (typeof label === "string" ? label : undefined)} style={color ? { color } : undefined}>
+          {children}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side={side}>{label}</TooltipContent>
+    </Tooltip>
+  )
 }
 
 export default function TooltipDemo() {
   return (
-    <TooltipProvider delayDuration={150}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 18,
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 30,
-        }}
-      >
-        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <IconBox>
-                <Icon d='<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>' />
-              </IconBox>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              <span>
-                Restart gateway
-                <Kbd>⌘R</Kbd>
-              </span>
-            </TooltipContent>
-          </Tooltip>
+    <TooltipProvider delayDuration={120}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+        <GalleryPageIntro
+          eyebrow="Overlays"
+          heading="Tooltip"
+          description="Lightweight Radix tooltip on the Aurora panel-strong surface. Opens on hover or keyboard focus; positions on any side; carries rich content and shortcuts."
+        />
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <IconBox>
-                <Icon d='<path d="m4 17 6-6-6-6M12 19h8"/>' />
-              </IconBox>
-            </TooltipTrigger>
-            <TooltipContent side="top">Open terminal</TooltipContent>
-          </Tooltip>
+        <div>
+          <div style={lbl}>Toolbar triggers</div>
+          <div style={row}>
+            <Tip name="Restart gateway" label={<span>Restart gateway <Kbd>⌘R</Kbd></span>}><RotateCcw size={16} aria-hidden /></Tip>
+            <Tip label="Open terminal"><SquareTerminal size={16} aria-hidden /></Tip>
+            <Tip label="Settings"><Settings size={16} aria-hidden /></Tip>
+            <Tip label="Delete · permanent" color="var(--aurora-error)"><Trash2 size={16} aria-hidden /></Tip>
+          </div>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <IconBox>
-                <Icon d='<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 14H4a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 10 4.6V4a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 2.82 1.18l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 10H20a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>' />
-              </IconBox>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Settings</TooltipContent>
-          </Tooltip>
+          <div style={lbl}>Sides</div>
+          <div style={row}>
+            <Tip label="Top" side="top"><ArrowUp size={16} aria-hidden /></Tip>
+            <Tip label="Right" side="right"><ArrowRight size={16} aria-hidden /></Tip>
+            <Tip label="Bottom" side="bottom"><ArrowDown size={16} aria-hidden /></Tip>
+            <Tip label="Left" side="left"><ArrowLeft size={16} aria-hidden /></Tip>
+          </div>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <IconBox color="var(--aurora-error)">
-                <Icon d='<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>' />
-              </IconBox>
-            </TooltipTrigger>
-            <TooltipContent side="right">Delete · permanent</TooltipContent>
-          </Tooltip>
+          <div style={lbl}>Rich content</div>
+          <div style={{ ...row, marginBottom: 0 }}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="neutral" size="sm"><Info size={14} aria-hidden />Details</Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <div style={{ display: "grid", gap: 4, maxWidth: 220 }}>
+                  <strong style={{ fontSize: 12 }}>Gateway status</strong>
+                  <span style={{ color: "var(--aurora-text-muted)", fontSize: 11.5, lineHeight: 1.5 }}>
+                    All upstreams healthy. Last sync 2m ago.
+                  </span>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+
+            <span style={{ fontSize: 12, color: "var(--aurora-text-muted)" }}>
+              Hover or tab to a control to reveal its tooltip.
+            </span>
+          </div>
         </div>
-
-        <span style={{ fontSize: 12, color: "var(--aurora-text-muted)" }}>
-          Hover or focus any control to reveal its tooltip.
-        </span>
       </div>
     </TooltipProvider>
-  );
+  )
 }
