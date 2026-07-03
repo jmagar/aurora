@@ -1,120 +1,192 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Button } from "@/registry/aurora/ui/button";
-import { EmptyState } from "@/registry/aurora/ui/empty-state";
+import * as React from "react"
+import {
+  SearchX,
+  Search,
+  RotateCcw,
+  Inbox,
+  Plus,
+  CloudOff,
+  RefreshCw,
+  Rocket,
+  BookOpen,
+  FolderPlus,
+  ShieldAlert,
+  Filter,
+} from "lucide-react"
+import { EmptyState } from "@/registry/aurora/ui/empty-state"
+import { Button } from "@/registry/aurora/ui/button"
+import { Kbd } from "@/registry/aurora/ui/kbd"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 
-function PlusIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-      <path d="M8 2v12M2 8h12" />
-    </svg>
-  );
+const lbl: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.16em",
+  textTransform: "uppercase",
+  color: "var(--aurora-text-muted)",
+  margin: "0 0 12px",
 }
 
-function GatewayIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="6" width="18" height="10" rx="2" />
-      <path d="M6 10h10M6 13.5h5" />
-      <circle cx="16" cy="13.5" r="1.2" fill="currentColor" />
-    </svg>
-  );
+const stack: React.CSSProperties = { marginBottom: 26 }
+
+// Two-column grid for showing several empty states side by side. Collapses to a
+// single column on narrow viewports.
+const grid: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+  gap: 16,
+  marginBottom: 26,
 }
 
-function SearchIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="10" cy="10" r="7" />
-      <path d="M15.5 15.5l4 4" />
-    </svg>
-  );
+// A framed stage: dashed EmptyState sits inside a solid panel so it reads like a
+// real empty region of an app, not a floating fragment.
+const stage: React.CSSProperties = {
+  display: "grid",
+  placeItems: "center",
+  padding: 20,
+  borderRadius: "var(--aurora-radius-2)",
+  border: "1px solid var(--aurora-border-strong)",
+  background: "var(--aurora-page-bg)",
+  boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
 }
 
-function PluginIcon() {
+export default function EmptyStateDemo() {
   return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="8" width="10" height="10" rx="2" />
-      <path d="M13 12h3a2 2 0 000-4h-3" />
-      <path d="M7 8V5" />
-      <path d="M10 8V5" />
-    </svg>
-  );
-}
-
-function AuroraButton({ children, onClick, variant = "primary" }: { children: React.ReactNode; onClick?: () => void; variant?: "primary" | "ghost" }) {
-  return (
-    <Button
-      type="button"
-      onClick={onClick}
-      variant={variant === "primary" ? "aurora" : "neutral"}
-    >
-      {children}
-    </Button>
-  );
-}
-
-export default function EmptyDemo() {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      <div>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--aurora-text-muted)", marginBottom: 6 }}>
-          States
-        </p>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: "var(--aurora-text-primary)", margin: 0 }}>
-          Empty states
-        </h2>
-        <p style={{ fontSize: 13, color: "var(--aurora-text-muted)", marginTop: 6, lineHeight: 1.55 }}>
-          Shown when a list or query returns no data. Each variant includes a dashed border, optional icon, and a clear call-to-action.
-        </p>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
-        <EmptyState
-          icon={<GatewayIcon />}
-          title="No gateways yet"
-          description="Add your first gateway to start routing traffic through Labby. Gateways connect your services to agents and policy rules."
-          action={
-            <AuroraButton variant="primary">
-              <PlusIcon />
-              Add gateway
-            </AuroraButton>
-          }
-        />
-
-        <EmptyState
-          icon={<SearchIcon />}
-          title="No results found"
-          description="No gateways matched your current filters. Try adjusting the environment, region, or status filter."
-          action={
-            <AuroraButton variant="ghost">
-              Clear all filters
-            </AuroraButton>
-          }
-        />
-
-        <EmptyState
-          icon={<PluginIcon />}
-          title="No plugins installed"
-          description="Browse the Labby plugin registry to find auth proxies, rate limiters, and observability integrations."
-          action={
-            <AuroraButton variant="primary">
-              <PlusIcon />
-              Browse registry
-            </AuroraButton>
-          }
-        />
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+      <GalleryPageIntro
+        eyebrow="Feedback"
+        heading="Empty states"
+        description="A missing thing paired with the next action — the placeholder for empty lists, no-result searches, failed loads, and first-run screens. Icon glyph, title, muted description, and one or two action buttons."
+      />
 
       <div>
-        <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--aurora-text-muted)", marginBottom: 12 }}>
-          Minimal (no icon)
-        </p>
-        <EmptyState
-          title="No audit events in this window"
-          description="Audit events for the selected time range will appear here. Expand the range or check the gateway filter."
-        />
+        {/* No search results — reset / adjust filter */}
+        <div style={lbl}>No results · search</div>
+        <div style={stack}>
+          <div style={stage}>
+            <EmptyState
+              as="h2"
+              icon={<SearchX size={24} aria-hidden />}
+              title='No matches for "prowlarr timeout"'
+              description="No log lines matched your query in the last 24h. Widen the range or clear the filter to see everything."
+              action={
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+                  <Button variant="aurora" iconLeft={<Search size={14} aria-hidden />}>
+                    Search all time
+                  </Button>
+                  <Button variant="ghost" iconLeft={<RotateCcw size={14} aria-hidden />}>
+                    Reset filters
+                  </Button>
+                </div>
+              }
+            />
+          </div>
+        </div>
+
+        {/* Empty list / inbox — primary create action */}
+        <div style={lbl}>Empty list · primary create</div>
+        <div style={stack}>
+          <div style={stage}>
+            <EmptyState
+              as="h2"
+              icon={<Inbox size={24} aria-hidden />}
+              title="Your inbox is clear"
+              description="No alerts are waiting. New notifications from your homelab hosts will land here."
+              action={
+                <Button variant="aurora" iconLeft={<Plus size={14} aria-hidden />}>
+                  New alert rule
+                  <Kbd variant="accent" style={{ marginLeft: 8 }}>
+                    ⌘N
+                  </Kbd>
+                </Button>
+              }
+            />
+          </div>
+        </div>
+
+        {/* Error / failed to load — retry */}
+        <div style={lbl}>Failed to load · retry</div>
+        <div style={stack}>
+          <div style={stage}>
+            <EmptyState
+              as="h2"
+              icon={<CloudOff size={24} aria-hidden />}
+              title="Couldn’t reach the gateway"
+              description="The request to lab.tootie.tv timed out. Check the connection and try again."
+              action={
+                <Button variant="warn" iconLeft={<RefreshCw size={14} aria-hidden />}>
+                  Retry
+                </Button>
+              }
+            />
+          </div>
+        </div>
+
+        {/* First-run / onboarding — dual CTA */}
+        <div style={lbl}>First run · onboarding</div>
+        <div style={stack}>
+          <div style={stage}>
+            <EmptyState
+              as="h2"
+              icon={<Rocket size={24} aria-hidden />}
+              title="Welcome to the console"
+              description="Connect your first service to start crawling, searching, and asking. It takes about a minute."
+              action={
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+                  <Button variant="aurora" filled iconLeft={<Plus size={14} aria-hidden />}>
+                    Connect a service
+                  </Button>
+                  <Button variant="ghost" iconLeft={<BookOpen size={14} aria-hidden />}>
+                    Read the docs
+                  </Button>
+                </div>
+              }
+            />
+          </div>
+        </div>
+
+        {/* Compact grid — several tones packed together */}
+        <div style={lbl}>Compact · side by side</div>
+        <div style={grid}>
+          <EmptyState
+            as="h3"
+            icon={<FolderPlus size={24} aria-hidden />}
+            title="No projects yet"
+            description="Create one to group related sessions and sources."
+            action={
+              <Button variant="aurora" size="sm" iconLeft={<Plus size={13} aria-hidden />}>
+                New project
+              </Button>
+            }
+          />
+          <EmptyState
+            as="h3"
+            icon={<Filter size={24} aria-hidden />}
+            title="Nothing matches this filter"
+            description="Every item was hidden. Loosen the filter to bring results back."
+            action={
+              <Button variant="ghost" size="sm" iconLeft={<RotateCcw size={13} aria-hidden />}>
+                Clear filter
+              </Button>
+            }
+          />
+        </div>
+
+        {/* Minimal — title + description only, no icon, no action */}
+        <div style={lbl}>Minimal · title only</div>
+        <div style={{ ...stack, marginBottom: 0 }}>
+          <div style={stage}>
+            <EmptyState
+              as="h2"
+              icon={<ShieldAlert size={24} aria-hidden />}
+              title="You don’t have access to this workspace"
+              description="Ask an admin to invite you, or switch to a workspace you belong to."
+            />
+          </div>
+        </div>
       </div>
     </div>
-  );
+  )
 }
