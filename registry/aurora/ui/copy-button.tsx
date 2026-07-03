@@ -8,7 +8,8 @@
  * and briefly swaps to a "copied" success state. Renders icon-only when no
  * `label` is supplied.
  *
- * Visual layer is injected once and reads only `--aurora-*` tokens so it renders
+ * Visual layer lives in registry/aurora/styles/aurora-components.css
+ * (`@layer aurora-components`, reads only `--aurora-*` tokens) so it renders
  * identically in dark + `.light`. Architecture stays shadcn: `forwardRef`,
  * `displayName`, named + default export, a11y (aria-label, aria-live status).
  */

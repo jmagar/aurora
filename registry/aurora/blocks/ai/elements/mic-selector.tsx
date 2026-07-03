@@ -3,9 +3,9 @@
 /**
  * Aurora MicSelector — microphone picker with a live input-level meter + mute.
  *
- * Visual layer is ported 1:1 from the Claude Design source (a scoped <style>
- * injected once, reading only `--aurora-*` tokens) so it renders identically in
- * dark + `.light`. Architecture stays shadcn/registry-grade: a Radix `Select`
+ * Visual layer lives in registry/aurora/styles/aurora-components.css
+ * (`@layer aurora-components`, reading only `--aurora-*` tokens) so it renders
+ * identically in dark + `.light`. Architecture stays shadcn/registry-grade: a Radix `Select`
  * for device choice, `forwardRef`, `displayName`, `React.memo`, full a11y on the
  * mute toggle (`aria-pressed` + `aria-label`), and the original prop/escape-hatch
  * API (`value`/`defaultValue`/`onValueChange`/`name`/`disabled`/`required`/
