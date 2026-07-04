@@ -612,21 +612,18 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
         ) : null}
       </div>
 
-      {/* search + category chips — sticky filter bar */}
+      {/* search + category chips — sticky filter bar. The tinted, blurred
+          backdrop lives on a masked ::before (see .aurora-catalog-filterbar in
+          site-chrome.css) so it feathers out at the bottom instead of ending on
+          a hard border/box edge, and stays near-invisible at rest. */}
       <div
+        className="aurora-catalog-filterbar"
         style={{
-          position: "sticky",
-          top: 56,
-          zIndex: 20,
           display: "flex",
           flexDirection: "column",
           gap: 12,
           marginBottom: 16,
-          padding: "12px 0 14px",
-          background: "color-mix(in srgb, var(--aurora-page-bg) 84%, transparent)",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          borderBottom: "1px solid var(--aurora-border-default)",
+          padding: "12px 0 18px",
         }}
       >
         <label

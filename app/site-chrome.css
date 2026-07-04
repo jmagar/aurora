@@ -375,6 +375,36 @@
           }
 
   /* ─── components catalog ─── */
+
+  /* Sticky search + filter bar. The backdrop (tint + blur) is painted on a
+     ::before so it can fade out at the bottom via a mask WITHOUT fading the
+     search input and pills above it. No hard border or square-cornered box:
+     the gradient is near page-colour at the top and dissolves into the grid,
+     so at rest the bar is invisible and only reads as a soft blur once content
+     scrolls beneath it. */
+  .aurora-catalog-filterbar {
+    position: sticky;
+    top: 56px;
+    z-index: 20;
+  }
+  .aurora-catalog-filterbar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--aurora-page-bg) 92%, transparent) 0%,
+      color-mix(in srgb, var(--aurora-page-bg) 84%, transparent) 55%,
+      transparent 100%
+    );
+    -webkit-backdrop-filter: blur(9px);
+    backdrop-filter: blur(9px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 56%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 56%, transparent 100%);
+  }
+
   .aurora-catalog-tile {
     transition:
       transform 170ms var(--motion-ease-out, ease),
