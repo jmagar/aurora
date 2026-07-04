@@ -57,7 +57,7 @@ const PREVIEW_W = 760
 const PREVIEW_SCALE = 0.31
 const PREVIEW_H = 470
 
-function LazyPreview({ slug }: { slug: string }) {
+const LazyPreview = React.memo(function LazyPreview({ slug }: { slug: string }) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [visible, setVisible] = React.useState(false)
   // Scoped portal target so overlay demos (Sheet/Drawer, which portal to body
@@ -127,7 +127,109 @@ function LazyPreview({ slug }: { slug: string }) {
       )}
     </div>
   )
-}
+})
+
+/* ── Catalog tile — memoized. The catalog renders 162 of these, each mounting
+ * a full live demo; wrapping in React.memo means parent state changes (search
+ * text, category/flavor toggle, drawer open/close) no longer re-render every
+ * tile and its mounted demo — they only re-render when their own props change.
+ * `item` is referentially stable (same object across list re-derivations) and
+ * `onPick` is a stable useCallback, so the shallow comparison holds. */
+const CatalogTile = React.memo(function CatalogTile({
+  item,
+  delayMs,
+  android,
+  kotlin,
+  onPick,
+}: {
+  item: CatalogItem
+  /** staggered rise-in delay (capped upstream) */
+  delayMs: number
+  android: boolean
+  /** resolved Kotlin counterpart file, Android flavor only */
+  kotlin?: string
+  onPick: (item: CatalogItem) => void
+}) {
+  return (
+    // Not a <button>: the live preview inside renders real demos that contain
+    // their own buttons/inputs, and interactive content can't nest inside a
+    // button (invalid HTML → hydration errors).
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${item.label}`}
+      onClick={() => onPick(item)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onPick(item)
+        }
+      }}
+      className="aurora-card aurora-catalog-tile aurora-catalog-rise"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        cursor: "pointer",
+        textAlign: "left",
+        padding: 0,
+        borderRadius: "var(--aurora-radius-2)",
+        border: "1px solid var(--aurora-border-default)",
+        background: "var(--aurora-panel-medium)",
+        boxShadow: "var(--aurora-shadow-subtle), var(--aurora-highlight-medium)",
+        animationDelay: `${delayMs}ms`,
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          justifyItems: "center",
+          overflow: "hidden",
+          background:
+            "radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--aurora-accent-primary) 6%, transparent), transparent 60%), var(--aurora-control-surface)",
+          borderBottom: "1px solid var(--aurora-border-default)",
+        }}
+      >
+        <LazyPreview slug={item.slug} />
+      </div>
+      <div style={{ padding: "11px 13px 13px", display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+          <span
+            style={{
+              fontFamily: "var(--aurora-font-display)",
+              fontWeight: 800,
+              fontSize: 14.5,
+              letterSpacing: "-0.01em",
+              color: "var(--aurora-text-primary)",
+            }}
+          >
+            {item.label}
+          </span>
+          <ArrowUpRight className="aurora-catalog-arrow" size={14} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
+        </div>
+        <span
+          style={{
+            marginTop: 2,
+            fontSize: 11,
+            // Category is UI copy → sans. The Kotlin file name (Android
+            // flavor) is a code reference → mono.
+            fontFamily:
+              android && item.registry
+                ? "var(--aurora-font-mono)"
+                : "var(--aurora-font-sans)",
+            color: "var(--aurora-text-muted)",
+          }}
+        >
+          {android && item.registry ? (
+            <span style={{ color: "var(--aurora-accent-strong)" }}>{kotlin}</span>
+          ) : (
+            item.group
+          )}
+        </span>
+      </div>
+    </div>
+  )
+})
 
 function DrawerArrow({
   dir,
@@ -674,84 +776,14 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
           }}
         >
           {list.map((c, i) => (
-            // Not a <button>: the live preview inside renders real demos that
-            // contain their own buttons/inputs, and interactive content can't
-            // nest inside a button (invalid HTML → hydration errors).
-            <div
+            <CatalogTile
               key={c.slug}
-              role="button"
-              tabIndex={0}
-              aria-label={`Open ${c.label}`}
-              onClick={() => pick(c)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault()
-                  pick(c)
-                }
-              }}
-              className="aurora-card aurora-catalog-tile aurora-catalog-rise"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                overflow: "hidden",
-                cursor: "pointer",
-                textAlign: "left",
-                padding: 0,
-                borderRadius: "var(--aurora-radius-2)",
-                border: "1px solid var(--aurora-border-default)",
-                background: "var(--aurora-panel-medium)",
-                boxShadow: "var(--aurora-shadow-subtle), var(--aurora-highlight-medium)",
-                animationDelay: `${Math.min(i, 11) * 32}ms`,
-              }}
-            >
-              <div
-                style={{
-                  display: "grid",
-                  justifyItems: "center",
-                  overflow: "hidden",
-                  background:
-                    "radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--aurora-accent-primary) 6%, transparent), transparent 60%), var(--aurora-control-surface)",
-                  borderBottom: "1px solid var(--aurora-border-default)",
-                }}
-              >
-                <LazyPreview slug={c.slug} />
-              </div>
-              <div style={{ padding: "11px 13px 13px", display: "flex", flexDirection: "column", gap: 6 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                  <span
-                    style={{
-                      fontFamily: "var(--aurora-font-display)",
-                      fontWeight: 800,
-                      fontSize: 14.5,
-                      letterSpacing: "-0.01em",
-                      color: "var(--aurora-text-primary)",
-                    }}
-                  >
-                    {c.label}
-                  </span>
-                  <ArrowUpRight className="aurora-catalog-arrow" size={14} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
-                </div>
-                <span
-                  style={{
-                    marginTop: 2,
-                    fontSize: 11,
-                    // Category is UI copy → sans. The Kotlin file name (Android
-                    // flavor) is a code reference → mono.
-                    fontFamily:
-                      android && c.registry
-                        ? "var(--aurora-font-mono)"
-                        : "var(--aurora-font-sans)",
-                    color: "var(--aurora-text-muted)",
-                  }}
-                >
-                  {android && c.registry ? (
-                    <span style={{ color: "var(--aurora-accent-strong)" }}>{kotlinMap?.[c.registry]}</span>
-                  ) : (
-                    c.group
-                  )}
-                </span>
-              </div>
-            </div>
+              item={c}
+              delayMs={Math.min(i, 11) * 32}
+              android={android}
+              kotlin={android && c.registry ? kotlinMap?.[c.registry] : undefined}
+              onPick={pick}
+            />
           ))}
         </div>
       )}
