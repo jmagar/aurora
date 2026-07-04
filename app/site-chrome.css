@@ -373,4 +373,75 @@
               padding: 20px 16px 48px;
             }
           }
+
+  /* ─── components catalog ─── */
+  .aurora-catalog-tile {
+    transition:
+      transform 170ms var(--motion-ease-out, ease),
+      border-color 170ms var(--motion-ease-out, ease),
+      box-shadow 220ms var(--motion-ease-out, ease);
+    will-change: transform;
+  }
+  .aurora-catalog-tile:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--aurora-accent-primary) 46%, var(--aurora-border-default));
+    box-shadow:
+      0 14px 34px color-mix(in srgb, #000 42%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent),
+      0 0 26px color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent);
+  }
+  .aurora-catalog-tile:focus-visible {
+    outline: none;
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 60%, transparent),
+      0 14px 34px color-mix(in srgb, #000 42%, transparent);
+  }
+  .aurora-catalog-arrow {
+    transition: color 170ms var(--motion-ease-out, ease), transform 170ms var(--motion-ease-out, ease);
+  }
+  .aurora-catalog-tile:hover .aurora-catalog-arrow,
+  .aurora-catalog-tile:focus-visible .aurora-catalog-arrow {
+    color: var(--aurora-accent-strong);
+    transform: translate(1.5px, -1.5px);
+  }
+
+  /* Category filter pills — hover on inactive pills */
+  .aurora-cat-pill {
+    transition: color 140ms ease, border-color 140ms ease, background 140ms ease;
+  }
+  .aurora-cat-pill:not([data-on="true"]):hover {
+    color: var(--aurora-text-primary);
+    border-color: var(--aurora-border-strong);
+    background: color-mix(in srgb, var(--aurora-control-surface) 70%, transparent);
+  }
+
+  /* Live pulse dot next to the "N live" count */
+  .aurora-live-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--aurora-success, #7dd3c7);
+    box-shadow: 0 0 6px var(--aurora-success, #7dd3c7);
+    animation: aurora-live-pulse 2.2s ease-in-out infinite;
+  }
+
+  /* Staggered rise-in for catalog tiles */
+  .aurora-catalog-rise {
+    animation: aurora-catalog-rise 420ms var(--motion-ease-out, ease) both;
+  }
+}
+
+@keyframes aurora-live-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 color-mix(in srgb, var(--aurora-success, #7dd3c7) 55%, transparent); }
+  50% { opacity: 0.55; box-shadow: 0 0 0 4px transparent; }
+}
+@keyframes aurora-catalog-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora-catalog-tile:hover, .aurora-catalog-tile:focus-visible { transform: none; }
+  .aurora-live-dot, .aurora-catalog-rise { animation: none; }
 }

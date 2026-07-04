@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Monitor, Search, Smartphone, X } from "lucide-react"
+import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Monitor, Search, SearchX, Smartphone, X } from "lucide-react"
 import { NAV } from "@/app/gallery/nav-data"
 import { DEMOS } from "@/app/gallery/demo-map"
 import { PortalContainerContext } from "@/registry/aurora/lib/portal-container"
@@ -11,6 +11,8 @@ import { getRegistryMeta } from "@/lib/registry-meta"
 import { fuzzy } from "@/lib/fuzzy"
 import { CopyLine } from "@/components/site/site-ui"
 import { tint } from "@/components/site/style-tokens"
+import { EmptyState } from "@/registry/aurora/ui/empty-state"
+import { Button } from "@/registry/aurora/ui/button"
 
 /**
  * ComponentCatalog — the CD `aurora-site` LiveCatalog, wired to OUR gallery so
@@ -414,6 +416,15 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
     return l
   }, [flavorItems, q, cat])
 
+  // Per-category counts for the filter pills.
+  const counts = React.useMemo(() => {
+    const m: Record<string, number> = { all: flavorItems.length }
+    for (const it of flavorItems) m[it.group] = (m[it.group] ?? 0) + 1
+    return m
+  }, [flavorItems])
+
+  const filtering = q.trim().length > 0 || cat !== "all"
+
   return (
     <section style={{ marginTop: "clamp(28px, 4vw, 52px)" }}>
       <div
@@ -450,7 +461,9 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
                 color: "var(--aurora-text-muted)",
               }}
             >
-              {flavorItems.length} {android ? "ported" : "live"}
+              {flavorItems.length}{" "}
+              {!android ? <span className="aurora-live-dot" style={{ margin: "0 4px 1px 0", verticalAlign: "middle" }} /> : null}
+              {android ? "ported" : "live"}
             </span>
           </h2>
         </div>
@@ -497,8 +510,23 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
         ) : null}
       </div>
 
-      {/* search + category chips */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 13, marginBottom: 20 }}>
+      {/* search + category chips — sticky filter bar */}
+      <div
+        style={{
+          position: "sticky",
+          top: 56,
+          zIndex: 20,
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
+          marginBottom: 16,
+          padding: "12px 0 14px",
+          background: "color-mix(in srgb, var(--aurora-page-bg) 84%, transparent)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          borderBottom: "1px solid var(--aurora-border-default)",
+        }}
+      >
         <label
           style={{
             display: "flex",
@@ -553,7 +581,9 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
                 key={g}
                 type="button"
                 onClick={() => setCat(g)}
-                className="aurora-text-control"
+                data-on={on ? "true" : "false"}
+                aria-pressed={on}
+                className="aurora-text-control aurora-cat-pill"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -570,19 +600,70 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
               >
                 {g === "all" ? <LayoutGrid size={13} /> : null}
                 {g === "all" ? "All" : g}
+                <span
+                  aria-hidden
+                  style={{
+                    fontSize: "0.82em",
+                    fontVariantNumeric: "tabular-nums",
+                    opacity: 0.7,
+                    color: on ? "var(--aurora-accent-strong)" : "var(--aurora-text-muted)",
+                  }}
+                >
+                  {counts[g] ?? 0}
+                </span>
               </button>
             )
           })}
         </div>
       </div>
 
+      {/* result count + keyboard hint */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          minHeight: 18,
+          marginBottom: 12,
+          fontFamily: "var(--aurora-font-sans)",
+        }}
+      >
+        <span style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
+          {filtering
+            ? `${list.length} ${list.length === 1 ? "result" : "results"}`
+            : ""}
+        </span>
+        <span style={{ fontSize: 11, color: "var(--aurora-text-muted)", opacity: 0.7 }}>
+          Tab to focus · Enter to open
+        </span>
+      </div>
+
       {/* grid */}
       {list.length === 0 ? (
-        <div style={{ padding: "56px 0", textAlign: "center", color: "var(--aurora-text-muted)" }}>
-          <div style={{ fontSize: 14, fontWeight: 650, color: "var(--aurora-text-primary)" }}>
-            No components match “{q}”
-          </div>
-          <div style={{ fontSize: 12.5, marginTop: 6 }}>Try a shorter query or clear the filter.</div>
+        <div style={{ padding: "clamp(32px, 8vh, 72px) 0", display: "flex", justifyContent: "center" }}>
+          <EmptyState
+            icon={<SearchX size={24} aria-hidden />}
+            title={q ? `No matches for “${q}”` : "Nothing in this category"}
+            description={
+              q
+                ? "No components match your search. Try a shorter query, or clear the filters to see all 162."
+                : "This category is empty in the current flavor. Clear the filters to browse everything."
+            }
+            action={
+              <Button
+                variant="aurora"
+                size="sm"
+                onClick={() => {
+                  setQ("")
+                  setCat("all")
+                  updateUrl({ q: null })
+                }}
+              >
+                Clear filters
+              </Button>
+            }
+          />
         </div>
       ) : (
         <div
@@ -592,7 +673,7 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
             gap: 16,
           }}
         >
-          {list.map((c) => (
+          {list.map((c, i) => (
             // Not a <button>: the live preview inside renders real demos that
             // contain their own buttons/inputs, and interactive content can't
             // nest inside a button (invalid HTML → hydration errors).
@@ -608,7 +689,7 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
                   pick(c)
                 }
               }}
-              className="aurora-card"
+              className="aurora-card aurora-catalog-tile aurora-catalog-rise"
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -620,8 +701,7 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
                 border: "1px solid var(--aurora-border-default)",
                 background: "var(--aurora-panel-medium)",
                 boxShadow: "var(--aurora-shadow-subtle), var(--aurora-highlight-medium)",
-                transition:
-                  "transform 160ms var(--motion-ease-out), border-color 160ms var(--motion-ease-out)",
+                animationDelay: `${Math.min(i, 11) * 32}ms`,
               }}
             >
               <div
@@ -649,7 +729,7 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
                   >
                     {c.label}
                   </span>
-                  <ArrowUpRight size={14} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
+                  <ArrowUpRight className="aurora-catalog-arrow" size={14} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
                 </div>
                 <span
                   style={{
