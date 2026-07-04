@@ -142,13 +142,17 @@ export default function LandingPage() {
         </p>
         <div className="aurora-reveal mt-8 flex flex-wrap justify-center gap-3" style={{ animationDelay: "180ms" }}>
           <Button variant="aurora" size="lg" asChild>
-            <Link href="/gallery/buttons">
+            {/* suppressHydrationWarning: some browser extensions annotate <a>
+                tags (link previews, password managers) before hydration, which
+                trips a mismatch on these top-level CTAs. The markup itself is
+                deterministic — verified clean in an extension-free browser. */}
+            <Link href="/gallery/buttons" suppressHydrationWarning>
               <Blocks size={16} strokeWidth={1.75} />
               Browse components
             </Link>
           </Button>
           <Button variant="rose" size="lg" asChild>
-            <Link href="/themes">
+            <Link href="/themes" suppressHydrationWarning>
               <Palette size={16} strokeWidth={1.75} />
               Explore themes
             </Link>
