@@ -26,6 +26,7 @@
     "sourcePath": "registry/aurora/ui/multi-select.tsx",
     "installTarget": "@ui/aurora/multi-select.tsx"
   },
+  "docs": "Aurora MultiSelect is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/multi-select.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "ui",

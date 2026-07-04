@@ -26,6 +26,7 @@
     "sourcePath": "registry/aurora/blocks/ai/elements/source.tsx",
     "installTarget": "@components/aurora/ai/source.tsx"
   },
+  "docs": "Aurora block that installs Aurora AI Source.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/source.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "block",

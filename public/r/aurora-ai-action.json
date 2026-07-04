@@ -27,6 +27,7 @@
     "sourcePath": "registry/aurora/blocks/ai/elements/action.tsx",
     "installTarget": "@components/aurora/ai/action.tsx"
   },
+  "docs": "Aurora block that installs Aurora AI Action.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/action.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`.",
   "categories": [
     "aurora",
     "block",

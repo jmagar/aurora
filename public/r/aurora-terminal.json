@@ -27,7 +27,7 @@
     "installTarget": "@components/aurora/terminal.tsx",
     "taxonomy": "navigation"
   },
-  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/terminal.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`.",
+  "docs": "Aurora block that installs Aurora Terminal.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/terminal.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`.",
   "categories": [
     "aurora",
     "block",

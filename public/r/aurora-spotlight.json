@@ -26,6 +26,7 @@
     "sourcePath": "registry/aurora/ui/spotlight.tsx",
     "installTarget": "@ui/aurora/spotlight.tsx"
   },
+  "docs": "Aurora Spotlight is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/spotlight.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "ui",

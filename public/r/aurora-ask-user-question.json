@@ -28,7 +28,7 @@
     "installTarget": "@components/aurora/ask-user-question.tsx",
     "taxonomy": "ai"
   },
-  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ask-user-question.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`.",
+  "docs": "Aurora block that installs Aurora Ask User Question.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-textarea`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ask-user-question.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`, `aurora-components`.",
   "categories": [
     "aurora",
     "block",

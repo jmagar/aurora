@@ -26,6 +26,7 @@
     "sourcePath": "registry/aurora/ui/component-card.tsx",
     "installTarget": "@ui/aurora/component-card.tsx"
   },
+  "docs": "Aurora ComponentCard is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/component-card.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "ui",

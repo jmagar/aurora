@@ -25,7 +25,7 @@
     "sourcePath": "registry/aurora/ui/button-group.tsx",
     "installTarget": "@ui/aurora/button-group.tsx"
   },
-  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/button-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
+  "docs": "Aurora UI component that installs Aurora Button Group.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/button-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`.",
   "categories": [
     "aurora",
     "ui",

@@ -27,7 +27,7 @@
     "installTarget": "@components/aurora/permissions-dropdown.tsx",
     "taxonomy": "auth"
   },
-  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/permissions-dropdown.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`.",
+  "docs": "Aurora block that installs Aurora Permissions Dropdown.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/permissions-dropdown.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`.",
   "categories": [
     "aurora",
     "block",

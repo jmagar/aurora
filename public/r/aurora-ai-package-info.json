@@ -29,7 +29,7 @@
     "installTarget": "@components/aurora/ai/package-info.tsx",
     "taxonomy": "ai"
   },
-  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/package-info.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "docs": "Aurora block that installs Aurora AI Package Info.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/package-info.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`.",
   "categories": [
     "aurora",
     "block",

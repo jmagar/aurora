@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "aurora",
-  "homepage": "https://github.com/jmagar/aurora-design-system",
+  "homepage": "https://aurora.tootie.tv",
   "items": [
     {
       "name": "aurora-tokens",
@@ -303,7 +303,7 @@
         "sourcePath": "registry/aurora/ui/button.tsx",
         "installTarget": "@ui/aurora/button.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/button.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora UI component that installs Aurora Button.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/button.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-badge",
@@ -503,7 +503,7 @@
         "sourcePath": "registry/aurora/ui/avatar.tsx",
         "installTarget": "@ui/aurora/avatar.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/avatar.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora UI component that installs Aurora Avatar.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/avatar.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-progress",
@@ -536,7 +536,7 @@
         "sourcePath": "registry/aurora/ui/progress.tsx",
         "installTarget": "@ui/aurora/progress.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/progress.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora UI component that installs Aurora Progress.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/progress.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-switch",
@@ -571,7 +571,7 @@
         "sourcePath": "registry/aurora/ui/switch.tsx",
         "installTarget": "@ui/aurora/switch.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/switch.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora UI component that installs Aurora Switch.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/switch.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-tabs",
@@ -878,7 +878,7 @@
         "sourcePath": "registry/aurora/ui/toast.tsx",
         "installTarget": "@ui/aurora/toast.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/toast.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora UI component that installs Aurora Toast.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/toast.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-empty-state",
@@ -949,7 +949,7 @@
         "sourcePath": "registry/aurora/ui/skeleton.tsx",
         "installTarget": "@ui/aurora/skeleton.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/skeleton.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+      "docs": "Aurora UI component that installs Aurora Skeleton.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/skeleton.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-components`."
     },
     {
       "name": "aurora-stat-card",
@@ -1127,7 +1127,7 @@
         "installTarget": "@components/aurora/tool-calls.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/tool-calls.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+      "docs": "Aurora block that installs Aurora Tool Calls.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/tool-calls.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-components`."
     },
     {
       "name": "aurora-thinking",
@@ -1162,7 +1162,7 @@
         "installTarget": "@components/aurora/thinking.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/thinking.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora Thinking.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/thinking.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-code-block",
@@ -1232,7 +1232,7 @@
         "installTarget": "@components/aurora/terminal.tsx",
         "taxonomy": "navigation"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/terminal.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora Terminal.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/terminal.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-sidebar",
@@ -1305,7 +1305,7 @@
         "sourcePath": "registry/aurora/ui/checkbox.tsx",
         "installTarget": "@ui/aurora/checkbox.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/checkbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`."
+      "docs": "Aurora UI component that installs Aurora Checkbox & Radio.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/checkbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`, `aurora-components`."
     },
     {
       "name": "aurora-artifact",
@@ -1340,7 +1340,7 @@
         "installTarget": "@components/aurora/artifact.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/artifact.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora Artifact.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/artifact.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-permission-prompt",
@@ -1410,7 +1410,7 @@
         "installTarget": "@components/aurora/ask-user-question.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ask-user-question.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
+      "docs": "Aurora block that installs Aurora Ask User Question.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-textarea`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ask-user-question.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`, `aurora-components`."
     },
     {
       "name": "aurora-permissions-dropdown",
@@ -1445,7 +1445,7 @@
         "installTarget": "@components/aurora/permissions-dropdown.tsx",
         "taxonomy": "auth"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/permissions-dropdown.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora Permissions Dropdown.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/permissions-dropdown.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-file-tree",
@@ -1482,7 +1482,7 @@
         "installTarget": "@components/aurora/file-tree.tsx",
         "taxonomy": "files"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/file-tree.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora File Tree.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/file-tree.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-code-editor",
@@ -1517,7 +1517,7 @@
         "installTarget": "@components/aurora/code-editor.tsx",
         "taxonomy": "files"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-editor.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora Code Editor.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/code-editor.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-code-workspace",
@@ -1587,7 +1587,7 @@
         "installTarget": "@components/aurora/web-preview.tsx",
         "taxonomy": "workspace"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/web-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora Web Preview.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/web-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-login",
@@ -1658,7 +1658,7 @@
         "installTarget": "@components/aurora/oauth.tsx",
         "taxonomy": "auth"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/oauth.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora OAuth.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/oauth.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-error-page",
@@ -1727,7 +1727,7 @@
         "installTarget": "@components/aurora/attachment.tsx",
         "taxonomy": "files"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/attachment.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora block that installs Aurora Attachment.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/attachment.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-command-palette",
@@ -1763,7 +1763,7 @@
         "installTarget": "@components/aurora/command-palette.tsx",
         "taxonomy": "workspace"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/command-palette.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+      "docs": "Aurora block that installs Aurora Command Palette.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/command-palette.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-components`."
     },
     {
       "name": "aurora-share-dialog",
@@ -1802,7 +1802,7 @@
         "installTarget": "@components/aurora/share-dialog.tsx",
         "taxonomy": "workspace"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/share-dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`."
+      "docs": "Aurora block that installs Aurora Share Dialog.\n\nInstall `aurora-tokens`, `aurora-avatar`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/share-dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`, `aurora-components`."
     },
     {
       "name": "aurora-file-picker",
@@ -1838,7 +1838,7 @@
         "installTarget": "@components/aurora/file-picker.tsx",
         "taxonomy": "files"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/file-picker.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+      "docs": "Aurora block that installs Aurora File Picker.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/file-picker.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-components`."
     },
     {
       "name": "aurora-field",
@@ -1936,7 +1936,7 @@
         "sourcePath": "registry/aurora/ui/slider.tsx",
         "installTarget": "@ui/aurora/slider.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/slider.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora UI component that installs Aurora Slider.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/slider.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-number-input",
@@ -1973,7 +1973,7 @@
         "sourcePath": "registry/aurora/ui/number-input.tsx",
         "installTarget": "@ui/aurora/number-input.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/number-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`."
+      "docs": "Aurora UI component that installs Aurora Number Input.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/number-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-components`."
     },
     {
       "name": "aurora-combobox",
@@ -2463,7 +2463,7 @@
         "sourcePath": "registry/aurora/ui/button-group.tsx",
         "installTarget": "@ui/aurora/button-group.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/button-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora UI component that installs Aurora Button Group.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/button-group.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-accordion",
@@ -2621,7 +2621,7 @@
         "sourcePath": "registry/aurora/ui/alert-dialog.tsx",
         "installTarget": "@ui/aurora/alert-dialog.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/alert-dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-dialog`."
+      "docs": "Aurora UI component that installs Aurora Alert Dialog.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-dialog`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/alert-dialog.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-dialog`, `aurora-components`."
     },
     {
       "name": "aurora-aspect-ratio",
@@ -2721,7 +2721,7 @@
         "sourcePath": "registry/aurora/ui/card.tsx",
         "installTarget": "@ui/aurora/card.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/card.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora UI component that installs Aurora Card.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/card.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-carousel",
@@ -2757,7 +2757,7 @@
         "sourcePath": "registry/aurora/ui/carousel.tsx",
         "installTarget": "@ui/aurora/carousel.tsx"
       },
-      "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/carousel.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`."
+      "docs": "Aurora UI component that installs Aurora Carousel.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/carousel.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
       "name": "aurora-chart",
@@ -3319,7 +3319,7 @@
         "installTarget": "@components/aurora/ai/chain-of-thought.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/chain-of-thought.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
+      "docs": "Aurora block that installs Aurora AI Chain of Thought.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/chain-of-thought.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`, `aurora-components`."
     },
     {
       "name": "aurora-ai-checkpoint",
@@ -3356,7 +3356,7 @@
         "installTarget": "@components/aurora/ai/checkpoint.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/checkpoint.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Checkpoint.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/checkpoint.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-confirmation",
@@ -3393,7 +3393,7 @@
         "installTarget": "@components/aurora/ai/confirmation.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/confirmation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Confirmation.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/confirmation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-context",
@@ -3430,7 +3430,7 @@
         "installTarget": "@components/aurora/ai/context.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/context.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Context.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/context.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-conversation",
@@ -3539,7 +3539,7 @@
         "installTarget": "@components/aurora/ai/message.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Message.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-model-selector",
@@ -3613,7 +3613,7 @@
         "installTarget": "@components/aurora/ai/plan.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/plan.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
+      "docs": "Aurora block that installs Aurora AI Plan.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/plan.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`, `aurora-components`."
     },
     {
       "name": "aurora-ai-queue",
@@ -3687,7 +3687,7 @@
         "installTarget": "@components/aurora/ai/reasoning.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/reasoning.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`."
+      "docs": "Aurora block that installs Aurora AI Reasoning.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/reasoning.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-thinking`, `aurora-components`."
     },
     {
       "name": "aurora-ai-shimmer",
@@ -3724,7 +3724,7 @@
         "installTarget": "@components/aurora/ai/shimmer.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/shimmer.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Shimmer.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/shimmer.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-sources",
@@ -3870,7 +3870,7 @@
         "installTarget": "@components/aurora/ai/tool.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/tool.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-tool-calls`."
+      "docs": "Aurora block that installs Aurora AI Tool.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, `aurora-tool-calls`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/tool.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-tool-calls`, `aurora-components`."
     },
     {
       "name": "aurora-ai-agent",
@@ -4051,7 +4051,7 @@
         "installTarget": "@components/aurora/ai/package-info.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/package-info.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Package Info.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/package-info.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-sandbox",
@@ -4304,7 +4304,7 @@
         "installTarget": "@components/aurora/ai/mic-selector.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/mic-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Mic Selector.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/mic-selector.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-persona",
@@ -4341,7 +4341,7 @@
         "installTarget": "@components/aurora/ai/persona.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/persona.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Persona.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/persona.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-speech-input",
@@ -4378,7 +4378,7 @@
         "installTarget": "@components/aurora/ai/speech-input.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/speech-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Speech Input.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/speech-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-transcription",
@@ -4523,7 +4523,7 @@
         "installTarget": "@components/aurora/ai/connection.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/connection.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Connection.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/connection.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-controls",
@@ -4596,7 +4596,7 @@
         "installTarget": "@components/aurora/ai/edge.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/edge.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Edge.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/edge.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-node",
@@ -4669,7 +4669,7 @@
         "installTarget": "@components/aurora/ai/panel.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/panel.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Panel.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/panel.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
     },
     {
       "name": "aurora-ai-image",
@@ -4775,7 +4775,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/chat-message.tsx",
         "installTarget": "@ui/aurora/chat-message.tsx"
-      }
+      },
+      "docs": "Aurora ChatMessage is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/chat-message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-chat-sidebar",
@@ -4809,7 +4810,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/chat-sidebar.tsx",
         "installTarget": "@ui/aurora/chat-sidebar.tsx"
-      }
+      },
+      "docs": "Aurora ChatSidebar is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/chat-sidebar.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-color-picker",
@@ -4843,7 +4845,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/color-picker.tsx",
         "installTarget": "@ui/aurora/color-picker.tsx"
-      }
+      },
+      "docs": "Aurora ColorPicker is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/color-picker.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-component-card",
@@ -4876,7 +4879,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/component-card.tsx",
         "installTarget": "@ui/aurora/component-card.tsx"
-      }
+      },
+      "docs": "Aurora ComponentCard is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/component-card.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-copy-button",
@@ -4910,7 +4914,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/copy-button.tsx",
         "installTarget": "@ui/aurora/copy-button.tsx"
-      }
+      },
+      "docs": "Aurora CopyButton is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/copy-button.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-multi-select",
@@ -4943,7 +4948,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/multi-select.tsx",
         "installTarget": "@ui/aurora/multi-select.tsx"
-      }
+      },
+      "docs": "Aurora MultiSelect is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/multi-select.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-operation-icon",
@@ -4977,7 +4983,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/operation-icon.tsx",
         "installTarget": "@ui/aurora/operation-icon.tsx"
-      }
+      },
+      "docs": "Aurora OperationIcon is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/operation-icon.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-progress-ring",
@@ -5010,7 +5017,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/progress-ring.tsx",
         "installTarget": "@ui/aurora/progress-ring.tsx"
-      }
+      },
+      "docs": "Aurora ProgressRing is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/progress-ring.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-range-slider",
@@ -5044,7 +5052,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/range-slider.tsx",
         "installTarget": "@ui/aurora/range-slider.tsx"
-      }
+      },
+      "docs": "Aurora RangeSlider is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/range-slider.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-rating",
@@ -5077,7 +5086,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/rating.tsx",
         "installTarget": "@ui/aurora/rating.tsx"
-      }
+      },
+      "docs": "Aurora Rating is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/rating.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-segmented",
@@ -5110,7 +5120,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/segmented.tsx",
         "installTarget": "@ui/aurora/segmented.tsx"
-      }
+      },
+      "docs": "Aurora Segmented is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/segmented.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-spotlight",
@@ -5143,7 +5154,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/spotlight.tsx",
         "installTarget": "@ui/aurora/spotlight.tsx"
-      }
+      },
+      "docs": "Aurora Spotlight is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/spotlight.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-status-dot",
@@ -5177,7 +5189,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/status-dot.tsx",
         "installTarget": "@ui/aurora/status-dot.tsx"
-      }
+      },
+      "docs": "Aurora StatusDot is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/status-dot.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-stepper",
@@ -5211,7 +5224,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/stepper.tsx",
         "installTarget": "@ui/aurora/stepper.tsx"
-      }
+      },
+      "docs": "Aurora Stepper is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/stepper.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-tag-input",
@@ -5244,7 +5258,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/ui/tag-input.tsx",
         "installTarget": "@ui/aurora/tag-input.tsx"
-      }
+      },
+      "docs": "Aurora TagInput is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/tag-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-ai-action",
@@ -5278,7 +5293,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/action.tsx",
         "installTarget": "@components/aurora/ai/action.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI Action.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/action.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-ai-actions",
@@ -5312,7 +5328,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/actions.tsx",
         "installTarget": "@components/aurora/ai/actions.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI Actions.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/actions.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-ai-ai-image-grid",
@@ -5345,7 +5362,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/ai-image-grid.tsx",
         "installTarget": "@components/aurora/ai/ai-image-grid.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI AiImageGrid.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/ai-image-grid.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-ai-branch",
@@ -5379,7 +5397,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/branch.tsx",
         "installTarget": "@components/aurora/ai/branch.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI Branch.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/branch.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-ai-loader",
@@ -5413,7 +5432,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/loader.tsx",
         "installTarget": "@components/aurora/ai/loader.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI Loader.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/loader.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-ai-message-avatar",
@@ -5446,7 +5466,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/message-avatar.tsx",
         "installTarget": "@components/aurora/ai/message-avatar.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI MessageAvatar.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message-avatar.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-ai-message-content",
@@ -5480,7 +5501,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/message-content.tsx",
         "installTarget": "@components/aurora/ai/message-content.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI MessageContent.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message-content.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-ai-response",
@@ -5514,7 +5536,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/response.tsx",
         "installTarget": "@components/aurora/ai/response.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI Response.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/response.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
     },
     {
       "name": "aurora-ai-source",
@@ -5547,7 +5570,8 @@
         "requiresTokens": true,
         "sourcePath": "registry/aurora/blocks/ai/elements/source.tsx",
         "installTarget": "@components/aurora/ai/source.tsx"
-      }
+      },
+      "docs": "Aurora block that installs Aurora AI Source.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/source.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
     },
     {
       "name": "aurora-portal-container",

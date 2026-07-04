@@ -29,7 +29,7 @@
     "sourcePath": "registry/aurora/ui/number-input.tsx",
     "installTarget": "@ui/aurora/number-input.tsx"
   },
-  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/number-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`.",
+  "docs": "Aurora UI component that installs Aurora Number Input.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/number-input.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-components`.",
   "categories": [
     "aurora",
     "ui",

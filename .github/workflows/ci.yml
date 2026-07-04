@@ -42,7 +42,8 @@ jobs:
       - run: pnpm run test:unit
       - run: pnpm run build
       - run: pnpm run audit:standalone
-      - run: pnpm run registry:build
+      - run: pnpm run registry:check
+      - run: pnpm run registry:smoke
       - run: pnpm run tokens:generate
       - name: Generated artifacts are committed
         run: git diff --exit-code

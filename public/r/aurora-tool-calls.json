@@ -34,7 +34,7 @@
     "installTarget": "@components/aurora/tool-calls.tsx",
     "taxonomy": "ai"
   },
-  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/tool-calls.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`.",
+  "docs": "Aurora block that installs Aurora Tool Calls.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/tool-calls.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-components`.",
   "categories": [
     "aurora",
     "block",

@@ -27,6 +27,7 @@
     "sourcePath": "registry/aurora/ui/stepper.tsx",
     "installTarget": "@ui/aurora/stepper.tsx"
   },
+  "docs": "Aurora Stepper is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/stepper.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`.",
   "categories": [
     "aurora",
     "ui",

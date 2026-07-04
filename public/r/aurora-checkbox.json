@@ -29,7 +29,7 @@
     "sourcePath": "registry/aurora/ui/checkbox.tsx",
     "installTarget": "@ui/aurora/checkbox.tsx"
   },
-  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/checkbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`.",
+  "docs": "Aurora UI component that installs Aurora Checkbox & Radio.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/checkbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`, `aurora-components`.",
   "categories": [
     "aurora",
     "ui",

@@ -26,6 +26,7 @@
     "sourcePath": "registry/aurora/blocks/ai/elements/ai-image-grid.tsx",
     "installTarget": "@components/aurora/ai/ai-image-grid.tsx"
   },
+  "docs": "Aurora block that installs Aurora AI AiImageGrid.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/ai-image-grid.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "block",

@@ -26,6 +26,7 @@
     "sourcePath": "registry/aurora/ui/rating.tsx",
     "installTarget": "@ui/aurora/rating.tsx"
   },
+  "docs": "Aurora Rating is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/rating.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "ui",

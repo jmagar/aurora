@@ -26,6 +26,7 @@
     "sourcePath": "registry/aurora/blocks/ai/elements/message-avatar.tsx",
     "installTarget": "@components/aurora/ai/message-avatar.tsx"
   },
+  "docs": "Aurora block that installs Aurora AI MessageAvatar.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message-avatar.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "block",
