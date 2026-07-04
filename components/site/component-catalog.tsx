@@ -252,7 +252,7 @@ function LiveDrawer({
             >
               {item.label}
             </div>
-            <div className="aurora-text-code" style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
+            <div style={{ fontSize: 11.5, fontFamily: "var(--aurora-font-sans)", color: "var(--aurora-text-muted)" }}>
               aurora · {item.group.toLowerCase()}
               {kotlin ? (
                 <>
@@ -307,7 +307,7 @@ function LiveDrawer({
               </div>
               <div className="flex flex-col gap-2">
                 <CopyLine cmd={GRADLE_LINE} />
-                <div className="aurora-text-code" style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
+                <div style={{ fontSize: 11.5, fontFamily: "var(--aurora-font-sans)", color: "var(--aurora-text-muted)" }}>
                   android/aurora · components/{kotlin} — theme via AuroraTheme, tokens via AxonTheme.colors
                 </div>
               </div>
@@ -415,7 +415,7 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
   }, [flavorItems, q, cat])
 
   return (
-    <section style={{ marginTop: "clamp(48px, 7vw, 84px)" }}>
+    <section style={{ marginTop: "clamp(28px, 4vw, 52px)" }}>
       <div
         style={{
           display: "flex",
@@ -442,8 +442,13 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
           >
             {android ? "Android · Compose" : "Components"}{" "}
             <span
-              className="aurora-text-code"
-              style={{ fontWeight: 500, fontSize: "0.6em", color: "var(--aurora-text-muted)" }}
+              style={{
+                fontFamily: "var(--aurora-font-sans)",
+                fontWeight: 500,
+                fontSize: "0.55em",
+                letterSpacing: "0.01em",
+                color: "var(--aurora-text-muted)",
+              }}
             >
               {flavorItems.length} {android ? "ported" : "live"}
             </span>
@@ -649,8 +654,13 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
                 <span
                   style={{
                     marginTop: 2,
-                    fontSize: 10.5,
-                    fontFamily: "var(--aurora-font-mono)",
+                    fontSize: 11,
+                    // Category is UI copy → sans. The Kotlin file name (Android
+                    // flavor) is a code reference → mono.
+                    fontFamily:
+                      android && c.registry
+                        ? "var(--aurora-font-mono)"
+                        : "var(--aurora-font-sans)",
                     color: "var(--aurora-text-muted)",
                   }}
                 >
