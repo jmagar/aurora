@@ -399,6 +399,114 @@
       "docs": "Aurora light web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then toggle the root element to `.light` when the app should use the light mode."
     },
     {
+      "name": "aurora-zed-theme",
+      "type": "registry:file",
+      "title": "Aurora Zed Theme",
+      "description": "Project-local Aurora Zed theme file for editor theme installation.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/themes/zed/aurora.json",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/zed/aurora.json"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "theme",
+        "editor",
+        "file"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "theme-file",
+        "tool": "zed",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs the Aurora Zed theme JSON into the current project at `.config/aurora/themes/zed/aurora.json`. Shadcn `~` means project root, not the user's real home directory."
+    },
+    {
+      "name": "aurora-warp-theme",
+      "type": "registry:file",
+      "title": "Aurora Warp Theme",
+      "description": "Project-local Aurora Warp terminal theme file.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/themes/warp/aurora.yaml",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/warp/aurora.yaml"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "theme",
+        "terminal",
+        "file"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "theme-file",
+        "tool": "warp",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs the Aurora Warp theme YAML into the current project at `.config/aurora/themes/warp/aurora.yaml`. Shadcn `~` means project root, not the user's real home directory."
+    },
+    {
+      "name": "aurora-chrome-theme",
+      "type": "registry:file",
+      "title": "Aurora Chrome Theme Notes",
+      "description": "Project-local notes for downloading Aurora Chrome theme zips.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/themes/chrome/README.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/chrome/README.md"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "theme",
+        "browser",
+        "file"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "theme-file",
+        "tool": "chrome",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs project-local Chrome theme notes. Download the actual zips from `https://aurora.tootie.tv/chrome/aurora.zip` and `https://aurora.tootie.tv/chrome/aurora-light.zip`."
+    },
+    {
+      "name": "aurora-shell-theme-pack",
+      "type": "registry:file",
+      "title": "Aurora Shell Theme Pack Notes",
+      "description": "Project-local shell theme pack notes for p10k, statusline, bat, mc, nano, and zsh.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/themes/shell/README.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/shell/README.md"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "theme",
+        "shell",
+        "file"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "theme-file",
+        "tool": "shell",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs project-local shell theme notes. Shadcn cannot write into the user's actual home directory; copy reviewed files into shell config paths deliberately."
+    },
+    {
       "name": "aurora-terminal",
       "type": "registry:page",
       "title": "Aurora Terminal Page",
