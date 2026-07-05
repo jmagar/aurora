@@ -25,8 +25,8 @@ const CAT_ICON: Record<ThemeCategory, React.ReactNode> = {
 const REGISTRY_THEME_COMMANDS: Partial<Record<string, string>> = {
   zed: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-zed-theme.json",
   warp: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-warp-theme.json",
-  "chrome-dark": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-theme-dark.json",
-  "chrome-light": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-theme-light.json",
+  "chrome-dark": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chrome-theme.json",
+  "chrome-light": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chrome-theme.json",
 }
 
 function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {

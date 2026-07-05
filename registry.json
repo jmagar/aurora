@@ -3104,6 +3104,31 @@
           "path": "registry/aurora/blocks/ai/elements/core.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/core.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/canvas.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/canvas.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/action.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/action.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/actions.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/actions.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/source.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/source.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/sources.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/sources.tsx"
         }
       ],
       "author": "jmagar <https://github.com/jmagar>",
@@ -3136,6 +3161,7 @@
         "@aurora/aurora-badge",
         "@aurora/aurora-button",
         "@aurora/aurora-description-list",
+        "@aurora/aurora-empty-state",
         "@aurora/aurora-filter-bar",
         "@aurora/aurora-sheet",
         "@aurora/aurora-stat-card",
@@ -3163,7 +3189,7 @@
         "installTarget": "@components/aurora/marketplace.tsx",
         "taxonomy": "workspace"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/marketplace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-button`, `aurora-description-list`, `aurora-filter-bar`, `aurora-sheet`, `aurora-stat-card`, `aurora-status-indicator`."
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/marketplace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-button`, `aurora-description-list`, `aurora-empty-state`, `aurora-filter-bar`, `aurora-sheet`, `aurora-stat-card`, `aurora-status-indicator`."
     },
     {
       "name": "aurora-alert-dialog",

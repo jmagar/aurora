@@ -12,6 +12,7 @@
     "@aurora/aurora-badge",
     "@aurora/aurora-button",
     "@aurora/aurora-description-list",
+    "@aurora/aurora-empty-state",
     "@aurora/aurora-filter-bar",
     "@aurora/aurora-sheet",
     "@aurora/aurora-stat-card",
@@ -34,7 +35,7 @@
     "installTarget": "@components/aurora/marketplace.tsx",
     "taxonomy": "workspace"
   },
-  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/marketplace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-button`, `aurora-description-list`, `aurora-filter-bar`, `aurora-sheet`, `aurora-stat-card`, `aurora-status-indicator`.",
+  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/marketplace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-button`, `aurora-description-list`, `aurora-empty-state`, `aurora-filter-bar`, `aurora-sheet`, `aurora-stat-card`, `aurora-status-indicator`.",
   "categories": [
     "aurora",
     "block",
