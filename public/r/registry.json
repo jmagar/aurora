@@ -270,6 +270,56 @@
       "docs": "Install after aurora-tokens when the consuming app should use Aurora-hosted webfonts instead of system fallbacks.\n\nImport this stylesheet before aurora-tokens or alongside it at the app root."
     },
     {
+      "name": "aurora-base",
+      "type": "registry:base",
+      "title": "Aurora Base",
+      "description": "Batteries-included Aurora design-system setup for shadcn projects: tokens, component CSS, fonts, common primitives, and agent/workspace blocks.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "clsx@^2.1.1",
+        "lucide-react@^1.21.0",
+        "tailwind-merge@^3.3.1",
+        "tw-animate-css@^1.3.6"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-components",
+        "@aurora/aurora-fonts",
+        "@aurora/aurora-button",
+        "@aurora/aurora-badge",
+        "@aurora/aurora-input",
+        "@aurora/aurora-textarea",
+        "@aurora/aurora-card",
+        "@aurora/aurora-dialog",
+        "@aurora/aurora-tabs",
+        "@aurora/aurora-command-palette",
+        "@aurora/aurora-prompt-input",
+        "@aurora/aurora-terminal-block",
+        "@aurora/aurora-file-tree"
+      ],
+      "config": {
+        "style": "aurora",
+        "iconLibrary": "lucide",
+        "tailwind": {
+          "baseColor": "neutral",
+          "cssVariables": true
+        }
+      },
+      "categories": [
+        "aurora",
+        "base",
+        "setup"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "base",
+        "batteriesIncluded": true
+      },
+      "docs": "Batteries-included Aurora setup. Installs aurora-components, tokens, component CSS, fonts, common primitives, and agent/workspace blocks through the @aurora registry namespace. After install, import the generated CSS once from your root stylesheet and set your root html element to className=\"dark\" for the default Aurora mode."
+    },
+    {
       "name": "aurora-button",
       "type": "registry:ui",
       "title": "Aurora Button",
@@ -1200,9 +1250,9 @@
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-block.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
     },
     {
-      "name": "aurora-terminal",
+      "name": "aurora-terminal-block",
       "type": "registry:block",
-      "title": "Aurora Terminal",
+      "title": "Aurora Terminal Block",
       "description": "Aurora-native terminal with 38px navy titlebar (Labby mark, session name, status dot, kill/clear/run buttons), full color system using Aurora tokens, compact in-chat variant, and blinking cursor.",
       "dependencies": [],
       "registryDependencies": [
@@ -1235,9 +1285,9 @@
       "docs": "Aurora block that installs Aurora Terminal.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/terminal.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
-      "name": "aurora-sidebar",
+      "name": "aurora-sidebar-block",
       "type": "registry:block",
-      "title": "Aurora Sidebar",
+      "title": "Aurora Sidebar Block",
       "description": "Zed-like project sidebar with collapsible project groups, session items with relative time, live beacon pulse, active accent border, search input, avatar bottom bar, and icon-only collapsed variant.",
       "dependencies": [],
       "registryDependencies": [
@@ -1590,9 +1640,9 @@
       "docs": "Aurora block that installs Aurora Web Preview.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/web-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
-      "name": "aurora-login",
+      "name": "aurora-login-block",
       "type": "registry:block",
-      "title": "Aurora Login",
+      "title": "Aurora Login Block",
       "description": "Full-page login card centered on Aurora radial page wash. Features Labby stacked-plane mark + wordmark, email/password fields with show/hide toggle, Style D glow-border sign-in button, forgot password link, magic-link sent state with envelope icon, and 6-box OTP input that auto-advances on keystroke for 2FA.",
       "dependencies": [],
       "registryDependencies": [
@@ -2547,9 +2597,9 @@
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/ai-elements.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-badge`, `aurora-button`, `aurora-native-select`, `aurora-separator`, `aurora-spinner`, `aurora-textarea`."
     },
     {
-      "name": "aurora-marketplace",
+      "name": "aurora-marketplace-block",
       "type": "registry:block",
-      "title": "Aurora Marketplace",
+      "title": "Aurora Marketplace Block",
       "description": "Labby marketplace catalog surface with source cards, lens stats, search filters, card and table views, install/update actions, and a detail inspector.",
       "dependencies": [
         "lucide-react@^0.487.0"
