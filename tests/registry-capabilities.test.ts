@@ -1,0 +1,108 @@
+import assert from "node:assert/strict"
+import { readFileSync } from "node:fs"
+import test from "node:test"
+
+type RegistryFile = {
+  path: string
+  type: string
+  target?: string
+}
+
+type RegistryItem = {
+  name: string
+  type: string
+  title?: string
+  docs?: string
+  registryDependencies?: string[]
+  files?: RegistryFile[]
+  envVars?: Record<string, string>
+}
+
+type Registry = {
+  items: RegistryItem[]
+}
+
+function readRegistry(path: string): Registry {
+  return JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8")) as Registry
+}
+
+function itemMap(registry: Registry): Map<string, RegistryItem> {
+  return new Map(registry.items.map((item) => [item.name, item]))
+}
+
+const requestedPageNames = [
+  "aurora-terminal",
+  "aurora-gateway",
+  "aurora-chat",
+  "aurora-login",
+  "aurora-marketplace",
+  "aurora-log-viewer",
+  "aurora-palette",
+  "aurora-sidebar",
+  "aurora-files",
+]
+
+test("registry includes modern Aurora capability items", () => {
+  const registry = readRegistry("../registry.json")
+  const items = itemMap(registry)
+
+  assert.equal(items.get("aurora-base")?.type, "registry:base")
+  assert.equal(items.get("aurora-theme-dark")?.type, "registry:theme")
+  assert.equal(items.get("aurora-theme-light")?.type, "registry:theme")
+  assert.equal(items.get("aurora-zed-theme")?.type, "registry:file")
+  assert.equal(items.get("aurora-warp-theme")?.type, "registry:file")
+  assert.equal(items.get("aurora-agent-skill")?.type, "registry:item")
+  assert.equal(items.get("aurora-plugin-installer")?.type, "registry:item")
+})
+
+test("requested page starter names are registry:page items", () => {
+  const registry = readRegistry("../registry.json")
+  const items = itemMap(registry)
+
+  for (const name of requestedPageNames) {
+    assert.equal(items.get(name)?.type, "registry:page", `${name} should be a starter page`)
+    assert.equal(items.get(name)?.files?.[0]?.type, "registry:page", `${name} should ship a page file`)
+    assert.match(items.get(name)?.files?.[0]?.target ?? "", /^app\/aurora\/.+\/page\.tsx$/)
+  }
+})
+
+test("renamed component entries preserve colliding legacy installs", () => {
+  const registry = readRegistry("../registry.json")
+  const items = itemMap(registry)
+
+  assert.equal(items.get("aurora-terminal-block")?.type, "registry:block")
+  assert.equal(items.get("aurora-login-block")?.type, "registry:block")
+  assert.equal(items.get("aurora-marketplace-block")?.type, "registry:block")
+  assert.equal(items.get("aurora-sidebar-block")?.type, "registry:block")
+})
+
+test("registry file targets stay project-root scoped", () => {
+  const registry = readRegistry("../registry.json")
+  const fileItems = registry.items.filter((item) => item.type === "registry:file" || item.type === "registry:item")
+  const targets = fileItems.flatMap((item) => item.files?.map((file) => `${item.name}:${file.target ?? ""}`) ?? [])
+
+  assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/zed/aurora.json")))
+  assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/warp/aurora.yaml")))
+  assert.equal(targets.some((target) => target.includes("$HOME")), false)
+  assert.equal(targets.some((target) => target.includes("/home/")), false)
+})
+
+test("registry docs do not claim shadcn can execute shell commands", () => {
+  const registry = readRegistry("../registry.json")
+  const forbidden = registry.items
+    .filter((item) => /auto[- ]?runs?|post[- ]?install|executes? shell|runs claude plugin install/i.test(item.docs ?? ""))
+    .map((item) => item.name)
+
+  assert.deepEqual(forbidden, [])
+})
+
+test("built registry preserves the new capability item types", () => {
+  const registry = readRegistry("../public/r/registry.json")
+  const items = itemMap(registry)
+
+  assert.equal(items.get("aurora-base")?.type, "registry:base")
+  assert.equal(items.get("aurora-theme-dark")?.type, "registry:theme")
+  assert.equal(items.get("aurora-terminal")?.type, "registry:page")
+  assert.equal(items.get("aurora-zed-theme")?.type, "registry:file")
+  assert.equal(items.get("aurora-agent-skill")?.type, "registry:item")
+})

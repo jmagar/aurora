@@ -37,3 +37,13 @@ for (const [label, path] of [
     assert.deepEqual(findings, [])
   })
 }
+
+test("source registry capability items explain install constraints", () => {
+  const registry = readRegistry("../registry.json")
+  const items = new Map(registry.items.map((item) => [item.name, item]))
+
+  assert.match(items.get("aurora-base")?.docs ?? "", /batteries-included/i)
+  assert.match(items.get("aurora-agent-skill")?.docs ?? "", /Claude, Codex, and Gemini/i)
+  assert.match(items.get("aurora-plugin-installer")?.docs ?? "", /Run the generated script manually/i)
+  assert.match(items.get("aurora-zed-theme")?.docs ?? "", /project-root/i)
+})
