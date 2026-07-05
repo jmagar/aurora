@@ -320,6 +320,290 @@
       "docs": "Batteries-included Aurora setup. Installs aurora-components, tokens, component CSS, fonts, common primitives, and agent/workspace blocks through the @aurora registry namespace. After install, import the generated CSS once from your root stylesheet and set your root html element to className=\"dark\" for the default Aurora mode."
     },
     {
+      "name": "aurora-terminal",
+      "type": "registry:page",
+      "title": "Aurora Terminal Page",
+      "description": "Starter terminal workspace page using Aurora tokens, component styles, and the Aurora terminal block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-terminal-block"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/terminal/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/terminal/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "terminal"
+      },
+      "docs": "Starter page for an Aurora terminal workspace. Installs to `app/aurora/terminal/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-gateway",
+      "type": "registry:page",
+      "title": "Aurora Gateway Page",
+      "description": "Starter gateway operations page using Aurora cards, badges, buttons, and timeline primitives.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-card",
+        "@aurora/aurora-timeline",
+        "@aurora/aurora-badge",
+        "@aurora/aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/gateway/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/gateway/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "gateway"
+      },
+      "docs": "Starter page for an Aurora gateway workspace. Installs to `app/aurora/gateway/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-chat",
+      "type": "registry:page",
+      "title": "Aurora Chat Page",
+      "description": "Starter agent chat page using Aurora message and prompt input blocks.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-ai-message",
+        "@aurora/aurora-prompt-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/chat/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/chat/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "chat"
+      },
+      "docs": "Starter page for an Aurora chat workspace. Installs to `app/aurora/chat/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-login",
+      "type": "registry:page",
+      "title": "Aurora Login Page",
+      "description": "Starter authentication page using the Aurora login block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-login-block"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/login/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/login/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "login"
+      },
+      "docs": "Starter page for an Aurora login workspace. Installs to `app/aurora/login/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-marketplace",
+      "type": "registry:page",
+      "title": "Aurora Marketplace Page",
+      "description": "Starter marketplace/catalog page using the Aurora marketplace block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-marketplace-block"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/marketplace/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/marketplace/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "marketplace"
+      },
+      "docs": "Starter page for an Aurora marketplace workspace. Installs to `app/aurora/marketplace/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-log-viewer",
+      "type": "registry:page",
+      "title": "Aurora Log Viewer Page",
+      "description": "Starter log viewer page using Aurora code block and status badge components.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-code-block",
+        "@aurora/aurora-badge"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/log-viewer/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/log-viewer/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "log-viewer"
+      },
+      "docs": "Starter page for an Aurora log viewer workspace. Installs to `app/aurora/log-viewer/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-palette",
+      "type": "registry:page",
+      "title": "Aurora Palette Page",
+      "description": "Starter token palette page using Aurora badge and design tokens.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-badge"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/palette/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/palette/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "palette"
+      },
+      "docs": "Starter page for an Aurora palette workspace. Installs to `app/aurora/palette/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-sidebar",
+      "type": "registry:page",
+      "title": "Aurora Sidebar Page",
+      "description": "Starter app shell page using the Aurora sidebar block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-sidebar-block"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/sidebar/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/sidebar/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "sidebar"
+      },
+      "docs": "Starter page for an Aurora sidebar workspace. Installs to `app/aurora/sidebar/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-files",
+      "type": "registry:page",
+      "title": "Aurora Files Page",
+      "description": "Starter file workspace page using the Aurora file tree block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-file-tree"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/files/page.tsx",
+          "type": "registry:page",
+          "target": "app/aurora/files/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "files"
+      },
+      "docs": "Starter page for an Aurora files workspace. Installs to `app/aurora/files/page.tsx` and depends on `aurora-base`."
+    },
+    {
       "name": "aurora-button",
       "type": "registry:ui",
       "title": "Aurora Button",
