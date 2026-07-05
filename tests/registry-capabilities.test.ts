@@ -61,7 +61,7 @@ test("requested page starter names are registry:page items", () => {
 
   for (const name of requestedPageNames) {
     assert.equal(items.get(name)?.type, "registry:page", `${name} should be a starter page`)
-    assert.equal(items.get(name)?.files?.[0]?.type, "registry:page", `${name} should ship a page file`)
+    assert.equal(items.get(name)?.files?.[0]?.type, "registry:file", `${name} should ship an installable page file`)
     assert.match(items.get(name)?.files?.[0]?.target ?? "", /^app\/aurora\/.+\/page\.tsx$/)
   }
 })

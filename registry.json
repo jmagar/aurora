@@ -576,7 +576,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/terminal/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/terminal/page.tsx"
         }
       ],
@@ -610,7 +610,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/gateway/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/gateway/page.tsx"
         }
       ],
@@ -642,7 +642,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/chat/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/chat/page.tsx"
         }
       ],
@@ -673,7 +673,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/login/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/login/page.tsx"
         }
       ],
@@ -704,7 +704,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/marketplace/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/marketplace/page.tsx"
         }
       ],
@@ -736,7 +736,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/log-viewer/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/log-viewer/page.tsx"
         }
       ],
@@ -767,7 +767,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/palette/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/palette/page.tsx"
         }
       ],
@@ -798,7 +798,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/sidebar/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/sidebar/page.tsx"
         }
       ],
@@ -829,7 +829,7 @@
       "files": [
         {
           "path": "registry/aurora/pages/files/page.tsx",
-          "type": "registry:page",
+          "type": "registry:file",
           "target": "app/aurora/files/page.tsx"
         }
       ],

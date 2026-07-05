@@ -13,7 +13,7 @@
     {
       "path": "registry/aurora/pages/terminal/page.tsx",
       "content": "import { Terminal } from \"@/components/aurora/terminal\"\n\nexport default function AuroraTerminalPage() {\n  return (\n    <main className=\"aurora-page-shell min-h-screen p-6\">\n      <div className=\"mx-auto flex max-w-5xl flex-col gap-4\">\n        <div>\n          <p className=\"aurora-text-eyebrow\">Aurora starter</p>\n          <h1 className=\"aurora-text-display-2\">Terminal workspace</h1>\n        </div>\n        <Terminal\n          title=\"gateway-shell\"\n          status=\"connected\"\n          lines={[\n            { type: \"command\", text: \"pnpm run registry:check\" },\n            { type: \"success\", text: \"Registry build completed with no drift.\" },\n            { type: \"command\", text: \"pnpm run registry:smoke\" },\n            { type: \"info\", text: \"Installed aurora-base into a fresh shadcn app.\" },\n          ]}\n        />\n      </div>\n    </main>\n  )\n}\n",
-      "type": "registry:page",
+      "type": "registry:file",
       "target": "app/aurora/terminal/page.tsx"
     }
   ],
