@@ -18,7 +18,7 @@
     "tool": "zed",
     "targetScope": "project-root"
   },
-  "docs": "Installs the Aurora Zed theme JSON into the current project at `.config/aurora/themes/zed/aurora.json`. Shadcn `~` means project root, not the user's real home directory.",
+  "docs": "Installs the Aurora Zed theme JSON into the current project at `.config/aurora/themes/zed/aurora.json`. Shadcn `~` means project-root scope, not the user's real home directory.",
   "categories": [
     "aurora",
     "theme",

@@ -423,7 +423,7 @@
         "tool": "zed",
         "targetScope": "project-root"
       },
-      "docs": "Installs the Aurora Zed theme JSON into the current project at `.config/aurora/themes/zed/aurora.json`. Shadcn `~` means project root, not the user's real home directory."
+      "docs": "Installs the Aurora Zed theme JSON into the current project at `.config/aurora/themes/zed/aurora.json`. Shadcn `~` means project-root scope, not the user's real home directory."
     },
     {
       "name": "aurora-warp-theme",
@@ -505,6 +505,62 @@
         "targetScope": "project-root"
       },
       "docs": "Installs project-local shell theme notes. Shadcn cannot write into the user's actual home directory; copy reviewed files into shell config paths deliberately."
+    },
+    {
+      "name": "aurora-agent-skill",
+      "type": "registry:item",
+      "title": "Aurora Agent Skill",
+      "description": "Universal Aurora design-system skill source for agent runtimes.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/agent/README.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/README.md"
+        },
+        {
+          "path": "registry/aurora/files/agent/aurora-skill/SKILL.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/SKILL.md"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "agent",
+        "skill"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "agent",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs the Aurora design-system skill source into the current project for Claude, Codex, and Gemini adaptation. Shadcn cannot install directly into real home-directory skill folders."
+    },
+    {
+      "name": "aurora-plugin-installer",
+      "type": "registry:item",
+      "title": "Aurora Claude Plugin Installer",
+      "description": "Manual installer script for the Aurora Claude Code plugin.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/agent/install-aurora-plugin.sh",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/install-aurora-plugin.sh"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "agent",
+        "plugin"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "agent",
+        "targetScope": "project-root",
+        "manualCommand": "bash .config/aurora/agent/install-aurora-plugin.sh"
+      },
+      "docs": "Installs a project-local helper script. Run the generated script manually with `bash .config/aurora/agent/install-aurora-plugin.sh` to clone/update the Aurora repo and call `claude plugin install ./plugin`."
     },
     {
       "name": "aurora-terminal",
