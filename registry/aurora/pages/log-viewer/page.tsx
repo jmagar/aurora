@@ -1,5 +1,5 @@
-import { CodeBlock } from "@/components/aurora/code-block"
-import { Badge } from "@/components/ui/aurora/badge"
+import { CodeBlock } from "@/registry/aurora/blocks/workspace/code-block/code-block"
+import { Badge } from "@/registry/aurora/ui/badge"
 
 export default function AuroraLogViewerPage() {
   return (

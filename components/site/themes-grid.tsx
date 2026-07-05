@@ -30,6 +30,8 @@ const REGISTRY_THEME_COMMANDS: Partial<Record<string, string>> = {
 }
 
 function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
+  const registryCommand = REGISTRY_THEME_COMMANDS[t.id]
+
   return (
     <div
       className="aurora-reveal aurora-card group flex flex-col overflow-hidden rounded-[var(--aurora-radius-3)] transition-all duration-200 hover:-translate-y-1"
@@ -67,7 +69,7 @@ function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
           {t.description}
         </p>
         <CopyLine cmd={t.install} />
-        {REGISTRY_THEME_COMMANDS[t.id] && <CopyLine cmd={REGISTRY_THEME_COMMANDS[t.id]} />}
+        {registryCommand && <CopyLine cmd={registryCommand} />}
         <div className="flex gap-2">
           <Button variant="aurora" size="sm" className="flex-1" asChild>
             <a href={t.download} target="_blank" rel="noreferrer">

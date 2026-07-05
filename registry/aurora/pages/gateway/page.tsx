@@ -1,7 +1,7 @@
-import { Badge } from "@/components/ui/aurora/badge"
-import { Button } from "@/components/ui/aurora/button"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/aurora/card"
-import { Timeline, TimelineItem } from "@/components/ui/aurora/timeline"
+import { Badge } from "@/registry/aurora/ui/badge"
+import { Button } from "@/registry/aurora/ui/button"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/registry/aurora/ui/card"
+import { Timeline, TimelineItem } from "@/registry/aurora/ui/timeline"
 
 export default function AuroraGatewayPage() {
   return (

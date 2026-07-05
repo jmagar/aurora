@@ -12,7 +12,7 @@
   "files": [
     {
       "path": "registry/aurora/pages/marketplace/page.tsx",
-      "content": "import { Marketplace } from \"@/components/aurora/marketplace\"\n\nexport default function AuroraMarketplacePage() {\n  return (\n    <main className=\"aurora-page-shell min-h-screen p-6\">\n      <Marketplace />\n    </main>\n  )\n}\n",
+      "content": "import { Marketplace } from \"@/registry/aurora/blocks/workspace/marketplace/marketplace\"\n\nexport default function AuroraMarketplacePage() {\n  return (\n    <main className=\"aurora-page-shell min-h-screen p-6\">\n      <Marketplace />\n    </main>\n  )\n}\n",
       "type": "registry:file",
       "target": "app/aurora/marketplace/page.tsx"
     }

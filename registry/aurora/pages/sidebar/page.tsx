@@ -1,4 +1,4 @@
-import { Sidebar } from "@/components/aurora/sidebar"
+import { Sidebar } from "@/registry/aurora/blocks/workspace/sidebar/sidebar"
 
 export default function AuroraSidebarPage() {
   return (

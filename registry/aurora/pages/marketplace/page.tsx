@@ -1,4 +1,4 @@
-import { Marketplace } from "@/components/aurora/marketplace"
+import { Marketplace } from "@/registry/aurora/blocks/workspace/marketplace/marketplace"
 
 export default function AuroraMarketplacePage() {
   return (
