@@ -57,18 +57,16 @@ Rose is sanctioned for mono code highlights, key labels, send/agent affordances,
 | `--aurora-accent-pink-border` | mix 32% transparent | mix 26% transparent | Matching rose borders |
 | `--aurora-rose-gradient` | linear-gradient | (inherits) | Filled rose gradient |
 
-## Violet accent (AI / automation identity)
+## Axon orange (web AI / automation identity)
 
-Use for autonomous-agent affordances, model selectors, reasoning/thinking surfaces — anywhere the "this is the AI doing something" read matters.
+Use for autonomous-agent affordances, model selectors, reasoning/thinking surfaces, and long-running async job identity on the web. Violet was removed from the web token system; keep any remaining violet usage limited to non-web syntax/config palettes documented in `editor-cli-tokens.md`.
 
 | Token | Dark | Light | Purpose |
 |---|---|---|---|
-| `--aurora-accent-violet` | `#a78bfa` | `#7c3aed` | Base violet |
-| `--aurora-accent-violet-strong` | `#c4b5fd` | `#8b5cf6` | Hover/active violet |
-| `--aurora-accent-violet-deep` | `#7c3aed` | `#5b21b6` | Deep violet |
-| `--aurora-accent-violet-button` | `#8b5cf6` | `#6d28d9` | Gradient bottom |
-| `--aurora-accent-violet-surface` | mix 12% panel | mix 10% panel | Tinted violet backgrounds |
-| `--aurora-accent-violet-border` | mix 32% transparent | mix 26% transparent | Matching violet borders |
+| `--axon-orange` | `#ff9645` | `#d96500` | Base AI/automation orange |
+| `--axon-orange-strong` | `#ffb474` | `#f5801f` | Hover/active orange |
+| `--axon-orange-deep` | `#c96a1c` | `#a84d00` | Deep orange |
+| `--axon-orange-button` | `#f5801f` | `#c95c00` | Gradient bottom |
 
 ## Status families — muted, never neon
 

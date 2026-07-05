@@ -1,8 +1,10 @@
 # Editor & CLI tokens — terminal, shell, and Zed Neon palettes
 
-Aurora theming extends past the web registry into editors, terminals, and CLI
-tools. These live in `~/workspace/aurora-design-system/editors/` and `/shell/`
-(hand-authored per-tool native formats, excluded from the Next/TS/eslint build).
+Aurora theming extends past the web registry into editors, terminals, browser,
+and CLI tools. These live in `~/workspace/aurora-design-system/themes/editors/`,
+`~/workspace/aurora-design-system/themes/browser/`, and
+`~/workspace/aurora-design-system/themes/shell/` (hand-authored per-tool native
+formats, excluded from the Next/TS/eslint build).
 They are **canonical there**; `~/.config/...`, `~/.claude/themes/`, etc. are
 deployed copies kept in sync.
 
@@ -14,9 +16,9 @@ before copying a hex:
 | Tier | Cyan primary | Rose | Background | Where |
 |---|---|---|---|---|
 | **Web canonical** | `#29b6f6` | `#f9a8c4` | `#07131c` | `registry/aurora/styles/aurora.css`, all React UI, Android. The source of truth — see `references/tokens.md`. |
-| **CLI / Claude Code** | `#36c9ff` | `#ff7eb6` | `#07131c` | `editors/claude-code/*.json`, Claude Code statusline. Brightened so accents survive a dark terminal + low-gamut emulators. |
-| **Zed Neon** | `#38d2ff` | `#ff9ec9` | `#102a3e` | `editors/zed/` only. A lifted-canvas neon variant. **Most divergent.** |
-| Shell tools | `#29b6f6` | `#f9a8c4` | `#07131c` | `shell/*` (p10k, bat, mc, nano, zsh) — mirror the web canonical palette. |
+| **CLI / Claude Code** | `#36c9ff` | `#ff7eb6` | `#07131c` | `themes/editors/claude-code/*.json`, Claude Code statusline. Brightened so accents survive a dark terminal + low-gamut emulators. |
+| **Zed Neon** | `#38d2ff` | `#ff9ec9` | `#102a3e` | `themes/editors/zed/` only. A lifted-canvas neon variant. **Most divergent.** |
+| Shell tools | `#29b6f6` | `#f9a8c4` | `#07131c` | `themes/shell/*` (p10k, bat, mc, nano, zsh) — mirror the web canonical palette. |
 
 **Rule:** never sync one tier's cyan/rose into another without an explicit
 decision to re-base the whole system. When in doubt for web/React work, use the
@@ -24,7 +26,7 @@ canonical `--aurora-*` vars from `references/tokens.md`.
 
 ---
 
-## Zed — "Aurora Neon" (`editors/zed/`)
+## Zed — "Aurora Neon" (`themes/editors/zed/`)
 
 A Zed extension (`id = aurora-neon`) shipping two UI themes + two icon themes:
 **Aurora Neon** / **Aurora Neon Light**, **Aurora Neon Icons** / **… Light**.
@@ -62,18 +64,18 @@ is the brightened neon palette; the **light** variant uses the canonical light h
 `accents` cycle: `#38d2ff` `#c4a5ff` `#ff9ec9` `#5ef0d8` `#ffcf6b` `#6fdcff`.
 **Light** variant: cyan primary `#0288d1` on `#ffffff` (canonical light hues).
 
-Icon theme: 60 generated glyph-tile SVGs (`editors/zed/icons/*.svg`) covering 98
+Icon theme: 60 generated glyph-tile SVGs (`themes/editors/zed/icons/*.svg`) covering 98
 file suffixes + 22 stems, category-tinted (cyan=web, gold=systems, mint=scripting,
 violet=jvm/config, light-cyan=data, rose=docs/media). Regenerate via
-`python3 editors/zed/generate-icons.py`. Icon themes load **only** from an
+`python3 themes/editors/zed/generate-icons.py`. Icon themes load **only** from an
 installed extension, not a drop-in `themes/` file.
 
 ---
 
-## CLI / Claude Code (`editors/claude-code/`)
+## CLI / Claude Code (`themes/editors/claude-code/`)
 
 Canonical CLI terminal palette — brightened cyan/rose. Full key set in the repo's
-`editors/claude-code/TOKENS.md` (every Claude Code theme key + value).
+`themes/editors/claude-code/TOKENS.md` (every Claude Code theme key + value).
 
 | Role | Hex | Notes |
 |---|---|---|
@@ -94,12 +96,12 @@ Diff uses the Aurora rose scheme (removals are rose `#2e151c`/`#5e2a38`, not red
 additions stay teal `#0f2a24`/`#1d5448`). Subagent wheel + `rainbow_*` ramps are
 fully defined in `TOKENS.md`. Light variant keeps web hues (cyan `#0288d1`).
 
-Deploy: `cp editors/claude-code/aurora.json ~/.claude/themes/aurora.json` then
+Deploy: `cp themes/editors/claude-code/aurora.json ~/.claude/themes/aurora.json` then
 re-run `/theme`.
 
 ---
 
-## Shell tools (`shell/`) — mirror the web canonical palette
+## Shell tools (`themes/shell/`) — mirror the web canonical palette
 
 Themes for tools that run *inside* any terminal. These use the **canonical**
 `#29b6f6`/`#f9a8c4` palette (not the brightened CLI tier).
@@ -121,11 +123,11 @@ Themes for tools that run *inside* any terminal. These use the **canonical**
 | amber | `#c6a36b` | `198;163;107` | numbers / timing |
 | error | `#c78490` | `199;132;144` | errors |
 
-Per-tool files: `shell/p10k/aurora-p10k.zsh` (Powerlevel10k, 24-bit), `shell/bat/Aurora.tmTheme`,
-`shell/mc/aurora.ini` (Midnight Commander), `shell/nano/nanorc` (named colors only),
-`shell/zsh/aurora-{fzf,fsh,eza}.zsh` + `aurora.dircolors`, `shell/statusline/statusline-aurora.sh`.
+Per-tool files: `themes/shell/p10k/aurora-p10k.zsh` (Powerlevel10k, 24-bit), `themes/shell/bat/Aurora.tmTheme`,
+`themes/shell/mc/aurora.ini` (Midnight Commander), `themes/shell/nano/nanorc` (named colors only),
+`themes/shell/zsh/aurora-{fzf,fsh,eza}.zsh` + `aurora.dircolors`, `themes/shell/statusline/statusline-aurora.sh`.
 
-### Terminal ANSI foundation (`editors/warp/themes/aurora.yaml`)
+### Terminal ANSI foundation (`themes/editors/warp/themes/aurora.yaml`)
 
 `bat --theme=ansi` and `nano`'s named colors resolve through the terminal's 16
 ANSI colors, so the emulator palette is the highest-leverage surface. Aurora's
@@ -140,10 +142,10 @@ ANSI mapping (Warp `terminal_colors`):
 
 ## Source-of-truth files (in the repo)
 
-- `editors/zed/themes/aurora.json` + `editors/zed/icon_themes/aurora.json` — Zed Neon
-- `editors/claude-code/TOKENS.md` — exhaustive Claude Code CLI token reference
-- `editors/warp/themes/aurora.yaml` — Warp + the ANSI foundation
-- `shell/README.md` — shell palette + per-tool inventory
+- `themes/editors/zed/themes/aurora.json` + `themes/editors/zed/icon_themes/aurora.json` — Zed Neon
+- `themes/editors/claude-code/TOKENS.md` — exhaustive Claude Code CLI token reference
+- `themes/editors/warp/themes/aurora.yaml` — Warp + the ANSI foundation
+- `themes/shell/README.md` — shell palette + per-tool inventory
 
 When palette values change, the deployed copies (`~/.config/zed/`, `~/.claude/themes/`,
 `public/{zed,warp}/`) must be re-synced; see each tool's README.

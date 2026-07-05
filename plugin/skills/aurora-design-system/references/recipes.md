@@ -98,12 +98,12 @@ import { Badge } from "@/registry/aurora/ui/badge"
 
 <div className="flex items-center gap-2">
   <Badge tone="success">Online</Badge>
-  <span className="aurora-text-code text-[var(--aurora-text-muted)]">gw-prod-01</span>
+  <span className="aurora-text-meta">gw-prod-01</span>
   <span className="aurora-text-meta">updated 2m ago</span>
 </div>
 ```
 
-Note: the ID is mono (`.aurora-text-code`) because it's an identifier; the timestamp is `.aurora-text-meta`.
+Note: IDs shown as UI data stay in the sans/meta ramp. Reserve mono for literal code, shell commands, and terminal output.
 
 ## Selected list item — border + glow, not flooded fill
 
@@ -230,18 +230,18 @@ When you need a tinted panel — agent reply, AI artifact, callout — use `colo
 <div
   className="rounded-[var(--aurora-radius-2)] p-4"
   style={{
-    background: "color-mix(in srgb, var(--aurora-accent-violet) 12%, var(--aurora-panel-medium))",
-    border: "1px solid color-mix(in srgb, var(--aurora-accent-violet) 32%, transparent)",
+    background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
+    border: "1px solid color-mix(in srgb, var(--axon-orange) 32%, transparent)",
   }}
 >
-  <span className="aurora-text-eyebrow" style={{ color: "var(--aurora-accent-violet-strong)" }}>
+  <span className="aurora-text-eyebrow" style={{ color: "var(--axon-orange-strong)" }}>
     AI
   </span>
   <p className="aurora-text-body">…</p>
 </div>
 ```
 
-Or use the prebuilt `--aurora-accent-violet-surface` and `--aurora-accent-violet-border` directly. Same pattern for cyan, rose, and every status family.
+Use the same color-mix pattern for cyan, rose, Axon orange, and every status family.
 
 ## Empty state
 

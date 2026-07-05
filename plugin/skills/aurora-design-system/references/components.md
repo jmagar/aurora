@@ -1,6 +1,6 @@
-# Aurora components — full inventory
+# Aurora components — common inventory map
 
-This is the orienting map. Verify exact inventory and exported props from `~/workspace/aurora-design-system/registry.json` and the source files — components evolve.
+This is a curated map for common Aurora surfaces, not the complete registry manifest. Verify exact inventory, item type, dependencies, install target, and exported props from `~/workspace/aurora-design-system/registry.json` plus the source files before making claims. The registry also publishes modern non-component capabilities: `registry:base`, `registry:theme`, `registry:file`, `registry:page`, `registry:item`, and `registry:lib`.
 
 ## UI primitives — `registry/aurora/ui/<name>.tsx`
 
@@ -12,7 +12,7 @@ Import path inside the source repo: `@/registry/aurora/ui/<name>`. In a consumin
 |---|---|---|
 | `Button` | `button.tsx` | `variant`: `aurora` (default, cyan glow), `neutral`, `rose`, `ghost`, `destructive`, `plain`. `size`: `sm`, `default`, `lg`, `icon`, `unstyled`. Use `asChild` to compose. |
 | `ButtonGroup` | `button-group.tsx` | Horizontal cluster of Buttons with shared borders. |
-| `Badge` | `badge.tsx` | `tone`: `info`, `success`, `warn`, `error`, `neutral`, `rose`, `violet`. Style B is canonical. |
+| `Badge` | `badge.tsx` | `tone`: `info`, `success`, `warn`, `error`, `neutral`, `rose`, `cyan`. Style B is canonical. Legacy `violet` falls back to cyan in the component; do not choose it for new surfaces. |
 | `Switch` | `switch.tsx` | Boolean toggle. Cyan accent on thumb. |
 | `Toggle` | `toggle.tsx` | Single press-state button. |
 | `ToggleGroup` | `toggle-group.tsx` | Group of toggles, `type="single"` or `"multiple"`. |

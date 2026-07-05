@@ -1,16 +1,11 @@
 ---
 name: aurora-design-system
 description: >-
-  Use whenever building, modifying, or styling UI for Aurora, Labby, or
-  Lab/operator surfaces on web, Android, CLI, editor, or terminal. Trigger on
-  mentions of Aurora, Labby UI, the operator console, aurora-design-system,
-  aurora.tootie.tv, the @aurora shadcn registry, registry/aurora, --aurora-*
-  CSS tokens, aurora-page-shell, tv.tootie.aurora, AuroraTheme, AxonTheme,
-  Compose theming, CliTheme, or Zed Aurora Neon. Also use for React, Next.js,
-  shadcn, Tailwind, Jetpack Compose, or dashboard-style UI work inside Aurora or
-  consuming apps. Aurora is dark-first navy with cyan, rose, and violet accents,
-  Manrope, Inter, JetBrains Mono, and semantic tokens. Fix the design-system
-  source and sync down; never fork-and-diverge.
+  Use when designing, implementing, reviewing, or fixing Aurora/Labby UI
+  surfaces, Aurora shadcn registry items, registry/aurora tokens/components,
+  gallery demos, static Aurora mockups, downstream Lab/gateway-admin screens
+  that must use Aurora tokens, Aurora Android Compose theme work, CLI/editor
+  theme palettes, or @aurora registry installation/debugging.
 ---
 
 # Aurora Design System
@@ -22,7 +17,7 @@ If the user invokes this skill without a concrete build target, ask what surface
 The non-negotiables Aurora gives you and that every consumer must respect:
 
 - Dark-first, navy lift tiers — flat page, raised toolbars/headers, strongly raised inspector panels
-- Cyan primary accent, rose secondary, violet for AI/automation identity, muted status colors (never neon)
+- Cyan primary accent, rose secondary, Axon orange for web AI/automation identity, muted status colors (never neon)
 - Manrope for display, Inter for working UI, JetBrains Mono **only** for code and terminal content (code blocks, inline code, shell commands, terminal output) — never for paths/IDs/chips/tables/labels shown as data
 - Tokenized everything via `--aurora-*` CSS custom properties — never inline hex in product code
 - Selection and focus are **border + glow**, not flooded fills
@@ -38,7 +33,7 @@ Rules:
 - **Never restyle by bypassing the component.** If an Aurora `Button`/`Badge`/`Input`/`Kbd` exists, do not hand-roll a raw `<button>`/`<input>`/`<kbd>` (web) or a hardcoded `Color(0x…)` / bespoke composable (Android) next to it. Use the component; if it can't do what you need, **fix the component**, don't route around it.
 - **Improvements go up, then down.** Genuinely better behavior (a disabled-click guard, a loading state, a missing token) belongs in the registry / library source — not only in the app. Land it upstream on a branch, then re-sync the consumer. A local-only improvement is tech debt the moment it exists.
 - **Don't regress the source when syncing.** Keep the source's tokenization (`var(--aurora-*)`, library color tokens), overflow guards, and real icons. Carry down only the necessary environment glue (import aliases, `"use client"` presence, framework deps) — not literal hex, dropped guards, or glyphs-for-icons.
-- **Tokens are never re-typed.** A value that already exists as a token must be referenced, not pasted: `var(--aurora-accent-primary)` not `#29b6f6`; `AxonTheme.colors.accentPrimary` not `Color(0xFF29B6F6)`.
+- **Tokens are never re-typed.** A value that already exists as a token must be referenced, not pasted: `var(--aurora-accent-primary)` not `#29b6f6`; `LocalAuroraColors.current.accentPrimary` or `MaterialTheme.colorScheme.primary` not `Color(0xFF29B6F6)`.
 - **Read the source before claiming it exists.** If a token/primitive isn't there, add it to the source — don't invent a local one.
 
 When you catch yourself writing styling that duplicates something the design system should own, stop and port it upstream instead.
@@ -51,9 +46,9 @@ Aurora spans web, Android, and CLI/editor surfaces. The contract above (tokens, 
 |---|---|---|---|
 | **Web** (React/Next.js/shadcn) | `~/workspace/aurora-design-system/registry/aurora/{ui,blocks,styles}` + `registry.json`, published at `aurora.tootie.tv` | shadcn registry (`@aurora/*`) — components are vendored copies **synced from** the registry, not an npm dep | this body + `references/{tokens,components,recipes}.md` |
 | **Android** (Jetpack Compose) | `~/workspace/aurora-design-system/android/aurora` — the `tv.tootie.aurora:aurora` library (`AuroraTheme`, color tokens, `AuroraShapes`) | Gradle dep `tv.tootie.aurora:aurora`, wired via local composite build (`settings.gradle.kts`) | `references/android.md` |
-| **CLI / editors** (Rust, terminal, Zed) | `~/workspace/aurora-design-system/themes/editors/...` + the `lab` `CliTheme` (`crates/lab/src/output/theme.rs`) | copied token tables / `CliTheme` methods | `references/editor-cli-tokens.md` |
+| **CLI / editors** (Rust, terminal, Zed) | `~/workspace/aurora-design-system/themes/{editors,browser,shell}/...` + the `lab` `CliTheme` (`crates/lab/src/output/theme.rs`) | copied token tables / `CliTheme` methods | `references/editor-cli-tokens.md` |
 
-The cyan/rose tiers **diverge** between web and non-web (the CLI/editor palette is intentionally brighter so accents survive dark terminals and low-gamut emulators) — never paste web hex into a CLI/editor/Compose theme or vice-versa. See `references/editor-cli-tokens.md`.
+Web and Android use canonical Aurora tokens. CLI/editor palettes may diverge because terminal and editor accents need different contrast behavior; some non-web syntax/status palettes still use violet for language/config roles. Web AI/automation identity uses Axon orange. Never paste CLI/editor hex into web or Android, or web hex into CLI/editor themes. See `references/editor-cli-tokens.md`.
 
 ## When you're working inside the source repo
 
@@ -92,13 +87,17 @@ Or register the namespace once in your `components.json`:
 }
 ```
 
-Then `npx shadcn@latest add @aurora/aurora-tokens` and `@aurora/aurora-<name>`.
+`aurora-base` pulls in `aurora-tokens`, `aurora-components`, `aurora-fonts`, common primitives, and workspace/agent blocks. Add narrower items only when you intentionally want less than the base bundle.
 
 Required setup in the consuming app:
 
 ```css
 /* app/globals.css */
-@import "../registry/aurora/styles/aurora.css";
+@layer theme, base, components, aurora-components, utilities;
+@import "tailwindcss";
+@import "./components/aurora.css";
+@import "./components/aurora-components.css";
+@import "./components/aurora-fonts.css";
 ```
 
 ```tsx
@@ -159,7 +158,7 @@ Reach for semantic Aurora vars, or `color-mix(in srgb, var(--aurora-accent-prima
 |---|---|
 | `--aurora-accent-primary` / `-strong` / `-deep` / `-lift` / `-button` (cyan) | Primary CTAs, selection, focus, active state |
 | `--aurora-accent-pink` / `-strong` / `-deep` / `-button` (rose) | Secondary CTAs, agent affordances, send buttons, key labels in mono code, active filter tags — **one or two touch points per screen, not splattered** |
-| `--aurora-accent-violet` / `-strong` / `-deep` / `-button` (violet) | AI/automation identity — model selectors, reasoning panels, autonomous actions |
+| `--axon-orange` / `-strong` / `-deep` / `-button` (Axon orange) | Web AI/automation identity — model selectors, reasoning panels, autonomous actions |
 
 Each accent family has matching `-surface` and `-border` mix tokens; use those for tinted backgrounds and matching borders.
 
@@ -220,7 +219,7 @@ Use the `.aurora-text-*` classes from `registry/aurora/styles/aurora.css`. Pick 
 
 ## Components — use the registry, don't hand-roll
 
-The full inventory with import paths lives in `references/components.md`. The categories:
+The common inventory map lives in `references/components.md`; verify exact inventory, item types, import paths, dependencies, and targets in `registry.json` plus the source files. The categories:
 
 - **Foundations**: tokens, type ramp, brand mark
 - **Controls**: button, button group, badge, switch, avatar, progress, spinner, toolbar, kbd, separator, accordion, toggle, toggle group
@@ -260,7 +259,7 @@ import { Badge } from "@/registry/aurora/ui/badge"
 <Badge tone="warn">Degraded</Badge>
 <Badge tone="error">Failed</Badge>
 <Badge tone="rose">Filtered</Badge>      {/* active filter tags */}
-<Badge tone="violet">AI</Badge>           {/* AI / autonomous */}
+<Badge tone="cyan">AI</Badge>             {/* default AI label; pair larger AI surfaces with Axon orange */}
 <Badge tone="neutral">Idle</Badge>
 ```
 
@@ -328,7 +327,7 @@ When you've changed registry source:
 
 1. Inspect / update `registry.json`. Token-dependent components must declare `registryDependencies: ["aurora-tokens"]`.
 2. Run `pnpm registry:build`. This regenerates `public/r/*.json` and `public/r/registry.json`. They are otherwise stale.
-3. If you added a gallery demo, wire both `app/gallery/[section]/page.tsx` *and* `app/gallery/layout.tsx`.
+3. If you added a gallery demo, wire `app/gallery/demo-map.tsx`, `app/gallery/[section]/page.tsx` if the route behavior changes, and `app/gallery/nav-data.ts`; `layout.tsx` renders the nav data.
 4. Run `pnpm lint`. For route/demo changes, run `pnpm build` to catch SSR/static-param breakage.
 5. Verify inventory claims against `registry.json` and gallery routes — don't write counts from memory.
 
@@ -338,8 +337,8 @@ Install URL for end users: `https://aurora.tootie.tv` (root) or `https://aurora.
 
 - `references/tokens.md` — full token list with values for both dark and light modes, plus the shadcn token bridge.
 - `references/editor-cli-tokens.md` — non-web palettes: Zed "Aurora Neon", Claude Code CLI, shell tools, and the terminal ANSI foundation. Read this before touching `editors/` or `shell/` themes — it maps the three diverging cyan/rose tiers so you don't cross-contaminate.
-- `references/android.md` — the Android surface: the `tv.tootie.aurora:aurora` Jetpack Compose library (`AuroraTheme`, color tokens, shapes), how consuming apps wire it via composite build, the Compose form of "tokens never raw hex" (`AxonTheme.colors.*`, not `Color(0x…)`), the Android split-brain anti-patterns, and Gradle/emulator verification. Read this before touching any `*.kt`/Compose UI in an Aurora app.
-- `references/components.md` — every UI primitive and block with import path and the props that matter.
+- `references/android.md` — the Android surface: the `tv.tootie.aurora:aurora` Jetpack Compose library (`AuroraTheme`, color tokens, shapes), how consuming apps wire it via composite build, the Compose form of "tokens never raw hex" (`LocalAuroraColors.current.*` or `MaterialTheme.colorScheme.*`, not `Color(0x…)`), the Android split-brain anti-patterns, and Gradle/emulator verification. Read this before touching any `*.kt`/Compose UI in an Aurora app.
+- `references/components.md` — common UI primitives and blocks with import paths and props that matter; use `registry.json` for exact registry inventory.
 - `references/recipes.md` — copy-pasteable patterns: page shell, two-pane layout, stat grid, command palette trigger, prompt input with model selector, data table with filter bar.
 
 Read the reference that matches what you're about to build before you write the JSX.

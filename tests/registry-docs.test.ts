@@ -16,6 +16,10 @@ function readRegistry(path: string): Registry {
   return JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8")) as Registry
 }
 
+function readText(path: string): string {
+  return readFileSync(new URL(path, import.meta.url), "utf8")
+}
+
 for (const [label, path] of [
   ["source registry", "../registry.json"],
   ["built registry", "../public/r/registry.json"],
@@ -46,4 +50,41 @@ test("source registry capability items explain install constraints", () => {
   assert.match(items.get("aurora-agent-skill")?.docs ?? "", /Claude, Codex, and Gemini/i)
   assert.match(items.get("aurora-plugin-installer")?.docs ?? "", /Run the generated script manually/i)
   assert.match(items.get("aurora-zed-theme")?.docs ?? "", /project-root/i)
+})
+
+test("Aurora agent skill docs stay aligned with current tokens and paths", () => {
+  const skill = readText("../plugin/skills/aurora-design-system/SKILL.md")
+  const tokens = readText("../plugin/skills/aurora-design-system/references/tokens.md")
+  const android = readText("../plugin/skills/aurora-design-system/references/android.md")
+  const recipes = readText("../plugin/skills/aurora-design-system/references/recipes.md")
+  const editorCli = readText("../plugin/skills/aurora-design-system/references/editor-cli-tokens.md")
+
+  for (const [label, text] of [
+    ["skill", skill],
+    ["tokens reference", tokens],
+    ["recipes reference", recipes],
+  ] as const) {
+    assert.doesNotMatch(text, /aurora-accent-violet/i, `${label} should not reference removed web violet tokens`)
+    assert.doesNotMatch(
+      text,
+      /violet for AI|violet AI|violet.*AI \/ automation identity|AI \/ automation identity.*violet/i,
+      `${label} should not describe violet as AI identity`,
+    )
+  }
+
+  assert.match(skill, /@layer theme, base, components, aurora-components, utilities;/)
+  assert.match(skill, /web and Android use canonical Aurora tokens/i)
+  assert.match(skill, /app\/gallery\/demo-map\.tsx/)
+  assert.doesNotMatch(skill, /CLI\/editor\/Compose theme/i)
+  assert.doesNotMatch(skill, /AxonTheme\.colors/)
+  assert.doesNotMatch(skill, /full inventory/i)
+  assert.doesNotMatch(skill, /references\/components\.md` — every UI primitive and block/i)
+  assert.match(android, /AuroraColors|LocalAuroraColors|MaterialTheme\.colorScheme/)
+  assert.doesNotMatch(android, /Axon orange AI\/automation accent/i)
+  assert.doesNotMatch(android, /AxonTheme\.colors\.accentPrimary/)
+  assert.doesNotMatch(recipes, /ID is mono/i)
+  assert.doesNotMatch(editorCli, /`editors\//)
+  assert.doesNotMatch(editorCli, /`shell\//)
+  assert.match(editorCli, /`themes\/editors\//)
+  assert.match(editorCli, /`themes\/shell\//)
 })

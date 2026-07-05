@@ -13,13 +13,14 @@ when present, so changes to the library are picked up without publishing.
 
 ## The contract is the same — expressed in Compose
 
-- Dark-first navy lift tiers; cyan primary, rose secondary, violet AI accent; muted status
+- Dark-first navy lift tiers; cyan primary, rose secondary, muted status
   (never neon). Light mode must stay usable.
 - **Tokens, never raw hex.** The Compose equivalent of `var(--aurora-*)` is reading colors
-  from the theme — `AxonTheme.colors.accentPrimary` (or the library's color tokens /
-  `MaterialTheme.colorScheme`) — **not** `Color(0xFF29B6F6)`. A `Color(0x…)` literal outside
-  the theme package is the Android split-brain signal.
-- Manrope (display), Inter / Noto Sans (body), JetBrains Mono (code/paths/IDs only).
+  from `AuroraColors`, `LocalAuroraColors`, or `MaterialTheme.colorScheme` — **not**
+  `Color(0xFF29B6F6)`. A `Color(0x…)` literal outside the theme package is the Android
+  split-brain signal. Consuming apps can expose their own theme wrappers, but those wrappers
+  should derive from Aurora rather than redefining its hex values.
+- Manrope (display), Inter / Noto Sans (body), JetBrains Mono (code and terminal content only).
 - Selection and focus = border + glow, not flooded fills.
 - Sentence-case, matter-of-fact copy. Lucide-equivalent line icons, no emoji as UI.
 
