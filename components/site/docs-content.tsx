@@ -16,6 +16,15 @@ export interface DocCounts {
   registryItems: number
 }
 
+const MODERN_REGISTRY_COMMANDS = [
+  ["Base", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-base.json"],
+  ["Terminal page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-terminal.json"],
+  ["Gateway page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-gateway.json"],
+  ["Chat page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chat.json"],
+  ["Zed theme file", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-zed-theme.json"],
+  ["Agent skill", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-agent-skill.json"],
+]
+
 function H({ children }: { children: React.ReactNode }) {
   return (
     <h2
@@ -133,7 +142,7 @@ function StartPage() {
         Add the token contract, then start building on the page shell. Every page opens with the
         two-radial cyan wash — the brand.
       </P>
-      <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-tokens.json</DocCode>
+      <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-base.json</DocCode>
       <P>Then reach for a component from the registry:</P>
       <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-button.json</DocCode>
       <H>Three principles</H>
@@ -179,6 +188,26 @@ function InstallPage({ counts }: { counts: DocCounts }) {
         composed blocks alike.
       </P>
       <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-prompt-input.json</DocCode>
+      <H>Modern registry capabilities</H>
+      <P>
+        Aurora also publishes a base bundle, starter pages, project-local theme files, and agent
+        artifacts through the same shadcn registry.
+      </P>
+      <div className="mb-4 grid gap-2">
+        {MODERN_REGISTRY_COMMANDS.map(([label, command]) => (
+          <div key={label}>
+            <div className="aurora-text-label mb-1" style={{ color: "var(--aurora-text-muted)" }}>
+              {label}
+            </div>
+            <DocCode>{command}</DocCode>
+          </div>
+        ))}
+      </div>
+      <P>
+        Shadcn file targets are project-root scoped. Items that install under{" "}
+        <M>~/.config/aurora</M> create files inside the current project, not inside your real home
+        directory.
+      </P>
       <H>Android</H>
       <P>
         Tokens export to Android via Style Dictionary as a Compose <M>Color</M> palette and{" "}

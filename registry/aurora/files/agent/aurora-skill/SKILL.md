@@ -71,14 +71,15 @@ Derive counts, route lists, and component inventories from these files — do no
 
 ## When you're consuming Aurora in another project
 
-Install the token layer first, then any component:
+Install the batteries-included base bundle first:
 
 ```bash
-# Token layer (required — every component reads from these vars)
-npx shadcn@latest add https://aurora.tootie.tv/r/aurora-tokens.json
+# Batteries-included setup
+npx shadcn@latest add https://aurora.tootie.tv/r/aurora-base.json
 
-# Then any component
-npx shadcn@latest add https://aurora.tootie.tv/r/aurora-button.json
+# Or register the namespace once
+npx shadcn@latest registry add @aurora=https://aurora.tootie.tv/r/{name}.json
+npx shadcn@latest add @aurora/aurora-base
 ```
 
 Or register the namespace once in your `components.json`:

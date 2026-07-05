@@ -6,9 +6,20 @@ base with cyan/rose/violet accents, served from the `@aurora` shadcn registry at
 
 ## Installation
 
+From this repository:
+
 ```bash
 claude plugin install ./plugin
 ```
+
+From the Aurora shadcn registry, install the project-local helper script:
+
+```bash
+npx shadcn@latest add https://aurora.tootie.tv/r/aurora-plugin-installer.json
+bash .config/aurora/agent/install-aurora-plugin.sh
+```
+
+The shadcn registry only writes files. It does not run `claude plugin install` automatically.
 
 ## Commands
 

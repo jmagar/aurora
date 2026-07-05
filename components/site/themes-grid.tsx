@@ -22,6 +22,13 @@ const CAT_ICON: Record<ThemeCategory, React.ReactNode> = {
   shell: <SquareTerminal size={15} strokeWidth={1.7} />,
 }
 
+const REGISTRY_THEME_COMMANDS: Partial<Record<string, string>> = {
+  zed: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-zed-theme.json",
+  warp: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-warp-theme.json",
+  "chrome-dark": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-theme-dark.json",
+  "chrome-light": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-theme-light.json",
+}
+
 function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
   return (
     <div
@@ -60,6 +67,7 @@ function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
           {t.description}
         </p>
         <CopyLine cmd={t.install} />
+        {REGISTRY_THEME_COMMANDS[t.id] && <CopyLine cmd={REGISTRY_THEME_COMMANDS[t.id]} />}
         <div className="flex gap-2">
           <Button variant="aurora" size="sm" className="flex-1" asChild>
             <a href={t.download} target="_blank" rel="noreferrer">
