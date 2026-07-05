@@ -13,6 +13,7 @@
     "test:unit": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tests/*.test.ts",
     "registry:build": "shadcn build",
     "registry:check": "node scripts/check-registry-drift.mjs",
+    "registry:validate": "node scripts/validate-registry-capabilities.mjs",
     "registry:smoke": "node scripts/smoke-registry-install.mjs",
     "registry:smoke:base": "AURORA_REGISTRY_SMOKE_PROFILES=base node scripts/smoke-registry-install.mjs",
     "tokens:export": "node scripts/export-aurora-tokens.mjs",
