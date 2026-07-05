@@ -13,15 +13,15 @@ import tv.tootie.aurora.tokens.AuroraColors
 // =================================================================================================
 //
 // PRIMARY FAMILY (Cyan — Aurora's identity accent)
-//   primary              <- accentPrimary    (#29B6F6) — Aurora's signature cyan
+//   primary              <- accentPrimaryBase (#29B6F6) — Aurora's signature cyan
 //   onPrimary            <- accentForeground (#051520) — near-black; safe on all cyan shades
 //   primaryContainer     <- accentDeep       (#1C7FAC) — darker cyan for container bg
 //   onPrimaryContainer   <- accentStrong     (#67CBFA) — brighter cyan readable on deep bg
 //   primaryFixed         <- accentStrong     (#67CBFA) — bright cyan for fixed-color contexts
-//   primaryFixedDim      <- accentPrimary    (#29B6F6) — dimmed fixed-color cyan
+//   primaryFixedDim      <- accentPrimaryBase (#29B6F6) — dimmed fixed-color cyan
 //   onPrimaryFixed       <- accentForeground (#051520) — near-black on bright cyan
 //   onPrimaryFixedVariant<- accentDeep       (#1C7FAC) — darker text variant on fixed cyan
-//   surfaceTint          <- accentPrimary    — primary drives all M3 surface tinting
+//   surfaceTint          <- accentPrimaryBase — primary drives all M3 surface tinting
 //   inversePrimary       <- accentDeep       (#1C7FAC) — darker cyan for light-theme inverse
 //
 // SECONDARY FAMILY (Pink — Aurora's secondary accent, NOT a surface/panel color)
@@ -83,15 +83,15 @@ import tv.tootie.aurora.tokens.AuroraColors
 
 private val AuroraDarkColorScheme = darkColorScheme(
     // Primary — cyan family
-    primary                  = AuroraColors.accentPrimary,
+    primary                  = AuroraColors.accentPrimaryBase,
     onPrimary                = AuroraColors.accentForeground,
     primaryContainer         = AuroraColors.accentDeep,
     onPrimaryContainer       = AuroraColors.accentStrong,
     primaryFixed             = AuroraColors.accentStrong,
-    primaryFixedDim          = AuroraColors.accentPrimary,
+    primaryFixedDim          = AuroraColors.accentPrimaryBase,
     onPrimaryFixed           = AuroraColors.accentForeground,
     onPrimaryFixedVariant    = AuroraColors.accentDeep,
-    surfaceTint              = AuroraColors.accentPrimary,
+    surfaceTint              = AuroraColors.accentPrimaryBase,
     inversePrimary           = AuroraColors.accentDeep,
 
     // Secondary — pink family (replaces incorrect panelStrong mapping)

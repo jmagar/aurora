@@ -43,6 +43,7 @@ jobs:
       - run: pnpm run build
       - run: pnpm run audit:standalone
       - run: pnpm run registry:check
+      - run: pnpm run registry:validate
       - run: pnpm run registry:smoke
       - run: pnpm run tokens:generate
       - name: Generated artifacts are committed

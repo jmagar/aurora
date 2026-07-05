@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync, readdirSync } from "node:fs"
-import { join } from "node:path"
+import { join, relative } from "node:path"
 
 const root = process.cwd()
 const standalone = join(root, ".next", "standalone")
@@ -14,7 +14,6 @@ const forbidden = [
   ".env",
   ".worktrees",
   "android",
-  "docs",
   "registry",
   "scripts",
   "themes",
@@ -22,6 +21,19 @@ const forbidden = [
 
 const entries = new Set(readdirSync(standalone))
 const findings = forbidden.filter((entry) => entries.has(entry))
+const allowedDocsFiles = new Set(["docs/component-kotlin-map.md"])
+
+function listFiles(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name)
+    return entry.isDirectory() ? listFiles(path) : [path]
+  })
+}
+
+if (entries.has("docs")) {
+  const docsFiles = listFiles(join(standalone, "docs")).map((path) => relative(standalone, path))
+  findings.push(...docsFiles.filter((path) => !allowedDocsFiles.has(path)))
+}
 
 if (findings.length > 0) {
   console.error("Standalone audit failed: broad traced files/directories found in .next/standalone:")

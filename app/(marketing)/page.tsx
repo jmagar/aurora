@@ -162,7 +162,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3 rounded-[var(--aurora-radius-1)] py-2.5 pl-4 pr-3" style={panelStrong}>
             <span className="aurora-text-code" style={{ color: "var(--aurora-accent-primary)" }}>$</span>
             <code className="aurora-text-code truncate" style={{ color: "var(--aurora-text-primary)" }}>
-              npx shadcn@latest add https://aurora.tootie.tv/r/aurora-tokens.json
+              npx shadcn@latest add https://aurora.tootie.tv/r/aurora-base.json
             </code>
           </div>
         </div>

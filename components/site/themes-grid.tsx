@@ -22,7 +22,22 @@ const CAT_ICON: Record<ThemeCategory, React.ReactNode> = {
   shell: <SquareTerminal size={15} strokeWidth={1.7} />,
 }
 
+const REGISTRY_THEME_COMMANDS: Partial<Record<string, string>> = {
+  zed: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-zed-theme.json",
+  warp: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-warp-theme.json",
+  "chrome-dark": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chrome-theme.json",
+  "chrome-light": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chrome-theme.json",
+  p10k: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  statusline: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  bat: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  mc: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  nano: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  zsh: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+}
+
 function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
+  const registryCommand = REGISTRY_THEME_COMMANDS[t.id]
+
   return (
     <div
       className="aurora-reveal aurora-card group flex flex-col overflow-hidden rounded-[var(--aurora-radius-3)] transition-all duration-200 hover:-translate-y-1"
@@ -60,6 +75,7 @@ function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {
           {t.description}
         </p>
         <CopyLine cmd={t.install} />
+        {registryCommand && <CopyLine cmd={registryCommand} />}
         <div className="flex gap-2">
           <Button variant="aurora" size="sm" className="flex-1" asChild>
             <a href={t.download} target="_blank" rel="noreferrer">

@@ -270,6 +270,608 @@
       "docs": "Install after aurora-tokens when the consuming app should use Aurora-hosted webfonts instead of system fallbacks.\n\nImport this stylesheet before aurora-tokens or alongside it at the app root."
     },
     {
+      "name": "aurora-base",
+      "type": "registry:base",
+      "title": "Aurora Base",
+      "description": "Batteries-included Aurora design-system setup for shadcn projects: tokens, component CSS, fonts, common primitives, and agent/workspace blocks.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "clsx@^2.1.1",
+        "lucide-react@^1.21.0",
+        "tailwind-merge@^3.3.1",
+        "tw-animate-css@^1.3.6"
+      ],
+      "registryDependencies": [
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-components",
+        "@aurora/aurora-fonts",
+        "@aurora/aurora-button",
+        "@aurora/aurora-badge",
+        "@aurora/aurora-input",
+        "@aurora/aurora-textarea",
+        "@aurora/aurora-card",
+        "@aurora/aurora-dialog",
+        "@aurora/aurora-tabs",
+        "@aurora/aurora-command-palette",
+        "@aurora/aurora-prompt-input",
+        "@aurora/aurora-terminal-block",
+        "@aurora/aurora-file-tree"
+      ],
+      "config": {
+        "style": "aurora",
+        "iconLibrary": "lucide",
+        "tailwind": {
+          "baseColor": "neutral",
+          "cssVariables": true
+        }
+      },
+      "categories": [
+        "aurora",
+        "base",
+        "setup"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "base",
+        "batteriesIncluded": true
+      },
+      "docs": "Batteries-included Aurora setup. Installs aurora-components, tokens, component CSS, fonts, common primitives, and agent/workspace blocks through the @aurora registry namespace. After install, import the generated CSS once from your root stylesheet and set your root html element to className=\"dark\" for the default Aurora mode."
+    },
+    {
+      "name": "aurora-theme-dark",
+      "type": "registry:theme",
+      "title": "Aurora Dark Theme",
+      "description": "Dark-first Aurora shadcn theme variables for web applications.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "cssVars": {
+        "theme": {
+          "font-aurora-display": "'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+          "font-aurora-sans": "'Inter', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          "font-aurora-mono": "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace"
+        },
+        "dark": {
+          "background": "var(--aurora-page-bg)",
+          "foreground": "var(--aurora-text-primary)",
+          "primary": "var(--aurora-accent-primary)",
+          "primary-foreground": "var(--aurora-accent-foreground)",
+          "secondary": "var(--aurora-panel-medium)",
+          "secondary-foreground": "var(--aurora-text-primary)",
+          "muted": "var(--aurora-control-surface)",
+          "muted-foreground": "var(--aurora-text-muted)",
+          "border": "var(--aurora-border-default)",
+          "input": "var(--aurora-control-surface)",
+          "ring": "var(--aurora-focus-ring)"
+        }
+      },
+      "categories": [
+        "aurora",
+        "theme",
+        "web"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "theme",
+        "mode": "dark"
+      },
+      "docs": "Aurora dark web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then keep `<html className=\"dark\">` as the default mode."
+    },
+    {
+      "name": "aurora-theme-light",
+      "type": "registry:theme",
+      "title": "Aurora Light Theme",
+      "description": "Light Aurora shadcn theme variables for web applications.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "cssVars": {
+        "light": {
+          "background": "var(--aurora-page-bg)",
+          "foreground": "var(--aurora-text-primary)",
+          "primary": "var(--aurora-accent-primary)",
+          "primary-foreground": "var(--aurora-accent-foreground)",
+          "secondary": "var(--aurora-control-surface)",
+          "secondary-foreground": "var(--aurora-text-primary)",
+          "muted": "var(--aurora-control-surface)",
+          "muted-foreground": "var(--aurora-text-muted)",
+          "border": "var(--aurora-border-default)",
+          "input": "var(--aurora-control-surface)",
+          "ring": "var(--aurora-focus-ring)"
+        }
+      },
+      "categories": [
+        "aurora",
+        "theme",
+        "web"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "theme",
+        "mode": "light"
+      },
+      "docs": "Aurora light web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then toggle the root element to `.light` when the app should use the light mode."
+    },
+    {
+      "name": "aurora-zed-theme",
+      "type": "registry:file",
+      "title": "Aurora Zed Theme",
+      "description": "Project-local Aurora Zed theme file for editor theme installation.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/themes/zed/aurora.json",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/zed/aurora.json"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "theme",
+        "editor",
+        "file"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "theme-file",
+        "tool": "zed",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs the Aurora Zed theme JSON into the current project at `.config/aurora/themes/zed/aurora.json`. Shadcn `~` means project-root scope, not the user's real home directory; copy or symlink the installed JSON into `~/.config/zed/themes/` and select it in Zed settings."
+    },
+    {
+      "name": "aurora-warp-theme",
+      "type": "registry:file",
+      "title": "Aurora Warp Theme",
+      "description": "Project-local Aurora Warp terminal theme file.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/themes/warp/aurora.yaml",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/warp/aurora.yaml"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "theme",
+        "terminal",
+        "file"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "theme-file",
+        "tool": "warp",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs a text-only Aurora Warp theme YAML into the current project at `.config/aurora/themes/warp/`. Shadcn `~` means project root, not the user's real home directory. The full served Warp package at `https://aurora.tootie.tv/warp/` keeps the optional background image asset."
+    },
+    {
+      "name": "aurora-chrome-theme",
+      "type": "registry:file",
+      "title": "Aurora Chrome Theme Notes",
+      "description": "Project-local notes for downloading Aurora Chrome theme zips.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/themes/chrome/README.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/chrome/README.md"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "theme",
+        "browser",
+        "file"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "theme-file",
+        "tool": "chrome",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs project-local Chrome theme notes. Download the actual zips from `https://aurora.tootie.tv/chrome/aurora.zip` and `https://aurora.tootie.tv/chrome/aurora-light.zip`."
+    },
+    {
+      "name": "aurora-shell-theme-pack",
+      "type": "registry:file",
+      "title": "Aurora Shell Theme Pack Notes",
+      "description": "Project-local shell theme pack notes for p10k, statusline, bat, mc, nano, and zsh.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/themes/shell/README.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/shell/README.md"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "theme",
+        "shell",
+        "file"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "theme-file",
+        "tool": "shell",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs project-local shell theme notes for source files under `themes/shell/*`. Shadcn cannot write into the user's actual home directory; copy reviewed files into shell config paths deliberately."
+    },
+    {
+      "name": "aurora-agent-skill",
+      "type": "registry:item",
+      "title": "Aurora Agent Skill",
+      "description": "Universal Aurora design-system skill source for agent runtimes.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/agent/README.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/README.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/SKILL.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/SKILL.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/tokens.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/tokens.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/components.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/components.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/recipes.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/recipes.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/android.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/android.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/editor-cli-tokens.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/editor-cli-tokens.md"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "agent",
+        "skill"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "agent",
+        "targetScope": "project-root"
+      },
+      "docs": "Installs the Aurora design-system skill source and reference docs into the current project for Claude, Codex, and Gemini adaptation. Shadcn cannot install directly into real home-directory skill folders."
+    },
+    {
+      "name": "aurora-plugin-installer",
+      "type": "registry:item",
+      "title": "Aurora Claude Plugin Installer",
+      "description": "Manual installer script for the Aurora Claude Code plugin.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "files": [
+        {
+          "path": "registry/aurora/files/agent/install-aurora-plugin.sh",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/install-aurora-plugin.sh"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "agent",
+        "plugin"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "family": "agent",
+        "targetScope": "project-root",
+        "manualCommand": "bash .config/aurora/agent/install-aurora-plugin.sh"
+      },
+      "docs": "Installs a project-local helper script. Run the generated script manually with `bash .config/aurora/agent/install-aurora-plugin.sh` to clone/update the Aurora repo and call `claude plugin install ./plugin`."
+    },
+    {
+      "name": "aurora-terminal",
+      "type": "registry:page",
+      "title": "Aurora Terminal Page",
+      "description": "Starter terminal workspace page using Aurora tokens, component styles, and the Aurora terminal block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-terminal-block"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/terminal/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/terminal/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "terminal"
+      },
+      "docs": "Starter page for an Aurora terminal workspace. Installs to `app/aurora/terminal/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-gateway",
+      "type": "registry:page",
+      "title": "Aurora Gateway Page",
+      "description": "Starter gateway operations page using Aurora cards, badges, buttons, and timeline primitives.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-card",
+        "@aurora/aurora-timeline",
+        "@aurora/aurora-badge",
+        "@aurora/aurora-button"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/gateway/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/gateway/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "gateway"
+      },
+      "docs": "Starter page for an Aurora gateway workspace. Installs to `app/aurora/gateway/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-chat",
+      "type": "registry:page",
+      "title": "Aurora Chat Page",
+      "description": "Starter agent chat page using Aurora message and prompt input blocks.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-ai-message",
+        "@aurora/aurora-prompt-input"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/chat/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/chat/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "chat"
+      },
+      "docs": "Starter page for an Aurora chat workspace. Installs to `app/aurora/chat/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-login",
+      "type": "registry:page",
+      "title": "Aurora Login Page",
+      "description": "Starter authentication page using the Aurora login block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-login-block"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/login/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/login/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "login"
+      },
+      "docs": "Starter page for an Aurora login workspace. Installs to `app/aurora/login/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-marketplace",
+      "type": "registry:page",
+      "title": "Aurora Marketplace Page",
+      "description": "Starter marketplace/catalog page using the Aurora marketplace block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-marketplace-block"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/marketplace/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/marketplace/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "marketplace"
+      },
+      "docs": "Starter page for an Aurora marketplace workspace. Installs to `app/aurora/marketplace/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-log-viewer",
+      "type": "registry:page",
+      "title": "Aurora Log Viewer Page",
+      "description": "Starter log viewer page using Aurora code block and status badge components.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-code-block",
+        "@aurora/aurora-badge"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/log-viewer/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/log-viewer/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "log-viewer"
+      },
+      "docs": "Starter page for an Aurora log viewer workspace. Installs to `app/aurora/log-viewer/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-palette",
+      "type": "registry:page",
+      "title": "Aurora Palette Page",
+      "description": "Starter token palette page using Aurora badge and design tokens.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-badge"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/palette/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/palette/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "palette"
+      },
+      "docs": "Starter page for an Aurora palette workspace. Installs to `app/aurora/palette/page.tsx` and depends on `aurora-base`."
+    },
+    {
+      "name": "aurora-sidebar",
+      "type": "registry:page",
+      "title": "Aurora Sidebar Page",
+      "description": "Starter app shell page using the Aurora sidebar block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-sidebar-block"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/sidebar/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/sidebar/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "sidebar"
+      },
+      "docs": "Starter page for an Aurora sidebar workspace. Installs to `app/aurora/sidebar/page.tsx` and depends on `aurora-base` plus `aurora-sidebar-block`."
+    },
+    {
+      "name": "aurora-files",
+      "type": "registry:page",
+      "title": "Aurora Files Page",
+      "description": "Starter file workspace page using the Aurora file tree block.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [
+        "@aurora/aurora-base",
+        "@aurora/aurora-file-tree"
+      ],
+      "files": [
+        {
+          "path": "registry/aurora/pages/files/page.tsx",
+          "type": "registry:file",
+          "target": "app/aurora/files/page.tsx"
+        }
+      ],
+      "categories": [
+        "aurora",
+        "page",
+        "starter"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "page",
+        "starter": "files"
+      },
+      "docs": "Starter page for an Aurora files workspace. Installs to `app/aurora/files/page.tsx` and depends on `aurora-base`."
+    },
+    {
       "name": "aurora-button",
       "type": "registry:ui",
       "title": "Aurora Button",
@@ -1200,9 +1802,9 @@
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/code-block.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-textarea`."
     },
     {
-      "name": "aurora-terminal",
+      "name": "aurora-terminal-block",
       "type": "registry:block",
-      "title": "Aurora Terminal",
+      "title": "Aurora Terminal Block",
       "description": "Aurora-native terminal with 38px navy titlebar (Labby mark, session name, status dot, kill/clear/run buttons), full color system using Aurora tokens, compact in-chat variant, and blinking cursor.",
       "dependencies": [],
       "registryDependencies": [
@@ -1235,9 +1837,9 @@
       "docs": "Aurora block that installs Aurora Terminal.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/terminal.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
-      "name": "aurora-sidebar",
+      "name": "aurora-sidebar-block",
       "type": "registry:block",
-      "title": "Aurora Sidebar",
+      "title": "Aurora Sidebar Block",
       "description": "Zed-like project sidebar with collapsible project groups, session items with relative time, live beacon pulse, active accent border, search input, avatar bottom bar, and icon-only collapsed variant.",
       "dependencies": [],
       "registryDependencies": [
@@ -1590,9 +2192,9 @@
       "docs": "Aurora block that installs Aurora Web Preview.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/web-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
     },
     {
-      "name": "aurora-login",
+      "name": "aurora-login-block",
       "type": "registry:block",
-      "title": "Aurora Login",
+      "title": "Aurora Login Block",
       "description": "Full-page login card centered on Aurora radial page wash. Features Labby stacked-plane mark + wordmark, email/password fields with show/hide toggle, Style D glow-border sign-in button, forgot password link, magic-link sent state with envelope icon, and 6-box OTP input that auto-advances on keystroke for 2FA.",
       "dependencies": [],
       "registryDependencies": [
@@ -2527,6 +3129,31 @@
           "path": "registry/aurora/blocks/ai/elements/core.tsx",
           "type": "registry:component",
           "target": "@components/aurora/ai/core.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/canvas.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/canvas.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/action.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/action.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/actions.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/actions.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/source.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/source.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/ai/elements/sources.tsx",
+          "type": "registry:component",
+          "target": "@components/aurora/ai/sources.tsx"
         }
       ],
       "author": "jmagar <https://github.com/jmagar>",
@@ -2547,9 +3174,9 @@
       "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/ai-elements.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-badge`, `aurora-button`, `aurora-native-select`, `aurora-separator`, `aurora-spinner`, `aurora-textarea`."
     },
     {
-      "name": "aurora-marketplace",
+      "name": "aurora-marketplace-block",
       "type": "registry:block",
-      "title": "Aurora Marketplace",
+      "title": "Aurora Marketplace Block",
       "description": "Labby marketplace catalog surface with source cards, lens stats, search filters, card and table views, install/update actions, and a detail inspector.",
       "dependencies": [
         "lucide-react@^0.487.0"
@@ -2559,6 +3186,7 @@
         "@aurora/aurora-badge",
         "@aurora/aurora-button",
         "@aurora/aurora-description-list",
+        "@aurora/aurora-empty-state",
         "@aurora/aurora-filter-bar",
         "@aurora/aurora-sheet",
         "@aurora/aurora-stat-card",
@@ -2586,7 +3214,7 @@
         "installTarget": "@components/aurora/marketplace.tsx",
         "taxonomy": "workspace"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/marketplace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-button`, `aurora-description-list`, `aurora-filter-bar`, `aurora-sheet`, `aurora-stat-card`, `aurora-status-indicator`."
+      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/marketplace.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-button`, `aurora-description-list`, `aurora-empty-state`, `aurora-filter-bar`, `aurora-sheet`, `aurora-stat-card`, `aurora-status-indicator`."
     },
     {
       "name": "aurora-alert-dialog",
@@ -5306,7 +5934,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-ai-action"
       ],
       "files": [
         {
@@ -5329,7 +5958,7 @@
         "sourcePath": "registry/aurora/blocks/ai/elements/actions.tsx",
         "installTarget": "@components/aurora/ai/actions.tsx"
       },
-      "docs": "Aurora block that installs Aurora AI Actions.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/actions.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
+      "docs": "Aurora block that installs Aurora AI Actions.\n\nInstall `aurora-tokens`, `aurora-components`, and `aurora-ai-action` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/actions.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`, `aurora-ai-action`."
     },
     {
       "name": "aurora-ai-ai-image-grid",
