@@ -1,4 +1,4 @@
-import { Terminal } from "@/registry/aurora/blocks/navigation/terminal/terminal"
+import { Terminal } from "@/components/aurora/terminal"
 
 export default function AuroraTerminalPage() {
   return (

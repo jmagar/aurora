@@ -40,6 +40,7 @@
     "node_modules",
     "editors",
     "shell",
-    "android"
+    "android",
+    "registry/aurora/pages"
   ]
 }

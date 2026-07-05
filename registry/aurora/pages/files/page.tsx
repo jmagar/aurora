@@ -1,4 +1,4 @@
-import { FileTree } from "@/registry/aurora/blocks/files/file-tree/file-tree"
+import { FileTree } from "@/components/aurora/file-tree"
 
 export default function AuroraFilesPage() {
   return (

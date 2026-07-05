@@ -1,4 +1,4 @@
-import { Badge } from "@/registry/aurora/ui/badge"
+import { Badge } from "@/components/ui/aurora/badge"
 
 const swatches = [
   ["Primary", "var(--aurora-accent-primary)"],

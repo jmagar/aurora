@@ -1,4 +1,4 @@
-import { Login } from "@/registry/aurora/blocks/auth/login/login"
+import { Login } from "@/components/aurora/login"
 
 export default function AuroraLoginPage() {
   return (

@@ -1,8 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Message, MessageAvatar, MessageContent } from "@/registry/aurora/blocks/ai/elements/message"
-import { PromptInput } from "@/registry/aurora/blocks/ai/prompt-input/prompt-input"
+import { Message, MessageAvatar, MessageContent } from "@/components/aurora/ai/message"
+import { PromptInput } from "@/components/aurora/prompt-input"
 
 export default function AuroraChatPage() {
   const [value, setValue] = React.useState("")

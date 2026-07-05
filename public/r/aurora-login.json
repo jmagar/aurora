@@ -12,7 +12,7 @@
   "files": [
     {
       "path": "registry/aurora/pages/login/page.tsx",
-      "content": "import { Login } from \"@/registry/aurora/blocks/auth/login/login\"\n\nexport default function AuroraLoginPage() {\n  return (\n    <main className=\"aurora-page-shell grid min-h-screen place-items-center p-6\">\n      <Login />\n    </main>\n  )\n}\n",
+      "content": "import { Login } from \"@/components/aurora/login\"\n\nexport default function AuroraLoginPage() {\n  return (\n    <main className=\"aurora-page-shell grid min-h-screen place-items-center p-6\">\n      <Login />\n    </main>\n  )\n}\n",
       "type": "registry:file",
       "target": "app/aurora/login/page.tsx"
     }

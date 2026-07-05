@@ -12,7 +12,7 @@
   "files": [
     {
       "path": "registry/aurora/pages/sidebar/page.tsx",
-      "content": "import { Sidebar } from \"@/registry/aurora/blocks/workspace/sidebar/sidebar\"\n\nexport default function AuroraSidebarPage() {\n  return (\n    <main className=\"aurora-page-shell min-h-screen\">\n      <Sidebar\n        brand={<span>Aurora</span>}\n        defaultActiveId=\"gateway\"\n        items={[\n          { id: \"gateway\", label: \"Gateway\", section: \"Workspace\" },\n          { id: \"terminal\", label: \"Terminal\" },\n          { id: \"files\", label: \"Files\" },\n          { id: \"settings\", label: \"Settings\", section: \"System\" },\n        ]}\n      />\n    </main>\n  )\n}\n",
+      "content": "import { Sidebar } from \"@/components/aurora/sidebar\"\n\nexport default function AuroraSidebarPage() {\n  return (\n    <main className=\"aurora-page-shell min-h-screen\">\n      <Sidebar\n        brand={<span>Aurora</span>}\n        defaultActiveId=\"gateway\"\n        items={[\n          { id: \"gateway\", label: \"Gateway\", section: \"Workspace\" },\n          { id: \"terminal\", label: \"Terminal\" },\n          { id: \"files\", label: \"Files\" },\n          { id: \"settings\", label: \"Settings\", section: \"System\" },\n        ]}\n      />\n    </main>\n  )\n}\n",
       "type": "registry:file",
       "target": "app/aurora/sidebar/page.tsx"
     }
