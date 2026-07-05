@@ -1,6 +1,7 @@
 import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
 import test from "node:test"
+import { requestedPageNames, requiredCapabilityTypes } from "../scripts/registry-capability-contract.mjs"
 
 type RegistryFile = {
   path: string
@@ -30,18 +31,6 @@ function itemMap(registry: Registry): Map<string, RegistryItem> {
   return new Map(registry.items.map((item) => [item.name, item]))
 }
 
-const requestedPageNames = [
-  "aurora-terminal",
-  "aurora-gateway",
-  "aurora-chat",
-  "aurora-login",
-  "aurora-marketplace",
-  "aurora-log-viewer",
-  "aurora-palette",
-  "aurora-sidebar",
-  "aurora-files",
-]
-
 const requiredPageDependencies: Record<string, string[]> = {
   "aurora-terminal": ["@aurora/aurora-base", "@aurora/aurora-terminal-block"],
   "aurora-gateway": ["@aurora/aurora-base", "@aurora/aurora-card", "@aurora/aurora-timeline", "@aurora/aurora-badge", "@aurora/aurora-button"],
@@ -58,15 +47,9 @@ test("registry includes modern Aurora capability items", () => {
   const registry = readRegistry("../registry.json")
   const items = itemMap(registry)
 
-  assert.equal(items.get("aurora-base")?.type, "registry:base")
-  assert.equal(items.get("aurora-theme-dark")?.type, "registry:theme")
-  assert.equal(items.get("aurora-theme-light")?.type, "registry:theme")
-  assert.equal(items.get("aurora-zed-theme")?.type, "registry:file")
-  assert.equal(items.get("aurora-warp-theme")?.type, "registry:file")
-  assert.equal(items.get("aurora-chrome-theme")?.type, "registry:file")
-  assert.equal(items.get("aurora-shell-theme-pack")?.type, "registry:file")
-  assert.equal(items.get("aurora-agent-skill")?.type, "registry:item")
-  assert.equal(items.get("aurora-plugin-installer")?.type, "registry:item")
+  for (const [name, type] of Object.entries(requiredCapabilityTypes)) {
+    assert.equal(items.get(name)?.type, type)
+  }
 })
 
 test("requested page starter names are registry:page items", () => {
@@ -108,7 +91,6 @@ test("registry file targets stay project-root scoped", () => {
 
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/zed/aurora.json")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/warp/aurora.yaml")))
-  assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/warp/aurora.jpg")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/chrome/README.md")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/shell/README.md")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/agent/aurora-design-system/references/tokens.md")))

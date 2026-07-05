@@ -423,7 +423,7 @@
         "tool": "zed",
         "targetScope": "project-root"
       },
-      "docs": "Installs the Aurora Zed theme JSON into the current project at `.config/aurora/themes/zed/aurora.json`. Shadcn `~` means project-root scope, not the user's real home directory."
+      "docs": "Installs the Aurora Zed theme JSON into the current project at `.config/aurora/themes/zed/aurora.json`. Shadcn `~` means project-root scope, not the user's real home directory; copy or symlink the installed JSON into `~/.config/zed/themes/` and select it in Zed settings."
     },
     {
       "name": "aurora-warp-theme",
@@ -436,11 +436,6 @@
           "path": "registry/aurora/files/themes/warp/aurora.yaml",
           "type": "registry:file",
           "target": "~/.config/aurora/themes/warp/aurora.yaml"
-        },
-        {
-          "path": "public/warp/aurora.jpg",
-          "type": "registry:file",
-          "target": "~/.config/aurora/themes/warp/aurora.jpg"
         }
       ],
       "categories": [
@@ -455,7 +450,7 @@
         "tool": "warp",
         "targetScope": "project-root"
       },
-      "docs": "Installs the Aurora Warp theme YAML and background image into the current project at `.config/aurora/themes/warp/`. Shadcn `~` means project root, not the user's real home directory."
+      "docs": "Installs a text-only Aurora Warp theme YAML into the current project at `.config/aurora/themes/warp/`. Shadcn `~` means project root, not the user's real home directory. The full served Warp package at `https://aurora.tootie.tv/warp/` keeps the optional background image asset."
     },
     {
       "name": "aurora-chrome-theme",
@@ -509,7 +504,7 @@
         "tool": "shell",
         "targetScope": "project-root"
       },
-      "docs": "Installs project-local shell theme notes. Shadcn cannot write into the user's actual home directory; copy reviewed files into shell config paths deliberately."
+      "docs": "Installs project-local shell theme notes for source files under `themes/shell/*`. Shadcn cannot write into the user's actual home directory; copy reviewed files into shell config paths deliberately."
     },
     {
       "name": "aurora-agent-skill",
@@ -843,7 +838,7 @@
         "family": "page",
         "starter": "sidebar"
       },
-      "docs": "Starter page for an Aurora sidebar workspace. Installs to `app/aurora/sidebar/page.tsx` and depends on `aurora-base`."
+      "docs": "Starter page for an Aurora sidebar workspace. Installs to `app/aurora/sidebar/page.tsx` and depends on `aurora-base` plus `aurora-sidebar-block`."
     },
     {
       "name": "aurora-files",
@@ -5939,7 +5934,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-ai-action"
       ],
       "files": [
         {
@@ -5962,7 +5958,7 @@
         "sourcePath": "registry/aurora/blocks/ai/elements/actions.tsx",
         "installTarget": "@components/aurora/ai/actions.tsx"
       },
-      "docs": "Aurora block that installs Aurora AI Actions.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/actions.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
+      "docs": "Aurora block that installs Aurora AI Actions.\n\nInstall `aurora-tokens`, `aurora-components`, and `aurora-ai-action` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/actions.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`, `aurora-ai-action`."
     },
     {
       "name": "aurora-ai-ai-image-grid",

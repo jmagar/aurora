@@ -46,7 +46,6 @@ const smokeProfiles = {
     expectedFiles: [
       ".config/aurora/themes/zed/aurora.json",
       ".config/aurora/themes/warp/aurora.yaml",
-      ".config/aurora/themes/warp/aurora.jpg",
       ".config/aurora/themes/chrome/README.md",
       ".config/aurora/themes/shell/README.md",
     ],
@@ -86,6 +85,16 @@ const shouldTypecheck = process.env.AURORA_REGISTRY_SMOKE_TYPECHECK !== "0"
 const repoPackage = JSON.parse(readFileSync(join(process.cwd(), "package.json"), "utf8"))
 const repoDeps = repoPackage.dependencies ?? {}
 const repoDevDeps = repoPackage.devDependencies ?? {}
+const requiredRepoDeps = ["clsx", "next", "react", "react-dom", "tailwind-merge"]
+const requiredRepoDevDeps = ["@types/node", "@types/react", "@types/react-dom", "typescript"]
+const missingRepoVersions = [
+  ...requiredRepoDeps.filter((dependency) => !repoDeps[dependency]),
+  ...requiredRepoDevDeps.filter((dependency) => !repoDevDeps[dependency]),
+]
+
+if (missingRepoVersions.length > 0) {
+  throw new Error(`Aurora registry smoke test cannot resolve repo dependency versions: ${missingRepoVersions.join(", ")}`)
+}
 
 const tmp = mkdtempSync(join(tmpdir(), "aurora-registry-smoke-"))
 let server
@@ -111,7 +120,19 @@ async function resolveRegistryBaseUrl() {
 
   server = createServer((request, response) => {
     const rawPath = new URL(request.url ?? "/", "http://127.0.0.1").pathname
-    const filename = rawPath.split("/").pop() || "registry.json"
+    if (rawPath.split("/").some((part) => part === "..")) {
+      response.writeHead(400)
+      response.end("invalid registry path")
+      return
+    }
+
+    const filename = (rawPath.split("/").pop() || "registry.json").replace(/[\\/]/g, "")
+    if (filename.includes("..")) {
+      response.writeHead(400)
+      response.end("invalid registry file")
+      return
+    }
+
     const filePath = join(localRegistryRoot, filename)
 
     if (!existsSync(filePath)) {

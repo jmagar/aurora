@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
+import { requiredCapabilityTypes } from "./registry-capability-contract.mjs"
 
 const registry = JSON.parse(readFileSync("registry.json", "utf8"))
 const built = JSON.parse(readFileSync("public/r/registry.json", "utf8"))
@@ -16,34 +17,16 @@ function byName(items) {
 const sourceItems = byName(registry.items)
 const builtItems = byName(built.items)
 
-const required = {
-  "aurora-base": "registry:base",
-  "aurora-theme-dark": "registry:theme",
-  "aurora-theme-light": "registry:theme",
-  "aurora-terminal": "registry:page",
-  "aurora-gateway": "registry:page",
-  "aurora-chat": "registry:page",
-  "aurora-login": "registry:page",
-  "aurora-marketplace": "registry:page",
-  "aurora-log-viewer": "registry:page",
-  "aurora-palette": "registry:page",
-  "aurora-sidebar": "registry:page",
-  "aurora-files": "registry:page",
-  "aurora-zed-theme": "registry:file",
-  "aurora-warp-theme": "registry:file",
-  "aurora-chrome-theme": "registry:file",
-  "aurora-shell-theme-pack": "registry:file",
-  "aurora-agent-skill": "registry:item",
-  "aurora-plugin-installer": "registry:item",
-}
-
-for (const [name, type] of Object.entries(required)) {
+for (const [name, type] of Object.entries(requiredCapabilityTypes)) {
   if (sourceItems.get(name)?.type !== type) fail(`${name} missing from registry.json as ${type}`)
   if (builtItems.get(name)?.type !== type) fail(`${name} missing from public/r/registry.json as ${type}`)
   if (!existsSync(join("public", "r", `${name}.json`))) fail(`public/r/${name}.json is missing`)
+
+  const artifact = JSON.parse(readFileSync(join("public", "r", `${name}.json`), "utf8"))
+  if (artifact.type !== type) fail(`public/r/${name}.json has type ${artifact.type}, expected ${type}`)
 }
 
-for (const item of registry.items) {
+for (const item of [...registry.items, ...built.items]) {
   for (const file of item.files ?? []) {
     if ((file.type === "registry:page" || file.type === "registry:file") && !file.target) {
       fail(`${item.name} has ${file.type} without files[].target`)

@@ -24,7 +24,7 @@ export default function AuroraPalettePage() {
                 background: "var(--aurora-panel-medium)",
               }}
             >
-              <div className="mb-3 h-16 rounded-[12px]" style={{ background: color }} />
+              <div className="mb-3 h-16 rounded-[var(--aurora-radius-1)]" style={{ background: color }} />
               <Badge tone="neutral">{label}</Badge>
             </div>
           ))}

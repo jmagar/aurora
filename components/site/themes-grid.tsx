@@ -27,6 +27,12 @@ const REGISTRY_THEME_COMMANDS: Partial<Record<string, string>> = {
   warp: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-warp-theme.json",
   "chrome-dark": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chrome-theme.json",
   "chrome-light": "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chrome-theme.json",
+  p10k: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  statusline: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  bat: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  mc: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  nano: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
+  zsh: "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-shell-theme-pack.json",
 }
 
 function ThemeCard({ t, i }: { t: AuroraTheme; i: number }) {

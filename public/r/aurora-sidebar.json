@@ -23,7 +23,7 @@
     "family": "page",
     "starter": "sidebar"
   },
-  "docs": "Starter page for an Aurora sidebar workspace. Installs to `app/aurora/sidebar/page.tsx` and depends on `aurora-base`.",
+  "docs": "Starter page for an Aurora sidebar workspace. Installs to `app/aurora/sidebar/page.tsx` and depends on `aurora-base` plus `aurora-sidebar-block`.",
   "categories": [
     "aurora",
     "page",

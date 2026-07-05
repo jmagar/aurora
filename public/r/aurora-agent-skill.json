@@ -7,7 +7,7 @@
   "files": [
     {
       "path": "registry/aurora/files/agent/README.md",
-      "content": "# Aurora Agent Skill\n\nThis registry item installs the Aurora design-system skill into the current project so Claude, Codex, Gemini, or another agent runtime can copy/adapt it.\n\nShadcn registry items install files only. They do not run shell commands.\n\nFor Claude Code plugin installation, install the Aurora plugin manually from the Aurora repo:\n\n```bash\ngit clone https://github.com/jmagar/aurora-design-system.git\ncd aurora-design-system\nclaude plugin install ./plugin\n```\n\nFor Codex/Gemini, copy `SKILL.md` into the runtime-specific skill directory used by that tool.\n",
+      "content": "# Aurora Agent Skill\n\nThis registry item installs the Aurora design-system skill into the current project so Claude, Codex, Gemini, or another agent runtime can copy/adapt it.\n\nShadcn registry items install files only. They do not run shell commands.\n\nFor Claude Code plugin installation, install `aurora-plugin-installer` and then run the generated installer script from your project:\n\n```bash\nbash .config/aurora/agent/install-aurora-plugin.sh\n```\n\nFor Codex/Gemini, copy or adapt the full `.config/aurora/agent/aurora-design-system/` directory into the runtime-specific skill directory used by that tool. Keep `SKILL.md` and the `references/` directory together; the skill expects those reference files to be present.\n",
       "type": "registry:file",
       "target": "~/.config/aurora/agent/README.md"
     },

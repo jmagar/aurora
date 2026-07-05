@@ -9,10 +9,6 @@ background:
   bottom: "#07131c"
 foreground: "#f0f8fd"
 details: darker
-# Punchy navy/cyan glow image (cyan lower-left, violet upper-right, rose mid-right). JPG only.
-background_image:
-  path: aurora.jpg
-  opacity: 68
 terminal_colors:
   normal:
     black:   "#14304a"

@@ -1,6 +1,6 @@
 # Aurora Shell Theme Pack
 
-Shadcn installs this file into the current project. Source shell theme files live in the Aurora repository under:
+Shadcn installs this file into the current project. Source shell theme files live in the Aurora repository under `themes/shell/*`; installed notes land under `.config/aurora/themes/shell/` in the current project.
 
 - themes/shell/p10k/aurora-p10k.zsh
 - themes/shell/statusline/statusline-aurora.sh

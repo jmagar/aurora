@@ -4,12 +4,10 @@ This registry item installs the Aurora design-system skill into the current proj
 
 Shadcn registry items install files only. They do not run shell commands.
 
-For Claude Code plugin installation, install the Aurora plugin manually from the Aurora repo:
+For Claude Code plugin installation, install `aurora-plugin-installer` and then run the generated installer script from your project:
 
 ```bash
-git clone https://github.com/jmagar/aurora-design-system.git
-cd aurora-design-system
-claude plugin install ./plugin
+bash .config/aurora/agent/install-aurora-plugin.sh
 ```
 
-For Codex/Gemini, copy `SKILL.md` into the runtime-specific skill directory used by that tool.
+For Codex/Gemini, copy or adapt the full `.config/aurora/agent/aurora-design-system/` directory into the runtime-specific skill directory used by that tool. Keep `SKILL.md` and the `references/` directory together; the skill expects those reference files to be present.
