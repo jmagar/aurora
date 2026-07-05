@@ -31,6 +31,8 @@ const required = {
   "aurora-files": "registry:page",
   "aurora-zed-theme": "registry:file",
   "aurora-warp-theme": "registry:file",
+  "aurora-chrome-theme": "registry:file",
+  "aurora-shell-theme-pack": "registry:file",
   "aurora-agent-skill": "registry:item",
   "aurora-plugin-installer": "registry:item",
 }

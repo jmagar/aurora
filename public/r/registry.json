@@ -519,9 +519,34 @@
           "target": "~/.config/aurora/agent/README.md"
         },
         {
-          "path": "registry/aurora/files/agent/aurora-skill/SKILL.md",
+          "path": "plugin/skills/aurora-design-system/SKILL.md",
           "type": "registry:file",
           "target": "~/.config/aurora/agent/aurora-design-system/SKILL.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/tokens.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/tokens.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/components.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/components.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/recipes.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/recipes.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/android.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/android.md"
+        },
+        {
+          "path": "plugin/skills/aurora-design-system/references/editor-cli-tokens.md",
+          "type": "registry:file",
+          "target": "~/.config/aurora/agent/aurora-design-system/references/editor-cli-tokens.md"
         }
       ],
       "categories": [
@@ -534,7 +559,7 @@
         "family": "agent",
         "targetScope": "project-root"
       },
-      "docs": "Installs the Aurora design-system skill source into the current project for Claude, Codex, and Gemini adaptation. Shadcn cannot install directly into real home-directory skill folders."
+      "docs": "Installs the Aurora design-system skill source and reference docs into the current project for Claude, Codex, and Gemini adaptation. Shadcn cannot install directly into real home-directory skill folders."
     },
     {
       "name": "aurora-plugin-installer",

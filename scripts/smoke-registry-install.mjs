@@ -1,4 +1,4 @@
-import { createReadStream, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
+import { createReadStream, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { createServer } from "node:http"
 import { tmpdir } from "node:os"
 import { extname, join } from "node:path"
@@ -6,20 +6,62 @@ import { spawn } from "node:child_process"
 
 const localRegistryRoot = join(process.cwd(), "public", "r")
 const smokeProfiles = {
-  base: ["aurora-base"],
-  pages: [
-    "aurora-terminal",
-    "aurora-gateway",
-    "aurora-chat",
-    "aurora-login",
-    "aurora-marketplace",
-    "aurora-log-viewer",
-    "aurora-palette",
-    "aurora-sidebar",
-    "aurora-files",
-  ],
-  themes: ["aurora-theme-dark", "aurora-theme-light", "aurora-zed-theme", "aurora-warp-theme", "aurora-chrome-theme"],
-  agent: ["aurora-agent-skill", "aurora-plugin-installer"],
+  base: {
+    items: ["aurora-base"],
+    expectedFiles: ["components/ui/aurora/button.tsx", "components/aurora/terminal.tsx"],
+  },
+  pages: {
+    items: [
+      "aurora-terminal",
+      "aurora-gateway",
+      "aurora-chat",
+      "aurora-login",
+      "aurora-marketplace",
+      "aurora-log-viewer",
+      "aurora-palette",
+      "aurora-sidebar",
+      "aurora-files",
+    ],
+    expectedFiles: [
+      "app/aurora/terminal/page.tsx",
+      "app/aurora/gateway/page.tsx",
+      "app/aurora/chat/page.tsx",
+      "app/aurora/login/page.tsx",
+      "app/aurora/marketplace/page.tsx",
+      "app/aurora/log-viewer/page.tsx",
+      "app/aurora/palette/page.tsx",
+      "app/aurora/sidebar/page.tsx",
+      "app/aurora/files/page.tsx",
+    ],
+  },
+  themes: {
+    items: [
+      "aurora-theme-dark",
+      "aurora-theme-light",
+      "aurora-zed-theme",
+      "aurora-warp-theme",
+      "aurora-chrome-theme",
+      "aurora-shell-theme-pack",
+    ],
+    expectedFiles: [
+      ".config/aurora/themes/zed/aurora.json",
+      ".config/aurora/themes/warp/aurora.yaml",
+      ".config/aurora/themes/chrome/README.md",
+      ".config/aurora/themes/shell/README.md",
+    ],
+  },
+  agent: {
+    items: ["aurora-agent-skill", "aurora-plugin-installer"],
+    expectedFiles: [
+      ".config/aurora/agent/aurora-design-system/SKILL.md",
+      ".config/aurora/agent/aurora-design-system/references/tokens.md",
+      ".config/aurora/agent/aurora-design-system/references/components.md",
+      ".config/aurora/agent/aurora-design-system/references/recipes.md",
+      ".config/aurora/agent/aurora-design-system/references/android.md",
+      ".config/aurora/agent/aurora-design-system/references/editor-cli-tokens.md",
+      ".config/aurora/agent/install-aurora-plugin.sh",
+    ],
+  },
 }
 
 const selectedProfiles = (process.env.AURORA_REGISTRY_SMOKE_PROFILES ?? "base,pages,themes,agent")
@@ -27,12 +69,22 @@ const selectedProfiles = (process.env.AURORA_REGISTRY_SMOKE_PROFILES ?? "base,pa
   .map((profile) => profile.trim())
   .filter(Boolean)
 
-const items = (process.env.AURORA_REGISTRY_SMOKE_ITEMS ?? selectedProfiles.flatMap((profile) => smokeProfiles[profile] ?? []).join(","))
+const unknownProfiles = selectedProfiles.filter((profile) => !smokeProfiles[profile])
+if (unknownProfiles.length > 0) {
+  throw new Error(`Unknown Aurora registry smoke profile(s): ${unknownProfiles.join(", ")}`)
+}
+
+const explicitItems = process.env.AURORA_REGISTRY_SMOKE_ITEMS
+const items = (explicitItems ?? selectedProfiles.flatMap((profile) => smokeProfiles[profile].items).join(","))
   .split(",")
   .map((item) => item.trim())
   .filter(Boolean)
+const expectedFiles = explicitItems ? [] : selectedProfiles.flatMap((profile) => smokeProfiles[profile].expectedFiles)
 const keepTemp = process.env.AURORA_REGISTRY_SMOKE_KEEP_TEMP === "1"
 const shouldTypecheck = process.env.AURORA_REGISTRY_SMOKE_TYPECHECK !== "0"
+const repoPackage = JSON.parse(readFileSync(join(process.cwd(), "package.json"), "utf8"))
+const repoDeps = repoPackage.dependencies ?? {}
+const repoDevDeps = repoPackage.devDependencies ?? {}
 
 const tmp = mkdtempSync(join(tmpdir(), "aurora-registry-smoke-"))
 let server
@@ -133,18 +185,18 @@ try {
     packageManager: "pnpm@10.33.2",
     dependencies: {
       "@tailwindcss/postcss": "^4.3.0",
-      clsx: "^2.1.1",
-      next: "^16.2.6",
-      react: "^19.2.3",
-      "react-dom": "^19.2.3",
-      "tailwind-merge": "^3.3.1",
+      clsx: repoDeps.clsx,
+      next: repoDeps.next,
+      react: repoDeps.react,
+      "react-dom": repoDeps["react-dom"],
+      "tailwind-merge": repoDeps["tailwind-merge"],
       tailwindcss: "^4.3.0",
-      typescript: "^5.9.2",
+      typescript: repoDevDeps.typescript,
     },
     devDependencies: {
-      "@types/node": "^24.10.4",
-      "@types/react": "^19.2.7",
-      "@types/react-dom": "^19.2.3",
+      "@types/node": repoDevDeps["@types/node"],
+      "@types/react": repoDevDeps["@types/react"],
+      "@types/react-dom": repoDevDeps["@types/react-dom"],
     },
   })
 
@@ -216,35 +268,7 @@ try {
     ...items.map((item) => `${registryBaseUrl}/${item}.json`),
   ])
 
-  const expectedByProfile = {
-    base: [
-      join(tmp, "components", "ui", "aurora", "button.tsx"),
-      join(tmp, "components", "aurora", "terminal.tsx"),
-    ],
-    pages: [
-      join(tmp, "app", "aurora", "terminal", "page.tsx"),
-      join(tmp, "app", "aurora", "gateway", "page.tsx"),
-      join(tmp, "app", "aurora", "chat", "page.tsx"),
-      join(tmp, "app", "aurora", "login", "page.tsx"),
-      join(tmp, "app", "aurora", "marketplace", "page.tsx"),
-      join(tmp, "app", "aurora", "log-viewer", "page.tsx"),
-      join(tmp, "app", "aurora", "palette", "page.tsx"),
-      join(tmp, "app", "aurora", "sidebar", "page.tsx"),
-      join(tmp, "app", "aurora", "files", "page.tsx"),
-    ],
-    themes: [
-      join(tmp, ".config", "aurora", "themes", "zed", "aurora.json"),
-      join(tmp, ".config", "aurora", "themes", "warp", "aurora.yaml"),
-      join(tmp, ".config", "aurora", "themes", "chrome", "README.md"),
-    ],
-    agent: [
-      join(tmp, ".config", "aurora", "agent", "aurora-design-system", "SKILL.md"),
-      join(tmp, ".config", "aurora", "agent", "install-aurora-plugin.sh"),
-    ],
-  }
-  const expectedFiles = selectedProfiles.flatMap((profile) => expectedByProfile[profile] ?? [])
-
-  const missing = expectedFiles.filter((path) => !existsSync(path))
+  const missing = expectedFiles.map((path) => join(tmp, path)).filter((path) => !existsSync(path))
   if (missing.length > 0) {
     throw new Error(`Registry smoke install missed expected files:\n${missing.join("\n")}`)
   }
