@@ -320,6 +320,85 @@
       "docs": "Batteries-included Aurora setup. Installs aurora-components, tokens, component CSS, fonts, common primitives, and agent/workspace blocks through the @aurora registry namespace. After install, import the generated CSS once from your root stylesheet and set your root html element to className=\"dark\" for the default Aurora mode."
     },
     {
+      "name": "aurora-theme-dark",
+      "type": "registry:theme",
+      "title": "Aurora Dark Theme",
+      "description": "Dark-first Aurora shadcn theme variables for web applications.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "cssVars": {
+        "theme": {
+          "font-aurora-display": "'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+          "font-aurora-sans": "'Inter', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          "font-aurora-mono": "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, monospace"
+        },
+        "dark": {
+          "background": "var(--aurora-page-bg)",
+          "foreground": "var(--aurora-text-primary)",
+          "primary": "var(--aurora-accent-primary)",
+          "primary-foreground": "var(--aurora-accent-foreground)",
+          "secondary": "var(--aurora-panel-medium)",
+          "secondary-foreground": "var(--aurora-text-primary)",
+          "muted": "var(--aurora-control-surface)",
+          "muted-foreground": "var(--aurora-text-muted)",
+          "border": "var(--aurora-border-default)",
+          "input": "var(--aurora-control-surface)",
+          "ring": "var(--aurora-focus-ring)"
+        }
+      },
+      "categories": [
+        "aurora",
+        "theme",
+        "web"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "theme",
+        "mode": "dark"
+      },
+      "docs": "Aurora dark web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then keep `<html className=\"dark\">` as the default mode."
+    },
+    {
+      "name": "aurora-theme-light",
+      "type": "registry:theme",
+      "title": "Aurora Light Theme",
+      "description": "Light Aurora shadcn theme variables for web applications.",
+      "author": "jmagar <https://github.com/jmagar>",
+      "registryDependencies": [
+        "@aurora/aurora-tokens"
+      ],
+      "cssVars": {
+        "light": {
+          "background": "var(--aurora-page-bg)",
+          "foreground": "var(--aurora-text-primary)",
+          "primary": "var(--aurora-accent-primary)",
+          "primary-foreground": "var(--aurora-accent-foreground)",
+          "secondary": "var(--aurora-control-surface)",
+          "secondary-foreground": "var(--aurora-text-primary)",
+          "muted": "var(--aurora-control-surface)",
+          "muted-foreground": "var(--aurora-text-muted)",
+          "border": "var(--aurora-border-default)",
+          "input": "var(--aurora-control-surface)",
+          "ring": "var(--aurora-focus-ring)"
+        }
+      },
+      "categories": [
+        "aurora",
+        "theme",
+        "web"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "theme",
+        "mode": "light"
+      },
+      "docs": "Aurora light web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then toggle the root element to `.light` when the app should use the light mode."
+    },
+    {
       "name": "aurora-terminal",
       "type": "registry:page",
       "title": "Aurora Terminal Page",
