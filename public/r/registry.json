@@ -436,6 +436,11 @@
           "path": "registry/aurora/files/themes/warp/aurora.yaml",
           "type": "registry:file",
           "target": "~/.config/aurora/themes/warp/aurora.yaml"
+        },
+        {
+          "path": "public/warp/aurora.jpg",
+          "type": "registry:file",
+          "target": "~/.config/aurora/themes/warp/aurora.jpg"
         }
       ],
       "categories": [
@@ -450,7 +455,7 @@
         "tool": "warp",
         "targetScope": "project-root"
       },
-      "docs": "Installs the Aurora Warp theme YAML into the current project at `.config/aurora/themes/warp/aurora.yaml`. Shadcn `~` means project root, not the user's real home directory."
+      "docs": "Installs the Aurora Warp theme YAML and background image into the current project at `.config/aurora/themes/warp/`. Shadcn `~` means project root, not the user's real home directory."
     },
     {
       "name": "aurora-chrome-theme",

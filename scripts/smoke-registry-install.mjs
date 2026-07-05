@@ -46,6 +46,7 @@ const smokeProfiles = {
     expectedFiles: [
       ".config/aurora/themes/zed/aurora.json",
       ".config/aurora/themes/warp/aurora.yaml",
+      ".config/aurora/themes/warp/aurora.jpg",
       ".config/aurora/themes/chrome/README.md",
       ".config/aurora/themes/shell/README.md",
     ],
@@ -271,6 +272,24 @@ try {
   const missing = expectedFiles.map((path) => join(tmp, path)).filter((path) => !existsSync(path))
   if (missing.length > 0) {
     throw new Error(`Registry smoke install missed expected files:\n${missing.join("\n")}`)
+  }
+
+  if (items.includes("aurora-theme-dark") || items.includes("aurora-theme-light")) {
+    const globals = readFileSync(join(tmp, "app", "globals.css"), "utf8")
+    const missingThemeSnippets = [
+      "--background: var(--aurora-page-bg);",
+      "--foreground: var(--aurora-text-primary);",
+      "--primary: var(--aurora-accent-primary);",
+    ].filter((snippet) => !globals.includes(snippet))
+
+    if (missingThemeSnippets.length > 0) {
+      throw new Error(`Registry smoke install missed theme CSS variables:\n${missingThemeSnippets.join("\n")}`)
+    }
+  }
+
+  const pluginInstaller = join(tmp, ".config", "aurora", "agent", "install-aurora-plugin.sh")
+  if (items.includes("aurora-plugin-installer") && existsSync(pluginInstaller)) {
+    await run("bash", ["-n", pluginInstaller])
   }
 
   if (shouldTypecheck) {

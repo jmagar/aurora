@@ -42,6 +42,18 @@ const requestedPageNames = [
   "aurora-files",
 ]
 
+const requiredPageDependencies: Record<string, string[]> = {
+  "aurora-terminal": ["@aurora/aurora-base", "@aurora/aurora-terminal-block"],
+  "aurora-gateway": ["@aurora/aurora-base", "@aurora/aurora-card", "@aurora/aurora-timeline", "@aurora/aurora-badge", "@aurora/aurora-button"],
+  "aurora-chat": ["@aurora/aurora-base", "@aurora/aurora-ai-message", "@aurora/aurora-prompt-input"],
+  "aurora-login": ["@aurora/aurora-base", "@aurora/aurora-login-block"],
+  "aurora-marketplace": ["@aurora/aurora-base", "@aurora/aurora-marketplace-block"],
+  "aurora-log-viewer": ["@aurora/aurora-base", "@aurora/aurora-code-block", "@aurora/aurora-badge"],
+  "aurora-palette": ["@aurora/aurora-base", "@aurora/aurora-badge"],
+  "aurora-sidebar": ["@aurora/aurora-base", "@aurora/aurora-sidebar-block"],
+  "aurora-files": ["@aurora/aurora-base", "@aurora/aurora-file-tree"],
+}
+
 test("registry includes modern Aurora capability items", () => {
   const registry = readRegistry("../registry.json")
   const items = itemMap(registry)
@@ -68,6 +80,17 @@ test("requested page starter names are registry:page items", () => {
   }
 })
 
+test("starter pages declare their standalone registry dependencies", () => {
+  const registry = readRegistry("../registry.json")
+  const items = itemMap(registry)
+
+  for (const [name, dependencies] of Object.entries(requiredPageDependencies)) {
+    const item = items.get(name)
+    assert.ok(item, `${name} should exist`)
+    assert.deepEqual(item.registryDependencies, dependencies, `${name} should install without relying on another smoke profile`)
+  }
+})
+
 test("renamed component entries preserve colliding legacy installs", () => {
   const registry = readRegistry("../registry.json")
   const items = itemMap(registry)
@@ -85,6 +108,7 @@ test("registry file targets stay project-root scoped", () => {
 
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/zed/aurora.json")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/warp/aurora.yaml")))
+  assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/warp/aurora.jpg")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/chrome/README.md")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/shell/README.md")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/agent/aurora-design-system/references/tokens.md")))
