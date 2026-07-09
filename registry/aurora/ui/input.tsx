@@ -123,13 +123,13 @@ function Input({
 }: InputProps & { ref?: React.Ref<HTMLInputElement> }) {
     // Hold a real ref to the underlying <input> so the clear button can drive the
     // actual DOM element (native value setter + dispatched "input" event) instead
-    // of fabricating a detached element. Merge it with any forwarded ref.
+    // of fabricating a detached element. Merge it with any forwarded ref via a
+    // manual setRefs callback (no useImperativeHandle involved).
     //
     // NOTE: All hooks are declared unconditionally at the top of the component,
     // BEFORE the `unstyled` early-return, to satisfy the Rules of Hooks. The
-    // unstyled bare <input> reuses the same `inputRef`/`setRefs` so the hoisted
-    // useImperativeHandle (via setRefs ref-merge) still exposes the underlying
-    // element to the forwarded ref in both modes.
+    // unstyled bare <input> reuses the same `inputRef`/`setRefs` so the ref-merge
+    // still exposes the underlying element to the forwarded ref in both modes.
     const inputRef = React.useRef<HTMLInputElement | null>(null)
     const setRefs = React.useCallback(
       (node: HTMLInputElement | null) => {

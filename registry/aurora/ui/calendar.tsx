@@ -123,7 +123,7 @@ export function Calendar({ month, selected, onSelect, className, style, ...props
                 borderColor: isToday
                   ? "color-mix(in srgb, var(--aurora-accent-primary) 60%, transparent)"
                   : "transparent",
-                color: isSelected ? "#06131c" : "var(--aurora-text-primary)",
+                color: isSelected ? "var(--aurora-accent-foreground)" : "var(--aurora-text-primary)",
                 boxShadow: isSelected ? "var(--aurora-active-glow)" : "none",
               }}
             >

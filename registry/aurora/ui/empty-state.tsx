@@ -66,10 +66,9 @@ export function EmptyState({
         <div className="flex flex-col items-center gap-2">
           {/* Title */}
           <Heading
+            className="aurora-text-section"
             style={{
-              fontFamily: "var(--aurora-font-display)",
-              fontSize: "var(--aurora-type-section)",
-              fontWeight: "var(--aurora-weight-display)",
+              fontWeight: "var(--aurora-weight-heading)",
               lineHeight: "var(--aurora-line-dense)",
               color: "var(--aurora-text-primary)",
             }}
@@ -84,7 +83,7 @@ export function EmptyState({
                 color: "var(--aurora-text-muted)",
                 fontFamily: "var(--aurora-font-sans)",
                 fontSize: "var(--aurora-type-control)",
-                lineHeight: "var(--aurora-line-relaxed)",
+                lineHeight: "var(--aurora-line-body)",
                 maxWidth: 320,
               }}
             >

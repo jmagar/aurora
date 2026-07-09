@@ -38,6 +38,7 @@
   --aurora-accent-pink-strong: #fbc4d6;
   --aurora-accent-pink-deep:   #c46b88;
   --aurora-accent-pink-button: #e879a0;
+  --aurora-accent-pink-foreground: #fdeaf1;
   --aurora-rose-gradient: linear-gradient(180deg, var(--aurora-accent-pink) 0%, var(--aurora-accent-pink-button) 100%);
 
   /* Violet removed — AI/automation identity uses --axon-orange. */
@@ -265,6 +266,7 @@
   --aurora-accent-pink-strong: #e0527f;
   --aurora-accent-pink-deep:   #a0284f;
   --aurora-accent-pink-button: #b82f60;
+  --aurora-accent-pink-foreground: #6f1636;
 
   /* Violet removed — AI/automation identity uses --axon-orange. */
 

@@ -94,7 +94,7 @@ function Checkbox({
       {box}
       <span
         style={{
-          color: disabled ? "var(--aurora-text-muted)" : "var(--aurora-text-primary)",
+          color: disabled ? "var(--aurora-disabled-text)" : "var(--aurora-text-primary)",
           fontFamily: "var(--aurora-font-sans)",
           fontSize: "var(--aurora-type-control)",
           fontWeight: "var(--aurora-weight-body)",

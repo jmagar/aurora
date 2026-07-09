@@ -101,7 +101,7 @@ function Toggle({
           //    looks pressed-in/inactive, a subtle border, muted text.
           background: isPressed
             ? "color-mix(in srgb, var(--aurora-accent-primary) 18%, var(--aurora-control-surface))"
-            : "color-mix(in srgb, var(--aurora-control-surface) 86%, #000)",
+            : "color-mix(in srgb, var(--aurora-control-surface) 86%, var(--aurora-page-bg))",
           borderColor: isPressed
             ? "color-mix(in srgb, var(--aurora-accent-primary) 58%, var(--aurora-border-strong))"
             : "var(--aurora-border-default)",

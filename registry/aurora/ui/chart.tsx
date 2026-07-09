@@ -12,12 +12,15 @@ export interface ChartProps extends React.HTMLAttributes<HTMLDivElement> {
   type?: "bar" | "line" | "area"
   /** Accent color for the series. Defaults to the Aurora cyan accent. */
   color?: string
+  /** Accessible label for the chart SVG. Defaults to a description derived from `type`. */
+  ariaLabel?: string
 }
 
 export function Chart({
   data,
   type = "bar",
   color = "var(--aurora-accent-primary)",
+  ariaLabel,
   className,
   style,
   ...props
@@ -48,7 +51,7 @@ export function Chart({
       {...props}
     >
       {/* viewBox starts at -18 to give room for Y-axis labels on the left */}
-      <svg viewBox="-18 0 118 100" role="img" aria-label="Chart" className="h-48 w-full overflow-visible">
+      <svg viewBox="-18 0 118 100" role="img" aria-label={ariaLabel ?? `${type} chart`} className="h-48 w-full overflow-visible">
         <defs>
           <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--aurora-accent-strong)" />

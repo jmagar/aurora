@@ -89,7 +89,7 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
             style={{
-              transition: "stroke-dashoffset var(--motion-slow, 0.6s) var(--ease-out, ease-out)",
+              transition: "stroke-dashoffset var(--motion-duration-slow, 0.6s) var(--motion-ease-out, ease-out)",
             }}
           />
         </svg>
