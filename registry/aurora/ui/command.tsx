@@ -158,7 +158,7 @@ function Command(
         borderRadius: "var(--aurora-radius-3)",
         border: "1px solid var(--aurora-border-strong)",
         background:
-          "linear-gradient(180deg, var(--aurora-panel-strong) 0%, var(--aurora-panel) 100%)",
+          "linear-gradient(180deg, var(--aurora-panel-strong) 0%, var(--aurora-panel-medium) 100%)",
         boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
         color: "var(--aurora-text-primary)",
         fontFamily: "var(--aurora-font-sans)",

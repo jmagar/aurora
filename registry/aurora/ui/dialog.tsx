@@ -29,7 +29,7 @@ function DialogOverlay({ ref, className, ...props }: React.ComponentProps<typeof
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className
       )}
-      style={{ backgroundColor: "rgba(2, 8, 12, 0.62)" }}
+      style={{ backgroundColor: "var(--aurora-overlay)" }}
       {...props}
     />
   )

@@ -86,7 +86,7 @@ const badgeToneMap: Record<BadgeTone, ToneTokens> = {
   },
   rose: {
     accent:    "var(--aurora-accent-pink)",
-    text:      "var(--aurora-accent-pink-strong)",
+    text:      "var(--aurora-accent-pink-foreground)",
     border:    "var(--aurora-accent-pink-border)",
     bg:        "var(--aurora-accent-pink-surface)",
     solidText: "var(--aurora-page-bg)",

@@ -32,7 +32,7 @@ function ResizablePanels({ className, children, defaultSize = 34, minSize = 22, 
         max={maxSize}
         value={size}
         onChange={(event) => setSize(Number(event.target.value))}
-        className="h-full w-2 cursor-col-resize appearance-none border-x bg-[var(--aurora-panel-strong)]"
+        className="aurora-resizable-panels__input h-full w-2 cursor-col-resize appearance-none border-x bg-[var(--aurora-panel-strong)]"
         style={{ borderColor: "var(--aurora-border-default)" }}
       />
       <div className="min-w-0 overflow-auto">{childrenArray[1]}</div>

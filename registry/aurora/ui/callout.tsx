@@ -58,7 +58,7 @@ const toneMap: Record<CalloutVariant, ToneTokens> = {
     accent:      "var(--aurora-accent-pink)",
     bg:          "var(--aurora-accent-pink-surface)",
     border:      "var(--aurora-accent-pink-border)",
-    text:        "var(--aurora-accent-pink-strong)",
+    text:        "var(--aurora-accent-pink-foreground)",
     accentShadow: "0 0 10px var(--aurora-accent-pink)",
     accentInset:  "inset 3px 0 0 var(--aurora-accent-pink)",
   },

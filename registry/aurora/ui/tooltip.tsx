@@ -45,7 +45,7 @@ function TooltipContent({ ref, className, sideOffset = 6, style, ...props }: Rea
           borderColor: "var(--aurora-border-strong)",
           color: "var(--aurora-text-primary)",
           boxShadow:
-            "0 8px 24px rgba(0,0,0,0.32), var(--aurora-highlight-medium)",
+            "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
           fontSize: "12px",
           ...style,
         }}
