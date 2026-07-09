@@ -128,6 +128,10 @@
           "$value": "#e879a0",
           "$type": "color"
         },
+        "foreground": {
+          "$value": "#fdeaf1",
+          "$type": "color"
+        },
         "surface": {
           "$value": "#2c3342",
           "$type": "color"
