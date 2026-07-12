@@ -7,6 +7,14 @@ breaking changes and will be listed here.
 
 ---
 
+## [0.3.1](https://github.com/jmagar/aurora-design-system/compare/v0.3.0...v0.3.1) (2026-07-11)
+
+
+### Fixed
+
+* **ci:** switch OpenWiki to local openai-compatible proxy ([7caa3bc](https://github.com/jmagar/aurora-design-system/commit/7caa3bc95673fd98025c332b595c7db22862e4c9))
+* **ui:** correct token/color bugs across Aurora UI primitives ([#33](https://github.com/jmagar/aurora-design-system/issues/33)) ([494f06a](https://github.com/jmagar/aurora-design-system/commit/494f06a699602caf99fb2af52eda61d355695600))
+
 ## 0.3.0
 
 ### Breaking
