@@ -47,7 +47,7 @@ public data class AuroraModelOption(
 )
 
 /**
- * AI model picker button. Uses violet accent (AI identity).
+ * AI model picker button. Uses Axon-orange accent (AI identity).
  * Maps to web AI `model-selector` element.
  *
  * Accessibility:

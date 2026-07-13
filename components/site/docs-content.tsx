@@ -241,7 +241,7 @@ function FoundationsPage() {
       </P>
       <H>Color</H>
       <P>
-        Cyan is primary, rose is secondary, violet is the AI/automation tone. Status is muted —
+        Cyan is primary, rose is secondary, Axon orange is the AI/automation tone. Status is muted —
         success, warn, error, info each resolve as foreground / 12% surface / 34% border. Never raw
         hex; reach for tokens or <M>color-mix()</M>.
       </P>
@@ -281,8 +281,8 @@ function ThemingPage() {
       </P>
       <H>Axon override</H>
       <P>
-        Axon drops violet and runs three operation tones: cyan = fetch/read, orange = async/heavy
-        jobs, rose = AI/LLM. The registry <M>OperationIcon</M> derives the tone from the operation
+        Axon drops violet and runs operation tones as cyan = fetch/read and orange = AI/reasoning
+        plus async/heavy jobs, with rose reserved for secondary expressive actions. The registry <M>OperationIcon</M> derives the tone from the operation
         name.
       </P>
     </div>

@@ -9,8 +9,8 @@
  * Excluded: gradients, shadows, font families, unresolvable expressions.
  *
  * Resolution order:
- *   1. Collect all --aurora-* custom property raw values
- *   2. Resolve var(--aurora-*) chains recursively
+ *   1. Collect all --aurora-* and --axon-* custom property raw values
+ *   2. Resolve var(--aurora-*) and var(--axon-*) chains recursively
  *   3. Resolve color-mix(in srgb, A N%, B) via premultiplied-alpha sRGB mixing
  *   4. Convert rgba() to 8-digit hex
  *   5. Classify by type; exclude anything not representable as Color/Dp/number
@@ -163,7 +163,7 @@ export function tryResolveColorMix(value) {
 }
 
 /**
- * Resolve all var(--aurora-*) references in a value string.
+ * Resolve all var(--aurora-*) and var(--axon-*) references in a value string.
  *
  * Throws immediately on circular references or unresolvable var() so the
  * originating token is identified at the point of failure rather than silently
@@ -181,7 +181,7 @@ export function resolveVars(value, vars, visited = new Set(), depth = 0) {
       `  visited: ${[...visited].join(' → ')}`
     );
   }
-  return value.replace(/var\(\s*(--aurora-[\w-]+)\s*(?:,\s*([^)]+?))?\s*\)/g, (_match, varName, fallback) => {
+  return value.replace(/var\(\s*(--(?:aurora|axon)-[\w-]+)\s*(?:,\s*([^)]+?))?\s*\)/g, (_match, varName, fallback) => {
     if (visited.has(varName)) {
       throw new Error(
         `Circular var() reference detected: ${varName}\n` +
@@ -266,7 +266,7 @@ function exclusionReason(rawValue) {
 
 // ─── CSS extraction ───────────────────────────────────────────────────────────
 
-// Module-level map of --aurora-varName → raw value string, populated by the
+// Module-level map of --aurora-varName/--axon-varName → raw value string, populated by the
 // run path. `resolveToken` reads this global. It must be declared here, not
 // inside the `if (isMain)` guard: `resolveToken` is a top-level function that
 // closes over `rawVars`, so moving this declaration into the guard would put
@@ -295,38 +295,44 @@ walk(ast, function (node) {
   const hasDarkSelector = selectorText.split(',').some((selector) => selector.includes('.dark'));
   if (!hasDarkSelector) return;
 
-  // Collect all --aurora-* declarations
+  // Collect all Aurora-owned declarations
   walk(node.block, function (decl) {
     if (decl.type !== 'Declaration') return;
-    if (!decl.property.startsWith('--aurora-')) return;
+    if (!decl.property.startsWith('--aurora-') && !decl.property.startsWith('--axon-')) return;
     rawVars[decl.property] = generate(decl.value).trim();
   });
 });
 
 const count = Object.keys(rawVars).length;
-console.log(`Collected ${count} --aurora-* raw declarations from dark theme block`);
+console.log(`Collected ${count} Aurora/Axon raw declarations from dark theme block`);
 if (count === 0) {
-  console.error('ERROR: No --aurora-* tokens found. Check the CSS selector matching.');
+  console.error('ERROR: No Aurora/Axon tokens found. Check the CSS selector matching.');
   process.exit(1);
 }
 
 // ─── Token processing ─────────────────────────────────────────────────────────
 
-/** @type {Record<string, { $value: string|number, $type: string }>} flat map before nesting */
+/** @type {Record<string, { $value: string|number, $type: string, _source?: string }>} flat map before nesting */
 const emittedFlat = {};
 
 /** @type {Array<{ name: string, rawValue: string, reason: string }>} */
 const exclusions = [];
 
+function tokenSuffix(prop) {
+  if (prop.startsWith('--aurora-')) return prop.slice('--aurora-'.length);
+  if (prop.startsWith('--axon-')) return `axon-${prop.slice('--axon-'.length)}`;
+  throw new Error(`Unsupported token prefix: ${prop}`);
+}
+
 for (const [prop, rawValue] of Object.entries(rawVars)) {
-  // Strip --aurora- prefix, split by hyphens to get path segments
-  const suffix = prop.slice('--aurora-'.length); // e.g. 'accent-primary'
+  // Strip the source prefix, split by hyphens to get path segments
+  const suffix = tokenSuffix(prop);              // e.g. 'accent-primary' or 'axon-orange'
   const segments = suffix.split('-');             // e.g. ['accent', 'primary']
 
   const result = resolveToken(rawValue);
 
   if (result) {
-    emittedFlat[suffix] = { $value: result.resolved, $type: result.type, _segments: segments };
+    emittedFlat[suffix] = { $value: result.resolved, $type: result.type, _segments: segments, _source: prop };
   } else {
     exclusions.push({
       name: prop,
@@ -388,7 +394,7 @@ function setNested(obj, segments, value) {
 const dark = {};
 
 for (const [, tokenData] of Object.entries(emittedFlat)) {
-  const { _segments, ...dtcgToken } = tokenData;
+  const { _segments, _source, ...dtcgToken } = tokenData;
   setNested(dark, _segments, dtcgToken);
 }
 
@@ -404,7 +410,7 @@ for (const [suffix, tokenData] of Object.entries(emittedFlat)) {
   const val = String(tokenData.$value);
   for (const pattern of FORBIDDEN_PATTERNS) {
     if (val.includes(pattern)) {
-      violations.push({ token: `--aurora-${suffix}`, value: val, pattern });
+      violations.push({ token: tokenData._source ?? suffix, value: val, pattern });
     }
   }
 }

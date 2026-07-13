@@ -54,10 +54,10 @@ const PALETTE: Group[] = [
     ],
   },
   {
-    group: "Accent · axon orange (async)",
+    group: "Accent · axon orange (AI / automation)",
     swatches: [
       { token: "--axon-orange-deep", name: "Deep", role: "Pressed orange" },
-      { token: "--axon-orange", name: "Orange", role: "Async · heavy jobs", strong: true },
+      { token: "--axon-orange", name: "Orange", role: "AI · automation", strong: true },
       { token: "--axon-orange-strong", name: "Strong", role: "Hover emphasis" },
       { token: "--axon-orange-button", name: "Button", role: "Filled orange action" },
     ],

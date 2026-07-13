@@ -46,8 +46,8 @@ public data class AuroraMessageData(
  *
  * Layout:
  * - User messages: right-aligned, cyan ([MaterialTheme.colorScheme.primary]) bubble.
- * - Assistant messages: left-aligned, violet surface bubble with avatar.
- * - System messages: left-aligned, violet surface bubble with "S" avatar.
+ * - Assistant messages: left-aligned, Axon-orange surface bubble with avatar.
+ * - System messages: left-aligned, Axon-orange surface bubble with "S" avatar.
  *
  * Accessibility: the row merges descendants and announces as "You: [content]",
  * "Assistant: [content]", or "System: [content]" for TalkBack.

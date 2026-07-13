@@ -17,7 +17,7 @@ If the user invokes this skill without a concrete build target, ask what surface
 The non-negotiables Aurora gives you and that every consumer must respect:
 
 - Dark-first, navy lift tiers — flat page, raised toolbars/headers, strongly raised inspector panels
-- Cyan primary accent, rose secondary, Axon orange for web AI/automation identity, muted status colors (never neon)
+- Cyan primary accent, rose secondary, Axon orange for AI/automation identity, muted status colors (never neon)
 - Manrope for display, Inter for working UI, JetBrains Mono **only** for code and terminal content (code blocks, inline code, shell commands, terminal output) — never for paths/IDs/chips/tables/labels shown as data
 - Tokenized everything via `--aurora-*` CSS custom properties — never inline hex in product code
 - Selection and focus are **border + glow**, not flooded fills
@@ -48,7 +48,7 @@ Aurora spans web, Android, and CLI/editor surfaces. The contract above (tokens, 
 | **Android** (Jetpack Compose) | `~/workspace/aurora/android/aurora` — the `tv.tootie.aurora:aurora` library (`AuroraTheme`, color tokens, `AuroraShapes`) | Gradle dep `tv.tootie.aurora:aurora`, wired via local composite build (`settings.gradle.kts`) | `references/android.md` |
 | **CLI / editors** (Rust, terminal, Zed) | `~/workspace/aurora/themes/{editors,browser,shell}/...` + the `lab` `CliTheme` (`crates/lab/src/output/theme.rs`) | copied token tables / `CliTheme` methods | `references/editor-cli-tokens.md` |
 
-Web and Android use canonical Aurora tokens. CLI/editor palettes may diverge because terminal and editor accents need different contrast behavior; some non-web syntax/status palettes still use violet for language/config roles. Web AI/automation identity uses Axon orange. Never paste CLI/editor hex into web or Android, or web hex into CLI/editor themes. See `references/editor-cli-tokens.md`.
+Web and Android use canonical Aurora tokens. CLI/editor palettes may diverge because terminal and editor accents need different contrast behavior; some non-web syntax/status palettes still use violet for language/config roles. AI/automation identity uses Axon orange on product surfaces. Never paste CLI/editor hex into web or Android, or web hex into CLI/editor themes. See `references/editor-cli-tokens.md`.
 
 ## When you're working inside the source repo
 
@@ -158,7 +158,7 @@ Reach for semantic Aurora vars, or `color-mix(in srgb, var(--aurora-accent-prima
 |---|---|
 | `--aurora-accent-primary` / `-strong` / `-deep` / `-lift` / `-button` (cyan) | Primary CTAs, selection, focus, active state |
 | `--aurora-accent-pink` / `-strong` / `-deep` / `-button` (rose) | Secondary CTAs, agent affordances, send buttons, key labels in mono code, active filter tags — **one or two touch points per screen, not splattered** |
-| `--axon-orange` / `-strong` / `-deep` / `-button` (Axon orange) | Web AI/automation identity — model selectors, reasoning panels, autonomous actions |
+| `--axon-orange` / `-strong` / `-deep` / `-button` / `-surface` / `-border` (Axon orange) | AI/automation identity — model selectors, reasoning panels, autonomous actions |
 
 Each accent family has matching `-surface` and `-border` mix tokens; use those for tinted backgrounds and matching borders.
 

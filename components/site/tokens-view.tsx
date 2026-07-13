@@ -4,7 +4,7 @@ import * as React from "react"
 import { Copy, Check } from "lucide-react"
 import { panelStrong } from "@/components/site/style-tokens"
 
-/* ── token data — names map 1:1 to --aurora-* custom properties ── */
+/* ── token data — names map 1:1 to Aurora-owned custom properties ── */
 
 const SURFACES = [
   ["page-bg", "Page background (flat Tier 0)"],
@@ -28,7 +28,7 @@ const TEXT = [
 const ACCENTS = [
   { fam: "Cyan — primary", base: "accent-primary", ramp: ["accent-deep", "accent-primary", "accent-strong"], use: "Primary CTAs, selection, focus, active state." },
   { fam: "Rose — secondary", base: "accent-pink", ramp: ["accent-pink-deep", "accent-pink", "accent-pink-strong"], use: "Agent / send affordances, key labels, active filter tags. One or two touch points per screen." },
-  { fam: "Violet — AI", base: "accent-violet", ramp: ["accent-violet-deep", "accent-violet", "accent-violet-strong"], use: "AI / automation identity — model selectors, reasoning, autonomous actions." },
+  { fam: "Axon orange — AI / automation", base: "axon-orange", ramp: ["axon-orange-deep", "axon-orange", "axon-orange-strong"], use: "AI / automation identity — model selectors, reasoning, autonomous actions." },
 ] as const
 
 const STATUS = [
@@ -67,7 +67,8 @@ const TYPE_RAMP: { cls: string; label: string; sample: string; note: string }[] 
   { cls: "aurora-text-code", label: "Code", sample: "npx shadcn@latest add", note: "JetBrains Mono · code, IDs, paths" },
 ]
 
-const v = (n: string) => `var(--aurora-${n})`
+const tokenVar = (n: string) => n.startsWith("axon-") ? `--${n}` : `--aurora-${n}`
+const v = (n: string) => `var(${tokenVar(n)})`
 
 function Section({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
   return (
@@ -81,7 +82,7 @@ function Section({ eyebrow, title, children }: { eyebrow: string; title: string;
 
 function TokenName({ name }: { name: string }) {
   const [done, setDone] = React.useState(false)
-  const full = `--aurora-${name}`
+  const full = tokenVar(name)
   return (
     <button
       onClick={() => { navigator.clipboard?.writeText(full); setDone(true); setTimeout(() => setDone(false), 1100) }}
@@ -164,7 +165,7 @@ export function TokensView() {
               <div className="aurora-text-section mb-1" style={{ fontSize: 15 }}>{a.fam}</div>
               <p className="aurora-text-caption mb-4" style={{ color: "var(--aurora-text-muted)" }}>{a.use}</p>
               <div className="flex overflow-hidden rounded-[10px]" style={{ height: 44, border: "1px solid var(--aurora-border-default)" }}>
-                {a.ramp.map((r) => <div key={r} style={{ flex: 1, background: v(r) }} title={`--aurora-${r}`} />)}
+                {a.ramp.map((r) => <div key={r} style={{ flex: 1, background: v(r) }} title={tokenVar(r)} />)}
               </div>
               <div className="mt-2"><TokenName name={a.base} /></div>
             </div>

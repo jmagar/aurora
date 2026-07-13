@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /**
- * AI-specific shimmer placeholder (uses violet instead of neutral shimmer).
+ * AI-specific shimmer placeholder (uses Axon orange instead of neutral shimmer).
  * Maps to web AI `shimmer` element. For generic shimmer use [AuroraSkeleton].
  *
  * An animated sweep runs from [aurora.accentVioletSurface] through a brighter

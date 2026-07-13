@@ -35,7 +35,7 @@ public data class AuroraCanvasEdge(val fromId: String, val toId: String)
 
 /**
  * Simple topology canvas for agent/node graphs.
- * Maps to web AI `canvas` element. Renders nodes as violet circles with
+ * Maps to web AI `canvas` element. Renders nodes as Axon-orange circles with
  * connecting lines and node label text centred inside each circle.
  *
  * Coordinates are in raw canvas pixels (the [Canvas] composable coordinate

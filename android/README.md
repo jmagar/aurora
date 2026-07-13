@@ -47,20 +47,24 @@ cd android
 
 | CSS Token | Kotlin Token | Usage |
 |-----------|-------------|-------|
-| `--aurora-accent-cyan-base` | `AuroraColors.accentCyanBase` | Primary accent, links, focus rings |
-| `--aurora-accent-cyan-button` | `AuroraColors.accentCyanButton` | Primary button fill |
-| `--aurora-accent-pink-base` | `AuroraColors.accentPinkBase` | Secondary accent |
+| `--aurora-accent-primary` | `AuroraColors.accentPrimaryBase` | Primary accent, links, focus rings |
+| `--aurora-accent-button` | `AuroraColors.accentButton` | Primary button fill |
+| `--aurora-accent-pink` | `AuroraColors.accentPinkBase` | Secondary accent |
 | `--aurora-accent-pink-button` | `AuroraColors.accentPinkButton` | Secondary button fill |
-| `--aurora-accent-violet-base` | `AuroraColors.accentVioletBase` | AI/automation identity |
-| `--aurora-base-surface` | `AuroraColors.baseSurface` | Page background (`#07131C`) |
-| `--aurora-panel-medium` | `AuroraColors.panelMedium` | Card/panel backgrounds |
-| `--aurora-panel-strong` | `AuroraColors.panelStrong` | Elevated surfaces |
+| `--axon-orange` | `AuroraColors.axonOrangeBase` | AI/automation identity |
+| `--axon-orange-surface` | `AuroraColors.axonOrangeSurface` | AI/automation tinted surfaces |
+| `--axon-orange-border` | `AuroraColors.axonOrangeBorder` | AI/automation borders |
+| `--aurora-page-bg` | `AuroraColors.pageBg` | Page background (`#07131C`) |
+| `--aurora-panel-medium` | `AuroraColors.panelMediumBase` | Card/panel backgrounds |
+| `--aurora-panel-strong` | `AuroraColors.panelStrongBase` | Elevated surfaces |
 | `--aurora-text-primary` | `AuroraColors.textPrimary` | Primary text |
-| `--aurora-text-secondary` | `AuroraColors.textSecondary` | Secondary/muted text |
-| `--aurora-status-success` | `AuroraColors.statusSuccess` | Success states |
-| `--aurora-status-warn` | `AuroraColors.statusWarn` | Warning states |
-| `--aurora-status-error` | `AuroraColors.statusError` | Error states |
+| `--aurora-text-muted` | `AuroraColors.textMuted` | Secondary/muted text |
+| `--aurora-success` | `AuroraColors.successBase` | Success states |
+| `--aurora-warn` | `AuroraColors.warnBase` | Warning states |
+| `--aurora-error` | `AuroraColors.errorBase` | Error states |
 | `--aurora-border-default` | `AuroraColors.borderDefault` | Default borders/dividers |
+
+`AuroraExtraColors.accentViolet*` remains as a compatibility alias for existing AI component call sites, but those fields now point at Axon-orange tokens. New Android code should prefer `axonOrange*` for AI/automation styling.
 
 ## Theme Usage
 

@@ -93,7 +93,7 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
 
 ## Conventions & Patterns
 
-- **Dark-first.** Navy base `#07131c`; accents = Cyan (primary), Rose (secondary), Violet (AI).
+- **Dark-first.** Navy base `#07131c`; accents = Cyan (primary), Rose (secondary), Axon orange (AI/automation).
 - **Always use Aurora tokens** via CSS custom properties — no raw Tailwind color defaults.
 - **Registry changes require rebuild.** After editing anything in `registry/aurora/**`,
   run `pnpm registry:build` so `public/r/*.json` stays in sync.

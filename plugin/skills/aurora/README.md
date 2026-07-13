@@ -1,6 +1,6 @@
 # aurora
 
-Aurora design-system guidance for React/Next.js UI work in the operator/agent control-plane look (dark, navy/cyan/rose/violet, Manrope+Inter+JetBrains Mono, `--aurora-*` CSS tokens).
+Aurora design-system guidance for React/Next.js UI work in the operator/agent control-plane look (dark, navy/cyan/rose/Axon-orange, Manrope+Inter+JetBrains Mono, `--aurora-*` CSS tokens).
 
 ## When to invoke
 Any React/Next.js/shadcn/Tailwind work in `~/workspace/aurora` or a project consuming the Aurora registry — even if the user doesn't say "Aurora" by name. Also use it for static HTML mocks, slides, design reviews, prototypes, screenshots, or throwaway demos that should look like Labby or the Aurora operator console.

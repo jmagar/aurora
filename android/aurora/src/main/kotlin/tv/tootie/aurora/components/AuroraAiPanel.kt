@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
 /**
- * Titled panel with violet AI identity accent on the header.
+ * Titled panel with Axon-orange AI identity accent on the header.
  * Maps to web AI `panel` element.
  *
  * Accessibility:

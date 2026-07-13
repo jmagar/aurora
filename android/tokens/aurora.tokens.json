@@ -310,6 +310,34 @@
         "$type": "dimension"
       }
     },
+    "axon": {
+      "orange": {
+        "base": {
+          "$value": "#ff9645",
+          "$type": "color"
+        },
+        "strong": {
+          "$value": "#ffb474",
+          "$type": "color"
+        },
+        "deep": {
+          "$value": "#c96a1c",
+          "$type": "color"
+        },
+        "button": {
+          "$value": "#f5801f",
+          "$type": "color"
+        },
+        "surface": {
+          "$value": "#2e2b29",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#ff96455c",
+          "$type": "color"
+        }
+      }
+    },
     "preview": {
       "allowed": {
         "$value": "#00e676",

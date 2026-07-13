@@ -146,10 +146,10 @@ Viewed web `aurora-button` in the local gallery at `/gallery/buttons` with `agen
 
 Required Kotlin alignment work:
 
-- Rename or expand `AuroraButtonVariant` to match the shadcn API: `Aurora`, `Neutral`, `Rose`, `Violet`, `Ghost`, `Destructive`, and optionally `Plain`. Keep compatibility aliases only if app call sites need migration time.
+- Rename or expand `AuroraButtonVariant` to match the shadcn API: `Aurora`, `Neutral`, `Rose`, `Automation`, `Ghost`, `Destructive`, and optionally `Plain`. Keep compatibility aliases only if app call sites need migration time.
 - Replace the Material filled primary treatment with the web primary treatment: control-surface background, cyan mixed border, subtle top inset highlight, and cyan outer glow. The current Android `Save` button is a solid cyan filled pill, which is visually stronger than the web `aurora` variant.
 - Add a size model matching web sizes: `Sm`, `Default`, `Lg`, `Icon`, and optionally `Unstyled`, with fixed heights and radius equivalents for 7px, 8px, and 10px rather than relying on Material default pill shapes.
-- Add rose and violet variants using Aurora token colors. Rose is used for send/agent affordances on web; violet is used for AI/automation identity.
+- Add rose and automation variants using Aurora token colors. Rose is used for send/agent affordances on web; Axon orange is used for AI/automation identity.
 - Add trailing icon and icon-only support. Current Kotlin has `leadingIcon` only, while web supports arbitrary icon content and has an explicit `icon` size.
 - Preserve loading state width and spinner tone by variant. The web implementation keeps layout stable during loading and maps spinner tone to cyan, rose, or muted.
 - Align disabled and pressed states with web behavior: disabled opacity around 45%, active press scale/tint feedback, and focus/selection as border plus glow rather than filled-state changes.
@@ -203,7 +203,7 @@ Viewed web `aurora-prompt-input` at `/gallery/prompt-input` and Android chat com
 Required Kotlin alignment work:
 
 - Promote attach, slash-command, mention, and model/action slots into the Kotlin component API so the app does not assemble composer chrome around the primitive.
-- Match web composer shape and density: larger rounded container, token border, active rose/violet accent, and stable bottom toolbar layout.
+- Match web composer shape and density: larger rounded container, token border, active rose/Axon-orange accent, and stable bottom toolbar layout.
 - Add explicit disabled/loading/sendable visual states matching web, including spinner placement and disabled send tone.
 - Keep the current haptic and IME-send behavior; those are Android-native parity wins.
 
@@ -243,14 +243,14 @@ This matrix is the working Kotlin parity backlog. It covers every non-token shad
 
 | Shadcn registry item | Kotlin target | Kotlin parity note |
 |---|---|---|
-| `aurora-button` | `AuroraButton.kt` | Match shadcn variants, sizes, icon-only, rose/violet, loading width, and border/glow styling instead of Material filled defaults. |
+| `aurora-button` | `AuroraButton.kt` | Match shadcn variants, sizes, icon-only, rose/automation, loading width, and border/glow styling instead of Material filled defaults. |
 | `aurora-badge` | `AuroraBadge.kt` | Verify tone names, compact density, rounded radius, icon/overflow behavior, and status-token colors against web badge variants. |
 | `aurora-input` | `AuroraTextField.kt` | Replace Material default shape/colors with Aurora control surface, compact density, focus glow, placeholder tone, and explicit state styling. |
 | `aurora-select` | `AuroraSelect.kt` | Style trigger/menu with Aurora tokens, hoist expanded state, add selected/disabled/helper/danger rows, and share with app dropdown use. |
 | `aurora-native-select` | `AuroraSelect.kt` | Decide whether native-select is only a simple select alias on Android or needs a separate non-searchable compact API. |
 | `aurora-textarea` | `AuroraTextField.kt` | Add multiline presets, min/max row sizing, resize-equivalent behavior, and textarea-specific density around the shared text field. |
 | `aurora-avatar` | `AuroraAvatar.kt` | Align sizes, fallback initials, image loading states, border/ring treatment, and grouped/avatar-stack behavior if present on web. |
-| `aurora-progress` | `AuroraProgress.kt` | Match web determinate/indeterminate variants, track height, status tones, rose/violet support, and label/value semantics. |
+| `aurora-progress` | `AuroraProgress.kt` | Match web determinate/indeterminate variants, track height, status tones, rose/Axon-orange support, and label/value semantics. |
 | `aurora-switch` | `AuroraSwitch.kt` | Check thumb/track token colors, icon/thumb content, disabled opacity, focus ring, and animation timing against web switch. |
 | `aurora-tabs` | `AuroraTabs.kt` | Align line/pill variants, active indicator style, scroll behavior, density, disabled tabs, and keyboard/focus semantics. |
 | `aurora-breadcrumb` | `AuroraBreadcrumb.kt` | Match separators, truncation/collapse behavior, current-page treatment, icon slots, and muted link typography. |
@@ -268,7 +268,7 @@ This matrix is the working Kotlin parity backlog. It covers every non-token shad
 | `aurora-filter-bar` | `AuroraFilterBar.kt` | Match chip variants, clear-all affordance, overflow/wrap behavior, selected count, and search/filter composition slots. |
 | `aurora-prompt-input` | `AuroraPromptInput.kt` | Add attach/slash/mention/model slots, toolbar layout, loading/send states, and web composer density while preserving Android haptics. |
 | `aurora-tool-calls` | `AuroraToolCallList.kt` | Match collapsed/expanded states, status tones, argument/result code blocks, timing metadata, and error display. |
-| `aurora-thinking` | `AuroraThinking.kt` | Align animation, violet AI accent, text/compact variants, reduced-motion behavior, and placement within chat flows. |
+| `aurora-thinking` | `AuroraThinking.kt` | Align animation, Axon-orange AI accent, text/compact variants, reduced-motion behavior, and placement within chat flows. |
 | `aurora-code-block` | `AuroraCodeBlock.kt` | Match header, language badge, copy action, line wrapping, selection, syntax/highlight strategy, and terminal-vs-code distinction. |
 | `aurora-terminal` | `AuroraTerminal.kt` | Align title/status/actions, line types, auto-scroll, monospace density, copy/clear affordances, and role/log semantics. |
 | `aurora-sidebar` | `AuroraSidebar.kt` | Expand from drawer wrapper to registry block: search, groups, session rows, primary action, footer, selected/collapsed states. |
@@ -304,7 +304,7 @@ This matrix is the working Kotlin parity backlog. It covers every non-token shad
 | `aurora-kbd` | `AuroraKbd.kt` | Match mono typography, border/fill, key grouping, size variants, and high-contrast/readability states. |
 | `aurora-toolbar` | `AuroraToolbar.kt` | Align grouped actions, separators, icon button sizes, overflow behavior, sticky/inline variants, and disabled/active states. |
 | `aurora-separator` | `AuroraSeparator.kt` | Match horizontal/vertical thickness, spacing presets, decorative semantics, and muted/strong token variants. |
-| `aurora-spinner` | `AuroraSpinner.kt` | Align size/tone variants, aria/content descriptions, loading placement conventions, and rose/violet/muted tones. |
+| `aurora-spinner` | `AuroraSpinner.kt` | Align size/tone variants, aria/content descriptions, loading placement conventions, and rose/Axon-orange/muted tones. |
 | `aurora-button-group` | `AuroraButtonGroup.kt` | Match single/multi-select, variant sizing, active border/glow, disabled options, icon options, and segmented density. |
 | `aurora-accordion` | `AuroraCollapsible.kt` | Add an accordion wrapper supporting multiple items, single/multiple open modes, trigger/content styling, and chevron states. |
 | `aurora-ai-elements` | Child components | Keep as umbrella docs/exports only; ensure every child item below has a Kotlin counterpart or explicit delegate note. |
@@ -330,17 +330,17 @@ This matrix is the working Kotlin parity backlog. It covers every non-token shad
 | `aurora-toggle` | `AuroraToggle.kt` | Match pressed/selected styling, icon/text variants, size variants, disabled state, and toolbar integration. |
 | `aurora-toggle-group` | `AuroraButtonGroup.kt` | Add toggle-group wrapper or mode for multi/single pressed state, roving focus, and item-level aria semantics. |
 | `aurora-ai-attachments` | `AuroraAttachment.kt` | Add collection wrapper for multiple attachments, upload progress, remove/retry actions, and AI composer placement. |
-| `aurora-ai-chain-of-thought` | `AuroraChainOfThought.kt` | Align collapsible reasoning steps, disclosure header, caution copy, streaming state, and violet AI styling. |
+| `aurora-ai-chain-of-thought` | `AuroraChainOfThought.kt` | Align collapsible reasoning steps, disclosure header, caution copy, streaming state, and Axon-orange AI styling. |
 | `aurora-ai-checkpoint` | `AuroraCheckpoint.kt` | Match status icons/tone names, timestamp/detail slots, pending/running/done/failed states, and timeline integration. |
 | `aurora-ai-confirmation` | `AuroraAlertDialog.kt` | Add confirmation-specific API for prompt, risk level, confirm/cancel labels, command preview, and blocking state. |
 | `aurora-ai-context` | `AuroraContextPanel.kt` | Align token usage meter, included files/resources, threshold coloring, empty state, and compact panel layout. |
 | `aurora-ai-conversation` | `AuroraConversation.kt` | Match message list spacing, streaming scroll behavior, empty/loading states, role semantics, and virtualization strategy. |
 | `aurora-ai-inline-citation` | `AuroraInlineCitation.kt` | Align superscript/pill variants, source popover, active/visited state, and accessible link labels. |
 | `aurora-ai-message` | `AuroraMessage.kt` | Match user/assistant/system variants, markdown/code slots, tool-call embeds, streaming state, actions, and avatar placement. |
-| `aurora-ai-model-selector` | `AuroraModelSelector.kt` | Align grouped model options, provider/meta text, selected checkmark, violet trigger, disabled/loading states, and reasoning pairing. |
+| `aurora-ai-model-selector` | `AuroraModelSelector.kt` | Align grouped model options, provider/meta text, selected checkmark, Axon-orange trigger, disabled/loading states, and reasoning pairing. |
 | `aurora-ai-plan` | `AuroraPlanList.kt` | Match task hierarchy, checkbox/status pills, progress summary, edit/expand states, and empty/running states. |
 | `aurora-ai-queue` | `AuroraQueueList.kt` | Align queued/running/done/error tones, position metadata, actions, progress/spinner state, and compact row density. |
-| `aurora-ai-reasoning` | `AuroraReasoning.kt` | Match disclosure surface, streamed text, step grouping, violet accent, collapsed summary, and reduced-motion behavior. |
+| `aurora-ai-reasoning` | `AuroraReasoning.kt` | Match disclosure surface, streamed text, step grouping, Axon-orange accent, collapsed summary, and reduced-motion behavior. |
 | `aurora-ai-shimmer` | `AuroraAiShimmer.kt` | Align shimmer colors, animation timing, shape variants, reduced-motion fallback, and skeleton aliasing. |
 | `aurora-ai-sources` | `AuroraSources.kt` | Match source pill/card variants, titles/domains/snippets, overflow behavior, active citation link, and horizontal scrolling. |
 | `aurora-ai-suggestion` | `AuroraSuggestionChip.kt` | Align suggestion list/chip variants, icon/action slots, selected/disabled state, and wrapping behavior. |
@@ -361,13 +361,13 @@ This matrix is the working Kotlin parity backlog. It covers every non-token shad
 | `aurora-ai-persona` | `AuroraPersona.kt` | Match avatar/name/role/status layout, selected/active states, description/meta slots, and compact variants. |
 | `aurora-ai-speech-input` | `AuroraSpeechInput.kt` | Align recording/listening states, pulse animation, permission denial, disabled/loading states, and haptic feedback. |
 | `aurora-ai-transcription` | `AuroraTranscription.kt` | Match live partial/final text, confidence/progress, error/empty state, scrolling, and highlight animation. |
-| `aurora-ai-voice-selector` | `AuroraVoiceSelector.kt` | Align voice option metadata, preview action, selected state, disabled/loading, and violet AI trigger styling. |
+| `aurora-ai-voice-selector` | `AuroraVoiceSelector.kt` | Align voice option metadata, preview action, selected state, disabled/loading, and Axon-orange AI trigger styling. |
 | `aurora-ai-canvas` | `AuroraCanvasView.kt` | Align pan/zoom, node/edge slots, selection, minimap/controls if present, empty state, and touch gestures. |
 | `aurora-ai-connection` | `AuroraConnection.kt` | Match connection status, direction labels, active/idle/error styling, animation, and node relationship metadata. |
 | `aurora-ai-controls` | `AuroraControls.kt` | Align stop/pause/retry/etc. buttons, danger/disabled/loading states, icon size, tooltips/labels, and compact mode. |
 | `aurora-ai-edge` | `AuroraAiEdge.kt` | Match edge label chip, active/error states, direction/metadata slots, and canvas integration. |
 | `aurora-ai-node` | `AuroraCanvasView.kt` node model | Add explicit node rendering API or wrapper for node shape, status, icon/avatar, labels, and selection. |
-| `aurora-ai-panel` | `AuroraAiPanel.kt` | Align title/action/footer slots, violet border/surface, collapsed state, loading/error states, and density. |
+| `aurora-ai-panel` | `AuroraAiPanel.kt` | Align title/action/footer slots, Axon-orange border/surface, collapsed state, loading/error states, and density. |
 | `aurora-ai-image` | `AuroraAiImage.kt` | Match image frame, caption, loading/error, download/open actions, aspect ratio, and selected/focus states. |
 | `aurora-ai-open-in-chat` | `AuroraOpenInChat.kt` | Align icon/button size, tooltip/label, disabled state, destination metadata, and placement in artifact/source surfaces. |
 
@@ -470,10 +470,10 @@ These are Aurora-specific composites. All are `Custom` Composables — no direct
 | `context` | `Card` + `Column` + context item rows | Context window visualization |
 | `controls` | `Row` + `IconButton` ×n | Toolbar of icon buttons for agent controls |
 | `conversation` | `LazyColumn` + message composables | `LazyColumn` with `reverseLayout = false`; set `role = "log"` semantics |
-| `message` | `Row` (user) / `Column` (assistant) + `Text` + avatar | Differentiate by sender; assistant = violet surface |
+| `message` | `Row` (user) / `Column` (assistant) + `Text` + avatar | Differentiate by sender; assistant = Axon-orange surface |
 | `inline-citation` | `ClickableText` / custom `AnnotatedString` link | Inline superscript citation link |
 | `mic-selector` | `ExposedDropdownMenuBox` + `Icon` (mic) | Audio input device picker |
-| `model-selector` | `ExposedDropdownMenuBox` + `Icon` (Sparkles) | AI model picker; violet accent |
+| `model-selector` | `ExposedDropdownMenuBox` + `Icon` (Sparkles) | AI model picker; Axon-orange accent |
 | `open-in-chat` | `IconButton` | Single action button to open artifact in chat |
 | `package-info` | `Card` + `Row` (name, version, description) | Package/dependency info card |
 | `panel` | `Surface` + `Column` with header | Generic titled panel |
@@ -495,7 +495,7 @@ These are Aurora-specific composites. All are `Custom` Composables — no direct
 | `thinking` | `AnimatedVisibility` + pulsing `CircularProgressIndicator` | AI thinking state indicator |
 | `tool-calls` | `LazyColumn` of tool call rows + `AnimatedVisibility` | Expandable tool call trace |
 | `transcription` | `Text` + word-level highlight animation | Live transcription display |
-| `voice-selector` | `ExposedDropdownMenuBox` + `Icon` (Sparkles) | TTS voice picker; violet accent |
+| `voice-selector` | `ExposedDropdownMenuBox` + `Icon` (Sparkles) | TTS voice picker; Axon-orange accent |
 | `prompt-input` | `OutlinedTextField(singleLine = false)` + send `IconButton` | Main chat input; `BasicTextField` for full styling control |
 
 ---
@@ -553,7 +553,7 @@ Aurora's dark-first navy palette maps to Material 3's dynamic color system:
 val AuroraColorScheme = darkColorScheme(
     primary          = Color(0xFF29B6F6),  // --aurora-accent-primary (cyan)
     secondary        = Color(0xFFF9A8C4),  // --aurora-accent-pink (rose)
-    tertiary         = Color(0xFFA78BFA),  // --aurora-accent-violet
+    tertiary         = Color(0xFFFF9645),  // --axon-orange
     background       = Color(0xFF07131C),  // --aurora-page-bg
     surface          = Color(0xFF102330),  // --aurora-panel-medium
     surfaceVariant   = Color(0xFF13293A),  // --aurora-panel-strong
@@ -578,9 +578,9 @@ val AuroraColorScheme = darkColorScheme(
 | `aurora-text-body-sm` | `bodySmall` |
 | `aurora-text-caption` | `labelSmall` |
 
-### AI accent (violet) in Compose
+### AI / Automation Accent In Compose
 
-Aurora uses violet (`--aurora-accent-violet: #A78BFA`) exclusively for AI identity. Map this to M3's `tertiary` color role:
+Aurora uses Axon orange (`--axon-orange: #ff9645`) for AI/automation identity. Map this to M3's `tertiary` color role. Existing `accentViolet*` Kotlin slots are compatibility aliases to Axon orange until the API is renamed; do not introduce new violet AI styling.
 
 ```kotlin
 // AI-accented surfaces use tertiary container

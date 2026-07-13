@@ -17,7 +17,7 @@ import tv.tootie.aurora.theme.LocalAuroraColors
 /**
  * Inline superscript citation link.
  *
- * Renders a violet-tinted badge showing `[N]` that acts as a link to a source.
+ * Renders an Axon-orange-tinted badge showing `[N]` that acts as a link to a source.
  * Maps to the web AI `inline-citation` element.
  *
  * Accessibility: TalkBack announces "Citation [number]" via an explicit

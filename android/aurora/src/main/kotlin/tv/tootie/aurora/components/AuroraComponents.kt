@@ -113,27 +113,27 @@
  *
  * ── Phase 3 Batch A: AI Identity ──────────────────────────────────────────
  *
- * AuroraAgentRow       — Agent status row with pulsing violet dot (Idle/Running/Waiting/Error/Done)
- * AuroraAiPanel        — Titled panel with violet border + surface for AI-context content
- * AuroraPersona        — Avatar + name + role row (role in violet)
- * AuroraModelSelector  — Violet-accented AI model picker dropdown
+ * AuroraAgentRow       — Agent status row with pulsing Axon-orange dot (Idle/Running/Waiting/Error/Done)
+ * AuroraAiPanel        — Titled panel with Axon-orange border + surface for AI-context content
+ * AuroraPersona        — Avatar + name + role row (role in Axon orange)
+ * AuroraModelSelector  — Axon-orange-accented AI model picker dropdown
  * AuroraVoiceSelector  — TTS voice picker with RecordVoiceOver icon
  * AuroraMicSelector    — Microphone input device selector
- * AuroraPromptInput    — Multi-line prompt field with violet cursor + send button
+ * AuroraPromptInput    — Multi-line prompt field with Axon-orange cursor + send button
  *
  * ── Phase 3 Batch B: Conversation ─────────────────────────────────────────
  *
  * AuroraConversation   — LazyColumn message list with auto-scroll + screen-reader semantics
- * AuroraMessage        — Chat bubble: user=cyan right, assistant=violet left
- * AuroraInlineCitation — Superscript citation link in violet surface
+ * AuroraMessage        — Chat bubble: user=cyan right, assistant=Axon orange left
+ * AuroraInlineCitation — Superscript citation link in Axon-orange surface
  * AuroraSnippet        — Inline monospace code chip
  * AuroraSources        — Horizontal scrollable source/citation pill row
  * AuroraOpenInChat     — Icon button to open artifact in full chat view
  *
  * ── Phase 3 Batch C: Reasoning / Output ───────────────────────────────────
  *
- * AuroraThinking       — Animated pulsing-dots thinking indicator (violet)
- * AuroraChainOfThought — Expandable step-by-step reasoning trace (violet surface)
+ * AuroraThinking       — Animated pulsing-dots thinking indicator (Axon orange)
+ * AuroraChainOfThought — Expandable step-by-step reasoning trace (Axon-orange surface)
  * AuroraReasoning      — Thin wrapper over AuroraChainOfThought
  * AuroraArtifact       — Artifact panel with toolbar (copy, expand, language label)
  * AuroraAskUserQuestion — Multiple-choice agent question prompt with radio + submit
@@ -161,12 +161,12 @@
  *
  * ── Phase 3 Batch F: Visual / Utility ─────────────────────────────────────
  *
- * AuroraAiShimmer          — Animated violet shimmer placeholder (AI loading state)
+ * AuroraAiShimmer          — Animated Axon-orange shimmer placeholder (AI loading state)
  * AuroraToolCallList       — Expandable tool call trace with status + code block details
  * AuroraAiImage            — AI-generated image with Aurora border + optional caption
  * AuroraCanvasView         — Topology canvas: nodes (circles) + edges (lines) with labels
  * AuroraConnection         — Two-node connection label (from → to) with active/idle tint
  * AuroraEnvironmentVariables — Key-value env var list with optional value masking
- * AuroraAiEdge             — Edge label chip for topology views (violet when active)
+ * AuroraAiEdge             — Edge label chip for topology views (Axon orange when active)
  */
 package tv.tootie.aurora.components

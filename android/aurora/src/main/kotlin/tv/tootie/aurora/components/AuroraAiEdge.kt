@@ -15,7 +15,7 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  * Small label for graph edges in agent topology views.
  * Maps to web AI `edge` element.
  *
- * When [active] is `true` the chip uses violet accent tokens; otherwise it
+ * When [active] is `true` the chip uses Axon-orange accent tokens; otherwise it
  * uses neutral surface tokens to indicate an idle or inactive edge.
  *
  * @param label Text describing the edge relationship or data flow.

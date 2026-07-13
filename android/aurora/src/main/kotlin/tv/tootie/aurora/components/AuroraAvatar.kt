@@ -59,7 +59,7 @@ public fun AuroraAvatar(
     val resolvedAccent = accentColor ?: when (name) {
         "You", "User"       -> MaterialTheme.colorScheme.primary           // cyan
         "Assistant", "Bot",
-        "System"            -> aurora.accentViolet                         // violet
+        "System"            -> aurora.accentViolet                         // AI/automation accent
         else                -> MaterialTheme.colorScheme.primary
     }
     val resolvedBg = backgroundColor ?: aurora.selectedBg

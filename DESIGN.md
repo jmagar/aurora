@@ -288,7 +288,7 @@ Official references checked for this document:
 
 ## Overview
 
-Aurora is an operator-first design system for Labby, homelab control planes, agent workflows, code surfaces, and shadcn-compatible product UIs. It should feel calm, precise, legible, and engineered. The visual identity is dark-first navy with cyan as the primary action color, rose as a secondary expressive accent, and Axon orange for async work, heavy jobs, and automation state.
+Aurora is an operator-first design system for Labby, homelab control planes, agent workflows, code surfaces, and shadcn-compatible product UIs. It should feel calm, precise, legible, and engineered. The visual identity is dark-first navy with cyan as the primary action color, rose as a secondary expressive accent, and Axon orange for AI/automation identity, async work, and heavy jobs.
 
 Aurora is not a marketing skin. It is a working interface language for repeated use by technical operators. Screens should favor dense but readable information, direct controls, predictable navigation, restrained motion, clear state, and fast scan paths. Decorative effects are allowed only when they reinforce hierarchy or state.
 
@@ -310,7 +310,7 @@ Primary roles:
 - Primary accent: cyan (`#29b6f6`) for focus, active state, primary command affordances, and the one clearest call to action.
 - Secondary accent: rose (`#f9a8c4`) for agent affordances, send actions, active filter tags, and small expressive highlights.
 - Tertiary/support accent: cyan strong (`#67cbfa`) for hover, active emphasis, selected borders, and elevated cyan affordances.
-- Automation accent: Axon orange (`#ff9645`) for async work, slash commands, heavy jobs, automation, and background execution only.
+- AI / automation accent: Axon orange (`#ff9645`) for model selectors, reasoning surfaces, slash commands, async work, heavy jobs, automation, and background execution only.
 - Status colors: muted info, success, warn, error, and neutral families. Status must read clearly without neon intensity.
 - Text: `text-primary` for main content and `text-muted` for metadata, placeholders, descriptions, timestamps, and secondary labels.
 
@@ -366,7 +366,7 @@ Color rules:
 - Use CSS variables, not raw hex values, in product code.
 - Selection and focus use border plus glow. Avoid flooded selected fills.
 - Keep rose to one or two meaningful accents per screen.
-- Use Axon orange for async and automation identity. Violet is not part of the current web token source.
+- Use Axon orange for AI/automation identity. Violet is not part of the current web token source.
 - Never map Axon orange to `primary`, `tertiary`, default CTAs, or general interaction color.
 - Use semantic status tokens for status; do not use brand accents as error, warning, or success shortcuts.
 - Use `color-mix()` surface and border tokens for soft fills instead of inventing new translucent colors.
@@ -497,7 +497,7 @@ Component rules:
 - Inputs use Aurora borders, validation rings, and control-surface backgrounds. Validation states map to error, warn, and success tokens.
 - Cards use Tier 1 or Tier 2 surfaces, optional cyan or rose accent edges, and optional interactive lift. Do not create card-in-card layouts.
 - Tables use 8 px radius, strong borders, 13 px table text, sortable header affordances, and tabular numeric alignment where needed.
-- Prompt input and agent controls use rose for send/agent emphasis and Axon orange for slash commands, mentions, async state, and heavy work.
+- Prompt input and agent controls use rose for send/action emphasis and Axon orange for AI/automation emphasis, slash commands, mentions, async state, and heavy work.
 - Terminal, code, file tree, and stack trace surfaces may use mono, but only for code-like text.
 
 ## Do's and Don'ts
@@ -519,7 +519,7 @@ Do:
 Don't:
 
 - Don't hardcode Tailwind default colors or raw hex values in product code.
-- Don't reintroduce violet as the AI identity in web components; use Axon orange for automation.
+- Don't reintroduce violet as the AI identity in web components; use Axon orange for AI/automation.
 - Don't use Axon orange as the primary color, tertiary color, default CTA color, or generic interaction accent.
 - Don't use glassmorphism, decorative gradient blobs, or atmospheric imagery as app chrome.
 - Don't flood selected rows or cards with heavy fills.

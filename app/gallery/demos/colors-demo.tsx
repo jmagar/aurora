@@ -5,11 +5,11 @@ import { GalleryPageIntro } from "@/components/gallery-page-intro"
 const COLOR_SECTIONS = [
   {
     label: "Brand tokens - identity",
-    description: "Use cyan and rose for Aurora identity. Use violet to signal AI or automation emphasis. Never use brand tokens to communicate status.",
+    description: "Use cyan and rose for Aurora identity. Use Axon orange to signal AI or automation emphasis. Never use brand tokens to communicate status.",
     tokens: [
       { name: "accent-primary", cssVar: "var(--aurora-accent-primary)" },
       { name: "accent-pink", cssVar: "var(--aurora-accent-pink)" },
-      { name: "accent-violet", cssVar: "var(--aurora-accent-violet)" },
+      { name: "axon-orange", cssVar: "var(--axon-orange)" },
     ],
   },
   {
@@ -71,7 +71,7 @@ export default function ColorsDemo() {
                     {token.name}
                   </p>
                   <p style={{ fontSize: 10, color: "var(--aurora-text-muted)", margin: 0, fontFamily: "var(--aurora-font-mono)", lineHeight: 1.4 }}>
-                    --aurora-{token.name}
+                    {token.name.startsWith("axon-") ? `--${token.name}` : `--aurora-${token.name}`}
                   </p>
                 </div>
               </div>

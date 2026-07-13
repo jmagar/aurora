@@ -28,7 +28,7 @@ import tv.tootie.aurora.theme.LocalAuroraColors
 /**
  * Animated thinking indicator: pulsing dots + label.
  *
- * Maps to web AI `thinking` block. Uses violet for AI identity.
+ * Maps to web AI `thinking` block. Uses Axon orange for AI identity.
  *
  * Accessibility: the entire row is announced as a live region so TalkBack
  * updates the user when the thinking state appears or changes. The animated

@@ -33,7 +33,7 @@ import tv.tootie.aurora.theme.LocalAuroraColors
 
 /**
  * Main agent prompt input with send button. Maps to web AI `prompt-input`.
- * Dark operator-console aesthetic: deep surface, violet active indicator.
+ * Dark operator-console aesthetic: deep surface, Axon-orange active indicator.
  *
  * Accessibility:
  * - The text field carries `contentDescription = "Message input"` so TalkBack

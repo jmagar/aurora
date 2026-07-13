@@ -123,11 +123,13 @@
   --motion-duration-medium:  240ms;
   --motion-duration-slow:    360ms;
 
-  /* Automation accent — Axon orange (async / heavy jobs). Replaces violet. */
+  /* AI / automation accent — Axon orange. Replaces violet. */
   --axon-orange:        #ff9645;
   --axon-orange-strong: #ffb474;
   --axon-orange-deep:   #c96a1c;
   --axon-orange-button: #f5801f;
+  --axon-orange-surface: color-mix(in srgb, var(--axon-orange) 14%, var(--aurora-control-surface));
+  --axon-orange-border:  color-mix(in srgb, var(--axon-orange) 36%, transparent);
 
   /* Raised control-surface top stop (Claude Design parity) */
   --aurora-control-surface-top: rgba(18, 40, 56, 0.96);
@@ -250,6 +252,8 @@
   --axon-orange-strong: #c25f10;
   --axon-orange-deep:   #a8540e;
   --axon-orange-button: #cc640f;
+  --axon-orange-surface: color-mix(in srgb, var(--axon-orange) 10%, var(--aurora-panel-medium));
+  --axon-orange-border:  color-mix(in srgb, var(--axon-orange) 28%, transparent);
   --aurora-hover-bg:       #dceef4;
   --aurora-surface-raised: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(237, 245, 248, 0.98));
   --aurora-border-default: #b8d0da;

@@ -34,7 +34,7 @@ public enum class AuroraConnectionStatus {
  * Two-node connection label (from → to). Maps to web AI `connection` element.
  *
  * Renders `from` and `to` labels separated by a directional arrow icon.
- * When [active] is true the text and arrow are tinted with [aurora.accentViolet],
+ * When [active] is true the text and arrow use the AI/automation accent,
  * otherwise they use muted surface-variant tones.
  *
  * Accessibility:

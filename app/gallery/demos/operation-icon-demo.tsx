@@ -104,7 +104,7 @@ export default function OperationIconDemo() {
       <GalleryPageIntro
         eyebrow="Components"
         heading="OperationIcon"
-        description="Axon operation glyph family — tone-coded by operation class (fetch/read cyan, async jobs orange, reason rose)."
+        description="Axon operation glyph family — tone-coded by operation class (fetch/read cyan, AI/reasoning and async jobs orange)."
       />
 
       <div
@@ -129,7 +129,7 @@ export default function OperationIconDemo() {
           names={["crawl", "extract", "embed", "ingest"]}
         />
         <Row
-          label="Reason (rose)"
+          label="AI / reason (orange)"
           names={["ask", "summarize", "research", "suggest"]}
         />
         <IconOnlyRow

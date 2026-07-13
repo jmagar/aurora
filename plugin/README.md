@@ -1,7 +1,7 @@
 # aurora
 
 Claude Code plugin packaging the Aurora design system skill — dark-first, navy
-base with cyan/rose/violet accents, served from the `@aurora` shadcn registry at
+base with cyan/rose/Axon-orange accents, served from the `@aurora` shadcn registry at
 `aurora.tootie.tv`.
 
 ## Installation

@@ -741,13 +741,13 @@
   --aurora-op-surface: color-mix(in srgb, var(--aurora-accent-primary) 13%, var(--aurora-control-surface));
   --aurora-op-border: color-mix(in srgb, var(--aurora-accent-primary) 34%, transparent);
 }
-/* orange — async jobs */
+/* orange — AI / automation / async jobs */
 .aurora-op-icon--orange {
   --aurora-op-fg: var(--axon-orange-strong);
   --aurora-op-surface: color-mix(in srgb, var(--axon-orange) 14%, var(--aurora-control-surface));
   --aurora-op-border: color-mix(in srgb, var(--axon-orange) 36%, transparent);
 }
-/* rose — reason */
+/* rose — secondary expressive override */
 .aurora-op-icon--rose {
   --aurora-op-fg: var(--aurora-accent-pink-strong);
   --aurora-op-surface: color-mix(in srgb, var(--aurora-accent-pink) 13%, var(--aurora-control-surface));

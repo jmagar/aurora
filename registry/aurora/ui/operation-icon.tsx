@@ -8,9 +8,9 @@
  * a semantic tone derived from its operation class:
  *   - Fetch / read   → cyan   (scrape, map, retrieve, screenshot, endpoints)
  *   - Async jobs     → orange (crawl, extract, embed, ingest)
- *   - Reason         → rose   (ask, summarize, research, suggest)
+ *   - AI / reason    → orange (ask, summarize, research, suggest)
  *
- * The visual layer reads only `--aurora-*` tokens so it
+ * The visual layer reads Aurora-owned tokens so it
  * renders identically in dark + `.light`. Architecture stays shadcn: a glyph map,
  * `forwardRef`, `displayName`, named + default export, and a11y (role/aria-label
  * with an option to mark the glyph decorative).
@@ -50,11 +50,11 @@ const TONE_BY_NAME: Record<OperationName, OperationTone> = {
   extract: "orange",
   embed: "orange",
   ingest: "orange",
-  // Reason (rose)
-  ask: "rose",
-  summarize: "rose",
-  research: "rose",
-  suggest: "rose",
+  // AI / reason (orange)
+  ask: "orange",
+  summarize: "orange",
+  research: "orange",
+  suggest: "orange",
 }
 
 // ─── Visual layer (ported from Claude Design) ──────────────────────────────────

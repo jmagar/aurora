@@ -22,7 +22,7 @@ import tv.tootie.aurora.theme.LocalAuroraColors
  *
  * @param name      Agent display name.
  * @param modifier  Caller-supplied modifier applied to the root [Row].
- * @param role      Optional role label shown in violet beneath the name.
+ * @param role      Optional role label shown in Axon orange beneath the name.
  * @param avatarUrl Optional remote image URL passed to [AuroraAvatar].
  */
 @Composable

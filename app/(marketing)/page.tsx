@@ -43,7 +43,7 @@ const PILLARS = [
   },
   {
     icon: <SlidersHorizontal size={20} strokeWidth={1.6} />,
-    tone: "--aurora-accent-violet",
+    tone: "--axon-orange",
     title: "Tokens",
     body: "One source of truth in CSS custom properties, exported to Android via Style Dictionary. Dark-first, with a verified light mode.",
     meta: "View the token contract",
@@ -211,7 +211,7 @@ export default function LandingPage() {
             <div className="aurora-text-eyebrow mb-2">Themes</div>
             <h2 className="aurora-text-display-2">Your whole workspace, in Aurora</h2>
             <p className="aurora-text-lead mt-2 max-w-[560px]">
-              Not just the app — the navy base, cyan primary, rose secondary, and violet AI accents reach every
+              Not just the app — the navy base, cyan primary, rose secondary, and Axon-orange AI accents reach every
               tool you touch. Pick a surface and install in one line.
             </p>
           </div>

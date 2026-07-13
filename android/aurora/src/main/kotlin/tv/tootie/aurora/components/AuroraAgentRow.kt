@@ -36,7 +36,7 @@ public enum class AuroraAgentStatus { Idle, Running, Waiting, Error, Done }
 /**
  * Agent header row with animated status indicator, name, and optional description.
  *
- * Maps to the web AI `agent` element. Violet accent signals AI identity. The status
+ * Maps to the web AI `agent` element. Axon orange signals AI identity. The status
  * dot pulses when [status] is [AuroraAgentStatus.Running]. The row is announced to
  * TalkBack as "Agent: [name], [status]" and uses [LiveRegionMode.Polite] so status
  * changes are spoken without interrupting ongoing speech.
