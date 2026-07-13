@@ -7,6 +7,6 @@ All notable changes to the `aurora` plugin are documented here.
 ### Added
 
 - Initial plugin scaffold
-- `aurora-design-system` skill (copied from the `vibin` plugin) — guidance for
+- `aurora` skill (copied from the `vibin` plugin) — guidance for
   building Aurora-styled React/Next.js UI with the `@aurora` shadcn registry and
   `var(--aurora-*)` tokens.

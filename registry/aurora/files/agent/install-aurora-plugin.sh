@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo_url="${AURORA_REPO_URL:-https://github.com/jmagar/aurora.git}"
-target_dir="${AURORA_PLUGIN_REPO_DIR:-$PWD/.aurora-design-system-plugin}"
+target_dir="${AURORA_PLUGIN_REPO_DIR:-$PWD/.aurora-plugin}"
 
 if ! command -v git >/dev/null 2>&1; then
   echo "git is required" >&2

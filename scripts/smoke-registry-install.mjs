@@ -53,12 +53,12 @@ const smokeProfiles = {
   agent: {
     items: ["aurora-agent-skill", "aurora-plugin-installer"],
     expectedFiles: [
-      ".config/aurora/agent/aurora-design-system/SKILL.md",
-      ".config/aurora/agent/aurora-design-system/references/tokens.md",
-      ".config/aurora/agent/aurora-design-system/references/components.md",
-      ".config/aurora/agent/aurora-design-system/references/recipes.md",
-      ".config/aurora/agent/aurora-design-system/references/android.md",
-      ".config/aurora/agent/aurora-design-system/references/editor-cli-tokens.md",
+      ".config/aurora/agent/aurora/SKILL.md",
+      ".config/aurora/agent/aurora/references/tokens.md",
+      ".config/aurora/agent/aurora/references/components.md",
+      ".config/aurora/agent/aurora/references/recipes.md",
+      ".config/aurora/agent/aurora/references/android.md",
+      ".config/aurora/agent/aurora/references/editor-cli-tokens.md",
       ".config/aurora/agent/install-aurora-plugin.sh",
     ],
   },

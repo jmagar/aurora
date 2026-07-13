@@ -43,7 +43,7 @@ class CodexClientInputTest {
         val (frame) = client.buildTurnFrame(
             threadId = "t1",
             text = "run this",
-            attachments = listOf(SelectedItem.Skill(name = "aurora-design-system", path = "aurora-design-system")),
+            attachments = listOf(SelectedItem.Skill(name = "aurora", path = "aurora")),
             model = null,
             effort = null,
         )
@@ -52,8 +52,8 @@ class CodexClientInputTest {
         assertEquals(2, input.size)
         val skillItem = input[1].jsonObject
         assertEquals("skill", skillItem["type"]?.jsonPrimitive?.content)
-        assertEquals("aurora-design-system", skillItem["name"]?.jsonPrimitive?.content)
-        assertEquals("aurora-design-system", skillItem["path"]?.jsonPrimitive?.content)
+        assertEquals("aurora", skillItem["name"]?.jsonPrimitive?.content)
+        assertEquals("aurora", skillItem["path"]?.jsonPrimitive?.content)
     }
 
     @Test

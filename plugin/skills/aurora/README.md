@@ -1,4 +1,4 @@
-# aurora-design-system
+# aurora
 
 Aurora design-system guidance for React/Next.js UI work in the operator/agent control-plane look (dark, navy/cyan/rose/violet, Manrope+Inter+JetBrains Mono, `--aurora-*` CSS tokens).
 

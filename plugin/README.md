@@ -35,7 +35,7 @@ The shadcn registry only writes files. It does not run `claude plugin install` a
 
 | Skill | Description |
 | ----- | ----------- |
-| `aurora-design-system` | Build, modify, or style React/Next.js UI for Aurora/Labby/Lab surfaces using Aurora tokens and the `@aurora` registry. |
+| `aurora` | Build, modify, or style React/Next.js UI for Aurora/Labby/Lab surfaces using Aurora tokens and the `@aurora` registry. |
 
 ## Development
 
@@ -50,7 +50,7 @@ plugin/
 ├── output-styles/               — Output formatting styles
 ├── scripts/                     — Helper scripts
 ├── skills/                      — Skill .md files
-│   └── aurora-design-system/    — Aurora usage skill (SKILL.md + references/)
+│   └── aurora/                  — Aurora usage skill (SKILL.md + references/)
 ├── .mcp.json                    — MCP server configuration
 ├── CHANGELOG.md
 └── README.md

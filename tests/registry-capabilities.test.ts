@@ -93,7 +93,7 @@ test("registry file targets stay project-root scoped", () => {
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/warp/aurora.yaml")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/chrome/README.md")))
   assert.ok(targets.some((target) => target.includes("~/.config/aurora/themes/shell/README.md")))
-  assert.ok(targets.some((target) => target.includes("~/.config/aurora/agent/aurora-design-system/references/tokens.md")))
+  assert.ok(targets.some((target) => target.includes("~/.config/aurora/agent/aurora/references/tokens.md")))
   assert.equal(targets.some((target) => target.includes("$HOME")), false)
   assert.equal(targets.some((target) => target.includes("/home/")), false)
 })

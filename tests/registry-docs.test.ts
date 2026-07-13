@@ -53,11 +53,11 @@ test("source registry capability items explain install constraints", () => {
 })
 
 test("Aurora agent skill docs stay aligned with current tokens and paths", () => {
-  const skill = readText("../plugin/skills/aurora-design-system/SKILL.md")
-  const tokens = readText("../plugin/skills/aurora-design-system/references/tokens.md")
-  const android = readText("../plugin/skills/aurora-design-system/references/android.md")
-  const recipes = readText("../plugin/skills/aurora-design-system/references/recipes.md")
-  const editorCli = readText("../plugin/skills/aurora-design-system/references/editor-cli-tokens.md")
+  const skill = readText("../plugin/skills/aurora/SKILL.md")
+  const tokens = readText("../plugin/skills/aurora/references/tokens.md")
+  const android = readText("../plugin/skills/aurora/references/android.md")
+  const recipes = readText("../plugin/skills/aurora/references/recipes.md")
+  const editorCli = readText("../plugin/skills/aurora/references/editor-cli-tokens.md")
 
   for (const [label, text] of [
     ["skill", skill],

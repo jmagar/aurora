@@ -1,5 +1,5 @@
 ---
-name: aurora-design-system
+name: aurora
 description: Use this skill when designing or implementing Aurora/Labby UI surfaces, shadcn registry components, registry/aurora tokens, app/gallery demos, or downstream Lab/gateway-admin screens that must follow the Aurora dark-first operator design system. Aurora uses a tokenized navy palette, cyan primary accent, rose secondary accent, muted status colors, and a Manrope + Inter type pairing.
 ---
 

@@ -63,8 +63,8 @@
   ],
   "packages": {
     ".": {
-      "package-name": "aurora-design-system",
-      "component": "aurora-design-system",
+      "package-name": "aurora",
+      "component": "aurora",
       "changelog-path": "CHANGELOG.md"
     }
   }

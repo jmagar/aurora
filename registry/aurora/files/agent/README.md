@@ -10,4 +10,4 @@ For Claude Code plugin installation, install `aurora-plugin-installer` and then 
 bash .config/aurora/agent/install-aurora-plugin.sh
 ```
 
-For Codex/Gemini, copy or adapt the full `.config/aurora/agent/aurora-design-system/` directory into the runtime-specific skill directory used by that tool. Keep `SKILL.md` and the `references/` directory together; the skill expects those reference files to be present.
+For Codex/Gemini, copy or adapt the full `.config/aurora/agent/aurora/` directory into the runtime-specific skill directory used by that tool. Keep `SKILL.md` and the `references/` directory together; the skill expects those reference files to be present.

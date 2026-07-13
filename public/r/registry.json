@@ -519,34 +519,34 @@
           "target": "~/.config/aurora/agent/README.md"
         },
         {
-          "path": "plugin/skills/aurora-design-system/SKILL.md",
+          "path": "plugin/skills/aurora/SKILL.md",
           "type": "registry:file",
-          "target": "~/.config/aurora/agent/aurora-design-system/SKILL.md"
+          "target": "~/.config/aurora/agent/aurora/SKILL.md"
         },
         {
-          "path": "plugin/skills/aurora-design-system/references/tokens.md",
+          "path": "plugin/skills/aurora/references/tokens.md",
           "type": "registry:file",
-          "target": "~/.config/aurora/agent/aurora-design-system/references/tokens.md"
+          "target": "~/.config/aurora/agent/aurora/references/tokens.md"
         },
         {
-          "path": "plugin/skills/aurora-design-system/references/components.md",
+          "path": "plugin/skills/aurora/references/components.md",
           "type": "registry:file",
-          "target": "~/.config/aurora/agent/aurora-design-system/references/components.md"
+          "target": "~/.config/aurora/agent/aurora/references/components.md"
         },
         {
-          "path": "plugin/skills/aurora-design-system/references/recipes.md",
+          "path": "plugin/skills/aurora/references/recipes.md",
           "type": "registry:file",
-          "target": "~/.config/aurora/agent/aurora-design-system/references/recipes.md"
+          "target": "~/.config/aurora/agent/aurora/references/recipes.md"
         },
         {
-          "path": "plugin/skills/aurora-design-system/references/android.md",
+          "path": "plugin/skills/aurora/references/android.md",
           "type": "registry:file",
-          "target": "~/.config/aurora/agent/aurora-design-system/references/android.md"
+          "target": "~/.config/aurora/agent/aurora/references/android.md"
         },
         {
-          "path": "plugin/skills/aurora-design-system/references/editor-cli-tokens.md",
+          "path": "plugin/skills/aurora/references/editor-cli-tokens.md",
           "type": "registry:file",
-          "target": "~/.config/aurora/agent/aurora-design-system/references/editor-cli-tokens.md"
+          "target": "~/.config/aurora/agent/aurora/references/editor-cli-tokens.md"
         }
       ],
       "categories": [

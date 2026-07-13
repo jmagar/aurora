@@ -8,7 +8,7 @@ token/shape exists.
 
 Consuming apps (e.g. axon at `~/workspace/axon/apps/android`) pull it in as a Gradle
 dependency — `implementation("tv.tootie.aurora:aurora")` — wired through a **local
-composite build**: the app's `settings.gradle.kts` includes `../../../aurora-design-system/android`
+composite build**: the app's `settings.gradle.kts` includes `../../../aurora/android`
 when present, so changes to the library are picked up without publishing.
 
 ## The contract is the same — expressed in Compose

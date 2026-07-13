@@ -1,11 +1,11 @@
 services:
-  aurora-design-system:
+  aurora:
     build:
       context: .
       dockerfile: Dockerfile
       target: dev
-    image: aurora-design-system:local
-    container_name: aurora-design-system
+    image: aurora:local
+    container_name: aurora
     ports:
       - "${AURORA_PORT:-3000}:3000"
     environment:
@@ -41,8 +41,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: runner
-    image: ${AURORA_IMAGE:-aurora-design-system}:${AURORA_TAG:-latest}
-    container_name: aurora-design-system-prod
+    image: ${AURORA_IMAGE:-aurora}:${AURORA_TAG:-latest}
+    container_name: aurora-prod
     ports:
       - "${AURORA_PORT:-3000}:3000"
     environment:
@@ -69,5 +69,5 @@ volumes:
 
 networks:
   app:
-    name: ${DOCKER_NETWORK:-aurora-design-system}
+    name: ${DOCKER_NETWORK:-aurora}
     external: true

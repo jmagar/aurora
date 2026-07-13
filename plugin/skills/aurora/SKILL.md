@@ -1,5 +1,5 @@
 ---
-name: aurora-design-system
+name: aurora
 description: >-
   Use when designing, implementing, reviewing, or fixing Aurora/Labby UI
   surfaces, Aurora shadcn registry items, registry/aurora tokens/components,
