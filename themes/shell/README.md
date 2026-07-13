@@ -59,7 +59,7 @@ These are **copies** kept in sync with this repo (same model as `editors/` —
 not symlinks, so a `git checkout` of this repo never breaks your live shell).
 
 ```sh
-AUR=~/workspace/aurora-design-system/shell
+AUR=~/workspace/aurora/shell
 
 # Prompt + statusline
 cp  $AUR/p10k/aurora-p10k.zsh        ~/.p10k.zsh

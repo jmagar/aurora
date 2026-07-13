@@ -1,9 +1,9 @@
 # Editor & CLI tokens — terminal, shell, and Zed Neon palettes
 
 Aurora theming extends past the web registry into editors, terminals, browser,
-and CLI tools. These live in `~/workspace/aurora-design-system/themes/editors/`,
-`~/workspace/aurora-design-system/themes/browser/`, and
-`~/workspace/aurora-design-system/themes/shell/` (hand-authored per-tool native
+and CLI tools. These live in `~/workspace/aurora/themes/editors/`,
+`~/workspace/aurora/themes/browser/`, and
+`~/workspace/aurora/themes/shell/` (hand-authored per-tool native
 formats, excluded from the Next/TS/eslint build).
 They are **canonical there**; `~/.config/...`, `~/.claude/themes/`, etc. are
 deployed copies kept in sync.

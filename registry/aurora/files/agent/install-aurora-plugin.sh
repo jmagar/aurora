@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_url="${AURORA_REPO_URL:-https://github.com/jmagar/aurora-design-system.git}"
+repo_url="${AURORA_REPO_URL:-https://github.com/jmagar/aurora.git}"
 target_dir="${AURORA_PLUGIN_REPO_DIR:-$PWD/.aurora-design-system-plugin}"
 
 if ! command -v git >/dev/null 2>&1; then

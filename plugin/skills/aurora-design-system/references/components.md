@@ -1,6 +1,6 @@
 # Aurora components — common inventory map
 
-This is a curated map for common Aurora surfaces, not the complete registry manifest. Verify exact inventory, item type, dependencies, install target, and exported props from `~/workspace/aurora-design-system/registry.json` plus the source files before making claims. The registry also publishes modern non-component capabilities: `registry:base`, `registry:theme`, `registry:file`, `registry:page`, `registry:item`, and `registry:lib`.
+This is a curated map for common Aurora surfaces, not the complete registry manifest. Verify exact inventory, item type, dependencies, install target, and exported props from `~/workspace/aurora/registry.json` plus the source files before making claims. The registry also publishes modern non-component capabilities: `registry:base`, `registry:theme`, `registry:file`, `registry:page`, `registry:item`, and `registry:lib`.
 
 ## UI primitives — `registry/aurora/ui/<name>.tsx`
 

@@ -9,7 +9,7 @@ The library is not yet published to Maven Central. Add it as a local module:
 ```kotlin
 // settings.gradle.kts
 include(":aurora")
-project(":aurora").projectDir = file("path/to/aurora-design-system/android/aurora")
+project(":aurora").projectDir = file("path/to/aurora/android/aurora")
 ```
 
 Then depend on it:

@@ -335,7 +335,7 @@ function ContributePage() {
         Component implementations live in the open-source registry. If you need a primitive Aurora
         ships that isn&apos;t here, pull it from source rather than re-implementing.
       </P>
-      <DocCode>github.com/jmagar/aurora-design-system</DocCode>
+      <DocCode>github.com/jmagar/aurora</DocCode>
       <H>Token source of truth</H>
       <P>
         All tokens originate in <M>registry/aurora/styles/aurora.css</M>. Change a value there;

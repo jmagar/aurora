@@ -135,12 +135,12 @@ Use this section as a category map, not as a count source. Verify exact inventor
 
 ## shadcn Registry Workflow
 
-React components are published from `github.com/jmagar/aurora-design-system` under `registry/aurora/`.
+React components are published from `github.com/jmagar/aurora` under `registry/aurora/`.
 
 Install any component:
 
 ```bash
-npx shadcn add https://raw.githubusercontent.com/jmagar/aurora-design-system/main/registry.json aurora-button
+npx shadcn add https://raw.githubusercontent.com/jmagar/aurora/main/registry.json aurora-button
 ```
 
 Before claiming registry status:

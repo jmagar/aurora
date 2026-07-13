@@ -1,7 +1,7 @@
 # Aurora on Android (Jetpack Compose)
 
 Aurora's Android surface is the **`tv.tootie.aurora:aurora`** library, sourced at
-`~/workspace/aurora-design-system/android/aurora` (package `tv.tootie.aurora.theme`:
+`~/workspace/aurora/android/aurora` (package `tv.tootie.aurora.theme`:
 `AuroraTheme`, color tokens, `AuroraShapes`). It is the **source of truth** for Android —
 the Compose equivalent of the web shadcn registry. Read it before claiming an Android
 token/shape exists.

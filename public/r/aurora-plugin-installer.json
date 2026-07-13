@@ -7,7 +7,7 @@
   "files": [
     {
       "path": "registry/aurora/files/agent/install-aurora-plugin.sh",
-      "content": "#!/usr/bin/env bash\nset -euo pipefail\n\nrepo_url=\"${AURORA_REPO_URL:-https://github.com/jmagar/aurora-design-system.git}\"\ntarget_dir=\"${AURORA_PLUGIN_REPO_DIR:-$PWD/.aurora-design-system-plugin}\"\n\nif ! command -v git >/dev/null 2>&1; then\n  echo \"git is required\" >&2\n  exit 1\nfi\n\nif ! command -v claude >/dev/null 2>&1; then\n  echo \"claude CLI is required for Claude Code plugin installation\" >&2\n  exit 1\nfi\n\nif [ ! -d \"$target_dir/.git\" ]; then\n  git clone \"$repo_url\" \"$target_dir\"\nelse\n  git -C \"$target_dir\" pull --ff-only\nfi\n\nclaude plugin install \"$target_dir/plugin\"\n",
+      "content": "#!/usr/bin/env bash\nset -euo pipefail\n\nrepo_url=\"${AURORA_REPO_URL:-https://github.com/jmagar/aurora.git}\"\ntarget_dir=\"${AURORA_PLUGIN_REPO_DIR:-$PWD/.aurora-design-system-plugin}\"\n\nif ! command -v git >/dev/null 2>&1; then\n  echo \"git is required\" >&2\n  exit 1\nfi\n\nif ! command -v claude >/dev/null 2>&1; then\n  echo \"claude CLI is required for Claude Code plugin installation\" >&2\n  exit 1\nfi\n\nif [ ! -d \"$target_dir/.git\" ]; then\n  git clone \"$repo_url\" \"$target_dir\"\nelse\n  git -C \"$target_dir\" pull --ff-only\nfi\n\nclaude plugin install \"$target_dir/plugin\"\n",
       "type": "registry:file",
       "target": "~/.config/aurora/agent/install-aurora-plugin.sh"
     }

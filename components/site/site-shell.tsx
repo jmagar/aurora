@@ -25,7 +25,7 @@ const NAV = [
   { label: "Docs", href: "/docs" },
 ]
 
-const GITHUB_URL = "https://github.com/jmagar/aurora-design-system"
+const GITHUB_URL = "https://github.com/jmagar/aurora"
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/"

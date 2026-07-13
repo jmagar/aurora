@@ -3,7 +3,7 @@
 Aurora design-system guidance for React/Next.js UI work in the operator/agent control-plane look (dark, navy/cyan/rose/violet, Manrope+Inter+JetBrains Mono, `--aurora-*` CSS tokens).
 
 ## When to invoke
-Any React/Next.js/shadcn/Tailwind work in `~/workspace/aurora-design-system` or a project consuming the Aurora registry — even if the user doesn't say "Aurora" by name. Also use it for static HTML mocks, slides, design reviews, prototypes, screenshots, or throwaway demos that should look like Labby or the Aurora operator console.
+Any React/Next.js/shadcn/Tailwind work in `~/workspace/aurora` or a project consuming the Aurora registry — even if the user doesn't say "Aurora" by name. Also use it for static HTML mocks, slides, design reviews, prototypes, screenshots, or throwaway demos that should look like Labby or the Aurora operator console.
 
 ## Files
 - `SKILL.md` — entrypoint rules, visual foundations, production setup, static artifact workflow, content rules, and registry workflow.
@@ -15,7 +15,7 @@ Any React/Next.js/shadcn/Tailwind work in `~/workspace/aurora-design-system` or 
 
 ## Source repo map
 
-When working in `~/workspace/aurora-design-system`, verify current facts from source before claiming inventory, counts, or routes:
+When working in `~/workspace/aurora`, verify current facts from source before claiming inventory, counts, or routes:
 
 - `registry/aurora/styles/aurora.css` — canonical tokens, type classes, `.aurora-page-shell`, and `.aurora-nav-shell`.
 - `registry/aurora/ui/*.tsx` — reusable UI primitives.

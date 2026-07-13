@@ -15,7 +15,7 @@ Source them from `~/.zshrc` **after** your plugin manager loads (FSH reads its
 styles live):
 
 ```sh
-AUR=~/workspace/aurora-design-system/shell/zsh
+AUR=~/workspace/aurora/shell/zsh
 for f in "$AUR"/*.zsh; do [[ -r $f ]] && source "$f"; done
 [[ -r "$AUR/aurora.dircolors" ]] && eval "$(dircolors "$AUR/aurora.dircolors")"
 ```

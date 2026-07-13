@@ -10,7 +10,7 @@ description: >-
 
 # Aurora Design System
 
-Aurora is the operator-grade design system that powers Labby and the broader Lab gateway-admin surfaces. It is published as a shadcn-compatible registry at `aurora.tootie.tv` and lives in source at `~/workspace/aurora-design-system`. Use it whenever you're producing React/Next.js UI that should look like it belongs in that family.
+Aurora is the operator-grade design system that powers Labby and the broader Lab gateway-admin surfaces. It is published as a shadcn-compatible registry at `aurora.tootie.tv` and lives in source at `~/workspace/aurora`. Use it whenever you're producing React/Next.js UI that should look like it belongs in that family.
 
 If the user invokes this skill without a concrete build target, ask what surface they want designed or implemented and whether the output should be production code, a static HTML artifact, or a mock/prototype. Keep the questions short, then proceed as an expert designer once the target is clear.
 
@@ -44,15 +44,15 @@ Aurora spans web, Android, and CLI/editor surfaces. The contract above (tokens, 
 
 | Surface | Source of truth | Consumed as | Reference |
 |---|---|---|---|
-| **Web** (React/Next.js/shadcn) | `~/workspace/aurora-design-system/registry/aurora/{ui,blocks,styles}` + `registry.json`, published at `aurora.tootie.tv` | shadcn registry (`@aurora/*`) — components are vendored copies **synced from** the registry, not an npm dep | this body + `references/{tokens,components,recipes}.md` |
-| **Android** (Jetpack Compose) | `~/workspace/aurora-design-system/android/aurora` — the `tv.tootie.aurora:aurora` library (`AuroraTheme`, color tokens, `AuroraShapes`) | Gradle dep `tv.tootie.aurora:aurora`, wired via local composite build (`settings.gradle.kts`) | `references/android.md` |
-| **CLI / editors** (Rust, terminal, Zed) | `~/workspace/aurora-design-system/themes/{editors,browser,shell}/...` + the `lab` `CliTheme` (`crates/lab/src/output/theme.rs`) | copied token tables / `CliTheme` methods | `references/editor-cli-tokens.md` |
+| **Web** (React/Next.js/shadcn) | `~/workspace/aurora/registry/aurora/{ui,blocks,styles}` + `registry.json`, published at `aurora.tootie.tv` | shadcn registry (`@aurora/*`) — components are vendored copies **synced from** the registry, not an npm dep | this body + `references/{tokens,components,recipes}.md` |
+| **Android** (Jetpack Compose) | `~/workspace/aurora/android/aurora` — the `tv.tootie.aurora:aurora` library (`AuroraTheme`, color tokens, `AuroraShapes`) | Gradle dep `tv.tootie.aurora:aurora`, wired via local composite build (`settings.gradle.kts`) | `references/android.md` |
+| **CLI / editors** (Rust, terminal, Zed) | `~/workspace/aurora/themes/{editors,browser,shell}/...` + the `lab` `CliTheme` (`crates/lab/src/output/theme.rs`) | copied token tables / `CliTheme` methods | `references/editor-cli-tokens.md` |
 
 Web and Android use canonical Aurora tokens. CLI/editor palettes may diverge because terminal and editor accents need different contrast behavior; some non-web syntax/status palettes still use violet for language/config roles. Web AI/automation identity uses Axon orange. Never paste CLI/editor hex into web or Android, or web hex into CLI/editor themes. See `references/editor-cli-tokens.md`.
 
 ## When you're working inside the source repo
 
-Source-of-truth files in `~/workspace/aurora-design-system`:
+Source-of-truth files in `~/workspace/aurora`:
 
 - `registry/aurora/styles/aurora.css` — canonical token bridge, semantic CSS variables, type classes, `.aurora-page-shell`, `.aurora-nav-shell`. **Read this before claiming a token exists.**
 - `registry/aurora/ui/*.tsx` — stable React primitives. Read the directory or `registry.json` before claiming counts.
