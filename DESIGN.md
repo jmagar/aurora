@@ -188,21 +188,17 @@ components:
   nav-shell:
     backgroundColor: "{colors.nav-bg}"
     textColor: "{colors.text-primary}"
-    borderColor: "{colors.border-default}"
   panel-tier-1:
     backgroundColor: "{colors.panel-medium}"
     textColor: "{colors.text-primary}"
-    borderColor: "{colors.border-default}"
     rounded: "{rounded.md}"
   panel-tier-2:
     backgroundColor: "{colors.panel-strong}"
     textColor: "{colors.text-primary}"
-    borderColor: "{colors.border-strong}"
     rounded: "{rounded.lg}"
   button-primary:
     backgroundColor: "{colors.control-surface}"
     textColor: "{colors.text-primary}"
-    borderColor: "{colors.accent-primary}"
     typography: "{typography.control}"
     rounded: "{rounded.sm}"
     padding: "{spacing.control-x}"
@@ -214,7 +210,6 @@ components:
   button-secondary:
     backgroundColor: "{colors.control-surface}"
     textColor: "{colors.text-primary}"
-    borderColor: "{colors.border-strong}"
     typography: "{typography.control}"
     rounded: "{rounded.sm}"
   button-rose:
@@ -228,21 +223,18 @@ components:
   input:
     backgroundColor: "{colors.control-surface}"
     textColor: "{colors.text-primary}"
-    borderColor: "{colors.border-default}"
     typography: "{typography.body-sm}"
     rounded: "{rounded.sm}"
     padding: "{spacing.control-x}"
   card:
     backgroundColor: "{colors.panel-strong}"
     textColor: "{colors.text-primary}"
-    borderColor: "{colors.border-strong}"
     typography: "{typography.body}"
     rounded: "{rounded.lg}"
     padding: "{spacing.panel-pad}"
   table:
     backgroundColor: "{colors.panel-medium}"
     textColor: "{colors.text-primary}"
-    borderColor: "{colors.border-strong}"
     typography: "{typography.table}"
     rounded: "{rounded.table}"
   badge-info:
@@ -284,7 +276,15 @@ Source of truth:
 - Gallery taxonomy: `app/gallery/nav-data.ts`
 - Theme catalog: `lib/themes.ts`
 
-The external format reference used for this document is the Google Stitch DESIGN.md specification at <https://stitch.withgoogle.com/docs/design-md/specification>.
+Official references checked for this document:
+
+- Google Stitch DESIGN.md overview: <https://stitch.withgoogle.com/docs/design-md/overview/>
+- Import from your codebase: <https://stitch.withgoogle.com/docs/design-md/get-instructions/>
+- The DESIGN.md specification: <https://stitch.withgoogle.com/docs/design-md/specification/>
+- View, edit, and export: <https://stitch.withgoogle.com/docs/design-md/usage/>
+- Validate with the CLI: <https://stitch.withgoogle.com/docs/design-md/cli/>
+- Linting rules: <https://stitch.withgoogle.com/docs/design-md/linting-rules/>
+- Open-source specification repository: <https://github.com/google-labs-code/design.md>
 
 ## Overview
 
