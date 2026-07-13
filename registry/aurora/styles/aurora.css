@@ -123,7 +123,7 @@
   --motion-duration-medium:  240ms;
   --motion-duration-slow:    360ms;
 
-  /* Tertiary accent — Axon orange (async / heavy jobs). Replaces violet. */
+  /* Automation accent — Axon orange (async / heavy jobs). Replaces violet. */
   --axon-orange:        #ff9645;
   --axon-orange-strong: #ffb474;
   --axon-orange-deep:   #c96a1c;

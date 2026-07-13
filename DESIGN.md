@@ -5,7 +5,7 @@ description: Operator-first, dark-first design system for Labby, agent products,
 colors:
   primary: "#29b6f6"
   secondary: "#f9a8c4"
-  tertiary: "#ff9645"
+  tertiary: "#67cbfa"
   neutral: "#91a8b6"
   surface: "#07131c"
   on-surface: "#e6f4fb"
@@ -197,8 +197,8 @@ components:
     textColor: "{colors.text-primary}"
     rounded: "{rounded.lg}"
   button-primary:
-    backgroundColor: "{colors.control-surface}"
-    textColor: "{colors.text-primary}"
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.accent-foreground}"
     typography: "{typography.control}"
     rounded: "{rounded.sm}"
     padding: "{spacing.control-x}"
@@ -309,7 +309,8 @@ Primary roles:
 
 - Primary accent: cyan (`#29b6f6`) for focus, active state, primary command affordances, and the one clearest call to action.
 - Secondary accent: rose (`#f9a8c4`) for agent affordances, send actions, active filter tags, and small expressive highlights.
-- Tertiary accent: Axon orange (`#ff9645`) for async work, slash commands, heavy jobs, automation, and background execution.
+- Tertiary/support accent: cyan strong (`#67cbfa`) for hover, active emphasis, selected borders, and elevated cyan affordances.
+- Automation accent: Axon orange (`#ff9645`) for async work, slash commands, heavy jobs, automation, and background execution only.
 - Status colors: muted info, success, warn, error, and neutral families. Status must read clearly without neon intensity.
 - Text: `text-primary` for main content and `text-muted` for metadata, placeholders, descriptions, timestamps, and secondary labels.
 
@@ -366,6 +367,7 @@ Color rules:
 - Selection and focus use border plus glow. Avoid flooded selected fills.
 - Keep rose to one or two meaningful accents per screen.
 - Use Axon orange for async and automation identity. Violet is not part of the current web token source.
+- Never map Axon orange to `primary`, `tertiary`, default CTAs, or general interaction color.
 - Use semantic status tokens for status; do not use brand accents as error, warning, or success shortcuts.
 - Use `color-mix()` surface and border tokens for soft fills instead of inventing new translucent colors.
 
@@ -509,6 +511,7 @@ Do:
 - Do use semantic text classes before inventing a custom type size.
 - Do use border plus glow for focus, selection, and active state.
 - Do keep command surfaces dense, scannable, and predictable.
+- Do keep primary and default call-to-action affordances in the cyan family.
 - Do use Lucide icons for recognizable actions.
 - Do preserve accessibility labels, focus-visible state, keyboard activation, and ARIA state.
 - Do update registry source first, rebuild generated registry JSON, and then sync consumers.
@@ -517,6 +520,7 @@ Don't:
 
 - Don't hardcode Tailwind default colors or raw hex values in product code.
 - Don't reintroduce violet as the AI identity in web components; use Axon orange for automation.
+- Don't use Axon orange as the primary color, tertiary color, default CTA color, or generic interaction accent.
 - Don't use glassmorphism, decorative gradient blobs, or atmospheric imagery as app chrome.
 - Don't flood selected rows or cards with heavy fills.
 - Don't use rose everywhere. It is an accent, not a second primary palette.
@@ -584,7 +588,7 @@ Use motion for disclosure, hover, focus, loading, and state transitions. Avoid b
 
 Use these names when extending Aurora:
 
-- Colors: `primary`, `secondary`, `tertiary`, `neutral`, `surface`, `on-surface`, `error`, plus Aurora-specific names such as `panel-medium`, `panel-strong`, `accent-primary`, `accent-pink`, and `axon-orange`.
+- Colors: `primary`, `secondary`, `tertiary`, `neutral`, `surface`, `on-surface`, `error`, plus Aurora-specific names such as `panel-medium`, `panel-strong`, `accent-primary`, `accent-pink`, and `axon-orange`. In Aurora, `tertiary` stays in the cyan family; automation-specific orange remains named `axon-orange`.
 - Typography: `display-hero`, `display-1`, `display-2`, `section`, `body`, `body-sm`, `ui`, `control`, `table`, `label`, `caption`, `meta`, `eyebrow`, `code`.
 - Rounded: `none`, `sm`, `md`, `lg`, `table`, `compact`, `pill`, `full`.
 - Spacing: `xxs`, `xs`, `sm`, `md`, `lg`, `xl`, `xxl`, `control-y`, `control-x`, `panel-pad`, `section-gap`.
