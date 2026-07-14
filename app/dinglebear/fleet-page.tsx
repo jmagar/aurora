@@ -4,13 +4,16 @@ import * as React from "react"
 import {
   Activity,
   Bell,
+  BookOpen,
   Boxes,
+  Component,
   ExternalLink,
   Grid2X2,
   HardDrive,
   Layers3,
   Network,
   Package,
+  Palette,
   Search,
   ShieldCheck,
   Terminal as TerminalIcon,
@@ -111,9 +114,14 @@ const clientConfigCode = `{
   }
 }`
 
+const registryInstallCode = `# tokens first, then any component
+npx shadcn@latest add https://dinglebear.ai/r/aurora-tokens.json
+npx shadcn@latest add https://dinglebear.ai/r/aurora-button.json`
+
 const paletteSections = [
   { id: "servers", label: "Servers" },
   { id: "sections", label: "Sections" },
+  { id: "design", label: "Design system" },
   { id: "external", label: "External" },
 ]
 
@@ -121,7 +129,7 @@ function scrollToHash(hash: string) {
   document.querySelector(hash)?.scrollIntoView({ behavior: "smooth", block: "start" })
 }
 
-export function DinglebearFleetPage() {
+export function DinglebearFleetPage({ registryCount }: { registryCount: number }) {
   const [category, setCategory] = React.useState<"All" | ServerCategory>("All")
   const [viewMode, setViewMode] = React.useState<ViewMode>("cards")
   const palette = useCommandPalette()
@@ -177,6 +185,20 @@ export function DinglebearFleetPage() {
       },
     }))
 
+    const designItems = [
+      { id: "design-components", label: "Components", description: "shadcn-compatible Aurora primitives and blocks", path: "/components", icon: <Component size={14} aria-hidden="true" /> },
+      { id: "design-gallery", label: "Gallery", description: "live component demos", path: "/gallery", icon: <Grid2X2 size={14} aria-hidden="true" /> },
+      { id: "design-themes", label: "Themes", description: "Aurora palettes for editors, terminals, browsers, shells", path: "/themes", icon: <Palette size={14} aria-hidden="true" /> },
+      { id: "design-docs", label: "Docs", description: "install, foundations, theming", path: "/docs", icon: <BookOpen size={14} aria-hidden="true" /> },
+    ].map(({ path, ...item }) => ({
+      ...item,
+      section: "design",
+      onSelect: () => {
+        setPaletteOpen(false)
+        window.location.assign(path)
+      },
+    }))
+
     const externalItems = [
       {
         id: "external-npm",
@@ -200,7 +222,7 @@ export function DinglebearFleetPage() {
       },
     }))
 
-    return [...serverItems, ...sectionItems, ...externalItems]
+    return [...serverItems, ...sectionItems, ...designItems, ...externalItems]
   }, [setPaletteOpen])
 
   return (
@@ -222,7 +244,9 @@ export function DinglebearFleetPage() {
             {[
               ["#fleet", "Fleet"],
               ["#install", "Install"],
-              ["#stack", "Stack"],
+              ["#design", "Design system"],
+              ["/components", "Components"],
+              ["/themes", "Themes"],
             ].map(([href, label]) => (
               <a
                 key={href}
@@ -404,6 +428,49 @@ export function DinglebearFleetPage() {
           </div>
         </section>
 
+        <section id="design" className="scroll-mt-20 pb-16" aria-labelledby="design-title">
+          <div className="flex flex-col gap-2">
+            <p className="aurora-text-eyebrow" style={{ color: "var(--aurora-accent-strong)" }}>
+              Design system
+            </p>
+            <h2 id="design-title" className="aurora-text-display-2">
+              Home of the Aurora design system
+            </h2>
+            <p
+              className="aurora-text-body max-w-2xl"
+              style={{ color: "var(--aurora-text-muted)" }}
+            >
+              dinglebear.ai also serves Aurora: a shadcn-compatible component registry with
+              {" "}{registryCount} items, a live component gallery, and theme packs for
+              editors, terminals, browsers, and shells.
+            </p>
+          </div>
+
+          <div className="mt-8 grid items-start gap-6 lg:grid-cols-[1fr_1fr]">
+            <CodeBlock code={registryInstallCode} language="bash" filename="install.sh" />
+            <div className="grid gap-4 sm:grid-cols-3">
+              <DesignCard
+                href="/components"
+                icon={<Component size={17} aria-hidden="true" />}
+                title="Components"
+                body="Primitives and product blocks recolored to Aurora tokens."
+              />
+              <DesignCard
+                href="/themes"
+                icon={<Palette size={17} aria-hidden="true" />}
+                title="Themes"
+                body="Aurora palettes for Zed, Warp, Chrome, and shell tools."
+              />
+              <DesignCard
+                href="/docs"
+                icon={<BookOpen size={17} aria-hidden="true" />}
+                title="Docs"
+                body="Install, foundations, and theming guides."
+              />
+            </div>
+          </div>
+        </section>
+
         <section id="stack" className="scroll-mt-20 pb-16" aria-labelledby="stack-title">
           <div className="flex flex-col gap-2">
             <p className="aurora-text-eyebrow" style={{ color: "var(--aurora-accent-strong)" }}>
@@ -451,6 +518,9 @@ export function DinglebearFleetPage() {
             {[
               ["#fleet", "Fleet", undefined],
               ["#install", "Install", undefined],
+              ["/components", "Components", undefined],
+              ["/themes", "Themes", undefined],
+              ["/docs", "Docs", undefined],
               ["https://github.com/jmagar", "GitHub", "noreferrer"],
               ["https://www.npmjs.com/~jmagar", "npm", "noreferrer"],
             ].map(([href, label, rel]) => (
@@ -616,6 +686,40 @@ function FleetTable({ servers: visibleServers }: { servers: ServerEntry[] }) {
         ))}
       </TableBody>
     </Table>
+  )
+}
+
+function DesignCard({
+  href,
+  icon,
+  title,
+  body,
+}: {
+  href: string
+  icon: React.ReactNode
+  title: string
+  body: string
+}) {
+  return (
+    <a href={href} className="block focus-visible:outline-none">
+      <Card interactive elevated={false} className="h-full">
+        <CardHeader>
+          <span
+            className="flex size-9 items-center justify-center rounded-[10px] border"
+            style={{
+              background: "var(--aurora-control-surface)",
+              borderColor: "var(--aurora-border-default)",
+              color: "var(--aurora-accent-strong)",
+            }}
+            aria-hidden="true"
+          >
+            {icon}
+          </span>
+          <CardTitle className="pt-2">{title}</CardTitle>
+          <CardDescription>{body}</CardDescription>
+        </CardHeader>
+      </Card>
+    </a>
   )
 }
 
