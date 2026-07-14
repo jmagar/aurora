@@ -10,6 +10,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* next/font bridge — the root layout self-hosts Manrope/Inter/JetBrains Mono
+   via next/font, which registers hashed family names exposed only through the
+   --font-* variables. aurora.css defaults the font tokens to the literal
+   family names ('Manrope', …), which nothing in this app loads, so without
+   this bridge every surface silently falls back to system fonts.
+   Scoped to body because the layout puts the next/font variable classes on
+   <body> — at :root the var()s are undefined and the tokens go invalid. */
+body {
+  --aurora-font-display: var(--font-manrope), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --aurora-font-sans: var(--font-inter), "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --aurora-font-mono: var(--font-jetbrains-mono), "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+
 @theme inline {
   /* shadcn token bridge */
   --color-background:   var(--background);
