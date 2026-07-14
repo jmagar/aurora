@@ -11,6 +11,7 @@
     "audit:composition": "node scripts/audit-composition.mjs",
     "audit:standalone": "node scripts/audit-standalone.mjs",
     "test:unit": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test tests/*.test.ts",
+    "dendrite:sync": "node scripts/dendrite-catalog.mjs",
     "registry:build": "shadcn build",
     "registry:check": "node scripts/check-registry-drift.mjs",
     "registry:validate": "node scripts/validate-registry-capabilities.mjs",
