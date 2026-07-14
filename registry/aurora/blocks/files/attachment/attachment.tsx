@@ -1,11 +1,14 @@
 "use client"
 
 import * as React from "react"
+import { CloudUpload, File, FileText, FileVideo, Pause, Play, X } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Shared icons
 // ---------------------------------------------------------------------------
+
+const ICON_STROKE = 1.65
 
 function GenericFileIcon({
   color = "var(--aurora-text-muted)",
@@ -14,53 +17,24 @@ function GenericFileIcon({
   color?: string
   size?: number
 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M3 2.5C3 1.95 3.45 1.5 4 1.5H9L13 5.5V13.5C13 14.05 12.55 14.5 12 14.5H4C3.45 14.5 3 14.05 3 13.5V2.5Z"
-        stroke={color}
-        strokeWidth="1.2"
-        fill="none"
-      />
-      <path d="M9 1.5V5.5H13" stroke={color} strokeWidth="1.2" />
-    </svg>
-  )
+  return <File size={size} strokeWidth={ICON_STROKE} color={color} aria-hidden="true" />
 }
 
 function VideoFileIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <rect x="1.5" y="3" width="10" height="10" rx="1.5" stroke="var(--aurora-accent-primary)" strokeWidth="1.2" />
-      <path d="M11.5 6L14.5 4.5V11.5L11.5 10V6Z" stroke="var(--aurora-accent-primary)" strokeWidth="1.2" strokeLinejoin="round" />
-    </svg>
+    <FileVideo size={16} strokeWidth={ICON_STROKE} color="var(--aurora-accent-primary)" aria-hidden="true" />
   )
 }
 
 function PDFIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M3 2.5C3 1.95 3.45 1.5 4 1.5H9L13 5.5V13.5C13 14.05 12.55 14.5 12 14.5H4C3.45 14.5 3 14.05 3 13.5V2.5Z"
-        stroke="var(--aurora-accent-pink)"
-        strokeWidth="1.2"
-        fill="none"
-      />
-      <path d="M9 1.5V5.5H13" stroke="var(--aurora-accent-pink)" strokeWidth="1.2" />
-    </svg>
+    <FileText size={16} strokeWidth={ICON_STROKE} color="var(--aurora-accent-pink)" aria-hidden="true" />
   )
 }
 
 function CloudUploadIcon() {
   return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-      <path
-        d="M20 18.5C22.2 18.5 24 16.7 24 14.5C24 12.5 22.6 10.8 20.7 10.4C20.9 9.9 21 9.4 21 8.5C21 5.7 18.8 3.5 16 3.5C14.1 3.5 12.5 4.5 11.7 6C11.1 5.7 10.4 5.5 9.5 5.5C7.3 5.5 5.5 7.3 5.5 9.5C5.5 9.7 5.5 9.9 5.6 10.1C4 10.7 3 12.2 3 14C3 16.5 4.8 18.5 7 18.5"
-        stroke="var(--aurora-accent-primary)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path d="M14 13V24M14 13L10.5 16.5M14 13L17.5 16.5" stroke="var(--aurora-accent-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <CloudUpload size={28} strokeWidth={ICON_STROKE} color="var(--aurora-accent-primary)" aria-hidden="true" />
   )
 }
 
@@ -181,9 +155,7 @@ export function AttachmentChip({ name, size, thumbnailUrl, onDismiss }: Attachme
             color: "var(--aurora-text-muted)",
           }}
         >
-          <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-          </svg>
+          <X size={13} strokeWidth={ICON_STROKE} aria-hidden="true" />
         </Button>
       )}
     </div>
@@ -352,7 +324,9 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
         background: "color-mix(in srgb, var(--aurora-accent-pink) 5%, var(--aurora-panel-medium))",
         border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 16%, var(--aurora-border-default))",
         borderRadius: "var(--aurora-radius-2)",
+        boxSizing: "border-box",
         width: "300px",
+        maxWidth: "100%",
         position: "relative",
       }}
     >
@@ -372,9 +346,7 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
             color: "var(--aurora-text-muted)",
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-          </svg>
+          <X size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />
         </Button>
       )}
 
@@ -392,8 +364,8 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
           fontSize: "11px",
           fontWeight: 700,
           color: accent,
-          letterSpacing: "0.08em",
-          fontFamily: "var(--aurora-font-mono)",
+          letterSpacing: 0,
+          fontFamily: "var(--aurora-font-sans)",
         }}
       >
         {pdf ? <PDFIcon /> : <GenericFileIcon color={accent} />}
@@ -412,10 +384,7 @@ export function AttachmentDocCard({ name, size, pageCount, onDismiss, onOpen }: 
           border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 14%, var(--aurora-border-default))",
         }}
       >
-        <svg width="40" height="40" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <path d="M6 5C6 3.9 6.9 3 8 3H19L26 10V27C26 28.1 25.1 29 24 29H8C6.9 29 6 28.1 6 27V5Z" stroke={accent} strokeWidth="1.5" fill="none" />
-          <path d="M19 3V10H26" stroke={accent} strokeWidth="1.5" />
-        </svg>
+        <FileText size={40} strokeWidth={ICON_STROKE} color={accent} aria-hidden="true" />
       </div>
 
       {/* Name */}
@@ -508,7 +477,7 @@ export function AttachmentAudioChip({
   const [playing, setPlaying] = React.useState(false)
 
   const btnSize = compact ? 26 : 34
-  const iconSize = compact ? 9 : 11
+  const iconSize = compact ? 14 : 15
   const waveHeight = compact ? 16 : 22
 
   return (
@@ -545,14 +514,9 @@ export function AttachmentAudioChip({
           }}
         >
           {playing ? (
-            <svg width={iconSize} height={iconSize} viewBox="0 0 10 10" fill="none" aria-hidden="true">
-              <rect x="1.5" y="1.5" width="2.5" height="7" rx="0.7" fill="currentColor" />
-              <rect x="6" y="1.5" width="2.5" height="7" rx="0.7" fill="currentColor" />
-            </svg>
+            <Pause size={iconSize} strokeWidth={ICON_STROKE} aria-hidden="true" />
           ) : (
-            <svg width={iconSize} height={iconSize} viewBox="0 0 10 10" fill="none" aria-hidden="true">
-              <path d="M2.5 1.5L8.5 5L2.5 8.5V1.5Z" fill="currentColor" />
-            </svg>
+            <Play size={iconSize} strokeWidth={ICON_STROKE} fill="currentColor" aria-hidden="true" />
           )}
         </Button>
 
@@ -644,6 +608,7 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
       style={{
         display: "flex",
         alignItems: "center",
+        flexWrap: "wrap",
         gap: "12px",
         padding: "12px 16px",
         background: "var(--aurora-panel-medium)",
@@ -661,13 +626,13 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
       <span
         style={{
           flex: 1,
+          minWidth: "120px",
           fontSize: "14px",
           fontWeight: 600,
           color: "var(--aurora-text-primary)",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          minWidth: 0,
           fontFamily: "var(--aurora-font-sans)",
         }}
       >
@@ -677,7 +642,7 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
       {/* Progress track */}
       <div
         style={{
-          width: "160px",
+          width: "min(160px, 36vw)",
           height: "5px",
           borderRadius: "3px",
           background: "var(--aurora-control-surface)",
@@ -729,9 +694,7 @@ export function AttachmentUploadProgress({ name, progress, onCancel }: Attachmen
             color: "var(--aurora-text-muted)",
           }}
         >
-          <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-          </svg>
+          <X size={13} strokeWidth={ICON_STROKE} aria-hidden="true" />
         </Button>
       )}
     </div>
@@ -793,7 +756,12 @@ export function AttachmentDragZone({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onClick={() => inputRef.current?.click()}
-      onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          inputRef.current?.click()
+        }
+      }}
       style={{
         display: "flex",
         flexDirection: "column",

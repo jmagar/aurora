@@ -58,8 +58,9 @@ export default function TerminalDemo() {
         </h2>
         <span
           style={{
-            fontFamily: "var(--aurora-font-mono)",
+            fontFamily: "var(--aurora-font-sans)",
             fontSize: "11px",
+            fontWeight: 560,
             color: "var(--aurora-text-muted)",
           }}
         >

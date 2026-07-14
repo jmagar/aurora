@@ -71,7 +71,7 @@ export interface MarketplaceProps {
   sources?: MarketplaceSource[]
   items?: MarketplaceCatalogItem[]
   readOnlyPreview?: boolean
-  /** Header eyebrow. Defaults to "Operator Catalog". */
+  /** Header eyebrow. Defaults to "Operator catalog". */
   eyebrow?: string
   /** Header title. Defaults to "Marketplace". */
   heading?: string
@@ -81,7 +81,7 @@ export interface MarketplaceProps {
   previewNote?: string
   /** Override the per-item action label (e.g. "View Source" for a public viewer). */
   actionLabel?: (item: MarketplaceCatalogItem) => string
-  /** Rendered only when provided — omit to hide the Add Source button. */
+  /** Rendered only when provided — omit to hide the Add source button. */
   onAddSource?: () => void
   /** Rendered only when provided — omit to hide the Refresh button. */
   onRefresh?: () => void
@@ -214,24 +214,26 @@ const DEMO_ITEMS: MarketplaceCatalogItem[] = [
   },
 ]
 
+const ICON_STROKE = 1.65
+
 const KIND_META: Record<MarketplaceKind, { label: string; icon: React.ReactNode }> = {
-  plugin: { label: "Plugin", icon: <Boxes className="size-4" aria-hidden /> },
-  skill: { label: "Skill", icon: <Sparkles className="size-4" aria-hidden /> },
-  command: { label: "Command", icon: <SquareTerminal className="size-4" aria-hidden /> },
-  mcp_server: { label: "MCP Server", icon: <Server className="size-4" aria-hidden /> },
-  acp_agent: { label: "ACP Agent", icon: <Bot className="size-4" aria-hidden /> },
-  app: { label: "App", icon: <Code className="size-4" aria-hidden /> },
-  hook: { label: "Hook", icon: <FileCode className="size-4" aria-hidden /> },
-  source: { label: "Source", icon: <ShoppingBag className="size-4" aria-hidden /> },
+  plugin: { label: "Plugin", icon: <Boxes size={16} strokeWidth={ICON_STROKE} aria-hidden="true" /> },
+  skill: { label: "Skill", icon: <Sparkles size={16} strokeWidth={ICON_STROKE} aria-hidden="true" /> },
+  command: { label: "Command", icon: <SquareTerminal size={16} strokeWidth={ICON_STROKE} aria-hidden="true" /> },
+  mcp_server: { label: "MCP server", icon: <Server size={16} strokeWidth={ICON_STROKE} aria-hidden="true" /> },
+  acp_agent: { label: "ACP agent", icon: <Bot size={16} strokeWidth={ICON_STROKE} aria-hidden="true" /> },
+  app: { label: "App", icon: <Code size={16} strokeWidth={ICON_STROKE} aria-hidden="true" /> },
+  hook: { label: "Hook", icon: <FileCode size={16} strokeWidth={ICON_STROKE} aria-hidden="true" /> },
+  source: { label: "Source", icon: <ShoppingBag size={16} strokeWidth={ICON_STROKE} aria-hidden="true" /> },
 }
 
 function itemActionLabel(item: MarketplaceCatalogItem, readOnlyPreview: boolean) {
-  if (item.kind === "source") return "Filter Source"
-  if (readOnlyPreview) return item.installed ? "Preview Removal" : "Preview Install"
+  if (item.kind === "source") return "Filter source"
+  if (readOnlyPreview) return item.installed ? "Preview removal" : "Preview install"
   if (item.installed) return item.hasUpdate ? "Update" : "Remove"
-  if (item.kind === "acp_agent") return "Wire Agent"
+  if (item.kind === "acp_agent") return "Wire agent"
   if (item.kind === "mcp_server") return "Install"
-  if (item.kind !== "plugin") return "Install Component"
+  if (item.kind !== "plugin") return "Install component"
   return "Install"
 }
 
@@ -273,7 +275,7 @@ function IdentityMark({ item }: { item: MarketplaceCatalogItem }) {
         fontFamily: "var(--aurora-font-display)",
         fontSize: 13,
         fontWeight: 800,
-        letterSpacing: "-0.02em",
+        letterSpacing: 0,
       }}
     >
       {item.kind === "plugin" ? identityInitials(item.name) : KIND_META[item.kind].icon}
@@ -402,7 +404,7 @@ function SourceCard({
       <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 border-t pt-2.5" style={{ borderColor: "var(--aurora-border-default)" }}>
         <span className="aurora-text-meta">{source.installedCount} installed</span>
         <span className="aurora-text-meta">{source.pluginCount} available</span>
-        <span className="ml-auto max-w-full truncate aurora-text-code" style={{ color: "var(--aurora-text-muted)", fontSize: 11 }}>
+        <span className="ml-auto max-w-full truncate aurora-text-meta" style={{ color: "var(--aurora-text-muted)" }}>
           {source.repository ?? source.id}
         </span>
       </div>
@@ -414,7 +416,7 @@ export function Marketplace({
   sources = DEMO_SOURCES,
   items = DEMO_ITEMS,
   readOnlyPreview = false,
-  eyebrow = "Operator Catalog",
+  eyebrow = "Operator catalog",
   heading = "Marketplace",
   intro = "Browse Claude and Codex plugins, MCP Registry servers, ACP agents, and installable components through one Labby catalog.",
   previewNote = "Dev preview: reads are live; install, remove, source, and wiring mutations are blocked.",
@@ -515,19 +517,40 @@ export function Marketplace({
             )}
           </div>
           <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-end">
-            <Button className="justify-center sm:justify-start" variant="neutral" size="sm" onClick={() => setView(view === "cards" ? "table" : "cards")}>
-              {view === "cards" ? <LayoutList className="size-3.5" aria-hidden /> : <Grid2X2 className="size-3.5" aria-hidden />}
-              {view === "cards" ? "Table View" : "Card View"}
+            <Button
+              className="justify-center sm:justify-start"
+              variant="neutral"
+              size="sm"
+              iconLeft={
+                view === "cards" ? (
+                  <LayoutList size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />
+                ) : (
+                  <Grid2X2 size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />
+                )
+              }
+              onClick={() => setView(view === "cards" ? "table" : "cards")}
+            >
+              {view === "cards" ? "Table view" : "Card view"}
             </Button>
             {onAddSource && (
-              <Button className="justify-center sm:justify-start" variant="neutral" size="sm" onClick={onAddSource}>
-                <Plus className="size-3.5" aria-hidden />
-                Add Source
+              <Button
+                className="justify-center sm:justify-start"
+                variant="neutral"
+                size="sm"
+                iconLeft={<Plus size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />}
+                onClick={onAddSource}
+              >
+                Add source
               </Button>
             )}
             {onRefresh && (
-              <Button className="col-span-2 justify-center sm:col-span-1 sm:justify-start" variant="aurora" size="sm" onClick={onRefresh}>
-                <RefreshCw className="size-3.5" aria-hidden />
+              <Button
+                className="col-span-2 justify-center sm:col-span-1 sm:justify-start"
+                variant="aurora"
+                size="sm"
+                iconLeft={<RefreshCw size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />}
+                onClick={onRefresh}
+              >
                 Refresh
               </Button>
             )}
@@ -535,13 +558,13 @@ export function Marketplace({
         </div>
       </div>
 
-      <StatGrid style={{ gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("all")} className="w-full text-left"><StatCard label="All Items" value={summary.all} description="Installable catalog entries" tone={lens === "all" ? "info" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("installed")} className="w-full text-left"><StatCard label="Installed" value={summary.installed} description="Ready on this controller" tone={lens === "installed" ? "success" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("plugins")} className="w-full text-left"><StatCard label="Plugins" value={summary.plugins} description="Plugins, skills, commands" tone={lens === "plugins" ? "info" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("mcp_servers")} className="w-full text-left"><StatCard label="MCP Servers" value={summary.mcpServers} description="Registry server entries" tone={lens === "mcp_servers" ? "info" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("acp_agents")} className="w-full text-left"><StatCard label="ACP Agents" value={summary.acpAgents} description="Provider wiring targets" tone={lens === "acp_agents" ? "warn" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
-        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("sources")} className="w-full text-left"><StatCard label="Sources" value={summary.sources} description={`${summary.updates} updates available`} tone={lens === "sources" ? "info" : "neutral"} style={{ maxWidth: "none", minHeight: 104 }} /></Button>
+      <StatGrid style={{ gridTemplateColumns: "repeat(auto-fill, minmax(175px, 220px))" }}>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("all")} className="w-full text-left"><StatCard label="All items" value={summary.all} description="Installable catalog entries" tone={lens === "all" ? "info" : "neutral"} style={{ minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("installed")} className="w-full text-left"><StatCard label="Installed" value={summary.installed} description="Ready on this controller" tone={lens === "installed" ? "success" : "neutral"} style={{ minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("plugins")} className="w-full text-left"><StatCard label="Plugins" value={summary.plugins} description="Plugins, skills, commands" tone={lens === "plugins" ? "info" : "neutral"} style={{ minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("mcp_servers")} className="w-full text-left"><StatCard label="MCP servers" value={summary.mcpServers} description="Registry server entries" tone={lens === "mcp_servers" ? "info" : "neutral"} style={{ minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("acp_agents")} className="w-full text-left"><StatCard label="ACP agents" value={summary.acpAgents} description="Provider wiring targets" tone={lens === "acp_agents" ? "warn" : "neutral"} style={{ minHeight: 104 }} /></Button>
+        <Button variant="plain" size="unstyled" type="button" onClick={() => setLens("sources")} className="w-full text-left"><StatCard label="Sources" value={summary.sources} description={`${summary.updates} updates available`} tone={lens === "sources" ? "info" : "neutral"} style={{ minHeight: 104 }} /></Button>
       </StatGrid>
 
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
@@ -566,7 +589,7 @@ export function Marketplace({
             <div className="flex items-center justify-between gap-3">
               <p className="aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>Sources</p>
               <Button variant={sourceId === "all" ? "aurora" : "neutral"} size="sm" onClick={() => setSourceId("all")}>
-                All Sources
+                All sources
               </Button>
             </div>
             {sources.map((source) => (
@@ -627,7 +650,7 @@ export function Marketplace({
                   <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
                     <Badge variant="rose">{activeSource.installedCount} installed</Badge>
                     <Badge>{activeSource.pluginCount} available</Badge>
-                    <span className="truncate aurora-text-code" style={{ color: "var(--aurora-text-muted)", fontSize: 11 }}>
+                    <span className="truncate aurora-text-meta" style={{ color: "var(--aurora-text-muted)" }}>
                       {activeSource.repository ?? activeSource.id}
                     </span>
                   </div>
@@ -635,7 +658,7 @@ export function Marketplace({
               </div>
               <div className="flex items-start sm:justify-end">
                 <Button variant="neutral" type="button" onClick={() => setSourceId("all")}>
-                  Clear Source
+                  Clear source
                 </Button>
               </div>
             </div>
@@ -643,7 +666,7 @@ export function Marketplace({
 
           {filteredItems.length === 0 ? (
             <EmptyState
-              icon={<ShoppingBag className="size-5" aria-hidden />}
+              icon={<ShoppingBag size={20} strokeWidth={ICON_STROKE} aria-hidden="true" />}
               title={query ? `No results for “${query}”` : "No marketplace entries found"}
               description={
                 activeSource
@@ -652,7 +675,7 @@ export function Marketplace({
               }
               action={
                 <Button variant="neutral" type="button" onClick={clearFilters}>
-                  Clear Filters
+                  Clear filters
                 </Button>
               }
             />
@@ -679,7 +702,7 @@ export function Marketplace({
                         <td className="px-4 py-3" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
                           <div className="flex items-center gap-3">
                             <IdentityMark item={item} />
-                            <Button variant="plain" size="unstyled" type="button" onClick={() => handleAction(item)} className="min-w-0 text-left focus-visible:ring-1 focus-visible:ring-[color:var(--aurora-focus-ring-strong)] focus-visible:rounded-[4px] focus-visible:outline-none">
+                            <Button variant="plain" size="unstyled" type="button" onClick={() => handleAction(item)} className="grid min-w-0 gap-1 text-left focus-visible:ring-1 focus-visible:ring-[color:var(--aurora-focus-ring-strong)] focus-visible:rounded-[4px] focus-visible:outline-none">
                               <p className="truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{item.name}</p>
                               <p className="truncate aurora-text-meta">{item.description || item.subtitle}</p>
                             </Button>
@@ -734,7 +757,7 @@ export function Marketplace({
             ) : (
               <>
                 <SheetTitle style={{ fontFamily: "var(--aurora-font-display)", fontSize: 18, fontWeight: 760 }}>
-                  Marketplace Item
+                  Marketplace item
                 </SheetTitle>
                 <SheetDescription className="aurora-text-body-sm">Browse package details.</SheetDescription>
               </>

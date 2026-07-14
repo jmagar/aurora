@@ -1808,7 +1808,9 @@
       "type": "registry:block",
       "title": "Aurora Terminal Block",
       "description": "Aurora-native terminal with 38px navy titlebar (Labby mark, session name, status dot, kill/clear/run buttons), full color system using Aurora tokens, compact in-chat variant, and blinking cursor.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -1843,7 +1845,9 @@
       "type": "registry:block",
       "title": "Aurora Sidebar Block",
       "description": "Zed-like project sidebar with collapsible project groups, session items with relative time, live beacon pulse, active accent border, search input, avatar bottom bar, and icon-only collapsed variant.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-avatar",
@@ -2316,8 +2320,10 @@
       "name": "aurora-attachment",
       "type": "registry:block",
       "title": "Aurora Attachment",
-      "description": "Six attachment UI variants: inline rose-tinted chip (with image thumbnail), media grid with hover overlay, tall doc/PDF card with file-type badge and page count, animated audio chip with 5 waveform bars, upload progress tracker with fixed-80px accent-fill track, and drag-and-drop zone.",
-      "dependencies": [],
+      "description": "Six attachment UI variants: inline rose-tinted chip (with image thumbnail), media grid with hover overlay, tall doc/PDF card with file-type badge and page count, animated audio chip with 5 waveform bars, responsive upload progress tracker, and drag-and-drop zone.",
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -2352,7 +2358,9 @@
       "type": "registry:block",
       "title": "Aurora Command Palette",
       "description": "Full-screen command palette with 72% alpha backdrop, centered 560px panel, magnifier search input with ⌘K shortcut hint, sectioned results (Recent, Actions, Skills, Navigate), keyboard shortcut kbd badges, arrow-key navigation, Enter to select, Escape to close, and a useCommandPalette hook that binds ⌘K globally.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -3199,7 +3207,7 @@
       "title": "Aurora Marketplace Block",
       "description": "Labby marketplace catalog surface with source cards, lens stats, search filters, card and table views, install/update actions, and a detail inspector.",
       "dependencies": [
-        "lucide-react@^0.487.0"
+        "lucide-react@^1.21.0"
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",

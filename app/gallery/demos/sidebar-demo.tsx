@@ -1,70 +1,39 @@
 "use client"
 
 import * as React from "react"
+import { BookOpen, Box, Clock3, MessageSquare, Play, Settings } from "lucide-react"
 import { Sidebar, type SidebarItem } from "@/registry/aurora/blocks/workspace/sidebar/sidebar"
 
-// CD icon helper: 17px, stroke 1.6, round caps/joins, currentColor.
-function ic(path: React.ReactNode) {
-  return (
-    <svg
-      width="17"
-      height="17"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {path}
-    </svg>
-  )
-}
+const ICON_STROKE = 1.6
 
 const ITEMS: SidebarItem[] = [
   {
     id: "run",
     label: "Run",
     section: "Workspace",
-    icon: ic(<path d="m6 3 14 9-14 9V3z" />),
+    icon: <Play size={17} strokeWidth={ICON_STROKE} aria-hidden="true" />,
   },
   {
     id: "ask",
     label: "Ask",
-    icon: ic(<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />),
+    icon: <MessageSquare size={17} strokeWidth={ICON_STROKE} aria-hidden="true" />,
   },
   {
     id: "library",
     label: "Library",
     badge: "128",
-    icon: ic(
-      <>
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z" />
-      </>,
-    ),
+    icon: <BookOpen size={17} strokeWidth={ICON_STROKE} aria-hidden="true" />,
   },
   {
     id: "history",
     label: "History",
     section: "Account",
-    icon: ic(
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
-      </>,
-    ),
+    icon: <Clock3 size={17} strokeWidth={ICON_STROKE} aria-hidden="true" />,
   },
   {
     id: "settings",
     label: "Settings",
-    icon: ic(
-      <>
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-5l-.3 2.6a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L3 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.6a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.4a7 7 0 0 0 .2-1z" />
-      </>,
-    ),
+    icon: <Settings size={17} strokeWidth={ICON_STROKE} aria-hidden="true" />,
   },
 ]
 
@@ -106,15 +75,16 @@ export default function SidebarDemo() {
           }}
         >
           Active:{" "}
-          <code
+          <span
             style={{
-              fontFamily: "var(--aurora-font-mono)",
+              fontFamily: "var(--aurora-font-sans)",
               color: "var(--aurora-accent-primary)",
               fontSize: "11px",
+              fontWeight: 650,
             }}
           >
             {activeId}
-          </code>
+          </span>
         </span>
       </div>
 
@@ -141,7 +111,7 @@ export default function SidebarDemo() {
                 fontFamily: "var(--aurora-font-display)",
                 fontWeight: 800,
                 fontSize: "15px",
-                letterSpacing: "-0.01em",
+                letterSpacing: 0,
               }}
             >
               Axon
@@ -177,14 +147,7 @@ export default function SidebarDemo() {
               justifyContent: "center",
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M12 3 20 7.5v9L12 21 4 16.5v-9L12 3Z"
-                stroke="var(--aurora-accent-primary)"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Box size={20} strokeWidth={1.5} color="var(--aurora-accent-primary)" aria-hidden="true" />
           </div>
           <p
             style={{

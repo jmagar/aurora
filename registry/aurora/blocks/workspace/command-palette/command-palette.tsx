@@ -87,7 +87,7 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
   {
     id: "a1",
-    label: "New Conversation",
+    label: "New conversation",
     description: "Start a fresh chat",
     section: "actions",
     shortcut: ["⌘", "N"],
@@ -95,7 +95,7 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
   {
     id: "a2",
-    label: "Search Files",
+    label: "Search files",
     description: "Search across your project",
     section: "actions",
     shortcut: ["⌘", "F"],
@@ -103,7 +103,7 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
   {
     id: "a3",
-    label: "Clear Conversation",
+    label: "Clear conversation",
     description: "Wipe current context",
     section: "actions",
     shortcut: ["⌘", "⇧", "K"],
@@ -111,14 +111,14 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
   {
     id: "s1",
-    label: "Code Review",
+    label: "Code review",
     description: "AI-powered code reviewer",
     section: "skills",
     icon: <Sparkles size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "s2",
-    label: "Security Review",
+    label: "Security review",
     description: "Audit for vulnerabilities",
     section: "skills",
     icon: <Star size={14} strokeWidth={1.65} aria-hidden />,

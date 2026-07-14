@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
@@ -57,29 +58,9 @@ export interface SidebarProps
 // ---------------------------------------------------------------------------
 
 function CollapseIcon({ collapsed }: { collapsed: boolean }) {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {collapsed ? (
-        <>
-          <path d="m9 18 6-6-6-6" />
-        </>
-      ) : (
-        <>
-          <path d="m15 18-6-6 6-6" />
-        </>
-      )}
-    </svg>
-  )
+  const Icon = collapsed ? ChevronRight : ChevronLeft
+
+  return <Icon size={16} strokeWidth={1.6} aria-hidden="true" />
 }
 
 // ---------------------------------------------------------------------------
@@ -231,7 +212,7 @@ function NavItem({
                   ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 32%, transparent)"
                   : "1px solid var(--aurora-border-default)",
                 fontVariantNumeric: "tabular-nums",
-                fontFamily: "var(--aurora-font-mono)",
+                fontFamily: "var(--aurora-font-sans)",
               }}
             >
               {item.badge}

@@ -5,12 +5,20 @@ import {
   AttachmentChip,
   AttachmentDocCard,
   AttachmentAudioChip,
+  AttachmentGrid,
+  AttachmentDragZone,
   AttachmentUploadProgress,
 } from "@/registry/aurora/blocks/files/attachment/attachment"
 
 const INITIAL_CHIPS = [
   { id: "c1", name: "serde.rs.png", size: 184320 },
   { id: "c2", name: "notes.txt", size: 2048 },
+]
+
+const GRID_ITEMS = [
+  { id: "g1", name: "chrome-dark.png", size: 284320, url: "/themes/previews/chrome-dark.png", mediaType: "image" as const },
+  { id: "g2", name: "warp.png", size: 318720, url: "/themes/previews/warp.png", mediaType: "image" as const },
+  { id: "g3", name: "zed.png", size: 224880, url: "/themes/previews/zed.png", mediaType: "image" as const },
 ]
 
 export default function AttachmentDemo() {
@@ -32,7 +40,7 @@ export default function AttachmentDemo() {
         display: "flex",
         flexDirection: "column",
         gap: "14px",
-        padding: "24px 30px",
+        padding: "24px clamp(14px, 5vw, 30px)",
         background: "var(--aurora-page-bg)",
         color: "var(--aurora-text-primary)",
         boxSizing: "border-box",
@@ -50,8 +58,12 @@ export default function AttachmentDemo() {
         ))}
       </div>
 
+      <div style={{ maxWidth: 360 }}>
+        <AttachmentGrid items={GRID_ITEMS} columns={3} />
+      </div>
+
       {/* Doc card + audio chips column */}
-      <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-start" }}>
         {showDoc && (
           <AttachmentDocCard
             name="spec.pdf"
@@ -61,7 +73,7 @@ export default function AttachmentDemo() {
             onDismiss={() => setShowDoc(false)}
           />
         )}
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, minWidth: 0, maxWidth: "100%" }}>
           <AttachmentAudioChip title="standup.m4a" duration="2:41" />
           <AttachmentAudioChip title="note.m4a" duration="0:48" compact />
         </div>
@@ -69,6 +81,8 @@ export default function AttachmentDemo() {
 
       {/* Upload progress */}
       <AttachmentUploadProgress name="dump.tar.gz" progress={progress} onCancel={() => {}} />
+
+      <AttachmentDragZone label="Drop reference files" sublabel="Images, PDFs, audio, or logs" />
     </div>
   )
 }

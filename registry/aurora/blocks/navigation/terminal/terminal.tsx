@@ -3,6 +3,7 @@
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 import * as React from "react"
+import { Check, CircleX, Eraser, Play, TriangleAlert, X } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
@@ -80,6 +81,8 @@ function StatusDot({ status }: { status: TerminalProps["status"] }) {
 // Titlebar action buttons (aurora neutral square style)
 // ---------------------------------------------------------------------------
 
+const ICON_STROKE = 1.65
+
 function TitlebarButton({
   children,
   onClick,
@@ -101,31 +104,10 @@ function TitlebarButton({
         width: "26px",
         height: "22px",
         fontSize: "10px",
-        fontFamily: "var(--aurora-font-mono)",
       }}
     >
       {children}
     </Button>
-  )
-}
-
-// Three neutral square dots (NOT mac traffic lights)
-function WindowDots() {
-  return (
-    <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-      {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          style={{
-            display: "inline-block",
-            width: "8px",
-            height: "8px",
-            borderRadius: "2px",
-            background: "var(--aurora-border-strong)",
-          }}
-        />
-      ))}
-    </div>
   )
 }
 
@@ -173,11 +155,13 @@ function LinePrefix({ type }: { type?: TerminalLine["type"] }) {
       <span
         style={{
           color: "var(--aurora-error)",
+          display: "inline-flex",
+          alignItems: "center",
           userSelect: "none",
           marginRight: "2px",
         }}
       >
-        ✗
+        <CircleX size={12} strokeWidth={ICON_STROKE} aria-hidden="true" />
       </span>
     )
   }
@@ -186,11 +170,13 @@ function LinePrefix({ type }: { type?: TerminalLine["type"] }) {
       <span
         style={{
           color: "var(--aurora-success)",
+          display: "inline-flex",
+          alignItems: "center",
           userSelect: "none",
           marginRight: "2px",
         }}
       >
-        ✓
+        <Check size={12} strokeWidth={ICON_STROKE} aria-hidden="true" />
       </span>
     )
   }
@@ -199,11 +185,13 @@ function LinePrefix({ type }: { type?: TerminalLine["type"] }) {
       <span
         style={{
           color: "var(--aurora-warn)",
+          display: "inline-flex",
+          alignItems: "center",
           userSelect: "none",
           marginRight: "2px",
         }}
       >
-        ⚠
+        <TriangleAlert size={12} strokeWidth={ICON_STROKE} aria-hidden="true" />
       </span>
     )
   }
@@ -240,7 +228,7 @@ function Titlebar({
       <LabbyMark size={compact ? 8 : 10} />
       <span
         style={{
-          fontFamily: "var(--aurora-font-mono)",
+          fontFamily: "var(--aurora-font-sans)",
           fontSize: compact ? "11px" : "12px",
           color: "var(--aurora-text-muted)",
           fontWeight: 500,
@@ -263,25 +251,22 @@ function Titlebar({
       {!compact && (
         <>
           {onKill && (
-            <TitlebarButton onClick={onKill} title="Kill Session">
-              ×
+            <TitlebarButton onClick={onKill} title="Kill session">
+              <X size={13} strokeWidth={ICON_STROKE} aria-hidden="true" />
             </TitlebarButton>
           )}
           {onClear && (
-            <TitlebarButton onClick={onClear} title="Clear Output">
-              ⌫
+            <TitlebarButton onClick={onClear} title="Clear output">
+              <Eraser size={13} strokeWidth={ICON_STROKE} aria-hidden="true" />
             </TitlebarButton>
           )}
           {onRun && (
             <TitlebarButton onClick={onRun} title="Run">
-              ▶
+              <Play size={13} strokeWidth={ICON_STROKE} aria-hidden="true" />
             </TitlebarButton>
           )}
         </>
       )}
-
-      {/* Three neutral square dots */}
-      <WindowDots />
     </div>
   )
 }
