@@ -77,7 +77,7 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
         data-open={navOpen ? "true" : "false"}
       >
         <div className="aurora-gallery-nav-header">
-          <Link href="/gallery/buttons" className="aurora-gallery-brand-link" aria-label="Aurora Design System home">
+          <Link href="/" className="aurora-gallery-brand-link" aria-label="Aurora Design System home">
             <LabbyLockup
               markSize={28}
               wordmark={<AuroraWordmark fontSize={17} />}

@@ -127,6 +127,7 @@ export function PluginsView() {
           heading="Plugin Catalog"
           intro="Every plugin in the dendrite marketplace — skills, commands, agents, hooks, MCP servers, and Gemini extension manifests."
           previewNote="Read-only catalog snapshot. Install from your agent CLI with the commands above."
+          actionLabel={() => "View Source"}
           onItemAction={(item) => {
             const homepage = HOMEPAGES[item.name]
             if (homepage) window.open(homepage, "_blank", "noopener,noreferrer")

@@ -79,6 +79,8 @@ export interface MarketplaceProps {
   intro?: string
   /** Note shown when readOnlyPreview is set. */
   previewNote?: string
+  /** Override the per-item action label (e.g. "View Source" for a public viewer). */
+  actionLabel?: (item: MarketplaceCatalogItem) => string
   /** Rendered only when provided — omit to hide the Add Source button. */
   onAddSource?: () => void
   /** Rendered only when provided — omit to hide the Refresh button. */
@@ -282,10 +284,12 @@ function IdentityMark({ item }: { item: MarketplaceCatalogItem }) {
 function CatalogCard({
   item,
   readOnlyPreview,
+  labelFor,
   onAction,
 }: {
   item: MarketplaceCatalogItem
   readOnlyPreview: boolean
+  labelFor?: (item: MarketplaceCatalogItem) => string
   onAction?: (item: MarketplaceCatalogItem) => void
 }) {
   const installed = Boolean(item.installed)
@@ -334,7 +338,7 @@ function CatalogCard({
       <div className="flex items-center justify-between gap-3 border-t pt-3" style={{ borderColor: "var(--aurora-border-default)" }}>
         <span className="aurora-text-meta">{versionLabel(item.version, item.updatedAt)}</span>
         <Button variant={item.kind === "acp_agent" ? "rose" : "aurora"} size="sm" type="button" onClick={() => onAction?.(item)}>
-          {itemActionLabel(item, readOnlyPreview)}
+          {labelFor ? labelFor(item) : itemActionLabel(item, readOnlyPreview)}
         </Button>
       </div>
     </article>
@@ -414,6 +418,7 @@ export function Marketplace({
   heading = "Marketplace",
   intro = "Browse Claude and Codex plugins, MCP Registry servers, ACP agents, and installable components through one Labby catalog.",
   previewNote = "Dev preview: reads are live; install, remove, source, and wiring mutations are blocked.",
+  actionLabel,
   onAddSource,
   onRefresh,
   onItemAction,
@@ -653,7 +658,7 @@ export function Marketplace({
             />
           ) : view === "cards" ? (
             <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-3">
-              {filteredItems.map((item) => <CatalogCard key={item.id} item={item} readOnlyPreview={readOnlyPreview} onAction={handleAction} />)}
+              {filteredItems.map((item) => <CatalogCard key={item.id} item={item} readOnlyPreview={readOnlyPreview} labelFor={actionLabel} onAction={handleAction} />)}
             </div>
           ) : (
             <div className="overflow-hidden rounded-[8px] border" style={{ background: "var(--aurora-panel-medium)", borderColor: "var(--aurora-border-strong)" }}>
@@ -687,7 +692,7 @@ export function Marketplace({
                           <StatusIndicator tone={item.hasUpdate ? "degraded" : item.installed ? "online" : item.builtin ? "queued" : "offline"} label={item.hasUpdate ? "Update" : item.installed ? "Installed" : item.builtin ? "Built-in" : "Available"} />
                         </td>
                         <td className="px-4 py-3 text-right" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
-                          <Button variant={item.kind === "acp_agent" ? "rose" : "aurora"} size="sm" type="button" onClick={() => handleAction(item)}>{itemActionLabel(item, readOnlyPreview)}</Button>
+                          <Button variant={item.kind === "acp_agent" ? "rose" : "aurora"} size="sm" type="button" onClick={() => handleAction(item)}>{actionLabel ? actionLabel(item) : itemActionLabel(item, readOnlyPreview)}</Button>
                         </td>
                       </tr>
                     ))}

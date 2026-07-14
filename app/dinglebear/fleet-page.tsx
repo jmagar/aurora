@@ -232,9 +232,10 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
       <header
         className="sticky top-0 z-40 border-b"
         style={{
-          background: "var(--aurora-nav-bg)",
+          background: "color-mix(in srgb, var(--aurora-nav-bg) 84%, transparent)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
           borderColor: "var(--aurora-border-default)",
-          boxShadow: "var(--aurora-shadow-medium)",
         }}
       >
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-3">
