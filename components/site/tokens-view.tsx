@@ -122,7 +122,7 @@ export function TokensView() {
         <div className="aurora-ribbon" aria-hidden style={{ height: 320 }} />
         <div className="relative">
           <div className="aurora-text-eyebrow mb-2.5">Foundations</div>
-          <h1 className="aurora-text-display-hero mb-3" style={{ fontSize: "clamp(34px,5vw,56px)" }}>Tokens</h1>
+          <h1 className="aurora-text-display-1 mb-3">Tokens</h1>
           <p className="aurora-text-lead max-w-[640px]">
             Every Aurora surface reads from these CSS custom properties — declared once in{" "}
             <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>registry/aurora/styles/aurora.css</span>{" "}

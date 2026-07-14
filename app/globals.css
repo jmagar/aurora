@@ -121,12 +121,14 @@ body {
   align-items: flex-end;
 }
 
+/* Demo section labels use the eyebrow treatment — mono is reserved for code
+   and terminal content per the type contract. */
 .aurora-demo-label {
-  font-size: 10px;
-  font-family: var(--aurora-font-mono);
-  font-weight: 600;
+  font-size: var(--aurora-type-micro);
+  font-family: var(--aurora-font-sans);
+  font-weight: var(--aurora-weight-label);
   color: var(--aurora-text-muted);
-  letter-spacing: 0.12em;
+  letter-spacing: var(--aurora-letter-eyebrow);
   text-transform: uppercase;
 }
 

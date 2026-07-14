@@ -182,17 +182,7 @@ export function IconsView() {
   return (
     <div style={{ paddingTop: 40 }}>
       <span className="aurora-text-eyebrow">Icons</span>
-      <h1
-        style={{
-          fontFamily: "var(--aurora-font-display)",
-          fontWeight: 800,
-          fontSize: "clamp(30px, 4vw, 46px)",
-          letterSpacing: "-0.04em",
-          margin: "12px 0 0",
-          lineHeight: 1.05,
-          color: "var(--aurora-text-primary)",
-        }}
-      >
+      <h1 className="aurora-text-display-1" style={{ margin: "12px 0 0" }}>
         Lucide, Line-Only
       </h1>
       <p
