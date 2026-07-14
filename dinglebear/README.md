@@ -1,22 +1,29 @@
-# dinglebear.ai — co-hosted tenant
+# dinglebear.ai — umbrella home
 
-`dinglebear.ai` is a separate site co-hosted inside this Aurora Next.js app.
-It is the home domain of the Aurora deployment (`aurora.dinglebear.ai`) and,
-since 2026-07, an **Aurora-native page**: it composes registry components
-directly instead of shipping its own styling system.
+`dinglebear.ai` is the umbrella home co-hosted inside this Aurora Next.js
+app: the MCP server fleet at the root plus the full Aurora design system
+(registry, components, themes) on the same domain. It is the home domain of
+the Aurora deployment (`aurora.dinglebear.ai`).
 
 ## How it is served
 
 1. `proxy.ts` (repo root) inspects the request `Host`. When it is
-   `dinglebear.ai` / `www.dinglebear.ai`, it rewrites the path to `/dinglebear`.
+   `dinglebear.ai` / `www.dinglebear.ai`:
+   - path `/` rewrites to `/dinglebear` (the fleet page) — unless the request
+     comes from the shadcn CLI (`Accept: application/vnd.shadcn.v1+json` or
+     `User-Agent: shadcn`), which gets `/r/registry.json`. This replicates the
+     root content negotiation from `next.config.ts` because the proxy runs
+     before `beforeFiles` rewrites.
+   - every other path passes through, so `/components`, `/themes`, `/gallery`,
+     `/docs`, and `/r/*.json` all serve on dinglebear.ai too.
 2. `app/dinglebear/page.tsx` renders the fleet landing page
    (`fleet-page.tsx`) built on `registry/aurora/{ui,blocks}` components with
    the fleet data in `app/dinglebear/servers.ts`.
 3. `next.config.ts` lists `dinglebear.ai` / `www.dinglebear.ai` in
    `allowedDevOrigins`.
 
-So a browser hitting `dinglebear.ai` gets the React page at `/dinglebear`,
-while `aurora.tootie.tv` is unaffected.
+`aurora.tootie.tv` is unaffected; `https://dinglebear.ai/r/{name}.json`
+works as a registry endpoint alongside it.
 
 ## Files
 

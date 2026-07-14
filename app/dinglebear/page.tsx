@@ -1,12 +1,15 @@
 import type { Metadata, Viewport } from "next"
 
+import registry from "@/registry.json"
+
 import { DinglebearFleetPage } from "./fleet-page"
 import "./dinglebear.css"
 
-// dinglebear.ai is a co-hosted tenant of this app: proxy.ts rewrites the
-// dinglebear.ai host to /dinglebear, which renders this page. Unlike the old
-// static-HTML tenant, the page is Aurora-native — it composes registry
-// components directly. See dinglebear/README.md for the tenant contract.
+// dinglebear.ai is the umbrella home for the MCP server fleet AND the Aurora
+// design system: proxy.ts rewrites the dinglebear.ai root to /dinglebear
+// (this page) and passes every other path through to the full app, so
+// /components, /themes, /gallery, /docs, and /r/*.json serve on that host
+// too. See dinglebear/README.md for the tenant contract.
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dinglebear.ai"),
@@ -28,5 +31,5 @@ export const viewport: Viewport = {
 }
 
 export default function Page() {
-  return <DinglebearFleetPage />
+  return <DinglebearFleetPage registryCount={registry.items.length} />
 }
