@@ -22,7 +22,7 @@ export default function AiCheckpointDemo() {
         }}
       >
         <Checkpoint
-          label="Before migration"
+          label="Before Migration"
           description="State persisted at step 4"
           status="current"
           step={4}
@@ -34,7 +34,7 @@ export default function AiCheckpointDemo() {
         />
         <Checkpoint
           variant="compact"
-          label="Initial scaffold"
+          label="Initial Scaffold"
           status="saved"
           onClick={() => {}}
         />

@@ -75,7 +75,7 @@ export default function CardDemo() {
             <Spark />
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 16 }}>
-            <Button variant="aurora" size="sm">Open console</Button>
+            <Button variant="aurora" size="sm">Open Console</Button>
             <Button size="sm">Logs</Button>
           </div>
         </Card>

@@ -25,18 +25,18 @@ interface Group {
 
 const PALETTE: Group[] = [
   {
-    group: "Base · navy",
+    group: "Base · Navy",
     swatches: [
       { token: "--aurora-page-bg", name: "Page", role: "Tier 0 · flat background" },
       { token: "--aurora-nav-bg", name: "Nav", role: "Sidebars · nav rails" },
       { token: "--aurora-control-surface", name: "Control", role: "Inputs · controls" },
-      { token: "--aurora-panel-medium", name: "Panel medium", role: "Tier 1 · cards · headers" },
-      { token: "--aurora-panel-strong", name: "Panel strong", role: "Tier 2 · inspectors" },
+      { token: "--aurora-panel-medium", name: "Panel Medium", role: "Tier 1 · cards · headers" },
+      { token: "--aurora-panel-strong", name: "Panel Strong", role: "Tier 2 · inspectors" },
       { token: "--aurora-hover-bg", name: "Hover", role: "Hovered rows · menu items" },
     ],
   },
   {
-    group: "Accent · cyan (primary)",
+    group: "Accent · Cyan (Primary)",
     swatches: [
       { token: "--aurora-accent-deep", name: "Deep", role: "Pressed · deep cyan" },
       { token: "--aurora-accent-primary", name: "Primary", role: "CTAs · focus · selection", strong: true },
@@ -45,7 +45,7 @@ const PALETTE: Group[] = [
     ],
   },
   {
-    group: "Accent · rose (secondary)",
+    group: "Accent · Rose (Secondary)",
     swatches: [
       { token: "--aurora-accent-pink-deep", name: "Deep", role: "Pressed rose" },
       { token: "--aurora-accent-pink", name: "Rose", role: "Send · agent affordances", strong: true },
@@ -54,7 +54,7 @@ const PALETTE: Group[] = [
     ],
   },
   {
-    group: "Accent · axon orange (AI / automation)",
+    group: "Accent · Axon Orange (AI / Automation)",
     swatches: [
       { token: "--axon-orange-deep", name: "Deep", role: "Pressed orange" },
       { token: "--axon-orange", name: "Orange", role: "AI · automation", strong: true },
@@ -63,7 +63,7 @@ const PALETTE: Group[] = [
     ],
   },
   {
-    group: "Status · muted, never neon",
+    group: "Status · Muted, Never Neon",
     swatches: [
       { token: "--aurora-info", name: "Info", role: "Informational" },
       { token: "--aurora-success", name: "Success", role: "Healthy · complete" },
@@ -73,12 +73,12 @@ const PALETTE: Group[] = [
     ],
   },
   {
-    group: "Borders & text",
+    group: "Borders & Text",
     swatches: [
       { token: "--aurora-border-default", name: "Border", role: "Separators · table rules" },
-      { token: "--aurora-border-strong", name: "Border strong", role: "Cards · inputs · selected" },
+      { token: "--aurora-border-strong", name: "Border Strong", role: "Cards · inputs · selected" },
       { token: "--aurora-text-primary", name: "Text", role: "Headings · body · labels" },
-      { token: "--aurora-text-muted", name: "Text muted", role: "Captions · meta" },
+      { token: "--aurora-text-muted", name: "Text Muted", role: "Captions · meta" },
     ],
   },
 ]
@@ -136,7 +136,7 @@ export function PaletteWall() {
       >
         <div>
           <span className="aurora-text-eyebrow" style={{ color: "var(--aurora-text-muted)" }}>
-            The palette
+            The Palette
           </span>
           <h2
             style={{
@@ -148,7 +148,7 @@ export function PaletteWall() {
               color: "var(--aurora-text-primary)",
             }}
           >
-            Navy base, three accents, muted status
+            Navy Base, Three Accents, Muted Status
           </h2>
         </div>
         <span
@@ -158,7 +158,7 @@ export function PaletteWall() {
             fontFamily: "var(--aurora-font-mono)",
           }}
         >
-          {light ? "light remap" : "dark canon"} · click any chip to copy
+          {light ? "Light remap" : "Dark canon"} · click any chip to copy
         </span>
       </div>
 

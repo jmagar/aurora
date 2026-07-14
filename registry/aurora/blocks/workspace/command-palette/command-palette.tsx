@@ -80,14 +80,14 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
   {
     id: "r2",
-    label: "Aurora design system",
+    label: "Aurora Design System",
     description: "Opened 2h ago",
     section: "recent",
     icon: <Clock3 size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "a1",
-    label: "New conversation",
+    label: "New Conversation",
     description: "Start a fresh chat",
     section: "actions",
     shortcut: ["⌘", "N"],
@@ -95,7 +95,7 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
   {
     id: "a2",
-    label: "Search files",
+    label: "Search Files",
     description: "Search across your project",
     section: "actions",
     shortcut: ["⌘", "F"],
@@ -103,7 +103,7 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
   {
     id: "a3",
-    label: "Clear conversation",
+    label: "Clear Conversation",
     description: "Wipe current context",
     section: "actions",
     shortcut: ["⌘", "⇧", "K"],
@@ -111,14 +111,14 @@ const DEFAULT_ITEMS: CommandItem[] = [
   },
   {
     id: "s1",
-    label: "Code review",
+    label: "Code Review",
     description: "AI-powered code reviewer",
     section: "skills",
     icon: <Sparkles size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "s2",
-    label: "Security review",
+    label: "Security Review",
     description: "Audit for vulnerabilities",
     section: "skills",
     icon: <Star size={14} strokeWidth={1.65} aria-hidden />,

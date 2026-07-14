@@ -266,7 +266,7 @@ export function FilterBar({
                 lineHeight: "var(--aurora-line-dense)",
               }}
             >
-              Clear all
+              Clear All
             </Button>
           </>
         )}

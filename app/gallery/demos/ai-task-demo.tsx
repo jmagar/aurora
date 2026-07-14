@@ -25,8 +25,8 @@ export default function AiTaskDemo() {
         <TaskList
           tasks={[
             { id: "1", title: "Crawl docs.rs", status: "completed" },
-            { id: "2", title: "Embed 4 198 chunks", status: "running" },
-            { id: "3", title: "Answer with citations", status: "queued" },
+            { id: "2", title: "Embed 4 198 Chunks", status: "running" },
+            { id: "3", title: "Answer with Citations", status: "queued" },
           ]}
         />
       </div>

@@ -8,11 +8,11 @@ import { Box, Droplet, Feather, Layers, Rocket, Wrench } from "lucide-react"
 /** Docs sub-nav — ported from the CD `aurora-site` DocsView sidebar. */
 
 export const DOC_PAGES = [
-  { id: "start", label: "Getting started", href: "/docs", icon: Rocket },
+  { id: "start", label: "Getting Started", href: "/docs", icon: Rocket },
   { id: "install", label: "Installation", href: "/docs/install", icon: Box },
   { id: "foundations", label: "Foundations", href: "/docs/foundations", icon: Layers },
   { id: "theming", label: "Theming", href: "/docs/theming", icon: Droplet },
-  { id: "voice", label: "Voice & content", href: "/docs/voice", icon: Feather },
+  { id: "voice", label: "Voice & Content", href: "/docs/voice", icon: Feather },
   { id: "contribute", label: "Contributing", href: "/docs/contribute", icon: Wrench },
 ] as const
 

@@ -206,7 +206,7 @@ import { Banner } from "@/registry/aurora/ui/banner"
 />
 ```
 
-Copy is sentence case, ends with a period, no exclamation, no "we".
+Body copy is sentence case and ends with a period; labels are Title Case. No exclamation marks, no "we".
 
 ## Banner — Style C inline mono tag
 

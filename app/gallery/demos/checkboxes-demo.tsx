@@ -16,7 +16,7 @@ export default function CheckboxesDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
         eyebrow="Form elements"
-        heading="Checkboxes &amp; radio groups"
+        heading="Checkboxes &amp; Radio Groups"
         description="Aurora-styled selection controls used in gateway settings, policy editors, and notification preferences."
       />
 
@@ -79,7 +79,7 @@ export default function CheckboxesDemo() {
           {/* Log level */}
           <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--aurora-border-default)" }}>
             <p style={{ fontSize: 13, fontWeight: 700, color: "var(--aurora-text-primary)", margin: "0 0 12px 0" }}>
-              Log level
+              Log Level
             </p>
             <RadioGroup value={logLevel} onValueChange={setLogLevel}>
               <RadioGroupItem value="debug">Debug — verbose output</RadioGroupItem>
@@ -92,7 +92,7 @@ export default function CheckboxesDemo() {
           {/* Failover policy */}
           <div style={{ padding: "16px 20px" }}>
             <p style={{ fontSize: 13, fontWeight: 700, color: "var(--aurora-text-primary)", margin: "0 0 12px 0" }}>
-              Failover policy
+              Failover Policy
             </p>
             <RadioGroup value={failover} onValueChange={setFailover}>
               <RadioGroupItem value="auto">Automatic — Labby decides</RadioGroupItem>

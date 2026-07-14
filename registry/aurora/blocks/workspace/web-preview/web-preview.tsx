@@ -321,7 +321,7 @@ function BrowserChrome({
             })}
           </div>
         )}
-        <ChromeButton title="Open in new tab"><ExternalLinkIcon /></ChromeButton>
+        <ChromeButton title="Open in New Tab"><ExternalLinkIcon /></ChromeButton>
       </div>
 
       {/* Content area */}

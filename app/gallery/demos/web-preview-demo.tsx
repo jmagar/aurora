@@ -5,8 +5,8 @@ import { Button } from "@/registry/aurora/ui/button";
 import { WebPreview, WebPreviewVariant } from "@/registry/aurora/blocks/workspace/web-preview/web-preview"
 
 const VARIANTS: { id: WebPreviewVariant; label: string; description: string }[] = [
-  { id: "browser",     label: "Browser chrome", description: "Full browser chrome with URL bar" },
-  { id: "unfurl-card", label: "Unfurl card",    description: "Compact link preview card" },
+  { id: "browser",     label: "Browser Chrome", description: "Full browser chrome with URL bar" },
+  { id: "unfurl-card", label: "Unfurl Card",    description: "Compact link preview card" },
   { id: "skeleton",    label: "Skeleton",        description: "Loading shimmer state" },
   { id: "error",       label: "Error",           description: "Failed to load state" },
 ]
@@ -66,7 +66,7 @@ export function WebPreviewDemo() {
               cursor: "pointer",
             }}
           >
-            Simulate loading
+            Simulate Loading
           </Button>
         )}
       </div>

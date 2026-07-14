@@ -5338,7 +5338,7 @@
     {
       "name": "aurora-ai-open-in-chat",
       "type": "registry:block",
-      "title": "Aurora AI Open In Chat",
+      "title": "Aurora AI Open in Chat",
       "description": "Aurora-native open in chat parity surface from AI Elements.",
       "dependencies": [
         "lucide-react@^0.487.0"
@@ -6205,7 +6205,7 @@
     {
       "name": "aurora-portal-container",
       "type": "registry:lib",
-      "title": "Aurora portal container context",
+      "title": "Aurora Portal Container Context",
       "description": "Optional React context that scopes Aurora overlay portals (Sheet, Drawer) to a container instead of document.body — used so overlays stay contained inside scaled preview tiles.",
       "files": [
         {

@@ -28,11 +28,11 @@ export default function PopoverDemo() {
         <Popover defaultOpen>
           <PopoverAnchor>
             <PopoverTrigger asChild>
-              <Button variant="neutral">Configure rate limit</Button>
+              <Button variant="neutral">Configure Rate Limit</Button>
             </PopoverTrigger>
             <PopoverContent>
               <div style={{ display: "flex", flexDirection: "column", gap: 9, width: 220 }}>
-                <Label>Requests / minute</Label>
+                <Label>Requests / Minute</Label>
                 <Input defaultValue="600" />
                 <Button variant="aurora" size="sm" style={{ alignSelf: "flex-start" }}>
                   Apply

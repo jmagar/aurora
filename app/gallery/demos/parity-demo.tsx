@@ -88,14 +88,14 @@ import { Timeline, TimelineItem } from "@/registry/aurora/ui/timeline"
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from "@/registry/aurora/ui/toolbar"
 
 const AI_TITLES: Record<string, string> = {
-  "chain-of-thought": "Chain of thought",
+  "chain-of-thought": "Chain of Thought",
   checkpoint: "Checkpoint",
   confirmation: "Confirmation",
   context: "Context",
   conversation: "Conversation",
-  "inline-citation": "Inline citation",
+  "inline-citation": "Inline Citation",
   message: "Message",
-  "model-selector": "Model selector",
+  "model-selector": "Model Selector",
   plan: "Plan",
   queue: "Queue",
   reasoning: "Reasoning",
@@ -106,20 +106,20 @@ const AI_TITLES: Record<string, string> = {
   tool: "Tool",
   agent: "Agent",
   commit: "Commit",
-  "environment-variables": "Environment variables",
-  "jsx-preview": "JSX preview",
-  "package-info": "Package info",
+  "environment-variables": "Environment Variables",
+  "jsx-preview": "JSX Preview",
+  "package-info": "Package Info",
   sandbox: "Sandbox",
-  "schema-display": "Schema display",
+  "schema-display": "Schema Display",
   snippet: "Snippet",
-  "stack-trace": "Stack trace",
-  "test-results": "Test results",
-  "audio-player": "Audio player",
-  "mic-selector": "Mic selector",
+  "stack-trace": "Stack Trace",
+  "test-results": "Test Results",
+  "audio-player": "Audio Player",
+  "mic-selector": "Mic Selector",
   persona: "Persona",
-  "speech-input": "Speech input",
+  "speech-input": "Speech Input",
   transcription: "Transcription",
-  "voice-selector": "Voice selector",
+  "voice-selector": "Voice Selector",
   canvas: "Canvas",
   connection: "Connection",
   controls: "Controls",
@@ -127,12 +127,12 @@ const AI_TITLES: Record<string, string> = {
   node: "Node",
   panel: "Panel",
   image: "Image",
-  "open-in-chat": "Open in chat",
+  "open-in-chat": "Open in Chat",
 }
 
 const sourceItems = [
-  { title: "Gateway registry", href: "#", description: "Source-backed metadata", badge: "doc" },
-  { title: "Runtime policy", href: "#", description: "Permission constraints", badge: "toml" },
+  { title: "Gateway Registry", href: "#", description: "Source-backed metadata", badge: "doc" },
+  { title: "Runtime Policy", href: "#", description: "Permission constraints", badge: "toml" },
 ]
 
 const tasks = [
@@ -154,27 +154,27 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "alert":
       return <Callout title="Backend unavailable." variant="warn">Retry is queued. No operator action is required.</Callout>
     case "alert-dialog":
-      return <AlertDialog><AlertDialogTrigger asChild><Button>Open confirmation</Button></AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Restart gateway</AlertDialogTitle><AlertDialogDescription>Active requests will drain before the service restarts.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel asChild><Button variant="neutral">Cancel</Button></AlertDialogCancel><AlertDialogAction asChild><Button variant="rose">Restart</Button></AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+      return <AlertDialog><AlertDialogTrigger asChild><Button>Open Confirmation</Button></AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Restart Gateway</AlertDialogTitle><AlertDialogDescription>Active requests will drain before the service restarts.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel asChild><Button variant="neutral">Cancel</Button></AlertDialogCancel><AlertDialogAction asChild><Button variant="rose">Restart</Button></AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
     case "aspect-ratio":
       return <AspectRatio ratio={16 / 9}><div className="grid h-full place-items-center rounded-[8px] border aurora-text-card-title" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-control-surface)" }}>16:9 preview</div></AspectRatio>
     case "calendar":
       return <Calendar selected={new Date()} />
     case "card":
-      return <Card><CardHeader><CardTitle>Gateway health</CardTitle><CardDescription>Operational summary</CardDescription></CardHeader><CardContent><p className="aurora-text-body" style={{ margin: 0 }}>12 services reporting within threshold.</p></CardContent><CardFooter><Badge variant="success">Live</Badge></CardFooter></Card>
+      return <Card><CardHeader><CardTitle>Gateway Health</CardTitle><CardDescription>Operational summary</CardDescription></CardHeader><CardContent><p className="aurora-text-body" style={{ margin: 0 }}>12 services reporting within threshold.</p></CardContent><CardFooter><Badge variant="success">Live</Badge></CardFooter></Card>
     case "carousel":
-      return <Carousel title="Registry sources">{["Local", "Curated", "Remote"].map((item) => <CarouselItem key={item}><div className="aurora-text-card-title">{item}</div><p className="aurora-text-meta">Marketplace source card</p></CarouselItem>)}</Carousel>
+      return <Carousel title="Registry Sources">{["Local", "Curated", "Remote"].map((item) => <CarouselItem key={item}><div className="aurora-text-card-title">{item}</div><p className="aurora-text-meta">Marketplace source card</p></CarouselItem>)}</Carousel>
     case "chart":
       return <Chart data={[{ label: "Search", value: 42 }, { label: "Install", value: 27 }, { label: "Update", value: 18 }]} />
     case "collapsible":
-      return <Collapsible title="Sync diagnostics" defaultOpen><p className="aurora-text-body" style={{ margin: 0 }}>Registry index refreshed 18 seconds ago.</p></Collapsible>
+      return <Collapsible title="Sync Diagnostics" defaultOpen><p className="aurora-text-body" style={{ margin: 0 }}>Registry index refreshed 18 seconds ago.</p></Collapsible>
     case "date-picker":
-      return <DatePicker label="Maintenance window" defaultValue={new Date("2026-05-10")} />
+      return <DatePicker label="Maintenance Window" defaultValue={new Date("2026-05-10")} />
     case "direction":
       return <Direction dir="rtl" className="rounded-[8px] border p-3 aurora-text-body" style={{ borderColor: "var(--aurora-border-default)" }}>RTL layout sample</Direction>
     case "drawer":
-      return <Sheet><SheetTrigger asChild><Button>Open drawer</Button></SheetTrigger><SheetContent><SheetHeader><SheetTitle>Plugin details</SheetTitle></SheetHeader><SheetBody><p className="aurora-text-body">Sheet-backed drawer parity surface.</p></SheetBody></SheetContent></Sheet>
+      return <Sheet><SheetTrigger asChild><Button>Open Drawer</Button></SheetTrigger><SheetContent><SheetHeader><SheetTitle>Plugin Details</SheetTitle></SheetHeader><SheetBody><p className="aurora-text-body">Sheet-backed drawer parity surface.</p></SheetBody></SheetContent></Sheet>
     case "hover-card":
-      return <HoverCard trigger={<Button variant="neutral">Inspect source</Button>}><div className="aurora-text-control">Source registry</div><div className="aurora-text-meta">Last synced 2 minutes ago.</div></HoverCard>
+      return <HoverCard trigger={<Button variant="neutral">Inspect Source</Button>}><div className="aurora-text-control">Source Registry</div><div className="aurora-text-meta">Last synced 2 minutes ago.</div></HoverCard>
     case "input-group":
       return (
         <div className="grid gap-5 max-w-md">
@@ -186,7 +186,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
             </InputGroup>
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="parity-monthly-budget">Monthly budget</Label>
+            <Label htmlFor="parity-monthly-budget">Monthly Budget</Label>
             <InputGroup>
               <InputGroupAddon>$</InputGroupAddon>
               <Input id="parity-monthly-budget" type="number" defaultValue="49" />
@@ -194,21 +194,21 @@ function ShadcnDemo({ slug }: { slug: string }) {
             </InputGroup>
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="parity-work-email">Work email</Label>
+            <Label htmlFor="parity-work-email">Work Email</Label>
             <InputGroup>
               <Input id="parity-work-email" defaultValue="jacob" />
               <InputGroupAddon>@aurora.tootie.tv</InputGroupAddon>
             </InputGroup>
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="parity-api-key">API key</Label>
+            <Label htmlFor="parity-api-key">API Key</Label>
             <InputGroup>
               <InputGroupAddon>sk-</InputGroupAddon>
               <Input id="parity-api-key" type="password" defaultValue="masked-demo-key" />
             </InputGroup>
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="parity-registry-endpoint">Registry endpoint</Label>
+            <Label htmlFor="parity-registry-endpoint">Registry Endpoint</Label>
             <InputGroup>
               <InputGroupAddon>/api/v1/</InputGroupAddon>
               <Input id="parity-registry-endpoint" defaultValue="registry" />
@@ -222,13 +222,13 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "item":
       return <Item title="aurora-marketplace" description="Registry block" action={<Badge>block</Badge>} />
     case "label":
-      return <div className="grid gap-2"><Label htmlFor="label-demo">Registry name</Label><Input id="label-demo" defaultValue="aurora-button" /></div>
+      return <div className="grid gap-2"><Label htmlFor="label-demo">Registry Name</Label><Input id="label-demo" defaultValue="aurora-button" /></div>
     case "menubar":
       return <Callout title="Menubar">See the dedicated menubar demo for functional menu patterns.</Callout>
     case "navigation-menu":
       return <NavigationMenu><NavigationMenuItem active href="#">Overview</NavigationMenuItem><NavigationMenuItem href="#">Sources</NavigationMenuItem><NavigationMenuItem href="#">Runs</NavigationMenuItem></NavigationMenu>
     case "native-select":
-      return <NativeSelect defaultValue="local"><option value="local">Local registry</option><option value="remote">Remote registry</option></NativeSelect>
+      return <NativeSelect defaultValue="local"><option value="local">Local Registry</option><option value="remote">Remote Registry</option></NativeSelect>
     case "scroll-area":
       return <ScrollArea><div className="grid gap-2 p-3">{Array.from({ length: 16 }, (_, i) => <div key={i} className="aurora-text-control">Log line {i + 1}</div>)}</div></ScrollArea>
     case "table":
@@ -240,7 +240,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "command":
       return <Callout title="Command">Covered by the Aurora command palette block.</Callout>
     case "data-table":
-      return <Callout title="Data table">Covered by the sortable Aurora data table component.</Callout>
+      return <Callout title="Data Table">Covered by the sortable Aurora data table component.</Callout>
     case "resizable":
       return <ResizablePanels><div className="p-3 aurora-text-control">Editor</div><div className="p-3 aurora-text-control">Preview</div></ResizablePanels>
     case "sonner":
@@ -252,7 +252,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "field":
       return <Field label="Plugin ID" description="Stable registry identifier"><Input defaultValue="aurora-marketplace" /></Field>
     case "popover":
-      return <Popover defaultOpen><PopoverAnchor><PopoverTrigger asChild><Button>Open popover</Button></PopoverTrigger><PopoverContent><div className="aurora-text-body">Compact floating detail surface.</div></PopoverContent></PopoverAnchor></Popover>
+      return <Popover defaultOpen><PopoverAnchor><PopoverTrigger asChild><Button>Open Popover</Button></PopoverTrigger><PopoverContent><div className="aurora-text-body">Compact floating detail surface.</div></PopoverContent></PopoverAnchor></Popover>
     case "radio-group":
       return <RadioGroup defaultValue="auto"><RadioGroupItem value="auto">Auto</RadioGroupItem><RadioGroupItem value="manual">Manual</RadioGroupItem></RadioGroup>
     case "slider":
@@ -276,9 +276,9 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "number-input":
       return <NumberInput min={0} max={8} defaultValue={3} />
     default:
-      return <Callout title="Covered component">This parity route points at the existing Aurora implementation.</Callout>
+      return <Callout title="Covered Component">This parity route points at the existing Aurora implementation.</Callout>
     case "sheet":
-      return <Sheet><SheetTrigger asChild><Button>Open sheet</Button></SheetTrigger><SheetContent><SheetHeader><SheetTitle>Run inspector</SheetTitle></SheetHeader><SheetBody><p className="aurora-text-body">Live metadata and activity for the selected run.</p></SheetBody></SheetContent></Sheet>
+      return <Sheet><SheetTrigger asChild><Button>Open Sheet</Button></SheetTrigger><SheetContent><SheetHeader><SheetTitle>Run Inspector</SheetTitle></SheetHeader><SheetBody><p className="aurora-text-body">Live metadata and activity for the selected run.</p></SheetBody></SheetContent></Sheet>
     case "callout":
       return (
         <div className="grid gap-3">
@@ -328,7 +328,7 @@ function ShadcnDemo({ slug }: { slug: string }) {
     case "listbox":
       return <Listbox><ListboxGroup heading="Components"><ListboxItem active title="Button" description="Primary command surface" meta="ui" /><ListboxItem title="Dialog" description="Modal decision surface" meta="ui" /></ListboxGroup></Listbox>
     case "search-results":
-      return <SearchResults><SearchResultsGroup heading="Commands"><SearchResultItem active title="Rebuild registry" description="Run shadcn build and refresh public/r" meta="cmd" /><SearchResultItem title="Open logs" description="Tail the dev container logs" meta="log" /></SearchResultsGroup></SearchResults>
+      return <SearchResults><SearchResultsGroup heading="Commands"><SearchResultItem active title="Rebuild Registry" description="Run shadcn build and refresh public/r" meta="cmd" /><SearchResultItem title="Open Logs" description="Tail the dev container logs" meta="log" /></SearchResultsGroup></SearchResults>
     case "kbd":
       return <div className="flex items-center gap-2 aurora-text-body">Open command palette <Kbd>Cmd</Kbd><Kbd>K</Kbd></div>
     case "toolbar":
@@ -357,7 +357,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "checkpoint":
       return <Checkpoint label="Checkpoint saved" description="User-approved marketplace state captured." />
     case "confirmation":
-      return <Confirmation title="Install plugin" description="This will update the local plugin cache." />
+      return <Confirmation title="Install Plugin" description="This will update the local plugin cache." />
     case "context":
       return <ContextPanel used={42100} limit={128000} />
     case "conversation":
@@ -377,7 +377,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "tool":
       return <ToolCalls calls={[{ id: "1", tool: "registry.lookup", status: "completed", args: { package: "aurora-button" }, result: "Resolved aurora-button from the local registry." }, { id: "2", tool: "registry.lookup", status: "completed", args: { package: "aurora-dialog" }, result: "Resolved aurora-dialog from the local registry." }]} />
     case "agent":
-      return <Agent name="Marketplace agent" role="Registry resolver" status="running" />
+      return <Agent name="Marketplace Agent" role="Registry Resolver" status="running" />
     case "commit":
       return <Commit hash="a1b2c3d" message="Add marketplace parity route" author="labby" />
     case "jsx-preview":
@@ -397,7 +397,7 @@ function AiDemo({ slug }: { slug: string }) {
     case "audio-player":
       return <AudioPlayer />
     case "mic-selector":
-      return <MicSelector devices={["Studio mic", "System default"]} />
+      return <MicSelector devices={["Studio Mic", "System Default"]} />
     case "persona":
       return <Persona name="Operator" description="Concise, evidence-first assistant voice." />
     case "speech-input":
@@ -415,11 +415,11 @@ function AiDemo({ slug }: { slug: string }) {
     case "edge":
       return <Edge label="stream" />
     case "node":
-      return <Node title="Agent node" description="Runs install checks" />
+      return <Node title="Agent Node" description="Runs install checks" />
     case "panel":
       return <Panel title="Inspector"><p className="aurora-text-body" style={{ margin: 0 }}>Workflow metadata and selected node details.</p></Panel>
     default:
-      return <Callout title="AI element">Covered by the corresponding Aurora block route.</Callout>
+      return <Callout title="AI Element">Covered by the corresponding Aurora block route.</Callout>
   }
 }
 

@@ -17,7 +17,7 @@ function AsyncButton() {
   }
   return (
     <Button variant="rose" loading={loading} onClick={run} iconLeft={<Send className="size-3.5" aria-hidden />}>
-      Send message
+      Send Message
     </Button>
   )
 }
@@ -34,13 +34,13 @@ export default function ButtonsDemo() {
       <div className="aurora-demo-section">
         <div className="aurora-demo-label">Intents</div>
         <div className="aurora-demo-row">
-          <Button variant="aurora">Deploy now</Button>
-          <Button variant="aurora">Add gateway</Button>
+          <Button variant="aurora">Deploy Now</Button>
+          <Button variant="aurora">Add Gateway</Button>
           <Button variant="neutral">Cancel</Button>
           <Button variant="success">Apply</Button>
-          <Button variant="warn">Force redeploy</Button>
-          <Button variant="rose">Send message</Button>
-          <Button variant="ghost">View logs</Button>
+          <Button variant="warn">Force Redeploy</Button>
+          <Button variant="rose">Send Message</Button>
+          <Button variant="ghost">View Logs</Button>
           <Button variant="destructive">Delete</Button>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function ButtonsDemo() {
       <div className="aurora-demo-section">
         <div className="aurora-demo-label">Icons · loading · icon-only</div>
         <div className="aurora-demo-row">
-          <Button variant="aurora" iconLeft={<Plus className="size-3.5" aria-hidden />}>Add gateway</Button>
+          <Button variant="aurora" iconLeft={<Plus className="size-3.5" aria-hidden />}>Add Gateway</Button>
           <AsyncButton />
           <Button variant="success">Apply</Button>
           <Button variant="neutral" size="icon" aria-label="Settings"><Settings className="size-4" aria-hidden /></Button>
@@ -83,7 +83,7 @@ export default function ButtonsDemo() {
           <Button variant="aurora" pulse>Pulse</Button>
           <Button variant="aurora" disabled>Disabled</Button>
           <div style={{ flex: 1, minWidth: 200 }}>
-            <Button variant="aurora" block>Block · full width</Button>
+            <Button variant="aurora" block>Block · Full Width</Button>
           </div>
         </div>
       </div>

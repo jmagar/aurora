@@ -12,7 +12,7 @@ export type ThemeCategory = "editors" | "browser" | "shell"
 export interface AuroraTheme {
   id: string
   name: string
-  /** the tool this theme targets, e.g. "Zed editor + icon theme" */
+  /** the tool this theme targets, e.g. "Zed Editor + Icon Theme" */
   tool: string
   category: ThemeCategory
   badge?: { tone: BadgeTone; label: string }
@@ -45,9 +45,9 @@ export const AURORA_THEMES: AuroraTheme[] = [
   {
     id: "zed",
     name: "Aurora Neon",
-    tool: "Zed editor + icon theme",
+    tool: "Zed Editor + Icon Theme",
     category: "editors",
-    badge: { tone: "info", label: "neon" },
+    badge: { tone: "info", label: "Neon" },
     description:
       "A brighter, electric take on Aurora for Zed — dark + light UI themes plus a full 60-glyph file-icon set.",
     install: "zed: install dev extension",
@@ -60,9 +60,9 @@ export const AURORA_THEMES: AuroraTheme[] = [
   {
     id: "warp",
     name: "Aurora",
-    tool: "Warp terminal",
+    tool: "Warp Terminal",
     category: "editors",
-    badge: { tone: "info", label: "pop" },
+    badge: { tone: "info", label: "Pop" },
     description:
       "The pop Aurora palette for Warp — lifted navy frame, vivid cyan, with a matching light variant.",
     install: "curl -O aurora.tootie.tv/warp/aurora.yaml",
@@ -77,7 +77,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
     name: "Aurora",
     tool: "Claude Code CLI",
     category: "editors",
-    badge: { tone: "success", label: "canonical" },
+    badge: { tone: "success", label: "Canonical" },
     description:
       "The origin theme every other surface aligns to — dark + light key parity for the Claude Code terminal UI.",
     install: "themes/editors/claude-code/aurora.json",
@@ -90,7 +90,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
   {
     id: "chrome-dark",
     name: "Aurora",
-    tool: "Google Chrome — dark",
+    tool: "Google Chrome — Dark",
     category: "browser",
     badge: { tone: "info", label: "MV3" },
     description:
@@ -105,7 +105,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
   {
     id: "chrome-light",
     name: "Aurora Light",
-    tool: "Google Chrome — light",
+    tool: "Google Chrome — Light",
     category: "browser",
     badge: { tone: "info", label: "MV3" },
     description:
@@ -119,7 +119,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
   },
   {
     id: "p10k",
-    name: "Aurora prompt",
+    name: "Aurora Prompt",
     tool: "Powerlevel10k",
     category: "shell",
     description:
@@ -133,8 +133,8 @@ export const AURORA_THEMES: AuroraTheme[] = [
   },
   {
     id: "statusline",
-    name: "Aurora statusline",
-    tool: "Claude Code statusline",
+    name: "Aurora Statusline",
+    tool: "Claude Code Statusline",
     category: "shell",
     description:
       "The Claude Code statusline script, Aurora-tinted — model, branch, and context segments.",
@@ -148,7 +148,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
   {
     id: "bat",
     name: "Aurora",
-    tool: "bat — syntax theme",
+    tool: "bat — Syntax Theme",
     category: "shell",
     description: "A .tmTheme for bat/less highlighting tuned to the Aurora syntax palette.",
     install: "themes/shell/bat/Aurora.tmTheme",
@@ -186,7 +186,7 @@ export const AURORA_THEMES: AuroraTheme[] = [
   },
   {
     id: "zsh",
-    name: "Aurora colors",
+    name: "Aurora Colors",
     tool: "zsh — eza, dircolors, fzf",
     category: "shell",
     description:

@@ -10,8 +10,8 @@ export default function RadioGroupDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
-        eyebrow="Form elements"
-        heading="Radio group"
+        eyebrow="Form Elements"
+        heading="Radio Group"
         description="Single-select control with an accent dot — used for transport, log level, and policy choices across gateway settings."
       />
 

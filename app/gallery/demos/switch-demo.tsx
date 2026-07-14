@@ -20,13 +20,13 @@ export default function SwitchDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <GalleryPageIntro
         eyebrow="Controls"
-        heading="Toggle switch"
+        heading="Toggle Switch"
         description="The only pill control besides scrollbars — the track tints to cyan when on; the thumb gains a self-glow. Controlled or uncontrolled."
       />
       <div>
-        <div style={row}><Switch defaultChecked />Color-code by operation</div>
-        <div style={row}><Switch />Compact density</div>
-        <div style={row}><Switch defaultChecked disabled />Stream tokens (locked)</div>
+        <div style={row}><Switch defaultChecked />Color-Code by Operation</div>
+        <div style={row}><Switch />Compact Density</div>
+        <div style={row}><Switch defaultChecked disabled />Stream Tokens (locked)</div>
       </div>
     </div>
   )

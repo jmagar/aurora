@@ -13,8 +13,8 @@ export default function DrawerDemo() {
         description="An Aurora-extension bottom sheet. Slides up from the bottom edge with a drag-handle grip, a title and a muted sub-line, then a body of quick actions. Swipe down or tap outside to dismiss."
       />
 
-      <Drawer defaultOpen title="Quick actions" description="edge-1 · production">
-        Restart · Drain · Roll back · View logs. Swipe down or tap outside to dismiss.
+      <Drawer defaultOpen title="Quick Actions" description="edge-1 · production">
+        Restart · Drain · Roll Back · View Logs. Swipe down or tap outside to dismiss.
       </Drawer>
     </div>
   )

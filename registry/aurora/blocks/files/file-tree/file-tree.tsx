@@ -124,9 +124,9 @@ function ContextMenu({ x, y, node, onAction, onClose }: ContextMenuProps) {
   }, [onClose])
 
   const items: { action: ContextAction; label: string; icon: React.ReactNode; danger?: boolean }[] = [
-    { action: "new-file", label: "New file", icon: <Plus className="size-3.5" aria-hidden /> },
+    { action: "new-file", label: "New File", icon: <Plus className="size-3.5" aria-hidden /> },
     { action: "rename", label: "Rename", icon: <Pencil className="size-3.5" aria-hidden /> },
-    { action: "copy-path", label: "Copy path", icon: <Copy className="size-3.5" aria-hidden /> },
+    { action: "copy-path", label: "Copy Path", icon: <Copy className="size-3.5" aria-hidden /> },
     { action: "delete", label: "Delete", icon: <Trash2 className="size-3.5" aria-hidden />, danger: true },
   ]
 

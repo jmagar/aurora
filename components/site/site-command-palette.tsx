@@ -12,6 +12,7 @@ import {
   Monitor,
   Palette,
   SlidersHorizontal,
+  Puzzle,
 } from "lucide-react"
 import {
   CommandPalette,
@@ -29,7 +30,7 @@ import { fuzzy } from "@/lib/fuzzy"
  */
 
 const SECTIONS = [
-  { id: "pages", label: "Go to" },
+  { id: "pages", label: "Go To" },
   { id: "components", label: "Components" },
   { id: "themes", label: "Themes" },
 ]
@@ -38,6 +39,7 @@ const PAGE_ITEMS: { label: string; href: string; icon: React.ReactNode }[] = [
   { label: "Overview", href: "/", icon: <House size={15} strokeWidth={1.6} /> },
   { label: "Components", href: "/components", icon: <Blocks size={15} strokeWidth={1.6} /> },
   { label: "Themes", href: "/themes", icon: <Palette size={15} strokeWidth={1.6} /> },
+  { label: "Plugins", href: "/plugins", icon: <Puzzle size={15} strokeWidth={1.6} /> },
   { label: "Tokens", href: "/tokens", icon: <SlidersHorizontal size={15} strokeWidth={1.6} /> },
   { label: "Icons", href: "/icons", icon: <LayoutGrid size={15} strokeWidth={1.6} /> },
   { label: "Docs", href: "/docs", icon: <BookOpen size={15} strokeWidth={1.6} /> },

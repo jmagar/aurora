@@ -196,7 +196,7 @@ function ChatSidebar(
             onClick={onNewChat}
           >
             <PlusIcon className="aurora-chat-sidebar__new-icon" />
-            New chat
+            New Chat
           </button>
 
           <div className="aurora-chat-sidebar__search">

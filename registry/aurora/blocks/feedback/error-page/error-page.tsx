@@ -221,8 +221,8 @@ function Page404({ path, onRetry }: ErrorPageProps) {
       )}
 
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-        <ActionButton href="/" variant="primary">Go home</ActionButton>
-        {onRetry && <ActionButton onClick={onRetry} variant="ghost">Try again</ActionButton>}
+        <ActionButton href="/" variant="primary">Go Home</ActionButton>
+        {onRetry && <ActionButton onClick={onRetry} variant="ghost">Try Again</ActionButton>}
       </div>
     </div>
   )
@@ -282,8 +282,8 @@ function Page403({ path }: ErrorPageProps) {
       )}
 
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-        <ActionButton href="/" variant="primary">Go home</ActionButton>
-        <ActionButton href="mailto:support@example.com" variant="ghost">Contact support</ActionButton>
+        <ActionButton href="/" variant="primary">Go Home</ActionButton>
+        <ActionButton href="mailto:support@example.com" variant="ghost">Contact Support</ActionButton>
       </div>
     </div>
   )
@@ -402,10 +402,10 @@ function Page500({ incidentId, onRetry, countdown: initialCountdown = 30 }: Erro
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
           {onRetry && !retrying && (
             <ActionButton onClick={handleManualRetry} variant="primary">
-              Retry now
+              Retry Now
             </ActionButton>
           )}
-          <ActionButton href="/" variant="ghost">Go home</ActionButton>
+          <ActionButton href="/" variant="ghost">Go Home</ActionButton>
         </div>
       </div>
     </div>

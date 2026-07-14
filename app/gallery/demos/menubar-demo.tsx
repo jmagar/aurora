@@ -59,7 +59,7 @@ export default function MenubarDemo() {
           <MenubarTrigger>File</MenubarTrigger>
           <MenubarContent>
             <MenubarItem>
-              New session
+              New Session
               <MenubarShortcut>⌘N</MenubarShortcut>
             </MenubarItem>
             <MenubarItem>
@@ -104,7 +104,7 @@ export default function MenubarDemo() {
           <MenubarContent>
             <MenubarItem>Docs</MenubarItem>
             <MenubarItem>
-              Keyboard shortcuts
+              Keyboard Shortcuts
               <MenubarShortcut>?</MenubarShortcut>
             </MenubarItem>
           </MenubarContent>

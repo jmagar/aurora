@@ -48,7 +48,7 @@ export default function DropdownMenuDemo() {
             <DropdownMenuSeparator />
             <DropdownMenuItem danger>
               <Trash2 className="size-[15px]" aria-hidden />
-              Delete session
+              Delete Session
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

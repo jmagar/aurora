@@ -3,7 +3,7 @@ import { ComponentCatalog } from "@/components/site/component-catalog"
 import { getKotlinMap } from "@/lib/kotlin-map"
 
 export const metadata = {
-  title: "Components — Aurora design system",
+  title: "Components — Aurora Design System",
   description:
     "The Aurora component catalog: every registry component rendered live, with fuzzy search, category filters, a shadcn/Android flavor toggle, and one-line installs.",
 }

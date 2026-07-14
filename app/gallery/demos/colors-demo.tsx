@@ -41,7 +41,7 @@ export default function ColorsDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
       <GalleryPageIntro
         eyebrow="Foundations"
-        heading="Color tokens"
+        heading="Color Tokens"
         description="Aurora colors separate brand tokens for identity, semantic tokens for meaning, and interaction tokens for behavior."
       />
 

@@ -14,7 +14,7 @@ export default function AiEnvironmentVariablesDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="AI elements / environment-variables"
-        heading="Environment variables"
+        heading="Environment Variables"
         description="Env vars — reveal secrets, per-row copy, required/secret tagging."
       />
       <section

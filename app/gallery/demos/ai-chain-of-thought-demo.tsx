@@ -12,7 +12,7 @@ export default function AiChainOfThoughtDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="AI elements / chain of thought"
-        heading="Chain of thought"
+        heading="Chain of Thought"
         description="Reasoning steps — collapsible, per-step status, streaming."
       />
       <section

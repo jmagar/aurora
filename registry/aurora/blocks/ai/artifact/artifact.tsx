@@ -358,7 +358,7 @@ function ArtifactPanel({
 
           {/* Toolbar on right */}
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 2 }}>
-            <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy code"}>
+            <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy Code"}>
               {copied ? (
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path d="M2 7L5.5 10.5L12 4" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -396,7 +396,7 @@ function ArtifactPanel({
             background: "var(--aurora-panel-strong)",
           }}
         >
-          <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy code"}>
+          <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy Code"}>
             {copied ? (
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M2 7L5.5 10.5L12 4" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

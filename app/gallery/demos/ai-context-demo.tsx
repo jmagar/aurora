@@ -9,7 +9,7 @@ export default function AiContextDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
       <GalleryPageIntro
         eyebrow="AI Elements"
-        heading="Context panel"
+        heading="Context Panel"
         description="Token-budget meter for an agent's context window — segmented usage, a hatched reserved-output slice, a compact action, and a near-limit warning state."
       />
 

@@ -8,7 +8,7 @@ export default function AiSchemaDisplayDemo() {
     <div className="flex flex-col gap-6">
       <GalleryPageIntro
         eyebrow="AI Elements"
-        heading="Schema display"
+        heading="Schema Display"
         description="A JSON Schema viewer — a fields table with type-colored badges and required markers, plus a raw JSON toggle."
       />
       <div className="max-w-[520px]">

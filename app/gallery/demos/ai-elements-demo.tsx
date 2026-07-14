@@ -40,7 +40,7 @@ export default function AiElementsDemo() {
   return (
     <div style={{ display: "grid", gap: 28, padding: 0 }}>
       <div>
-        <h2 style={heading}>AI elements</h2>
+        <h2 style={heading}>AI Elements</h2>
         <p style={copy}>Agent transcript primitives for messages, citations, sources, task state, tests, errors, and runtime configuration.</p>
       </div>
 
@@ -62,9 +62,9 @@ export default function AiElementsDemo() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 18 }}>
         <TaskList
           tasks={[
-            { id: "1", title: "Inspect registry", description: "Read registry entries and generated output", status: "completed" },
-            { id: "2", title: "Run gallery smoke", description: "Open every route with agent-browser", status: "running" },
-            { id: "3", title: "Publish package", description: "Waiting for approval", status: "queued" },
+            { id: "1", title: "Inspect Registry", description: "Read registry entries and generated output", status: "completed" },
+            { id: "2", title: "Run Gallery Smoke", description: "Open every route with agent-browser", status: "running" },
+            { id: "3", title: "Publish Package", description: "Waiting for approval", status: "queued" },
           ]}
         />
 
@@ -79,7 +79,7 @@ export default function AiElementsDemo() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 18 }}>
         <StackTrace
-          title="Build failure"
+          title="Build Failure"
           frames={[
             { file: "registry/aurora/blocks/agent/agent.tsx", line: 84, column: 12, label: "Missing required registry dependency" },
             { file: "app/gallery/demos/ai-elements-demo.tsx", line: 33, column: 4, label: "Demo import failed" },

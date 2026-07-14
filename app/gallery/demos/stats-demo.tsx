@@ -16,7 +16,7 @@ export default function StatsDemo() {
             marginBottom: 12,
           }}
         >
-          Gateway metrics
+          Gateway Metrics
         </p>
         <StatGrid style={{ maxWidth: 700 }}>
           <StatCard

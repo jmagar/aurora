@@ -73,7 +73,7 @@ export function FilePickerDemo() {
           size="lg"
           onClick={() => setOpen(true)}
         >
-          Open file picker
+          Open File Picker
         </Button>
 
         {selectedFiles.length > 0 && (

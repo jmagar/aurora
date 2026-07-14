@@ -126,7 +126,7 @@ function ActionButtons({
         size={size}
         onClick={onAllow}
       >
-        {isDangerous ? "Run anyway" : "Allow"}
+        {isDangerous ? "Run Anyway" : "Allow"}
       </Button>
 
       {!isDangerous && (
@@ -136,7 +136,7 @@ function ActionButtons({
           size={size}
           onClick={onAllowAlways}
         >
-          Allow always
+          Allow Always
         </Button>
       )}
 

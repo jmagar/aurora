@@ -26,9 +26,9 @@ const TEXT = [
 ] as const
 
 const ACCENTS = [
-  { fam: "Cyan — primary", base: "accent-primary", ramp: ["accent-deep", "accent-primary", "accent-strong"], use: "Primary CTAs, selection, focus, active state." },
-  { fam: "Rose — secondary", base: "accent-pink", ramp: ["accent-pink-deep", "accent-pink", "accent-pink-strong"], use: "Agent / send affordances, key labels, active filter tags. One or two touch points per screen." },
-  { fam: "Axon orange — AI / automation", base: "axon-orange", ramp: ["axon-orange-deep", "axon-orange", "axon-orange-strong"], use: "AI / automation identity — model selectors, reasoning, autonomous actions." },
+  { fam: "Cyan — Primary", base: "accent-primary", ramp: ["accent-deep", "accent-primary", "accent-strong"], use: "Primary CTAs, selection, focus, active state." },
+  { fam: "Rose — Secondary", base: "accent-pink", ramp: ["accent-pink-deep", "accent-pink", "accent-pink-strong"], use: "Agent / send affordances, key labels, active filter tags. One or two touch points per screen." },
+  { fam: "Axon Orange — AI / Automation", base: "axon-orange", ramp: ["axon-orange-deep", "axon-orange", "axon-orange-strong"], use: "AI / automation identity — model selectors, reasoning, autonomous actions." },
 ] as const
 
 const STATUS = [
@@ -51,13 +51,13 @@ const ELEVATION = [
 ] as const
 
 const TYPE_RAMP: { cls: string; label: string; sample: string; note: string }[] = [
-  { cls: "aurora-text-display-hero", label: "Display hero", sample: "One palette", note: "Manrope 800 · marketing heroes" },
+  { cls: "aurora-text-display-hero", label: "Display Hero", sample: "One palette", note: "Manrope 800 · marketing heroes" },
   { cls: "aurora-text-display-1", label: "Display 1", sample: "Active gateways", note: "Manrope 800 · page heroes, big numbers" },
   { cls: "aurora-text-display-2", label: "Display 2", sample: "Authorization", note: "Manrope 700 · section heroes" },
   { cls: "aurora-text-section", label: "Section", sample: "Production edge gateway", note: "Manrope 760 · section headers, card titles" },
   { cls: "aurora-text-lead", label: "Lead", sample: "Operator-grade design system for agent products.", note: "Inter 480 · intro paragraphs" },
   { cls: "aurora-text-body", label: "Body", sample: "Gateway connection lost. Retrying in 30 seconds.", note: "Inter 480 · 14px · default body" },
-  { cls: "aurora-text-body-sm", label: "Body small", sample: "Read-only mode — changes require admin approval.", note: "Inter 480 · 13px · compact body" },
+  { cls: "aurora-text-body-sm", label: "Body Small", sample: "Read-only mode — changes require admin approval.", note: "Inter 480 · 13px · compact body" },
   { cls: "aurora-text-ui", label: "UI", sample: "Deploy plugin", note: "Inter 560 · 13px · working UI text" },
   { cls: "aurora-text-control", label: "Control", sample: "Run query", note: "Inter 560 · control labels, buttons" },
   { cls: "aurora-text-label", label: "Label", sample: "Gateway name", note: "Inter 650 · 12px · form labels" },
@@ -131,7 +131,7 @@ export function TokensView() {
         </div>
       </header>
 
-      <Section eyebrow="Color" title="Surfaces & borders">
+      <Section eyebrow="Color" title="Surfaces & Borders">
         <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}>
           {SURFACES.map(([n, d]) => <Swatch key={n} name={n} desc={d} />)}
           {BORDERS.map(([n, d]) => <Swatch key={n} name={n} desc={d} />)}
@@ -173,7 +173,7 @@ export function TokensView() {
         </div>
       </Section>
 
-      <Section eyebrow="Color" title="Status — muted, never neon">
+      <Section eyebrow="Color" title="Status — Muted, Never Neon">
         <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}>
           {STATUS.map(([n, d]) => (
             <div key={n} className="flex flex-col gap-2">
@@ -197,7 +197,7 @@ export function TokensView() {
         </div>
       </Section>
 
-      <Section eyebrow="Typography" title="Type ramp">
+      <Section eyebrow="Typography" title="Type Ramp">
         <div className="overflow-hidden rounded-[var(--aurora-radius-3)]" style={panelStrong}>
           {TYPE_RAMP.map((row, i) => (
             <div
@@ -243,7 +243,7 @@ export function TokensView() {
         </div>
       </Section>
 
-      <Section eyebrow="Elevation" title="Shadows & highlights">
+      <Section eyebrow="Elevation" title="Shadows & Highlights">
         <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}>
           {ELEVATION.map(([shadow, highlight, use]) => (
             <div key={shadow} className="flex flex-col gap-3">
@@ -270,7 +270,7 @@ export function TokensView() {
         </p>
       </Section>
 
-      <Section eyebrow="Install" title="Use the tokens">
+      <Section eyebrow="Install" title="Use the Tokens">
         <div className="rounded-[var(--aurora-radius-3)] p-5" style={panelStrong}>
           <p className="aurora-text-body-sm mb-3" style={{ color: "var(--aurora-text-muted)" }}>
             Install the token layer first; every component reads from it.

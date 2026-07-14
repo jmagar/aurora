@@ -25,7 +25,7 @@ export default function CopyButtonDemo() {
           alignItems: "center",
         }}
       >
-        <CopyButton value="ghp_xxx" label="Copy token" />
+        <CopyButton value="ghp_xxx" label="Copy Token" />
         <CopyButton value="ghp_xxx" />
       </section>
     </div>

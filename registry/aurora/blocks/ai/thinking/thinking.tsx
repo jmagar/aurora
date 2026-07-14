@@ -264,7 +264,7 @@ function CotBlock({
         {open && (
           <>
             <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--aurora-text-muted)" }}>
-              Chain of thought
+              Chain of Thought
               {steps.length > 0 && ` · ${steps.length} steps`}
             </span>
             <ChevronDown

@@ -38,7 +38,7 @@ export default function AskUserQuestionDemo() {
     >
       <GalleryPageIntro
         eyebrow="Chat & AI"
-        heading="Ask user question"
+        heading="Ask User Question"
         description="A focused confirmation surface for radio, multi-select, and text answers. The cards stay compact, readable, and mobile-safe."
       />
 

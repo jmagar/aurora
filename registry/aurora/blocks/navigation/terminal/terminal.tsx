@@ -263,12 +263,12 @@ function Titlebar({
       {!compact && (
         <>
           {onKill && (
-            <TitlebarButton onClick={onKill} title="Kill session">
+            <TitlebarButton onClick={onKill} title="Kill Session">
               ×
             </TitlebarButton>
           )}
           {onClear && (
-            <TitlebarButton onClick={onClear} title="Clear output">
+            <TitlebarButton onClick={onClear} title="Clear Output">
               ⌫
             </TitlebarButton>
           )}

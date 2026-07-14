@@ -30,12 +30,12 @@ const BY_NAME: Record<string, RegistryItem> = Object.fromEntries(
 )
 
 export const SECTION_TITLE_OVERRIDES: Record<string, string> = {
-  colors: "Color tokens",
+  colors: "Color Tokens",
   type: "Typography",
-  spacing: "Spacing & radii",
-  brand: "Brand & mark",
-  lightmode: "Light mode",
-  oauth: "OAuth flow",
+  spacing: "Spacing & Radii",
+  brand: "Brand & Mark",
+  lightmode: "Light Mode",
+  oauth: "OAuth Flow",
   kbd: "Kbd",
 }
 

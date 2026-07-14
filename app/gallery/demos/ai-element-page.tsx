@@ -51,14 +51,14 @@ import {
 
 const AI_TITLES: Record<string, string> = {
   attachments: "Attachments",
-  "chain-of-thought": "Chain of thought",
+  "chain-of-thought": "Chain of Thought",
   checkpoint: "Checkpoint",
   confirmation: "Confirmation",
   context: "Context",
   conversation: "Conversation",
-  "inline-citation": "Inline citation",
+  "inline-citation": "Inline Citation",
   message: "Message",
-  "model-selector": "Model selector",
+  "model-selector": "Model Selector",
   plan: "Plan",
   queue: "Queue",
   reasoning: "Reasoning",
@@ -69,20 +69,20 @@ const AI_TITLES: Record<string, string> = {
   tool: "Tool",
   agent: "Agent",
   commit: "Commit",
-  "environment-variables": "Environment variables",
-  "jsx-preview": "JSX preview",
-  "package-info": "Package info",
+  "environment-variables": "Environment Variables",
+  "jsx-preview": "JSX Preview",
+  "package-info": "Package Info",
   sandbox: "Sandbox",
-  "schema-display": "Schema display",
+  "schema-display": "Schema Display",
   snippet: "Snippet",
-  "stack-trace": "Stack trace",
-  "test-results": "Test results",
-  "audio-player": "Audio player",
-  "mic-selector": "Mic selector",
+  "stack-trace": "Stack Trace",
+  "test-results": "Test Results",
+  "audio-player": "Audio Player",
+  "mic-selector": "Mic Selector",
   persona: "Persona",
-  "speech-input": "Speech input",
+  "speech-input": "Speech Input",
   transcription: "Transcription",
-  "voice-selector": "Voice selector",
+  "voice-selector": "Voice Selector",
   canvas: "Canvas",
   connection: "Connection",
   controls: "Controls",
@@ -90,7 +90,7 @@ const AI_TITLES: Record<string, string> = {
   node: "Node",
   panel: "Panel",
   image: "Image",
-  "open-in-chat": "Open in chat",
+  "open-in-chat": "Open in Chat",
 }
 
 const AI_DESCRIPTIONS: Partial<Record<string, string>> = {
@@ -100,20 +100,20 @@ const AI_DESCRIPTIONS: Partial<Record<string, string>> = {
 }
 
 const sourceItems = [
-  { title: "Gateway registry", href: "#", description: "Source-backed metadata", badge: "doc" },
-  { title: "Runtime policy", href: "#", description: "Permission constraints", badge: "toml" },
+  { title: "Gateway Registry", href: "#", description: "Source-backed metadata", badge: "doc" },
+  { title: "Runtime Policy", href: "#", description: "Permission constraints", badge: "toml" },
 ]
 
 const tasks = [
-  { id: "1", title: "Resolve package", description: "Read registry metadata", status: "completed" as const },
-  { id: "2", title: "Build sandbox", description: "Create isolated execution surface", status: "running" as const },
-  { id: "3", title: "Publish result", description: "Waiting for operator approval", status: "queued" as const },
+  { id: "1", title: "Resolve Package", description: "Read registry metadata", status: "completed" as const },
+  { id: "2", title: "Build Sandbox", description: "Create isolated execution surface", status: "running" as const },
+  { id: "3", title: "Publish Result", description: "Waiting for operator approval", status: "queued" as const },
 ]
 
 const planSteps = [
-  { label: "Resolve package", detail: "Read registry metadata", status: "done" as const },
-  { label: "Build sandbox", detail: "Create isolated execution surface", status: "inprog" as const },
-  { label: "Publish result", detail: "Waiting for operator approval", status: "pending" as const },
+  { label: "Resolve Package", detail: "Read registry metadata", status: "done" as const },
+  { label: "Build Sandbox", detail: "Create isolated execution surface", status: "inprog" as const },
+  { label: "Publish Result", detail: "Waiting for operator approval", status: "pending" as const },
 ]
 
 function AiExample({ slug }: { slug: string }) {
@@ -139,7 +139,7 @@ function AiExample({ slug }: { slug: string }) {
     case "checkpoint":
       return <Checkpoint label="Checkpoint saved" description="User-approved marketplace state captured." />
     case "confirmation":
-      return <Confirmation title="Install plugin" description="This will update the local plugin cache." />
+      return <Confirmation title="Install Plugin" description="This will update the local plugin cache." />
     case "context":
       return <ContextPanel used={42100} limit={128000} />
     case "conversation":
@@ -182,7 +182,7 @@ function AiExample({ slug }: { slug: string }) {
     case "tool":
       return <ToolCalls calls={[{ id: "1", tool: "registry.lookup", status: "completed", args: { package: "aurora-button" }, result: "Resolved aurora-button from the local registry." }]} />
     case "agent":
-      return <Agent name="Marketplace agent" role="Registry resolver" status="running" />
+      return <Agent name="Marketplace Agent" role="Registry Resolver" status="running" />
     case "commit":
       return <Commit hash="a1b2c3d" message="Add marketplace parity route" author="labby" />
     case "jsx-preview":
@@ -202,7 +202,7 @@ function AiExample({ slug }: { slug: string }) {
     case "audio-player":
       return <AudioPlayer />
     case "mic-selector":
-      return <MicSelector devices={["Studio mic", "System default"]} />
+      return <MicSelector devices={["Studio Mic", "System Default"]} />
     case "persona":
       return <Persona name="Operator" description="Concise, evidence-first assistant voice." />
     case "speech-input":
@@ -220,11 +220,11 @@ function AiExample({ slug }: { slug: string }) {
     case "edge":
       return <Edge label="stream" />
     case "node":
-      return <Node title="Agent node" description="Runs install checks" />
+      return <Node title="Agent Node" description="Runs install checks" />
     case "panel":
       return <Panel title="Inspector"><p className="aurora-text-body" style={{ margin: 0 }}>Workflow metadata and selected node details.</p></Panel>
     default:
-      return <Callout title="AI element">Covered by the corresponding Aurora block route.</Callout>
+      return <Callout title="AI Element">Covered by the corresponding Aurora block route.</Callout>
   }
 }
 
@@ -236,7 +236,7 @@ export function AiElementPage({ slug }: { slug: string }) {
   return (
     <div className="grid gap-6">
       <GalleryPageIntro
-        eyebrow={`AI elements / ${slug}`}
+        eyebrow={`AI Elements / ${slug}`}
         heading={title}
         description={description}
       />

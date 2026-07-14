@@ -21,7 +21,7 @@ export default function ColorPickerDemo() {
       />
       <div style={wrap}>
         <ColorPicker
-          label="Accent color"
+          label="Accent Color"
           defaultValue="#29b6f6"
           colors={[
             "#29b6f6",

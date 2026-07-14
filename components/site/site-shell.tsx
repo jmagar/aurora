@@ -20,6 +20,7 @@ import { tint } from "@/components/site/style-tokens"
 const NAV = [
   { label: "Components", href: "/components" },
   { label: "Themes", href: "/themes" },
+  { label: "Plugins", href: "/plugins" },
   { label: "Tokens", href: "/tokens" },
   { label: "Icons", href: "/icons" },
   { label: "Docs", href: "/docs" },
@@ -103,7 +104,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             className="aurora-text-meta ml-0.5 hidden pl-2 sm:inline"
             style={{ color: "var(--aurora-text-muted)", borderLeft: "1px solid var(--aurora-border-strong)" }}
           >
-            Design system
+            Design System
           </span>
         </Link>
 

@@ -200,7 +200,7 @@ export default function InputDemo() {
 
           <div>
             <span style={fieldLabel}>Error (shorthand)</span>
-            <Input error placeholder="required field" />
+            <Input error placeholder="Required field" />
           </div>
         </div>
       </div>

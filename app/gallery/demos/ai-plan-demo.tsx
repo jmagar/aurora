@@ -29,12 +29,12 @@ export default function AiPlanDemo() {
       >
         <div style={{ width: "100%", maxWidth: "428px" }}>
           <Plan
-            title="Ingest run"
+            title="Ingest Run"
             steps={[
-              { label: "Crawl docs", status: "done", detail: "412 pages · 1.2s" },
-              { label: "Embed chunks", status: "inprog", detail: "3,180 / 8,004" },
-              { label: "Build index", status: "pending" },
-              { label: "Answer query", status: "pending" },
+              { label: "Crawl Docs", status: "done", detail: "412 pages · 1.2s" },
+              { label: "Embed Chunks", status: "inprog", detail: "3,180 / 8,004" },
+              { label: "Build Index", status: "pending" },
+              { label: "Answer Query", status: "pending" },
             ]}
           />
         </div>

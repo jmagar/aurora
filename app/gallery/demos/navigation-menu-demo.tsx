@@ -31,7 +31,7 @@ export default function NavigationMenuDemo() {
   return (
     <div style={{ display: "grid", gap: 24, padding: 0 }}>
       <div>
-        <h2 style={heading}>Navigation menu</h2>
+        <h2 style={heading}>Navigation Menu</h2>
         <p style={copy}>Nav rail with an active item.</p>
       </div>
 

@@ -25,7 +25,7 @@ function ic(paths: React.ReactNode) {
 const items = [
   {
     group: "Actions",
-    label: "New session",
+    label: "New Session",
     description: "Start a fresh agent session",
     icon: ic(
       <>
@@ -37,14 +37,14 @@ const items = [
   },
   {
     group: "Actions",
-    label: "Open terminal",
+    label: "Open Terminal",
     description: "Attach a shell to the workspace",
     icon: ic(<path d="m4 17 6-6-6-6M12 19h8" />),
     shortcut: "⌘J",
   },
   {
     group: "Navigation",
-    label: "Go to gateways",
+    label: "Go to Gateways",
     description: "MCP gateway registry",
     icon: ic(
       <>
@@ -55,7 +55,7 @@ const items = [
   },
   {
     group: "Navigation",
-    label: "Switch theme",
+    label: "Switch Theme",
     description: "Toggle light / dark surfaces",
     icon: ic(
       <>
@@ -66,7 +66,7 @@ const items = [
   },
   {
     group: "Settings",
-    label: "Manage API keys",
+    label: "Manage API Keys",
     description: "Rotate provider credentials",
     icon: ic(
       <>

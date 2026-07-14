@@ -54,7 +54,7 @@ function formatOrigin(frame: StackFrame): string {
 }
 
 const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
-  ({ className, title = "Stack trace", error, frames, style, ...props }, ref) => (
+  ({ className, title = "Stack Trace", error, frames, style, ...props }, ref) => (
     <div
       ref={ref}
       className={["grid gap-3.5 p-4", className].filter(Boolean).join(" ")}

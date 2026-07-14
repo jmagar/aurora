@@ -60,7 +60,7 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
   return (
     <div className="aurora-gallery-shell" data-nav-open={navOpen ? "true" : "false"}>
       <a href="#gallery-main" className="aurora-gallery-skip-link">
-        Skip to content
+        Skip to Content
       </a>
 
       {/* Backdrop — mobile only, closes nav when tapped */}

@@ -34,7 +34,7 @@ export default function FiltersDemo() {
           color: "var(--aurora-text-muted)",
         }}
       >
-        Gateway filter bar
+        Gateway Filter Bar
       </p>
 
       <FilterBar

@@ -68,7 +68,7 @@ const INITIAL_TOKENS: OAuthToken[] = [
 const MODES: { id: OAuthMode; label: string; description: string }[] = [
   { id: "consent", label: "Consent",       description: "Initial authorization screen" },
   { id: "success", label: "Authorized",    description: "Post-authorization success" },
-  { id: "tokens",  label: "Token manager", description: "Manage active tokens" },
+  { id: "tokens",  label: "Token Manager", description: "Manage active tokens" },
 ]
 
 export function OAuthDemo() {

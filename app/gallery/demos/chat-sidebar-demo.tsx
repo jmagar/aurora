@@ -25,8 +25,8 @@ const threads = [
   { id: "t3", title: "Rust async runtime comparison", bucket: "Today" },
   { id: "t4", title: "Embeddings reranking strategy", bucket: "Yesterday" },
   { id: "t5", title: "Gateway 502 debugging notes", bucket: "Yesterday" },
-  { id: "t6", title: "tmux statusline theme port", bucket: "Previous 7 days" },
-  { id: "t7", title: "Zed icon theme tweaks", bucket: "Previous 7 days" },
+  { id: "t6", title: "tmux statusline theme port", bucket: "Previous 7 Days" },
+  { id: "t7", title: "Zed icon theme tweaks", bucket: "Previous 7 Days" },
 ]
 
 export default function ChatSidebarDemo() {
@@ -54,7 +54,7 @@ export default function ChatSidebarDemo() {
           brand={brand}
           defaultActiveId="t2"
           onNewChat={() => {}}
-          user={{ name: "Jordan Magar", initials: "JM", plan: "Pro plan" }}
+          user={{ name: "Jordan Magar", initials: "JM", plan: "Pro Plan" }}
           threads={threads}
         />
       </div>

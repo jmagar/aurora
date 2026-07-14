@@ -11,7 +11,7 @@ export default function DescriptionListDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="Components / description list"
-        heading="Description list"
+        heading="Description List"
         description="Label and value rows with a cyan accent marker and a highlighted active row."
       />
       <section

@@ -163,7 +163,7 @@ function MasterToggle({
           fontFamily: "var(--aurora-font-sans)",
         }}
       >
-        Tool permissions
+        Tool Permissions
       </span>
 
       {/* Toggle pill */}

@@ -47,14 +47,14 @@ export default function PermissionPromptDemo() {
       >
         <PermissionPrompt
           variant="inline"
-          tool="Run shell command"
+          tool="Run Shell Command"
           action="Axon wants to execute a command in your workspace."
           target="$ cargo build --release"
         />
         <PermissionPrompt
           variant="inline"
           isDangerous
-          tool="Delete files"
+          tool="Delete Files"
           action="Axon wants to remove files matching a glob."
           target="rm -rf ./dist"
         />

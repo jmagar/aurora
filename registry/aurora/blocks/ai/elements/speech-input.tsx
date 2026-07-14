@@ -61,7 +61,7 @@ const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
               whiteSpace: "nowrap",
             }}
           >
-            Speech input
+            Speech Input
           </span>
 
           {recording && (

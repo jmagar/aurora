@@ -1192,8 +1192,8 @@ export function FilePicker({
                   style={confirmBtnStyle(hasSelection)}
                 >
                   {hasSelection
-                    ? `Attach ${selected.size} ${selected.size === 1 ? "file" : "files"}`
-                    : "Select files"}
+                    ? `Attach ${selected.size} ${selected.size === 1 ? "File" : "Files"}`
+                    : "Select Files"}
                 </Button>
               </div>
             </div>
