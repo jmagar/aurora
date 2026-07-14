@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [
     "@aurora/aurora-tokens",
-    "@aurora/aurora-ai-elements"
+    "@aurora/aurora-ai-elements",
+    "@aurora/aurora-avatar"
   ],
   "files": [
     {
@@ -28,7 +29,7 @@
     "installTarget": "@components/aurora/ai/conversation.tsx",
     "taxonomy": "ai"
   },
-  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/conversation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "docs": "Aurora block that expects `aurora-tokens`, `aurora-ai-elements`, and `aurora-avatar` to be installed first.\n\nDefault install target: `@components/aurora/ai/conversation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-avatar`.",
   "categories": [
     "aurora",
     "block",

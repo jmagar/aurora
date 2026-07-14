@@ -1,15 +1,16 @@
 "use client"
 
 import * as React from "react"
+import { cn } from "@/lib/utils"
 
 /**
  * Node — a flow-graph node card with a status accent, an interactive selected
  * state, and left/right connection handles.
  *
- * Self-contained, CD-parity implementation. The status accent is a rounded bar
- * inset on the left edge plus a matching status dot before the title. Selecting
- * the node draws a rose ring around the whole card. Connection handles are the
- * hollow cyan rings that straddle the left and right vertical-center edges.
+ * The status accent is a rounded bar inset on the left edge plus a matching
+ * status dot before the title. Selecting the node draws a rose ring around the
+ * whole card. Connection handles are the hollow cyan rings that straddle the
+ * left and right vertical-center edges.
  */
 
 export type NodeStatus = "idle" | "running" | "done" | "error"
@@ -29,7 +30,7 @@ const statusColor: Record<NodeStatus, string> = {
   idle: "var(--aurora-text-muted)",
   running: "var(--aurora-accent-primary)",
   done: "var(--aurora-success)",
-  error: "var(--aurora-accent-pink)",
+  error: "var(--aurora-error)",
 }
 
 const Node = React.forwardRef<HTMLDivElement, NodeProps>(
@@ -67,9 +68,7 @@ const Node = React.forwardRef<HTMLDivElement, NodeProps>(
               }
             : undefined
         }
-        className={["aurora-node", interactive ? "aurora-node--interactive" : "", className]
-          .filter(Boolean)
-          .join(" ")}
+        className={cn("aurora-node", interactive && "aurora-node--interactive", className)}
         style={
           {
             "--node-accent": accent,

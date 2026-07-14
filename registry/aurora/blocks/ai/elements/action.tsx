@@ -4,20 +4,12 @@
  * Aurora Action — a quiet, icon-first action button for AI message affordances
  * (copy / retry / thumbs-up, etc.).
  *
- * Visual values are ported 1:1 from the Claude Design "Action" source:
- *  - default: a 10px-radius bordered ghost square (32px) over the control
- *    surface, with a muted icon that lifts to the primary accent on hover.
- *  - icon + text: borderless ghost row (icon + label) — no surface/border.
- *  - pressed: a rose/pink-tinted toggle state (border + surface + icon) used
- *    for affirmative toggles like a thumbs-up.
- *  - size="sm": a tighter 28px square with a smaller hit area.
- *
- * Architecture stays shadcn: typed props, `forwardRef`, `displayName`,
- * `React.memo`, a real `<button>` with proper a11y (`aria-pressed` mirrors the
- * `pressed` toggle; `label` becomes the visible text, otherwise consumers pass
- * `aria-label`). Styling reads `--aurora-*` tokens via a stable class so the
- * registry stays config-free (Tailwind v4) and tokens drive every value.
- * Violet is intentionally not used.
+ * Architecture stays shadcn-compatible: typed props, `forwardRef`,
+ * `displayName`, `React.memo`, a real `<button>` with proper a11y
+ * (`aria-pressed` mirrors the `pressed` toggle; `label` becomes the visible
+ * text, otherwise consumers pass `aria-label`). Styling reads `--aurora-*`
+ * tokens through stable data attributes so the registry stays config-free
+ * (Tailwind v4) and tokens drive every value.
  */
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
@@ -43,21 +35,32 @@ const Action = React.forwardRef<HTMLButtonElement, ActionProps>(
       label,
       pressed,
       size = "default",
+      style,
       type = "button",
       ...props
     },
     ref
   ) => {
     const hasLabel = label != null && label !== false
+    const shape = hasLabel ? "text" : "icon"
+    const sizeStyle: React.CSSProperties | undefined =
+      size === "sm"
+        ? hasLabel
+          ? { height: 30, paddingInline: 6, borderRadius: 7 }
+          : { width: 30, height: 30, borderRadius: 9 }
+        : undefined
+
     return (
       <button
         ref={ref}
         type={type}
+        data-shape={shape}
         data-size={size}
         data-has-label={hasLabel ? "true" : undefined}
         data-pressed={pressed ? "true" : undefined}
         aria-pressed={pressed != null ? pressed : undefined}
         className={cn("aurora-action", className)}
+        style={{ ...sizeStyle, ...style }}
         {...props}
       >
         {children}

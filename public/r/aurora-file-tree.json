@@ -3,7 +3,7 @@
   "name": "aurora-file-tree",
   "title": "Aurora File Tree",
   "author": "jmagar <https://github.com/jmagar>",
-  "description": "Recursive collapsible file tree with folder/file icons, hover and selected states, right-click context menu (New file, Rename, Delete, Copy path), and an inline FileChip export for referencing files in prose.",
+  "description": "Recursive collapsible file tree with folder/file icons, hover and selected states, right-click context menu (new file, rename, delete, copy path), and an inline FileChip export for referencing files in prose.",
   "dependencies": [
     "lucide-react@^0.487.0"
   ],

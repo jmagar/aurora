@@ -10,12 +10,10 @@ import { cn } from "@/lib/utils"
  * Branch — versioned answer navigation.
  *
  * Architecture is the canonical shadcn-registry pattern: a self-contained
- * `forwardRef` component with a typed prop API. Visuals match the Aurora /
- * Claude Design source 1:1 — a raised panel whose top tier holds the active
- * version's content and whose footer toolbar carries the branch label, an
- * optional "AI" tag, a row of version dots (the active one an elongated rose
- * pill), the active version's model meta, copy + regenerate actions, and a
- * prev / counter / next stepper.
+ * `forwardRef` component with a typed prop API. The raised panel holds the
+ * active version's content and a footer toolbar with the branch label, optional
+ * AI badge, version dots, model meta, copy/regenerate actions, and a compact
+ * previous / counter / next stepper.
  *
  * It is an uncontrolled stepper by default (`defaultIndex`); pass `index` +
  * `onIndexChange` to drive it from the outside.
@@ -120,8 +118,10 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
         <div className="aurora-branch__toolbar" role="group" aria-label="Version navigation">
           <span className="aurora-branch__label">
             <GitBranch
-              className="size-4"
               aria-hidden
+              width={16}
+              height={16}
+              strokeWidth={1.65}
               style={{ color: "var(--aurora-accent-pink)" }}
             />
             {label}
@@ -142,7 +142,11 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
           ) : null}
 
           {showMeta ? (
-            <span className="aurora-branch__meta" title={[version?.model, version?.time].filter(Boolean).join(" · ")}>
+            <span
+              className="aurora-branch__meta"
+              title={[version?.model, version?.time].filter(Boolean).join(" · ")}
+              style={{ fontFamily: "var(--aurora-font-sans)" }}
+            >
               {[version?.model, version?.time].filter(Boolean).join(" · ")}
             </span>
           ) : null}
@@ -160,7 +164,7 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
                   aria-label="Copy version"
                   onClick={() => version && onCopy(version, active)}
                 >
-                  <Copy className="size-4" aria-hidden />
+                  <Copy aria-hidden width={16} height={16} strokeWidth={1.65} />
                 </Button>
               ) : null}
               {typeof onRegenerate === "function" ? (
@@ -172,7 +176,7 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
                   aria-label="Regenerate version"
                   onClick={() => version && onRegenerate(version, active)}
                 >
-                  <RefreshCw className="size-4" aria-hidden />
+                  <RefreshCw aria-hidden width={16} height={16} strokeWidth={1.65} />
                 </Button>
               ) : null}
             </span>
@@ -188,9 +192,12 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
               disabled={atStart}
               onClick={goPrev}
             >
-              <ChevronLeft className="size-4" aria-hidden />
+              <ChevronLeft aria-hidden width={16} height={16} strokeWidth={1.65} />
             </Button>
-            <span className="aurora-branch__counter">
+            <span
+              className="aurora-branch__counter"
+              style={{ fontFamily: "var(--aurora-font-sans)" }}
+            >
               {count === 0 ? "0 / 0" : `${active + 1} / ${count}`}
             </span>
             <Button
@@ -202,7 +209,7 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
               disabled={atEnd}
               onClick={goNext}
             >
-              <ChevronRight className="size-4" aria-hidden />
+              <ChevronRight aria-hidden width={16} height={16} strokeWidth={1.65} />
             </Button>
           </span>
         </div>

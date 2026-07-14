@@ -3,9 +3,9 @@
 /**
  * Aurora Connection — a flow edge between two nodes (e.g. a data pipeline hop).
  *
- * Visual layer is ported 1:1 from the Claude Design source: two rounded node
- * pills, each with a status-tinted dot + label, joined by a directional edge
- * (line + arrowhead) carrying an optional label. The edge reflects `status`:
+ * Two rounded node pills, each with a status-tinted dot + label, joined by a
+ * directional edge (line + arrowhead) carrying an optional label. The edge
+ * reflects `status`:
  *   - `ok`      — teal, solid
  *   - `active`  — cyan, dashed + animated (flowing)
  *   - `error`   — rose, solid
@@ -13,10 +13,10 @@
  * `bidirectional` adds a reverse arrowhead at the source end.
  *
  * This file deliberately re-implements `Connection` (rather than re-exporting the
- * legacy `core` version) so it can carry CD's `label` / `status` /
- * `bidirectional` API while keeping every shadcn/Aurora guarantee: `forwardRef`,
- * `displayName`, `React.memo`, and full `React.HTMLAttributes` spread.
- * Token-only colors (`--aurora-*`); no hardcoded hex; no `violet`.
+ * legacy `core` version) so it can carry the `label` / `status` /
+ * `bidirectional` API while keeping every shadcn/Aurora guarantee:
+ * `forwardRef`, `displayName`, `React.memo`, and full
+ * `React.HTMLAttributes` spread. Token-only colors (`--aurora-*`).
  */
 
 import * as React from "react"
@@ -54,9 +54,9 @@ const Connection = React.forwardRef<HTMLDivElement, ConnectionProps>(
     const dashed = status === "active" || status === "pending"
     const flowing = status === "active"
     const cls = ["aurora-connection", className].filter(Boolean).join(" ")
-    const ariaLabel = `${from} ${bidirectional ? "↔" : "→"} ${to}${
-      label ? ` (${label})` : ""
-    }`
+    const ariaLabel = bidirectional
+      ? `${from} connected bidirectionally with ${to}${label ? `, ${label}` : ""}`
+      : `${from} connects to ${to}${label ? `, ${label}` : ""}`
 
     return (
       <div
@@ -75,7 +75,14 @@ const Connection = React.forwardRef<HTMLDivElement, ConnectionProps>(
         </span>
 
         <span className="aurora-connection__edge" aria-hidden>
-          {label ? <span className="aurora-connection__label">{label}</span> : null}
+          {label ? (
+            <span
+              className="aurora-connection__label"
+              style={{ fontFamily: "var(--aurora-font-sans)" }}
+            >
+              {label}
+            </span>
+          ) : null}
           {bidirectional ? (
             <span className="aurora-connection__arrow aurora-connection__arrow--start" />
           ) : null}

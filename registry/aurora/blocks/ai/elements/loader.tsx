@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 // Loader — thinking / busy indicator.
 //
 // Icon-only by default (spinner / dots / bars / pulse), with an optional muted
-// label. All colour is derived from `--aurora-*` tokens (rose default, cyan via
+// label. All color is derived from `--aurora-*` tokens (rose default, cyan via
 // `tone="accent"`).
 //
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
@@ -165,7 +165,7 @@ const Loader = React.forwardRef<HTMLDivElement, LoaderProps>(
         {label != null ? (
           <span
             style={{
-              fontFamily: "var(--font-sans)",
+              fontFamily: "var(--aurora-font-sans)",
               fontSize: 15,
               lineHeight: 1.2,
               color: "var(--aurora-text-muted)",

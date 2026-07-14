@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import type { LucideIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 /* ------------------------------------------------------------------ *
  * Aurora · Controls (AI element)
@@ -10,16 +12,14 @@ import * as React from "react"
  * ControlsDividers. Lays out horizontally by default; orientation="vertical"
  * stacks the cluster and rotates the dividers.
  *
- * CD-parity: panel surface, radius, button sizing, active cyan glow ring,
- * hover tint and divider hairlines are ported 1:1 from the Claude Design
- * source. Architecture (forwardRef, displayName, compound parts,
- * HTMLAttributes passthrough, full a11y on the button) is kept from the
- * Aurora registry.
+ * Architecture (forwardRef, displayName, compound parts, HTMLAttributes
+ * passthrough, full a11y on the button) is kept from the Aurora registry.
+ * Prefer Lucide icon components for `icon`; legacy path strings are accepted
+ * only for existing registry consumers.
  * ------------------------------------------------------------------ */
 
-const cn = (...parts: Array<string | false | null | undefined>) => parts.filter(Boolean).join(" ")
-
 type ControlsOrientation = "horizontal" | "vertical"
+type ControlIcon = LucideIcon | React.ReactElement<React.SVGProps<SVGSVGElement>> | string
 
 const OrientationContext = React.createContext<ControlsOrientation>("horizontal")
 
@@ -29,11 +29,11 @@ export interface ControlsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export interface ControlButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
-   * Inner SVG markup (e.g. `<path d="…" />`) for the button glyph. Rendered
-   * inside a 24×24 stroked `<svg>`, matching the Claude Design icon set.
-   * Mutually optional with `children` (text-labelled buttons like "Fit").
+   * Lucide icon component or element. Legacy inner SVG path markup is still
+   * accepted for compatibility. Mutually optional with `children`
+   * (text-labelled buttons like "Fit").
    */
-  icon?: string
+  icon?: ControlIcon
   /** Active / selected state — cyan ring, tint fill and accent glyph. */
   active?: boolean
 }
@@ -89,7 +89,7 @@ const ControlButton = React.forwardRef<HTMLButtonElement, ControlButtonProps>(
           height: 36,
           minWidth: 36,
           padding: hasText ? "0 12px" : 0,
-          fontFamily: "var(--aurora-font-display)",
+          fontFamily: "var(--aurora-font-sans)",
           fontSize: 14,
           fontWeight: 600,
           lineHeight: 1,
@@ -108,21 +108,7 @@ const ControlButton = React.forwardRef<HTMLButtonElement, ControlButtonProps>(
         }}
         {...props}
       >
-        {icon ? (
-          <svg
-            aria-hidden
-            width={18}
-            height={18}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ flexShrink: 0 }}
-            dangerouslySetInnerHTML={{ __html: icon }}
-          />
-        ) : null}
+        {renderControlIcon(icon)}
         {hasText ? (
           <span style={{ color: active ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)" }}>{children}</span>
         ) : null}
@@ -153,5 +139,50 @@ const ControlsDivider = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HT
   }
 )
 ControlsDivider.displayName = "ControlsDivider"
+
+function renderControlIcon(icon: ControlIcon | undefined): React.ReactNode {
+  if (!icon) return null
+
+  if (typeof icon === "string") {
+    return (
+      <svg
+        aria-hidden
+        width={18}
+        height={18}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.65}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ flexShrink: 0 }}
+        dangerouslySetInnerHTML={{ __html: icon }}
+      />
+    )
+  }
+
+  if (React.isValidElement<React.SVGProps<SVGSVGElement>>(icon)) {
+    return React.cloneElement(icon, {
+      "aria-hidden": true,
+      width: 18,
+      height: 18,
+      strokeWidth: 1.65,
+      focusable: "false",
+      style: { flexShrink: 0, ...icon.props.style },
+    })
+  }
+
+  const Icon = icon
+  return (
+    <Icon
+      aria-hidden
+      width={18}
+      height={18}
+      strokeWidth={1.65}
+      focusable="false"
+      style={{ flexShrink: 0 }}
+    />
+  )
+}
 
 export { Controls, ControlButton, ControlsDivider }

@@ -10,7 +10,8 @@
   "registryDependencies": [
     "@aurora/aurora-tokens",
     "@aurora/aurora-ai-elements",
-    "@aurora/aurora-components"
+    "@aurora/aurora-components",
+    "@aurora/aurora-avatar"
   ],
   "files": [
     {
@@ -29,7 +30,7 @@
     "installTarget": "@components/aurora/ai/message.tsx",
     "taxonomy": "ai"
   },
-  "docs": "Aurora block that installs Aurora AI Message.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`.",
+  "docs": "Aurora block that installs Aurora AI Message.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, `aurora-components`, and `aurora-avatar` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`, `aurora-avatar`.",
   "categories": [
     "aurora",
     "block",

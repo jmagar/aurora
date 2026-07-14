@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [
     "@aurora/aurora-tokens",
-    "@aurora/aurora-ai-elements"
+    "@aurora/aurora-ai-elements",
+    "@aurora/aurora-button"
   ],
   "files": [
     {
@@ -28,7 +29,7 @@
     "installTarget": "@components/aurora/ai/open-in-chat.tsx",
     "taxonomy": "ai"
   },
-  "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/open-in-chat.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`.",
+  "docs": "Aurora block that expects `aurora-tokens`, `aurora-ai-elements`, and `aurora-button` to be installed first.\n\nDefault install target: `@components/aurora/ai/open-in-chat.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-button`.",
   "categories": [
     "aurora",
     "block",

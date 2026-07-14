@@ -7,7 +7,7 @@
  * `./action` or from the `ai-elements` barrel so the registry has one
  * canonical action button implementation.
  *
- * Architecture stays shadcn: compound `Actions` + `Action` parts, `forwardRef`,
+ * Architecture stays shadcn-compatible: compound `Actions` + `Action` parts, `forwardRef`,
  * `displayName`, `React.memo`, native button props (`onClick`, `disabled`,
  * `type`), and full a11y (`aria-label` for icon-only, `aria-pressed` for
  * toggles, focus-visible ring). No `violet`.

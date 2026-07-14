@@ -3,10 +3,10 @@
 /**
  * Aurora Edge — a graph edge label rendered as a compact, tone-tinted pill.
  *
- * Ported 1:1 from the Claude Design source: a rounded pill carrying a small
- * tone-colored dot + label, with optional inline direction arrows and an
- * optional dashed / animated-flow treatment. Used to annotate connections in a
- * node graph (status codes, sync state, latency, etc.).
+ * A rounded pill carrying a small tone-colored dot + label, with optional
+ * inline direction arrows and an optional dashed / animated-flow treatment.
+ * Used to annotate connections in a node graph (status codes, sync state,
+ * latency, etc.).
  *
  *   tone:
  *     - `active`  — cyan (accent primary); pairs with `animated` for flow
@@ -24,10 +24,10 @@
  *                `prefers-reduced-motion`
  *
  * This file deliberately re-implements `Edge` (rather than re-exporting the
- * legacy `core` divider version) so it can carry CD's `tone` / `direction` /
+ * legacy `core` divider version) so it can carry the `tone` / `direction` /
  * `dashed` / `animated` API while keeping every shadcn/Aurora guarantee:
  * `forwardRef`, `displayName`, `React.memo`, and full `React.HTMLAttributes`
- * spread. Token-only colors (`--aurora-*`); no hardcoded hex; no `violet`.
+ * spread. Token-only colors (`--aurora-*`).
  */
 
 import * as React from "react"

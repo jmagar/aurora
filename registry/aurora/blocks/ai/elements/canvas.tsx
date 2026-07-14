@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { Minus, Plus } from "lucide-react"
+import { Action } from "./action"
+import { cn } from "@/lib/utils"
 
 /* ------------------------------------------------------------------ *
  * Aurora · Canvas (AI element)
@@ -11,12 +13,10 @@ import { Minus, Plus } from "lucide-react"
  * cyan input ports (left) + rose output ports (right), cyan bezier
  * edges that follow the nodes, and a zoom toolbar.
  *
- * CD-parity: visuals are ported 1:1 from the Claude Design source.
  * Architecture (forwardRef, displayName, compound Node, HTMLAttributes
- * passthrough) is kept from the Aurora registry.
+ * passthrough) is kept from the Aurora registry, while controls and typography
+ * follow Aurora tokens and primitives.
  * ------------------------------------------------------------------ */
-
-const cn = (...parts: Array<string | false | null | undefined>) => parts.filter(Boolean).join(" ")
 
 type CanvasStatus = "running" | "idle" | "blocked"
 
@@ -54,9 +54,9 @@ const statusGlow: Record<CanvasStatus, { dot: string; glow: string }> = {
   },
 }
 
-/* Geometry parsed from a Node child's inline style. CD positions nodes
- * with absolute left/top + a fixed width; height is estimated from the
- * node card chrome so edges can anchor to the vertical port center. */
+/* Geometry parsed from a Node child's inline style. Nodes are positioned with
+ * absolute left/top + a fixed width; height is estimated from the node card
+ * chrome so edges can anchor to the vertical port center. */
 type NodeBox = { left: number; top: number; width: number; height: number }
 
 const NODE_HEIGHT = 64
@@ -81,7 +81,7 @@ function nodeBox(style: React.CSSProperties | undefined): NodeBox {
 }
 
 /* Horizontal-tangent cubic bezier from a source right-port to a target
- * left-port — the "edges follow the nodes" curve from the CD source. */
+ * left-port so edges follow the nodes. */
 function edgePath(a: NodeBox, b: NodeBox): string {
   const x1 = a.left + a.width
   const y1 = a.top + a.height / 2
@@ -138,7 +138,7 @@ const Node = React.forwardRef<HTMLDivElement, NodeProps>(
         <div
           style={{
             marginTop: 4,
-            fontFamily: "var(--aurora-font-mono)",
+            fontFamily: "var(--aurora-font-sans)",
             fontSize: 13,
             color: "var(--aurora-text-muted)",
           }}
@@ -275,8 +275,9 @@ const Canvas = React.forwardRef<HTMLDivElement, CanvasProps>(
                 display: "inline-flex",
                 alignItems: "center",
                 padding: "6px 12px",
-                fontFamily: "var(--aurora-font-mono)",
+                fontFamily: "var(--aurora-font-sans)",
                 fontSize: 13,
+                fontWeight: 560,
                 color: "var(--aurora-text-muted)",
                 background: "color-mix(in srgb, var(--aurora-control-surface) 60%, transparent)",
                 border: "1px solid var(--aurora-border-default)",
@@ -309,49 +310,30 @@ const Canvas = React.forwardRef<HTMLDivElement, CanvasProps>(
             zIndex: 2,
           }}
         >
-          <button
-            type="button"
-            aria-label="Zoom out"
-            style={zoomBtnStyle}
-          >
-            <Minus className="size-4" aria-hidden />
-          </button>
+          <Action size="sm" aria-label="Zoom out">
+            <Minus aria-hidden width={16} height={16} strokeWidth={1.65} />
+          </Action>
           <span
             style={{
-              fontFamily: "var(--aurora-font-mono)",
+              fontFamily: "var(--aurora-font-sans)",
               fontSize: 13,
+              fontWeight: 560,
               color: "var(--aurora-text-primary)",
               minWidth: 44,
               textAlign: "center",
+              fontVariantNumeric: "tabular-nums",
             }}
           >
             100%
           </span>
-          <button
-            type="button"
-            aria-label="Zoom in"
-            style={zoomBtnStyle}
-          >
-            <Plus className="size-4" aria-hidden />
-          </button>
+          <Action size="sm" aria-label="Zoom in">
+            <Plus aria-hidden width={16} height={16} strokeWidth={1.65} />
+          </Action>
         </div>
       </div>
     )
   }
 )
 Canvas.displayName = "Canvas"
-
-const zoomBtnStyle: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: 30,
-  height: 30,
-  borderRadius: 8,
-  border: "none",
-  background: "transparent",
-  color: "var(--aurora-text-muted)",
-  cursor: "pointer",
-}
 
 export { Canvas, Node }

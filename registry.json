@@ -2065,7 +2065,7 @@
       "name": "aurora-file-tree",
       "type": "registry:block",
       "title": "Aurora File Tree",
-      "description": "Recursive collapsible file tree with folder/file icons, hover and selected states, right-click context menu (New file, Rename, Delete, Copy path), and an inline FileChip export for referencing files in prose.",
+      "description": "Recursive collapsible file tree with folder/file icons, hover and selected states, right-click context menu (new file, rename, delete, copy path), and an inline FileChip export for referencing files in prose.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -4098,7 +4098,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-ai-elements"
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-avatar"
       ],
       "files": [
         {
@@ -4122,7 +4123,7 @@
         "installTarget": "@components/aurora/ai/conversation.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/conversation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that expects `aurora-tokens`, `aurora-ai-elements`, and `aurora-avatar` to be installed first.\n\nDefault install target: `@components/aurora/ai/conversation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-avatar`."
     },
     {
       "name": "aurora-ai-inline-citation",
@@ -4171,7 +4172,8 @@
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-ai-elements",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-avatar"
       ],
       "files": [
         {
@@ -4195,7 +4197,7 @@
         "installTarget": "@components/aurora/ai/message.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that installs Aurora AI Message.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`."
+      "docs": "Aurora block that installs Aurora AI Message.\n\nInstall `aurora-tokens`, `aurora-ai-elements`, `aurora-components`, and `aurora-avatar` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-components`, `aurora-avatar`."
     },
     {
       "name": "aurora-ai-model-selector",
@@ -5112,13 +5114,13 @@
       "name": "aurora-ai-canvas",
       "type": "registry:block",
       "title": "Aurora AI Canvas",
-      "description": "Aurora-native canvas parity surface from AI Elements.",
+      "description": "Aurora-native flow canvas with node edges and compact zoom actions.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-ai-elements"
+        "@aurora/aurora-ai-action"
       ],
       "files": [
         {
@@ -5142,13 +5144,13 @@
         "installTarget": "@components/aurora/ai/canvas.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/canvas.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that installs Aurora AI Canvas.\n\nInstall `aurora-tokens` and `aurora-ai-action` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/canvas.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-action`."
     },
     {
       "name": "aurora-ai-connection",
       "type": "registry:block",
       "title": "Aurora AI Connection",
-      "description": "Aurora-native connection parity surface from AI Elements.",
+      "description": "Aurora-native node connection with status-tinted directional edges.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -5185,7 +5187,7 @@
       "name": "aurora-ai-controls",
       "type": "registry:block",
       "title": "Aurora AI Controls",
-      "description": "Aurora-native controls parity surface from AI Elements.",
+      "description": "Aurora-native toolbar controls with horizontal and vertical layouts.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -5221,7 +5223,7 @@
       "name": "aurora-ai-edge",
       "type": "registry:block",
       "title": "Aurora AI Edge",
-      "description": "Aurora-native edge parity surface from AI Elements.",
+      "description": "Aurora-native graph edge label with status tone and direction states.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -5258,7 +5260,7 @@
       "name": "aurora-ai-node",
       "type": "registry:block",
       "title": "Aurora AI Node",
-      "description": "Aurora-native node parity surface from AI Elements.",
+      "description": "Aurora-native flow node card with status accents and handles.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -5294,7 +5296,7 @@
       "name": "aurora-ai-panel",
       "type": "registry:block",
       "title": "Aurora AI Panel",
-      "description": "Aurora-native panel parity surface from AI Elements.",
+      "description": "Aurora-native AI panel with tone icon, title, actions, body, and footer slots.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -5373,7 +5375,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-ai-elements"
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -5397,7 +5400,7 @@
         "installTarget": "@components/aurora/ai/open-in-chat.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/open-in-chat.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that expects `aurora-tokens`, `aurora-ai-elements`, and `aurora-button` to be installed first.\n\nDefault install target: `@components/aurora/ai/open-in-chat.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-button`."
     },
     {
       "name": "aurora-chat-message",
@@ -5921,7 +5924,7 @@
       "name": "aurora-ai-action",
       "type": "registry:block",
       "title": "Aurora AI Action",
-      "description": "Aurora AI Action — Claude Design parity.",
+      "description": "Aurora-native action button for AI message affordances.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -5956,7 +5959,7 @@
       "name": "aurora-ai-actions",
       "type": "registry:block",
       "title": "Aurora AI Actions",
-      "description": "Aurora AI Actions — Claude Design parity.",
+      "description": "Aurora-native grouped action row for AI message affordances.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -6026,7 +6029,7 @@
       "name": "aurora-ai-branch",
       "type": "registry:block",
       "title": "Aurora AI Branch",
-      "description": "Aurora AI Branch — Claude Design parity.",
+      "description": "Aurora-native version navigation for alternate AI responses.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -6061,7 +6064,7 @@
       "name": "aurora-ai-loader",
       "type": "registry:block",
       "title": "Aurora AI Loader",
-      "description": "Aurora AI Loader — Claude Design parity.",
+      "description": "Aurora-native busy indicator for AI thinking and loading states.",
       "dependencies": [
         "lucide-react@^0.487.0"
       ],
@@ -6101,7 +6104,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-avatar"
       ],
       "files": [
         {
@@ -6124,7 +6128,7 @@
         "sourcePath": "registry/aurora/blocks/ai/elements/message-avatar.tsx",
         "installTarget": "@components/aurora/ai/message-avatar.tsx"
       },
-      "docs": "Aurora block that installs Aurora AI MessageAvatar.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message-avatar.tsx`.\n\nRegistry dependencies: `aurora-tokens`."
+      "docs": "Aurora block that installs Aurora AI MessageAvatar.\n\nInstall `aurora-tokens` and `aurora-avatar` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/message-avatar.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`."
     },
     {
       "name": "aurora-ai-message-content",
@@ -6171,7 +6175,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -6194,7 +6199,7 @@
         "sourcePath": "registry/aurora/blocks/ai/elements/response.tsx",
         "installTarget": "@components/aurora/ai/response.tsx"
       },
-      "docs": "Aurora block that installs Aurora AI Response.\n\nInstall `aurora-tokens` and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/response.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`."
+      "docs": "Aurora block that installs Aurora AI Response.\n\nInstall `aurora-tokens`, `aurora-components`, and `aurora-button` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/response.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`, `aurora-button`."
     },
     {
       "name": "aurora-ai-source",
