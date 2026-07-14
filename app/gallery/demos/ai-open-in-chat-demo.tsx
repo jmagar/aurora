@@ -28,10 +28,10 @@ export default function AiOpenInChatDemo() {
       >
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
           <OpenInChat />
-          <OpenInChat variant="outline">Debug in chat</OpenInChat>
+          <OpenInChat variant="outline">Debug in Chat</OpenInChat>
         </div>
         <OpenInChat variant="ghost" size="sm">
-          Ask about this
+          Ask About This
         </OpenInChat>
       </section>
     </div>

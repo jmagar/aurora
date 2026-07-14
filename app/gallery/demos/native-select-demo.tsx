@@ -32,7 +32,7 @@ export default function NativeSelectDemo() {
     <div style={section}>
       <GalleryPageIntro
         eyebrow="Form elements"
-        heading="Native select"
+        heading="Native Select"
         description="The native select uses the operating system menu and browser-managed interaction, recolored to Aurora tokens with a capsule surface and muted chevron."
       />
 

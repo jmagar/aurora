@@ -16,7 +16,7 @@ export default function AiTestResultsDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
         eyebrow="AI elements"
-        heading="Test results"
+        heading="Test Results"
         description="A compact test-run summary: pass/fail counts, a segmented progress bar, and per-test rows with status icons, durations, and result badges."
       />
 

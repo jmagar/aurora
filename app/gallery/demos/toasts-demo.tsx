@@ -21,7 +21,7 @@ function buildToasts(retry: () => void): ToastItem[] {
       status: "warn",
       title: "Couldn’t reach gateway",
       description: "Retrying in 4s.",
-      action: { label: "Retry now", onClick: retry },
+      action: { label: "Retry Now", onClick: retry },
     },
     {
       id: "error",
@@ -58,7 +58,7 @@ export default function ToastsDemo() {
         onClick={() => setVisibleIds(new Set(["success", "warn", "error"]))}
         style={{ justifySelf: "start" }}
       >
-        Reset stack
+        Reset Stack
       </Button>
 
       <div style={{ display: "grid", gap: 10, width: "min(400px, 100%)" }}>

@@ -80,7 +80,7 @@ Mono (`JetBrains Mono`) is **only** for code and terminal content: code blocks, 
 
 ## Content Rules
 
-- Use sentence case for UI copy: buttons, headers, table columns, and menu items. Use *Active gateways*, not *Active Gateways*.
+- Use Title Case for labels: buttons, headers, table columns, menu items, tabs, and section titles. Use *Active Gateways*, not *active gateways* — all-lowercase labels are wrong. Minor words (a, of, to, in, and, or) stay lowercase mid-phrase. Sentence case is only for full-sentence body, help, and status copy.
 - Uppercase only for eyebrows and badge labels.
 - No exclamation marks in chrome.
 - No "we", no apology framing, no marketing verbs.

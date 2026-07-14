@@ -30,18 +30,18 @@ export default function LabelDemo() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Switch defaultChecked />
-          <Label>Color-code by operation</Label>
+          <Label>Color-Code by Operation</Label>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Checkbox />
-          <Label>Stream tokens</Label>
+          <Label>Stream Tokens</Label>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Label required>API token</Label>
+          <Label required>API Token</Label>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Checkbox disabled />
-          <Label disabled>Read-only setting</Label>
+          <Label disabled>Read-Only Setting</Label>
         </div>
       </section>
     </div>

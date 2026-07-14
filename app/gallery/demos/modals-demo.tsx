@@ -23,16 +23,16 @@ export default function ModalsDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <GalleryPageIntro
         eyebrow="Overlays"
-        heading="Modal & dialog"
+        heading="Modal & Dialog"
         description="A Tier-2 modal on a dimmed, blurred scrim — gradient panel, 22px corners, Esc / scrim-click to close. Built on Radix Dialog (focus trap + scroll lock)."
       />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="destructive" size="sm">Delete environment</Button>
+          <Button variant="destructive" size="sm">Delete Environment</Button>
         </DialogTrigger>
         <DialogContent size="sm">
           <DialogHeader>
-            <DialogTitle>Delete environment?</DialogTitle>
+            <DialogTitle>Delete Environment?</DialogTitle>
             <DialogDescription>
               This removes prod-edge-3 and its 7 gateways. This cannot be undone.
             </DialogDescription>

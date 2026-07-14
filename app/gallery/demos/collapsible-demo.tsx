@@ -27,10 +27,10 @@ export default function CollapsibleDemo() {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 400 }}>
-        <Collapsible title="Advanced options" defaultOpen>
+        <Collapsible title="Advanced Options" defaultOpen>
           Crawl depth, rerank, and concurrency live here.
         </Collapsible>
-        <Collapsible title="Danger zone">
+        <Collapsible title="Danger Zone">
           Delete the gateway and all its sessions.
         </Collapsible>
       </div>

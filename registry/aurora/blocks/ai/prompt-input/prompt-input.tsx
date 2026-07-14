@@ -759,7 +759,7 @@ export function PromptInput({
         {/* Bottom toolbar */}
         <div style={S.toolbar}>
           <input ref={fileInputRef} type="file" multiple style={{ display: "none" }} onChange={handleFileSelect} />
-          <ToolbarButton onClick={() => fileInputRef.current?.click()} aria-label="Attach file" title="Attach file">
+          <ToolbarButton onClick={() => fileInputRef.current?.click()} aria-label="Attach File" title="Attach File">
             <Paperclip size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
 
@@ -792,7 +792,7 @@ export function PromptInput({
               textareaRef.current?.focus()
             }}
             aria-label="Mention"
-            title="Mention file or agent"
+            title="Mention File or Agent"
           >
             <AtSign size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>

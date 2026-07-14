@@ -28,7 +28,7 @@ const TYPE_ROWS = [
     text: "Authorization",
   },
   {
-    label: "Compact title",
+    label: "Compact Title",
     meta: "17px · 800",
     style: {
       fontSize: 17,
@@ -39,7 +39,7 @@ const TYPE_ROWS = [
     text: "Backend unavailable",
   },
   {
-    label: "Card title",
+    label: "Card Title",
     meta: "15px · 800",
     style: {
       fontSize: 15,
@@ -101,7 +101,7 @@ const TYPE_ROWS = [
     text: "Read-only mode — changes require admin approval",
   },
   {
-    label: "Dense meta",
+    label: "Dense Meta",
     meta: "11px · 560 · +0.018em",
     style: {
       fontSize: "var(--aurora-type-caption)",
@@ -143,7 +143,7 @@ export default function TypeDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
       <GalleryPageIntro
         eyebrow="Foundations"
-        heading="Typography scale"
+        heading="Typography Scale"
         description="Aurora text styles used across every Labby screen, from dashboard metrics to dense gateway logs."
       />
 

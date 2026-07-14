@@ -22,7 +22,7 @@ export default function AspectRatioDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
       <GalleryPageIntro
         eyebrow="Layout"
-        heading="Aspect ratio"
+        heading="Aspect Ratio"
         description="A fixed-ratio box that keeps content at a constant width-to-height proportion as the container resizes."
       />
 

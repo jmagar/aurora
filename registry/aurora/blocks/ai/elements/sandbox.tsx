@@ -207,11 +207,11 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
       <div className="flex flex-wrap items-center gap-3">
         <Button type="button" variant="neutral" size="sm">
           <Monitor className="size-3.5" aria-hidden />
-          Open logs
+          Open Logs
         </Button>
         <Button type="button" variant="ghost" size="sm">
           <PromptGlyph color="var(--aurora-text-muted)" />
-          Attach shell
+          Attach Shell
         </Button>
       </div>
 

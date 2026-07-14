@@ -51,7 +51,7 @@ export default function EmptyStateDemo() {
           description="Start one to begin crawling, searching, or asking."
           action={
             <Button variant="aurora">
-              New session
+              New Session
               <Kbd style={{ marginLeft: 6 }}>⌘N</Kbd>
             </Button>
           }

@@ -376,7 +376,7 @@ function LiveDrawer({
               background: tint("--aurora-accent-primary", 10),
             }}
           >
-            Open in gallery <ArrowUpRight size={13} strokeWidth={2} />
+            Open in Gallery <ArrowUpRight size={13} strokeWidth={2} />
           </Link>
           <button
             type="button"
@@ -391,7 +391,7 @@ function LiveDrawer({
 
         <div className="aurora-scrollbar min-h-0 flex-1 overflow-y-auto p-5">
           <div className="aurora-text-eyebrow mb-2.5" style={{ fontSize: 10 }}>
-            {kotlin ? "Live preview · web parity render" : "Live preview · interactive"}
+            {kotlin ? "Live Preview · Web Parity Render" : "Live Preview · Interactive"}
           </div>
           <div
             className="mb-5 overflow-hidden rounded-[var(--aurora-radius-2)] p-4"
@@ -447,7 +447,7 @@ interface CatalogProps {
   syncUrl?: boolean
 }
 
-function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogProps) {
+function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogProps) {
   const searchParams = useSearchParams()
   const [q, setQ] = React.useState("")
   const [cat, setCat] = React.useState<string>("all")
@@ -759,7 +759,7 @@ function CatalogInner({ heading = "The catalog", kotlinMap, syncUrl }: CatalogPr
                   updateUrl({ q: null })
                 }}
               >
-                Clear filters
+                Clear Filters
               </Button>
             }
           />

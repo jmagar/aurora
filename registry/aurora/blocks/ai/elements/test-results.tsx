@@ -84,7 +84,7 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
               aria-hidden
               style={{ color: "var(--aurora-text-muted)" }}
             />
-            Test results
+            Test Results
           </div>
           <div className="flex items-center" style={{ gap: 8 }}>
             {passed > 0 ? <Badge variant="success">{passed} pass</Badge> : null}

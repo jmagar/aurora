@@ -8,7 +8,7 @@ export default function AiInlineCitationDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="AI elements / inline-citation"
-        heading="Inline citation"
+        heading="Inline Citation"
         description="Citation chip — hover or focus a chip to preview its source."
       />
       <section

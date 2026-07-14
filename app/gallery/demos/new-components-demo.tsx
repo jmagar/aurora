@@ -55,18 +55,18 @@ export default function NewComponentsDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 28, padding: 0 }}>
       <div>
-        <h2 style={heading}>New primitives</h2>
+        <h2 style={heading}>New Primitives</h2>
         <p style={copy}>The missing operator-facing pieces: fields, choice controls, search, overlays, run status, timeline, metadata, and split panes.</p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 18 }}>
         <section style={panel}>
-          <h3 style={heading}>Forms and choice</h3>
+          <h3 style={heading}>Forms and Choice</h3>
           <div style={{ display: "grid", gap: 16 }}>
             <Field label="Gateway" description="Searchable selection for large option sets" required>
               <Combobox options={gateways} defaultValue="prod-edge" />
             </Field>
-            <Field label="Execution mode">
+            <Field label="Execution Mode">
               <RadioGroup defaultValue="review">
                 <RadioGroupItem value="review">Review before running tools</RadioGroupItem>
                 <RadioGroupItem value="auto">Run approved tools automatically</RadioGroupItem>
@@ -75,14 +75,14 @@ export default function NewComponentsDemo() {
             <Field label={`Temperature ${temperature.toFixed(1)}`}>
               <Slider min={0} max={2} step={0.1} value={temperature} onValueChange={setTemperature} />
             </Field>
-            <Field label="Retry budget">
+            <Field label="Retry Budget">
               <NumberInput min={0} max={8} value={retries} onValueChange={setRetries} />
             </Field>
           </div>
         </section>
 
         <section style={panel}>
-          <h3 style={heading}>Overlays and notices</h3>
+          <h3 style={heading}>Overlays and Notices</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 14, alignItems: "flex-start" }}>
             <Callout title="Gateway policy changed" variant="warn">
               Restart dependent agents before running the next deployment.
@@ -90,21 +90,21 @@ export default function NewComponentsDemo() {
             <Popover>
               <PopoverAnchor>
                 <PopoverTrigger asChild>
-                  <Button variant="neutral" size="sm">Inspect policy</Button>
+                  <Button variant="neutral" size="sm">Inspect Policy</Button>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <div style={{ ...copy, color: "var(--aurora-text-primary)", fontWeight: 680 }}>Policy scope</div>
+                  <div style={{ ...copy, color: "var(--aurora-text-primary)", fontWeight: 680 }}>Policy Scope</div>
                   <p style={{ ...copy, marginTop: 4 }}>Read-only filesystem access with network tools disabled for this run.</p>
                 </PopoverContent>
               </PopoverAnchor>
             </Popover>
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="aurora" size="sm">Open inspector</Button>
+                <Button variant="aurora" size="sm">Open Inspector</Button>
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle style={{ fontFamily: "var(--aurora-font-display)", fontSize: 18, fontWeight: 760 }}>Run inspector</SheetTitle>
+                  <SheetTitle style={{ fontFamily: "var(--aurora-font-display)", fontSize: 18, fontWeight: 760 }}>Run Inspector</SheetTitle>
                   <SheetDescription style={copy}>Live metadata and activity for the selected run.</SheetDescription>
                 </SheetHeader>
                 <SheetBody>
@@ -115,7 +115,7 @@ export default function NewComponentsDemo() {
                   </DescriptionList>
                 </SheetBody>
                 <SheetFooter>
-                  <Button variant="neutral" size="sm">Export log</Button>
+                  <Button variant="neutral" size="sm">Export Log</Button>
                 </SheetFooter>
               </SheetContent>
             </Sheet>
@@ -124,7 +124,7 @@ export default function NewComponentsDemo() {
       </div>
 
       <section style={panel}>
-        <h3 style={heading}>Operational status</h3>
+        <h3 style={heading}>Operational Status</h3>
         <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: 24 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <StatusIndicator tone="online" label="Gateway connected" />
@@ -141,7 +141,7 @@ export default function NewComponentsDemo() {
       </section>
 
       <section style={panel}>
-        <h3 style={heading}>Metadata and search</h3>
+        <h3 style={heading}>Metadata and Search</h3>
         <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 0.9fr) minmax(0, 1.1fr)", gap: 18 }}>
           <DescriptionList>
             <DescriptionItem label="Gateway" value="production-edge" />
@@ -150,8 +150,8 @@ export default function NewComponentsDemo() {
           </DescriptionList>
           <SearchResults>
             <SearchResultsGroup heading="Commands">
-              <SearchResultItem active title="Rebuild registry" description="Run shadcn build and refresh public/r" meta="⌘R" />
-              <SearchResultItem title="Open logs" description="Tail the dev container logs" meta="⌘L" />
+              <SearchResultItem active title="Rebuild Registry" description="Run shadcn build and refresh public/r" meta="⌘R" />
+              <SearchResultItem title="Open Logs" description="Tail the dev container logs" meta="⌘L" />
             </SearchResultsGroup>
             <SearchResultsGroup heading="Files">
               <SearchResultItem title="registry.json" description="Published component manifest" />
@@ -162,7 +162,7 @@ export default function NewComponentsDemo() {
       </section>
 
       <section style={panel}>
-        <h3 style={heading}>Toolbar and shortcuts</h3>
+        <h3 style={heading}>Toolbar and Shortcuts</h3>
         <Toolbar>
           <ToolbarGroup>
             <Button variant="neutral" size="sm"><Play className="size-3.5" aria-hidden />Run</Button>
@@ -177,7 +177,7 @@ export default function NewComponentsDemo() {
       </section>
 
       <section style={panel}>
-        <h3 style={heading}>Resizable workbench</h3>
+        <h3 style={heading}>Resizable Workbench</h3>
         <ResizablePanels>
           <div style={{ padding: 18 }}>
             <Field label="Prompt">

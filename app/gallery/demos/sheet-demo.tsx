@@ -65,7 +65,7 @@ export default function SheetDemo() {
             onEscapeKeyDown={(event) => event.preventDefault()}
           >
             <SheetHeader>
-              <SheetTitle style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Gateway inspector</SheetTitle>
+              <SheetTitle style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Gateway Inspector</SheetTitle>
               <SheetDescription
                 style={{
                   margin: "8px 0 0",
@@ -99,11 +99,11 @@ export default function SheetDemo() {
       {/* Triggerable example showing the full open/close flow. */}
       <Sheet>
         <SheetTrigger asChild>
-          <Button>Open inspector</Button>
+          <Button>Open Inspector</Button>
         </SheetTrigger>
         <SheetContent side="right">
           <SheetHeader>
-            <SheetTitle style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Gateway inspector</SheetTitle>
+            <SheetTitle style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Gateway Inspector</SheetTitle>
             <SheetDescription
               style={{
                 margin: "8px 0 0",

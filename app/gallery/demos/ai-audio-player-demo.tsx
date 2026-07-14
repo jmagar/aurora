@@ -25,9 +25,9 @@ export default function AiAudioPlayerDemo() {
           boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
         }}
       >
-        <AudioPlayer title="Voice response" duration="00:42" progress={0.38} badge download />
-        <AudioPlayer title="Synthesizing reply" status="synthesizing" duration="00:18" />
-        <AudioPlayer variant="compact" title="Quick note" duration="00:09" progress={0.68} />
+        <AudioPlayer title="Voice Response" duration="00:42" progress={0.38} badge download />
+        <AudioPlayer title="Synthesizing Reply" status="synthesizing" duration="00:18" />
+        <AudioPlayer variant="compact" title="Quick Note" duration="00:09" progress={0.68} />
       </section>
     </div>
   )

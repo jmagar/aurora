@@ -91,7 +91,7 @@ export function CodeEditorDemo() {
 
   const tabs = [
     { id: "normal" as const, label: "Normal" },
-    { id: "diff"   as const, label: "Diff mode" },
+    { id: "diff"   as const, label: "Diff Mode" },
     { id: "errors" as const, label: "Diagnostics" },
   ]
 

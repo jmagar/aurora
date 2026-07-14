@@ -23,7 +23,7 @@ export default function AiQueueDemo() {
         }}
       >
         <Queue
-          title="Ingest jobs"
+          title="Ingest Jobs"
           items={[
             { id: 1, title: "embed: handbook.pdf", status: "done", meta: "8,004 chunks · 4.1s" },
             { id: 2, title: "embed: api-spec.md", status: "running", meta: "2,310 / 6,002" },

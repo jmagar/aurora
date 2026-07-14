@@ -14,6 +14,7 @@ import {
   Network,
   Package,
   Palette,
+  Puzzle,
   Search,
   ShieldCheck,
   Terminal as TerminalIcon,
@@ -121,7 +122,7 @@ npx shadcn@latest add https://dinglebear.ai/r/aurora-button.json`
 const paletteSections = [
   { id: "servers", label: "Servers" },
   { id: "sections", label: "Sections" },
-  { id: "design", label: "Design system" },
+  { id: "design", label: "Design System" },
   { id: "external", label: "External" },
 ]
 
@@ -173,9 +174,9 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
     })
 
     const sectionItems = [
-      { id: "section-fleet", label: "Fleet", description: "published MCP servers", hash: "#fleet", icon: <Grid2X2 size={14} aria-hidden="true" /> },
+      { id: "section-fleet", label: "Fleet", description: "Published MCP servers", hash: "#fleet", icon: <Grid2X2 size={14} aria-hidden="true" /> },
       { id: "section-install", label: "Install", description: "npm and MCP client config", hash: "#install", icon: <Package size={14} aria-hidden="true" /> },
-      { id: "section-stack", label: "Stack", description: "runtime and safety model", hash: "#stack", icon: <Workflow size={14} aria-hidden="true" /> },
+      { id: "section-stack", label: "Stack", description: "Runtime and safety model", hash: "#stack", icon: <Workflow size={14} aria-hidden="true" /> },
     ].map(({ hash, ...item }) => ({
       ...item,
       section: "sections",
@@ -187,9 +188,10 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
 
     const designItems = [
       { id: "design-components", label: "Components", description: "shadcn-compatible Aurora primitives and blocks", path: "/components", icon: <Component size={14} aria-hidden="true" /> },
-      { id: "design-gallery", label: "Gallery", description: "live component demos", path: "/gallery", icon: <Grid2X2 size={14} aria-hidden="true" /> },
+      { id: "design-gallery", label: "Gallery", description: "Live component demos", path: "/gallery", icon: <Grid2X2 size={14} aria-hidden="true" /> },
       { id: "design-themes", label: "Themes", description: "Aurora palettes for editors, terminals, browsers, shells", path: "/themes", icon: <Palette size={14} aria-hidden="true" /> },
-      { id: "design-docs", label: "Docs", description: "install, foundations, theming", path: "/docs", icon: <BookOpen size={14} aria-hidden="true" /> },
+      { id: "design-docs", label: "Docs", description: "Install, foundations, theming", path: "/docs", icon: <BookOpen size={14} aria-hidden="true" /> },
+      { id: "design-plugins", label: "Plugins", description: "dendrite marketplace for Claude, Codex, and Gemini", path: "/plugins", icon: <Puzzle size={14} aria-hidden="true" /> },
     ].map(({ path, ...item }) => ({
       ...item,
       section: "design",
@@ -202,14 +204,14 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
     const externalItems = [
       {
         id: "external-npm",
-        label: "npm packages",
-        description: "search npm for the fleet",
+        label: "npm Packages",
+        description: "Search npm for the fleet",
         href: "https://www.npmjs.com/search?q=keywords%3Amodel-context-protocol%20dinglebear",
       },
       {
         id: "external-github",
         label: "github.com/jmagar",
-        description: "source repositories",
+        description: "Source repositories",
         href: "https://github.com/jmagar",
       },
     ].map(({ href, ...item }) => ({
@@ -244,8 +246,9 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
             {[
               ["#fleet", "Fleet"],
               ["#install", "Install"],
-              ["#design", "Design system"],
+              ["#design", "Design System"],
               ["/components", "Components"],
+              ["/plugins", "Plugins"],
               ["/themes", "Themes"],
             ].map(([href, label]) => (
               <a
@@ -290,7 +293,7 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
               <Button variant="aurora" asChild>
                 <a href="#fleet">
                   <Grid2X2 size={15} aria-hidden="true" />
-                  Browse servers
+                  Browse Servers
                 </a>
               </Button>
               <Button variant="neutral" asChild>
@@ -301,9 +304,9 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
               </Button>
             </div>
             <StatGrid className="pt-4" aria-label="Fleet stats">
-              <StatCard compact label="Registry names" value={servers.length} />
-              <StatCard compact label="npm wrappers" value={servers.length} />
-              <StatCard compact label="Install path" value="npx" />
+              <StatCard compact label="Registry Names" value={servers.length} />
+              <StatCard compact label="npm Wrappers" value={servers.length} />
+              <StatCard compact label="Install Path" value="npx" />
               <StatCard compact label="Runtime" value="Rust" />
             </StatGrid>
           </div>
@@ -410,7 +413,7 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
               Client setup
             </p>
             <h2 id="install-title" className="aurora-text-display-2">
-              Install by npm package or MCP config
+              Install by npm Package or MCP Config
             </h2>
           </div>
 
@@ -434,7 +437,7 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
               Design system
             </p>
             <h2 id="design-title" className="aurora-text-display-2">
-              Home of the Aurora design system
+              Home of the Aurora Design System
             </h2>
             <p
               className="aurora-text-body max-w-2xl"
@@ -448,7 +451,7 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
 
           <div className="mt-8 grid items-start gap-6 lg:grid-cols-[1fr_1fr]">
             <CodeBlock code={registryInstallCode} language="bash" filename="install.sh" />
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2">
               <DesignCard
                 href="/components"
                 icon={<Component size={17} aria-hidden="true" />}
@@ -467,6 +470,12 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
                 title="Docs"
                 body="Install, foundations, and theming guides."
               />
+              <DesignCard
+                href="/plugins"
+                icon={<Puzzle size={17} aria-hidden="true" />}
+                title="Plugins"
+                body="dendrite marketplace for Claude, Codex, and Gemini."
+              />
             </div>
           </div>
         </section>
@@ -477,28 +486,28 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
               Runtime contract
             </p>
             <h2 id="stack-title" className="aurora-text-display-2">
-              Same operating model across the fleet
+              Same Operating Model Across the Fleet
             </h2>
           </div>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             <StackCard
               icon={<Workflow size={17} aria-hidden="true" />}
-              title="One service tool"
+              title="One Service Tool"
               body="Each server keeps MCP discovery small: one service tool dispatches a typed action surface instead of exposing hundreds of top-level tools."
             />
             <StackCard
               icon={<TerminalIcon size={17} aria-hidden="true" />}
-              title="CLI parity"
+              title="CLI Parity"
               body="The same Rust binary serves MCP and exposes scriptable CLI commands, so failures are reproducible outside an agent session."
             />
             <StackCard
               icon={<Network size={17} aria-hidden="true" />}
-              title="stdio first"
+              title="stdio First"
               body="The npm wrappers are designed for local MCP clients through stdio, with HTTP mode available for controlled deployments."
             />
             <StackCard
               icon={<ShieldCheck size={17} aria-hidden="true" />}
-              title="Scoped safety"
+              title="Scoped Safety"
               body="Destructive and admin-oriented operations live behind service policy, explicit env configuration, and runtime auth boundaries."
             />
           </div>
@@ -519,6 +528,7 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
               ["#fleet", "Fleet", undefined],
               ["#install", "Install", undefined],
               ["/components", "Components", undefined],
+              ["/plugins", "Plugins", undefined],
               ["/themes", "Themes", undefined],
               ["/docs", "Docs", undefined],
               ["https://github.com/jmagar", "GitHub", "noreferrer"],

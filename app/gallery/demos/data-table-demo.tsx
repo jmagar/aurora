@@ -47,7 +47,7 @@ export default function DataTableDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
         eyebrow="Components"
-        heading="Data table"
+        heading="Data Table"
         description="Sortable table — click any header to cycle ascending, descending, then unsorted. Status codes and gateway IDs render in the mono stack."
       />
 

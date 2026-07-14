@@ -246,7 +246,7 @@ function PasswordView({ onSubmit, onMagicLink, providers, footer }: LoginProps) 
       </div>
 
       <Button type="submit" variant="aurora" size="lg" block>
-        Sign in
+        Sign In
       </Button>
 
       {(providers && providers.length > 0) ? (
@@ -264,7 +264,7 @@ function PasswordView({ onSubmit, onMagicLink, providers, footer }: LoginProps) 
             block
             onClick={() => email && onMagicLink?.(email)}
           >
-            Send magic link
+            Send Magic Link
           </Button>
         </>
       )}
@@ -400,8 +400,8 @@ export const Login = React.forwardRef<HTMLDivElement, LoginProps>(
       (mode === "magic-link-sent"
         ? "Magic link sent"
         : mode === "2fa"
-        ? "Two-factor auth"
-        : "Sign in")
+        ? "Two-Factor Auth"
+        : "Sign In")
 
     const sub =
       subtitle ??

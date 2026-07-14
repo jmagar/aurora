@@ -80,7 +80,7 @@ export default function AiWebPreviewDemo() {
                   "linear-gradient(180deg, color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent), transparent 58%), var(--aurora-control-surface)",
               }}
             >
-              Get started
+              Get Started
             </Button>
           </div>
         </WebPreview>

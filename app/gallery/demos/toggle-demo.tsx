@@ -65,7 +65,7 @@ export default function ToggleDemo() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
-        eyebrow="Form elements"
+        eyebrow="Form Elements"
         heading="Toggle"
         description="Pressable border-and-glow control that holds an on/off state. Lights up cyan when pressed — for log-view options, formatting toolbars, and stream controls."
       />
@@ -73,9 +73,9 @@ export default function ToggleDemo() {
       <div>
         <div style={lbl}>Text toggles</div>
         <div style={row}>
-          <Toggle defaultPressed>Wrap lines</Toggle>
-          <Toggle>Color-code</Toggle>
-          <Toggle defaultPressed>Live tail</Toggle>
+          <Toggle defaultPressed>Wrap Lines</Toggle>
+          <Toggle>Color-Code</Toggle>
+          <Toggle defaultPressed>Live Tail</Toggle>
         </div>
 
         <div style={lbl}>Icon-only · formatting toolbar</div>
@@ -93,7 +93,7 @@ export default function ToggleDemo() {
           </Toggle>
           <Toggle defaultPressed>
             <Radio size={15} aria-hidden />
-            Live tail
+            Live Tail
           </Toggle>
         </div>
 
@@ -112,8 +112,8 @@ export default function ToggleDemo() {
 
         <div style={lbl}>Disabled</div>
         <div style={{ ...row, marginBottom: 0 }}>
-          <Toggle disabled defaultPressed>On · locked</Toggle>
-          <Toggle disabled>Off · locked</Toggle>
+          <Toggle disabled defaultPressed>On · Locked</Toggle>
+          <Toggle disabled>Off · Locked</Toggle>
         </div>
       </div>
     </div>

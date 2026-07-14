@@ -193,7 +193,7 @@ export function IconsView() {
           color: "var(--aurora-text-primary)",
         }}
       >
-        Lucide, line-only
+        Lucide, Line-Only
       </h1>
       <p
         className="aurora-text-lead mt-4 max-w-[620px]"
@@ -233,7 +233,7 @@ export function IconsView() {
       </label>
 
       <div className="aurora-text-eyebrow mb-3.5" style={{ fontSize: 10.5 }}>
-        Lucide · canonical
+        Lucide · Canonical
       </div>
       {lucide.length === 0 ? (
         <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)" }}>
@@ -257,7 +257,7 @@ export function IconsView() {
       )}
 
       <div className="aurora-text-eyebrow mb-3.5 mt-[34px]" style={{ fontSize: 10.5 }}>
-        Axon operations · 24px grid
+        Axon Operations · 24px Grid
       </div>
       {ops.length === 0 ? (
         <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)" }}>

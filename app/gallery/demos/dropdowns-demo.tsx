@@ -51,16 +51,16 @@ export default function DropdownsDemo() {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="start" style={{ minWidth: "13rem" }}>
-            <DropdownMenuLabel>Gateway options</DropdownMenuLabel>
+            <DropdownMenuLabel>Gateway Options</DropdownMenuLabel>
 
             <DropdownMenuCheckboxItem
               checked={viewDetailsChecked}
               onCheckedChange={setViewDetailsChecked}
             >
-              View details
+              View Details
             </DropdownMenuCheckboxItem>
 
-            <DropdownMenuItem>Edit configuration</DropdownMenuItem>
+            <DropdownMenuItem>Edit Configuration</DropdownMenuItem>
             <DropdownMenuItem>Duplicate</DropdownMenuItem>
 
             <DropdownMenuSeparator />
@@ -80,7 +80,7 @@ export default function DropdownsDemo() {
                 <path d="M6.5 1v7M3 5l3.5 3.5L10 5" />
                 <path d="M1 10h11v2H1z" />
               </svg>
-              Download logs
+              Download Logs
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
@@ -100,7 +100,7 @@ export default function DropdownsDemo() {
                 <path d="M2 3h9M5 3V2h3v1M3 3l.7 8h5.6L10 3" />
                 <path d="M5.5 5.5v3M7.5 5.5v3" />
               </svg>
-              Delete gateway
+              Delete Gateway
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

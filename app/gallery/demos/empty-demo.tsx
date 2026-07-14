@@ -57,7 +57,7 @@ export default function EmptyStateDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
         eyebrow="Feedback"
-        heading="Empty states"
+        heading="Empty States"
         description="A missing thing paired with the next action — the placeholder for empty lists, no-result searches, failed loads, and first-run screens. Icon glyph, title, muted description, and one or two action buttons."
       />
 
@@ -74,10 +74,10 @@ export default function EmptyStateDemo() {
               action={
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
                   <Button variant="aurora" iconLeft={<Search size={14} aria-hidden />}>
-                    Search all time
+                    Search All Time
                   </Button>
                   <Button variant="ghost" iconLeft={<RotateCcw size={14} aria-hidden />}>
-                    Reset filters
+                    Reset Filters
                   </Button>
                 </div>
               }
@@ -96,7 +96,7 @@ export default function EmptyStateDemo() {
               description="No alerts are waiting. New notifications from your homelab hosts will land here."
               action={
                 <Button variant="aurora" iconLeft={<Plus size={14} aria-hidden />}>
-                  New alert rule
+                  New Alert Rule
                   <Kbd variant="accent" style={{ marginLeft: 8 }}>
                     ⌘N
                   </Kbd>
@@ -136,10 +136,10 @@ export default function EmptyStateDemo() {
               action={
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
                   <Button variant="aurora" filled iconLeft={<Plus size={14} aria-hidden />}>
-                    Connect a service
+                    Connect a Service
                   </Button>
                   <Button variant="ghost" iconLeft={<BookOpen size={14} aria-hidden />}>
-                    Read the docs
+                    Read the Docs
                   </Button>
                 </div>
               }
@@ -157,7 +157,7 @@ export default function EmptyStateDemo() {
             description="Create one to group related sessions and sources."
             action={
               <Button variant="aurora" size="sm" iconLeft={<Plus size={13} aria-hidden />}>
-                New project
+                New Project
               </Button>
             }
           />
@@ -168,7 +168,7 @@ export default function EmptyStateDemo() {
             description="Every item was hidden. Loosen the filter to bring results back."
             action={
               <Button variant="ghost" size="sm" iconLeft={<RotateCcw size={13} aria-hidden />}>
-                Clear filter
+                Clear Filter
               </Button>
             }
           />

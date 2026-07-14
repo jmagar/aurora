@@ -12,7 +12,7 @@ export default function AiSpeechInputDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="AI elements / speech-input"
-        heading="Speech input"
+        heading="Speech Input"
         description="Voice capture with a mic toggle, a live level meter, and a transcript area."
       />
       <section

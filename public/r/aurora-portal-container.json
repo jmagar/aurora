@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "aurora-portal-container",
-  "title": "Aurora portal container context",
+  "title": "Aurora Portal Container Context",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Optional React context that scopes Aurora overlay portals (Sheet, Drawer) to a container instead of document.body — used so overlays stay contained inside scaled preview tiles.",
   "dependencies": [],

@@ -89,7 +89,7 @@ export default function TextareaDemo() {
         <div style={lbl}>With label + hint</div>
         <div style={stack}>
           <Field
-            label="Release notes"
+            label="Release Notes"
             hint="Markdown supported. Drag the bottom edge to resize."
           >
             <Textarea
@@ -104,7 +104,7 @@ export default function TextareaDemo() {
         <div style={lbl}>Auto-resize · grows as you type</div>
         <div style={stack}>
           <Field
-            label="Task for the agent"
+            label="Task for the Agent"
             hint="autoResize — the field re-measures on every keystroke and never scrolls."
           >
             <Textarea
@@ -119,7 +119,7 @@ export default function TextareaDemo() {
         <div style={lbl}>Character count</div>
         <div style={stack}>
           <div style={grid}>
-            <Field label="Controlled · live counter">
+            <Field label="Controlled · Live Counter">
               <Textarea
                 showCount
                 maxLength={140}
@@ -128,7 +128,7 @@ export default function TextareaDemo() {
                 placeholder="One-line summary…"
               />
             </Field>
-            <Field label="Auto-resize + count">
+            <Field label="Auto-Resize + Count">
               <Textarea
                 autoGrow
                 showCount
@@ -170,7 +170,7 @@ export default function TextareaDemo() {
         <div style={lbl}>Error alias · count</div>
         <div style={stack}>
           <Field
-            label="Commit message"
+            label="Commit Message"
             hint="The error boolean is a shorthand for state=&quot;error&quot;."
           >
             <Textarea

@@ -401,7 +401,7 @@ Canonical text classes:
 Typography rules:
 
 - Match type scale to the container. Compact panels, sidebars, cards, and toolbars should not use hero-scale type.
-- Use sentence case for UI copy. Reserve uppercase for eyebrows and terse technical labels.
+- Use Title Case for labels (buttons, headers, table columns, menu items, tabs, section titles); sentence case only for full-sentence body/help/status copy. Reserve uppercase for eyebrows and badge labels.
 - Mono is restricted. Do not use mono for ordinary labels, body text, form labels, breadcrumbs, or file names unless the string is truly code-like.
 - Keep line lengths short enough for scanning. Dense app surfaces should prefer compact sections over long prose.
 - Marketing-only type may be larger; app and operator surfaces should stay tighter.

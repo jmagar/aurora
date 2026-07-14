@@ -34,9 +34,9 @@ const row: React.CSSProperties = {
 }
 
 const VIEWS = [
-  { k: "list", Icon: List },
-  { k: "board", Icon: LayoutGrid },
-  { k: "graph", Icon: Network },
+  { k: "list", label: "List", Icon: List },
+  { k: "board", label: "Board", Icon: LayoutGrid },
+  { k: "graph", label: "Graph", Icon: Network },
 ] as const
 
 const ALIGN = [
@@ -55,7 +55,7 @@ export default function ButtonGroupDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
         eyebrow="Controls"
-        heading="Button group"
+        heading="Button Group"
         description="Segmented container for related, mutually-exclusive choices. Pair with ButtonGroupItem for the ready-made segment styling — idle, hover, selected, focus, and disabled states, no hand-rolled CSS."
       />
 
@@ -63,9 +63,9 @@ export default function ButtonGroupDemo() {
         <div style={lbl}>Segmented control · text</div>
         <div style={row}>
           <ButtonGroup>
-            {VIEWS.map(({ k }) => (
+            {VIEWS.map(({ k, label }) => (
               <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
-                {k}
+                {label}
               </ButtonGroupItem>
             ))}
           </ButtonGroup>
@@ -74,10 +74,10 @@ export default function ButtonGroupDemo() {
         <div style={lbl}>Icon + label</div>
         <div style={row}>
           <ButtonGroup>
-            {VIEWS.map(({ k, Icon }) => (
+            {VIEWS.map(({ k, label, Icon }) => (
               <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
                 <Icon size={15} aria-hidden />
-                {k}
+                {label}
               </ButtonGroupItem>
             ))}
           </ButtonGroup>
@@ -125,10 +125,10 @@ export default function ButtonGroupDemo() {
         <div style={lbl}>Vertical · disabled state</div>
         <div style={{ ...row, alignItems: "flex-start", marginBottom: 0 }}>
           <ButtonGroup orientation="vertical">
-            {VIEWS.map(({ k, Icon }) => (
+            {VIEWS.map(({ k, label, Icon }) => (
               <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
                 <Icon size={15} aria-hidden />
-                {k}
+                {label}
               </ButtonGroupItem>
             ))}
           </ButtonGroup>

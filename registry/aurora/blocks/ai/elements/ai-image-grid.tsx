@@ -185,7 +185,7 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
                 }}
               >
                 <RotateCw className="size-3.5" aria-hidden />
-                Regenerate all
+                Regenerate All
               </button>
             ) : null}
           </div>

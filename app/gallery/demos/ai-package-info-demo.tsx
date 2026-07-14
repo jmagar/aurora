@@ -8,7 +8,7 @@ export default function AiPackageInfoDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="AI elements / package-info"
-        heading="Package info"
+        heading="Package Info"
         description="Dependency card — registry tone, version, license/size & install copy, using the real registry implementation with compact operator styling."
       />
       <section

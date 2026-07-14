@@ -23,7 +23,7 @@ export default function InputGroupDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <GalleryPageIntro
         eyebrow="Form elements"
-        heading="Input group"
+        heading="Input Group"
         description="Input plus addons sharing one outline — for prefixes, suffixes, and bracketed units."
       />
 
@@ -37,7 +37,7 @@ export default function InputGroupDemo() {
         {/* Leading + trailing addon — currency amount */}
         <InputGroup style={{ height: 40 }}>
           <InputGroupAddon>$</InputGroupAddon>
-          <Input unstyled style={bareInputStyle} placeholder="amount" aria-label="Amount" />
+          <Input unstyled style={bareInputStyle} placeholder="Amount" aria-label="Amount" />
           <InputGroupAddon
             style={{ borderRight: "none", borderLeft: "1px solid var(--aurora-border-default)" }}
           >

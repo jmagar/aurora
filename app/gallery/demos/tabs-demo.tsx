@@ -12,7 +12,7 @@ export default function TabsDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <GalleryPageIntro
         eyebrow="Navigation"
-        heading="Tabs & pills"
+        heading="Tabs & Pills"
         description="Underline tabs with an animated accent indicator — the active label lifts to primary while the glowing cyan underline slides beneath it. Built on Radix Tabs."
       />
       <Tabs defaultValue="overview">

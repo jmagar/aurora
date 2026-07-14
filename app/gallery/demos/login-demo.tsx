@@ -29,7 +29,7 @@ export function LoginDemo() {
       }}
     >
       <Login
-        title="Sign in"
+        title="Sign In"
         subtitle="Welcome back to the console."
         providers={[
           {
@@ -48,7 +48,7 @@ export function LoginDemo() {
               href="#request-access"
               onClick={(e) => {
                 e.preventDefault()
-                setLastEvent("Request access")
+                setLastEvent("Request Access")
               }}
               style={{
                 color: "var(--aurora-accent-primary)",
@@ -56,7 +56,7 @@ export function LoginDemo() {
                 fontWeight: 500,
               }}
             >
-              Request access
+              Request Access
             </a>
           </span>
         }

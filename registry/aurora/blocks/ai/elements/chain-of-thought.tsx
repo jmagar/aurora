@@ -182,7 +182,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
       badge,
       isStreaming,
       defaultOpen = true,
-      title = "Chain of thought",
+      title = "Chain of Thought",
       style,
       ...rest
     },

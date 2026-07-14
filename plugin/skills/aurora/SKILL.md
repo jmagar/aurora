@@ -21,7 +21,7 @@ The non-negotiables Aurora gives you and that every consumer must respect:
 - Manrope for display, Inter for working UI, JetBrains Mono **only** for code and terminal content (code blocks, inline code, shell commands, terminal output) — never for paths/IDs/chips/tables/labels shown as data
 - Tokenized everything via `--aurora-*` CSS custom properties — never inline hex in product code
 - Selection and focus are **border + glow**, not flooded fills
-- Sentence case copy, matter-of-fact status text, no marketing voice
+- Title Case labels, sentence-case body copy, matter-of-fact status text, no marketing voice
 - Lucide line icons only, 14-18px, stroke 1.5-1.75px — no emoji as UI
 
 ## Upstream-first — fix the source, never fork-and-diverge
@@ -118,7 +118,7 @@ For slides, mocks, throwaway prototypes, design reviews, and other non-productio
 - Default to dark mode with `<html class="dark">` and put the main canvas on `<body class="aurora-page-shell">` or a top-level `.aurora-page-shell` wrapper.
 - Copy any needed brand assets into the artifact directory and reference them locally. Do not hotlink, redraw, or approximate the Labby mark when a real asset exists.
 - Use Lucide icons through the web package/CDN or inline icon markup that matches Lucide stroke rules: 14-18px, `currentColor`, 1.5-1.75 stroke.
-- Keep the artifact faithful to Aurora's production rules: tokenized colors, Tier 2 panels, border + glow selection, sentence case copy, muted status colors, and no emoji.
+- Keep the artifact faithful to Aurora's production rules: tokenized colors, Tier 2 panels, border + glow selection, Title Case labels with sentence-case body copy, muted status colors, and no emoji.
 - If you create an HTML artifact, tell the user the local path and whether it is static-openable or served by a dev server.
 
 ## Tokens — never raw hex
@@ -271,7 +271,7 @@ Style A1 (elevated + glowing dot + dismiss) for high-priority alerts (error, war
 
 ## Content rules
 
-- Sentence case for buttons, headers, table columns, menu items. *Active gateways*, not *Active Gateways*.
+- Title Case for labels: buttons, headers, table columns, menu items, tabs, section titles. *Active Gateways*, never *active gateways* — all-lowercase labels are wrong. Minor words (a, of, to, in, and, or) stay lowercase mid-phrase. Sentence case is only for full-sentence body/help/status copy.
 - Uppercase only for eyebrows and badge labels.
 - No exclamation marks in chrome.
 - No "we", no apology framing, no marketing verbs.

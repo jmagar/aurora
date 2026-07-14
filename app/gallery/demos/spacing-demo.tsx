@@ -25,7 +25,7 @@ export default function SpacingDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
       <GalleryPageIntro
         eyebrow="Foundations"
-        heading="Spacing & radius"
+        heading="Spacing & Radius"
         description="The 4-point spacing grid and corner-radius scale that keep Labby layouts consistent and predictable."
       />
 

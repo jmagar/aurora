@@ -662,7 +662,7 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ classN
   <div ref={ref} className={["grid gap-2 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
       <FlaskConical className="size-3.5" aria-hidden />
-      Test results
+      Test Results
     </div>
     <Separator />
     <div className="grid gap-1">
@@ -688,7 +688,7 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ classN
 ))
 TestResults.displayName = "TestResults"
 
-const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(({ className, title = "Stack trace", frames, style, ...props }, ref) => (
+const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(({ className, title = "Stack Trace", frames, style, ...props }, ref) => (
   <div ref={ref} className={["grid gap-2 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-error)" }}>
       <CircleAlert className="size-3.5" aria-hidden />
@@ -966,7 +966,7 @@ Commit.displayName = "Commit"
 const JsxPreview = React.forwardRef<HTMLDivElement, JsxPreviewProps>(
   ({ code, className, style, ...props }, ref) => (
     <div ref={ref} className={className} style={style} {...props}>
-      <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="JSX preview" value={code}>
+      <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="JSX Preview" value={code}>
         <pre className="overflow-auto rounded-[7px] border p-3 aurora-text-code" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>{code}</pre>
       </CodeSurface>
     </div>
@@ -1010,8 +1010,8 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button type="button" variant="neutral" size="sm">Open logs</Button>
-          <Button type="button" variant="ghost" size="sm">Attach shell</Button>
+          <Button type="button" variant="neutral" size="sm">Open Logs</Button>
+          <Button type="button" variant="ghost" size="sm">Attach Shell</Button>
         </div>
       </div>
       {children}
@@ -1023,7 +1023,7 @@ Sandbox.displayName = "Sandbox"
 const SchemaDisplay = React.forwardRef<HTMLPreElement, SchemaDisplayProps>(
   ({ schema, className, style, ...props }, ref) => (
     <div className={className} style={style}>
-      <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="Schema display" value={stringifyWithOrder(schema)}>
+      <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="Schema Display" value={stringifyWithOrder(schema)}>
         <pre
           ref={ref}
           className="overflow-auto rounded-[7px] border p-3 aurora-text-code"
@@ -1069,7 +1069,7 @@ const Image = React.forwardRef<HTMLImageElement, AuroraImageProps>(
 Image.displayName = "Image"
 
 const OpenInChat = React.forwardRef<HTMLButtonElement, OpenInChatProps>(
-  ({ children = "Open in chat", ...props }, ref) => (
+  ({ children = "Open in Chat", ...props }, ref) => (
     <Button ref={ref} type="button" variant="neutral" size="sm" {...props}>
       <Send className="size-3.5" aria-hidden />
       {children}
@@ -1079,7 +1079,7 @@ const OpenInChat = React.forwardRef<HTMLButtonElement, OpenInChatProps>(
 OpenInChat.displayName = "OpenInChat"
 
 const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
-  ({ title = "Voice response", duration = "00:42", className, style, ...props }, ref) => (
+  ({ title = "Voice Response", duration = "00:42", className, style, ...props }, ref) => (
     <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
       <Button type="button" size="icon" variant="neutral" aria-label={`Play ${title}`}><Play className="size-4" aria-hidden /></Button>
       <span className="min-w-0">
@@ -1130,7 +1130,7 @@ Persona.displayName = "Persona"
 const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
   ({ className, style, ...props }, ref) => (
     <div className="grid gap-2 border p-3" style={panelStyle()}>
-      <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Mic className="size-3.5" aria-hidden />Speech input</div>
+      <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Mic className="size-3.5" aria-hidden />Speech Input</div>
       <Textarea ref={ref} className={["min-h-20 resize-none rounded-[8px] p-3 aurora-text-body", className].filter(Boolean).join(" ")} style={{ ...style }} {...props} />
     </div>
   )

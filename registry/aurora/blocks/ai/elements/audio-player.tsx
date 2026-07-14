@@ -119,7 +119,7 @@ const cardStyle: React.CSSProperties = {
 const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
   (
     {
-      title = "Voice response",
+      title = "Voice Response",
       duration = "00:42",
       progress = 0,
       status = "idle",

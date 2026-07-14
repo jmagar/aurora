@@ -10,7 +10,7 @@ export default function AiVoiceSelectorDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="AI Elements"
-        heading="Voice selector"
+        heading="Voice Selector"
         description="A voice picker for spoken audio output, with an inline preview player."
       />
       <div className="max-w-[420px]">

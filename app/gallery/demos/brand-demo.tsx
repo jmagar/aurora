@@ -12,7 +12,7 @@ export default function BrandDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
       <GalleryPageIntro
         eyebrow="Brand"
-        heading="Logo & mark"
+        heading="Logo & Mark"
         description='The Labby stacked-plane mark and wordmark at every usage size. The mark uses four rhombus planes in depth, and the wordmark carries the blue accent across the final "by".'
       />
 

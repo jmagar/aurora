@@ -79,10 +79,10 @@ export default function TooltipDemo() {
         <div>
           <div style={lbl}>Toolbar triggers</div>
           <div style={row}>
-            <Tip name="Restart gateway" label={<span>Restart gateway <Kbd>⌘R</Kbd></span>}><RotateCcw size={16} aria-hidden /></Tip>
-            <Tip label="Open terminal"><SquareTerminal size={16} aria-hidden /></Tip>
+            <Tip name="Restart Gateway" label={<span>Restart Gateway <Kbd>⌘R</Kbd></span>}><RotateCcw size={16} aria-hidden /></Tip>
+            <Tip label="Open Terminal"><SquareTerminal size={16} aria-hidden /></Tip>
             <Tip label="Settings"><Settings size={16} aria-hidden /></Tip>
-            <Tip label="Delete · permanent" color="var(--aurora-error)"><Trash2 size={16} aria-hidden /></Tip>
+            <Tip label="Delete · Permanent" color="var(--aurora-error)"><Trash2 size={16} aria-hidden /></Tip>
           </div>
 
           <div style={lbl}>Sides</div>
@@ -101,7 +101,7 @@ export default function TooltipDemo() {
               </TooltipTrigger>
               <TooltipContent side="bottom">
                 <div style={{ display: "grid", gap: 4, maxWidth: 220 }}>
-                  <strong style={{ fontSize: 12 }}>Gateway status</strong>
+                  <strong style={{ fontSize: 12 }}>Gateway Status</strong>
                   <span style={{ color: "var(--aurora-text-muted)", fontSize: 11.5, lineHeight: 1.5 }}>
                     All upstreams healthy. Last sync 2m ago.
                   </span>

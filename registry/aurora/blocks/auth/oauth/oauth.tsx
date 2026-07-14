@@ -374,7 +374,7 @@ function SuccessView({ app }: { app: OAuthApp }) {
           marginTop: "4px",
         }}
       >
-        Close window
+        Close Window
       </Button>
     </div>
   )
@@ -395,7 +395,7 @@ function TokensView({ tokens = [], onRevoke }: { tokens?: OAuthToken[]; onRevoke
           color: "var(--aurora-text-primary)",
         }}
       >
-        Active tokens
+        Active Tokens
       </div>
 
       {tokens.length === 0 ? (

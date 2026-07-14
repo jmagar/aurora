@@ -10,7 +10,7 @@ export default function NumberInputDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="Components"
-        heading="Number input"
+        heading="Number Input"
         description="A stepper-bound numeric field: decrement and increment buttons flank a centered value, clamped to min/max and advanced by step."
       />
       <section

@@ -16,7 +16,7 @@ export default function AiAgentDemo() {
       <div style={{ display: "flex", flexDirection: "column", gap: "11px", maxWidth: "560px" }}>
         <Agent
           name="Axon"
-          role="RAG control plane"
+          role="RAG Control Plane"
           status="running"
           badge
           model="claude-sonnet-4"
@@ -28,7 +28,7 @@ export default function AiAgentDemo() {
         />
         <Agent
           name="Cortex"
-          role="Eval harness"
+          role="Eval Harness"
           status="blocked"
           model="gpt-4o"
           task="Awaiting API key"

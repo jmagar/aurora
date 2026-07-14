@@ -250,7 +250,7 @@ function CopyButton({ code }: { code: string }) {
       size="sm"
       onClick={handleCopy}
       aria-label={copied ? "Copied" : "Copy code"}
-      title={copied ? "Copied!" : "Copy to clipboard"}
+      title={copied ? "Copied!" : "Copy to Clipboard"}
       style={{
         gap: "6px",
         fontSize: "13px",

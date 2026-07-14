@@ -24,9 +24,9 @@ const PAGES: { id: Exclude<DocPageId, "start">; title: string; description: stri
   },
   {
     id: "voice",
-    title: "Voice & content",
+    title: "Voice & Content",
     description:
-      "Aurora's content rules: operator-to-operator, sentence case, factual status copy, no exclamation marks in chrome.",
+      "Aurora's content rules: operator-to-operator, Title Case labels, factual status copy, no exclamation marks in chrome.",
   },
   {
     id: "contribute",
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ page: str
   const meta = PAGES.find((p) => p.id === page)
   if (!meta) return {}
   return {
-    title: `${meta.title} — Aurora design system`,
+    title: `${meta.title} — Aurora Design System`,
     description: meta.description,
   }
 }

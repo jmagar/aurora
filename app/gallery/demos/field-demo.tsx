@@ -35,7 +35,7 @@ export default function FieldDemo() {
           <Input defaultValue="labby.local:8765" />
         </Field>
 
-        <Field label="API token" error="Token is required.">
+        <Field label="API Token" error="Token is required.">
           <Input error placeholder="ghp_…" />
         </Field>
       </section>

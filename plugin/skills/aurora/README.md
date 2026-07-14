@@ -26,4 +26,4 @@ When working in `~/workspace/aurora`, verify current facts from source before cl
 
 ## Static artifacts
 
-For visual artifacts, create a local static HTML file when possible. Load the Aurora token layer, Google fonts, dark mode, `.aurora-page-shell`, local brand assets when available, and Lucide-style icons. Keep the same production constraints: tokenized colors, Tier 2 panels, border + glow selection, sentence case copy, muted status, and no emoji.
+For visual artifacts, create a local static HTML file when possible. Load the Aurora token layer, Google fonts, dark mode, `.aurora-page-shell`, local brand assets when available, and Lucide-style icons. Keep the same production constraints: tokenized colors, Tier 2 panels, border + glow selection, Title Case labels with sentence-case body copy, muted status, and no emoji.

@@ -95,6 +95,10 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
 ## Conventions & Patterns
 
 - **Dark-first.** Navy base `#07131c`; accents = Cyan (primary), Rose (secondary), Axon orange (AI/automation).
+- **Title Case for labels** (authoritative casing rule): buttons, headers, table columns,
+  menu items, tabs, section titles — *Active Gateways*, never *active gateways*. Minor words
+  (a, of, to, in, and, or) stay lowercase mid-phrase. Sentence case is ONLY for full-sentence
+  body/help/status copy. Uppercase is reserved for eyebrows and badge labels.
 - **Always use Aurora tokens** via CSS custom properties — no raw Tailwind color defaults.
 - **Registry changes require rebuild.** After editing anything in `registry/aurora/**`,
   run `pnpm registry:build` so `public/r/*.json` stays in sync.

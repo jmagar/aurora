@@ -26,7 +26,7 @@ export default function AiConfirmationDemo() {
           intent="danger"
           title="Apply migration to prod?"
           description="This runs the following statements against the production database."
-          confirmLabel="Run migration"
+          confirmLabel="Run Migration"
           details={[
             "ALTER TABLE users ADD COLUMN seed int;",
             "CREATE INDEX idx_users_seed ON users(seed);",

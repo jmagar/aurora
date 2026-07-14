@@ -37,7 +37,7 @@ export const servers: ServerEntry[] = [
     tool: "labby",
     description:
       "Rust homelab control plane and MCP gateway for catalog, Code Mode, route-scoped resources, HTTP API, TUI, and web UI workflows.",
-    capabilities: ["MCP gateway", "Code Mode", "HTTP API", "web UI"],
+    capabilities: ["MCP Gateway", "Code Mode", "HTTP API", "Web UI"],
     env: ["LABBY_MCP_HTTP_TOKEN", "LABBY_AUTH_MODE"],
     highlight: "Gateway and operator console",
   },
@@ -54,7 +54,7 @@ export const servers: ServerEntry[] = [
     tool: "soma",
     description:
       "Batteries-included RMCP runtime and scaffold for provider-backed Rust MCP servers, OpenAPI ingestion, and local automation providers.",
-    capabilities: ["provider runtime", "scaffold", "OpenAPI", "plugins"],
+    capabilities: ["Provider Runtime", "Scaffold", "OpenAPI", "Plugins"],
     env: ["SOMA_HOME", "SOMA_PROVIDER_PATH"],
     highlight: "Provider runtime",
   },
@@ -71,7 +71,7 @@ export const servers: ServerEntry[] = [
     tool: "cortex",
     description:
       "Syslog, Docker, OTLP, and AI transcript correlation surface for finding operational context from homelab logs.",
-    capabilities: ["syslog", "Docker logs", "OTLP", "FTS search"],
+    capabilities: ["Syslog", "Docker Logs", "OTLP", "FTS Search"],
     env: ["CORTEX_DATABASE_URL", "CORTEX_SYSLOG_ADDR"],
     highlight: "Log and transcript search",
   },
@@ -88,7 +88,7 @@ export const servers: ServerEntry[] = [
     tool: "apprise",
     description:
       "Multi-backend notification MCP server for Apprise, giving agents a single route to dozens of push, chat, and webhook destinations.",
-    capabilities: ["notify", "webhooks", "80+ backends", "templates"],
+    capabilities: ["Notify", "Webhooks", "80+ Backends", "Templates"],
     env: ["APPRISE_URL", "APPRISE_CONFIG"],
     highlight: "Notification fan-out",
   },
@@ -105,7 +105,7 @@ export const servers: ServerEntry[] = [
     tool: "gotify",
     description:
       "Push notification MCP server and CLI for Gotify message delivery, app management, and local automation alerts.",
-    capabilities: ["messages", "apps", "priorities", "alerts"],
+    capabilities: ["Messages", "Apps", "Priorities", "Alerts"],
     env: ["GOTIFY_URL", "GOTIFY_TOKEN"],
     highlight: "Direct push alerts",
   },
@@ -122,7 +122,7 @@ export const servers: ServerEntry[] = [
     tool: "unifi",
     description:
       "UniFi Network controller MCP server with read-oriented convenience actions, generated API actions, scopes, and local health checks.",
-    capabilities: ["clients", "devices", "WiFi", "controller health"],
+    capabilities: ["Clients", "Devices", "WiFi", "Controller Health"],
     env: ["UNIFI_URL", "UNIFI_API_KEY", "UNIFI_SITE"],
     highlight: "Network controller access",
   },
@@ -139,7 +139,7 @@ export const servers: ServerEntry[] = [
     tool: "tailscale",
     description:
       "Tailnet operations MCP server and CLI for device inventory, network posture, DNS, keys, and automation around Tailscale.",
-    capabilities: ["devices", "tailnet", "DNS", "keys"],
+    capabilities: ["Devices", "Tailnet", "DNS", "Keys"],
     env: ["TAILSCALE_API_KEY", "TAILSCALE_TAILNET"],
     highlight: "Tailnet inventory",
   },
@@ -156,7 +156,7 @@ export const servers: ServerEntry[] = [
     tool: "unraid",
     description:
       "NAS, storage, Docker, and VM workflows for Unraid through a Rust MCP server with matching CLI and health tooling.",
-    capabilities: ["NAS", "storage", "Docker", "VMs"],
+    capabilities: ["NAS", "Storage", "Docker", "VMs"],
     env: ["UNRAID_URL", "UNRAID_API_KEY"],
     highlight: "NAS and VM control",
   },
@@ -173,7 +173,7 @@ export const servers: ServerEntry[] = [
     tool: "arcane",
     description:
       "Docker and container management MCP server for Arcane-style host operations, container inspection, and controlled mutations.",
-    capabilities: ["containers", "images", "Docker", "host ops"],
+    capabilities: ["Containers", "Images", "Docker", "Host Ops"],
     env: ["ARCANE_URL", "ARCANE_TOKEN"],
     highlight: "Container operations",
   },
@@ -190,7 +190,7 @@ export const servers: ServerEntry[] = [
     tool: "synapse",
     description:
       "Host workflow MCP server and CLI for Docker, SSH, files, logs, ZFS, and local operational automation.",
-    capabilities: ["Docker", "SSH", "files", "ZFS"],
+    capabilities: ["Docker", "SSH", "Files", "ZFS"],
     env: ["SYNAPSE_CONFIG", "SYNAPSE_HOME"],
     highlight: "Host workflow automation",
   },
@@ -207,7 +207,7 @@ export const servers: ServerEntry[] = [
     tool: "yarr",
     description:
       "Self-hosted media automation fleet surface for Sonarr, Radarr, Prowlarr, Plex, Jellyfin, Tautulli, downloaders, and request apps.",
-    capabilities: ["Sonarr", "Radarr", "Plex", "downloaders"],
+    capabilities: ["Sonarr", "Radarr", "Plex", "Downloaders"],
     env: ["YARR_SERVICES", "YARR_SONARR_URL", "YARR_SONARR_API_KEY"],
     highlight: "Media fleet automation",
   },
@@ -224,7 +224,7 @@ export const servers: ServerEntry[] = [
     tool: "ytdl",
     description:
       "yt-dlp media workflow MCP server for download jobs, metadata, ffmpeg handoff, remote paths, and media-library automation.",
-    capabilities: ["yt-dlp", "metadata", "ffmpeg", "rclone"],
+    capabilities: ["yt-dlp", "Metadata", "ffmpeg", "rclone"],
     env: ["YTDL_OUTPUT_DIR", "YTDL_REMOTE"],
     highlight: "Download and metadata jobs",
   },

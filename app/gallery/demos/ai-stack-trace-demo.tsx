@@ -9,7 +9,7 @@ export default function AiStackTraceDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
       <GalleryPageIntro
         eyebrow="AI Elements"
-        heading="Stack trace"
+        heading="Stack Trace"
         description="An error stack-trace panel — a rose-tinted alert tile and the error message header, then numbered frames. App frames lead with a cyan function name; vendor frames (anything under node_modules) are dimmed and tagged VENDOR. Each frame resolves to its file:line:column origin."
       />
 

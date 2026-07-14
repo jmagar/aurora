@@ -18,11 +18,11 @@ export interface DocCounts {
 
 const MODERN_REGISTRY_COMMANDS = [
   ["Base", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-base.json"],
-  ["Terminal page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-terminal.json"],
-  ["Gateway page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-gateway.json"],
-  ["Chat page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chat.json"],
-  ["Zed theme file", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-zed-theme.json"],
-  ["Agent skill", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-agent-skill.json"],
+  ["Terminal Page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-terminal.json"],
+  ["Gateway Page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-gateway.json"],
+  ["Chat Page", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-chat.json"],
+  ["Zed Theme File", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-zed-theme.json"],
+  ["Agent Skill", "npx shadcn@latest add https://aurora.tootie.tv/r/aurora-agent-skill.json"],
 ]
 
 function H({ children }: { children: React.ReactNode }) {
@@ -119,7 +119,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 function StartPage() {
   return (
     <div>
-      <Eyebrow>Getting started</Eyebrow>
+      <Eyebrow>Getting Started</Eyebrow>
       <h1
         style={{
           fontFamily: "var(--aurora-font-display)",
@@ -145,7 +145,7 @@ function StartPage() {
       <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-base.json</DocCode>
       <P>Then reach for a component from the registry:</P>
       <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-button.json</DocCode>
-      <H>Three principles</H>
+      <H>Three Principles</H>
       <ul style={{ paddingLeft: 18, margin: 0 }}>
         <Li>
           <Strong>One palette, every surface.</Strong> The same tokens dress the app, your editor,
@@ -168,13 +168,13 @@ function InstallPage({ counts }: { counts: DocCounts }) {
   return (
     <div>
       <Eyebrow>Installation</Eyebrow>
-      <H>Tokens first</H>
+      <H>Tokens First</H>
       <P>
         The registry is shadcn-compatible. Install the token contract once; it defines every Aurora
         custom property on <M>:root</M> plus the <M>.light</M> remap.
       </P>
       <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-tokens.json</DocCode>
-      <H>Layer order (Tailwind v4)</H>
+      <H>Layer Order (Tailwind v4)</H>
       <P>
         Aurora ships component base styles in <M>@layer aurora-components</M> so your Tailwind
         utilities always win over them. Declare the layer order once, on the first line of your
@@ -182,13 +182,13 @@ function InstallPage({ counts }: { counts: DocCounts }) {
         layer lands after <M>utilities</M>, so utilities can no longer override component styles.
       </P>
       <DocCode>@layer theme, base, components, aurora-components, utilities;</DocCode>
-      <H>Per component</H>
+      <H>Per Component</H>
       <P>
         Each of the {counts.registryItems} registry items installs the same way — primitives and
         composed blocks alike.
       </P>
       <DocCode>npx shadcn@latest add https://aurora.tootie.tv/r/aurora-prompt-input.json</DocCode>
-      <H>Modern registry capabilities</H>
+      <H>Modern Registry Capabilities</H>
       <P>
         Aurora also publishes a base bundle, starter pages, project-local theme files, and agent
         artifacts through the same shadcn registry.
@@ -215,7 +215,7 @@ function InstallPage({ counts }: { counts: DocCounts }) {
         <M>AuroraTheme</M>. The same names carry across — <M>aurora_accent_primary</M>,{" "}
         <M>aurora_radius_3</M>.
       </P>
-      <H>The page shell</H>
+      <H>The Page Shell</H>
       <P>
         Start every page on <M>class=&quot;aurora-page-shell&quot;</M>. Build working areas on
         Tier-2 panels: 22px radius, strong border, strong shadow, inset top highlight.
@@ -228,13 +228,13 @@ function FoundationsPage() {
   return (
     <div>
       <Eyebrow>Foundations</Eyebrow>
-      <H>Surfaces — three lift tiers</H>
+      <H>Surfaces — Three Lift Tiers</H>
       <P>
         <Strong>Tier 0</Strong> is the page, flat, with the two-radial wash. <Strong>Tier 1</Strong>{" "}
         is toolbars and rails — medium shadow + 3.5% inset highlight. <Strong>Tier 2</Strong> is
         panels and cards — strong shadow, 5% inset highlight, 22px radius, strong border.
       </P>
-      <H>Radii — three tokens</H>
+      <H>Radii — Three Tokens</H>
       <P>
         14 / 18 / 22px, and nothing else. Badges are sharp at 4px, tables 8px on the wrapper. Pill
         (999px) is reserved for switches, status dots, and scrollbar thumbs.
@@ -263,23 +263,23 @@ function ThemingPage() {
   return (
     <div>
       <Eyebrow>Theming</Eyebrow>
-      <H>Dark-first, light verified</H>
+      <H>Dark-First, Light Verified</H>
       <P>
         The canonical visual is dark. <M>.light</M> is a real, supported remap on the same token
         surface — it overrides only the raw Aurora vars, so every semantic token still resolves.
       </P>
       <DocCode>{'<html class="light">  /* same tokens, lighter values */'}</DocCode>
-      <H>Swap the accent</H>
+      <H>Swap the Accent</H>
       <P>
         Override <M>--aurora-accent-primary</M> and its <M>-strong</M> / <M>-deep</M> partners to
         re-tone the whole system. Selection, focus, links, and primary actions all follow.
       </P>
-      <H>Every surface</H>
+      <H>Every Surface</H>
       <P>
         The palette is hand-ported beyond the app: Zed, Warp, Claude Code, Chrome, and six shell
         tools. See the Themes tab — install any in one line.
       </P>
-      <H>Axon override</H>
+      <H>Axon Override</H>
       <P>
         Axon drops violet and runs operation tones as cyan = fetch/read and orange = AI/reasoning
         plus async/heavy jobs, with rose reserved for secondary expressive actions. The registry <M>OperationIcon</M> derives the tone from the operation
@@ -292,14 +292,15 @@ function ThemingPage() {
 function VoicePage() {
   return (
     <div>
-      <Eyebrow>Voice &amp; content</Eyebrow>
-      <H>Operator-to-operator</H>
+      <Eyebrow>Voice &amp; Content</Eyebrow>
+      <H>Operator-to-Operator</H>
       <P>
         Matter-of-fact. Reads like good devops copy — like <M>journalctl</M> decided to talk back.
-        Sentence case everywhere; uppercase reserved for eyebrows and badge labels at 0.18em
-        tracking.
+        Title Case for labels — buttons, headers, table columns, menu items, tabs, section titles —
+        never all-lowercase. Sentence case only for full-sentence body, help, and status copy.
+        Uppercase reserved for eyebrows and badge labels at 0.18em tracking.
       </P>
-      <H>Status copy is factual</H>
+      <H>Status Copy Is Factual</H>
       <ul style={{ paddingLeft: 18, margin: "0 0 14px" }}>
         <Li>
           <M>Backend unavailable.</M>
@@ -311,7 +312,7 @@ function VoicePage() {
           <M>Deploy completed with warnings. 2/3 replicas healthy.</M>
         </Li>
       </ul>
-      <H>The rules</H>
+      <H>The Rules</H>
       <ul style={{ paddingLeft: 18, margin: 0 }}>
         <Li>No exclamation marks in chrome. Period.</Li>
         <Li>No &quot;we&quot;, no apology framing, no marketing verbs. Write &quot;Available now.&quot;</Li>
@@ -330,18 +331,18 @@ function ContributePage() {
   return (
     <div>
       <Eyebrow>Contributing</Eyebrow>
-      <H>The upstream is canonical</H>
+      <H>The Upstream Is Canonical</H>
       <P>
         Component implementations live in the open-source registry. If you need a primitive Aurora
         ships that isn&apos;t here, pull it from source rather than re-implementing.
       </P>
       <DocCode>github.com/jmagar/aurora</DocCode>
-      <H>Token source of truth</H>
+      <H>Token Source of Truth</H>
       <P>
         All tokens originate in <M>registry/aurora/styles/aurora.css</M>. Change a value there;
         everything downstream — components, themes, Android exports — follows.
       </P>
-      <H>Adding a component</H>
+      <H>Adding a Component</H>
       <P>
         Build on Tier-2 panels, type from the ramp, Lucide icons at 1.5–1.75px. Selection and focus
         are border + glow. Then register it in <M>registry.json</M> and run{" "}
