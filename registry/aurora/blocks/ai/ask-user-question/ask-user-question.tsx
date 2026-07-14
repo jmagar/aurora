@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { ArrowRight, Check } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 
@@ -9,6 +10,8 @@ import { Textarea } from "@/registry/aurora/ui/textarea"
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
+
+const QUESTION_ACCENT = "var(--axon-orange)"
 
 export interface QuestionOption {
   id: string
@@ -76,28 +79,28 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
   const [focused, setFocused] = React.useState(false)
 
   const borderColor = selected
-    ? "var(--aurora-accent-primary)"
+    ? QUESTION_ACCENT
     : focused
-    ? "color-mix(in srgb, var(--aurora-accent-primary) 38%, var(--aurora-border-default))"
+    ? "color-mix(in srgb, var(--axon-orange) 38%, var(--aurora-border-default))"
     : hovered
-    ? "color-mix(in srgb, var(--aurora-accent-primary) 45%, var(--aurora-border-default))"
+    ? "color-mix(in srgb, var(--axon-orange) 45%, var(--aurora-border-default))"
     : "var(--aurora-border-default)"
 
   const boxShadow = selected
-    ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 24%, transparent), 0 2px 6px rgba(0,0,0,0.16)"
+    ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 1px color-mix(in srgb, var(--axon-orange) 24%, transparent), 0 2px 6px rgba(0,0,0,0.16)"
     : focused
-    ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 2px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)"
+    ? "inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0 2px color-mix(in srgb, var(--axon-orange) 18%, transparent)"
     : hovered
-    ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 15%, transparent), 0 2px 6px rgba(0,0,0,0.16)"
+    ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px color-mix(in srgb, var(--axon-orange) 15%, transparent), 0 2px 6px rgba(0,0,0,0.16)"
     : "inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 2px rgba(0,0,0,0.18)"
 
   // Top-lit panel gradient (CD parity): translucent light top stop over the
   // opaque panel tier, kept opaque→opaque to avoid the gradient-seam band.
   const surfaceTop = selected
-    ? "color-mix(in srgb, var(--aurora-accent-primary) 14%, var(--aurora-panel-strong-top))"
+    ? "color-mix(in srgb, var(--axon-orange) 14%, var(--aurora-panel-strong-top))"
     : "var(--aurora-panel-strong-top)"
   const surfaceBase = selected
-    ? "color-mix(in srgb, var(--aurora-accent-primary) 8%, var(--aurora-panel-medium))"
+    ? "color-mix(in srgb, var(--axon-orange) 8%, var(--aurora-panel-medium))"
     : hovered
     ? "var(--aurora-hover-bg)"
     : "var(--aurora-panel-medium)"
@@ -141,9 +144,9 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
           height: 22,
           borderRadius: type === "radio" ? "50%" : 6,
           border: selected
-            ? "1.5px solid var(--aurora-accent-primary)"
+            ? `1.5px solid ${QUESTION_ACCENT}`
             : "1.5px solid var(--aurora-border-strong)",
-          background: selected ? "var(--aurora-accent-primary)" : "var(--aurora-control-surface)",
+          background: selected ? QUESTION_ACCENT : "var(--aurora-control-surface)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -161,15 +164,7 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
           />
         )}
         {selected && type === "multi" && (
-          <svg width="12" height="10" viewBox="0 0 10 8" fill="none" aria-hidden="true">
-            <path
-              d="M1.5 4L3.8 6.5L8.5 1.5"
-              stroke="var(--aurora-accent-foreground)"
-              strokeWidth="1.7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <Check size={12} strokeWidth={2} aria-hidden="true" style={{ color: "var(--aurora-accent-foreground)" }} />
         )}
       </div>
 
@@ -249,7 +244,7 @@ function TextInput({
           padding: "10px 12px",
           borderRadius: "var(--aurora-radius-1)",
           border: focused
-            ? "1.5px solid var(--aurora-accent-primary)"
+            ? `1.5px solid ${QUESTION_ACCENT}`
             : "1.5px solid var(--aurora-border-strong)",
           background: "var(--aurora-control-surface)",
           color: "var(--aurora-text-primary)",
@@ -260,8 +255,8 @@ function TextInput({
           transition: "border-color 150ms, box-shadow 150ms",
           boxShadow: focused
             ? [
-                "0 0 0 3px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
-                "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 40%, transparent)",
+                "0 0 0 3px color-mix(in srgb, var(--axon-orange) 18%, transparent)",
+                "0 0 0 1px color-mix(in srgb, var(--axon-orange) 40%, transparent)",
               ].join(", ")
             : "none",
           boxSizing: "border-box",
@@ -296,15 +291,13 @@ function SubmitButton({
         gap: 8,
         alignSelf: "flex-end",
         background: "transparent",
-        borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 40%, var(--aurora-border-strong))",
-        color: "var(--aurora-text-muted)",
+        borderColor: "var(--axon-orange-border)",
+        color: "var(--axon-orange)",
         boxShadow: "none",
       }}
     >
       {label}
-      <svg width="16" height="16" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-        <path d="M2 6H10M7 3L10 6L7 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      <ArrowRight size={16} strokeWidth={1.65} aria-hidden="true" />
     </Button>
   )
 }
@@ -356,7 +349,8 @@ export function AskUserQuestion({
         width: "100%",
         ...style,
       }}
-      role={type === "radio" ? "radiogroup" : undefined}
+      role={type === "radio" ? "radiogroup" : type === "multi" ? "group" : undefined}
+      aria-label={type === "text" ? undefined : question}
     >
       {/* Question */}
       <p

@@ -4,11 +4,11 @@ import * as React from "react"
 import { Brain, CircleCheck, ChevronDown, Circle, CircleAlert, ListChecks, ListTree } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
-// Aurora cyan primary marks AI/automation identity.
+// Axon orange marks AI/automation identity.
 // Do not use for semantic state (success/warn/error) — use the semantic token layer for that.
-const AI_ACCENT        = "var(--aurora-accent-primary)"
+const AI_ACCENT = "var(--axon-orange)"
 const PLAN_ROW_BACKGROUND = {
-  inprog: "var(--aurora-selected-bg)",
+  inprog: "var(--axon-orange-surface)",
   error: "var(--aurora-error-surface)",
 } as const
 
@@ -445,7 +445,12 @@ function PlanBlock({
                 gap: "10px",
                 padding: "6px 8px",
                 borderRadius: "10px",
-                border: step.status === "inprog" || step.status === "error" ? "1px solid var(--aurora-border-default)" : "1px solid transparent",
+                border:
+                  step.status === "inprog"
+                    ? "1px solid var(--axon-orange-border)"
+                    : step.status === "error"
+                    ? "1px solid var(--aurora-error-border)"
+                    : "1px solid transparent",
                 background:
                   step.status === "inprog" || step.status === "error"
                     ? PLAN_ROW_BACKGROUND[step.status]

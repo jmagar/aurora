@@ -154,7 +154,7 @@ tokio = { version = "1", features = ["full"] }`,
 
 export function CodeWorkspaceDemo() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%", minWidth: 0, padding: "24px" }}>
       <CodeWorkspace
         tree={TREE}
         files={FILES}

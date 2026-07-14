@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Clock3, Navigation, Search, Sparkles, Star, Zap } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Input } from "@/registry/aurora/ui/input"
 
@@ -23,7 +24,7 @@ export interface CommandItem {
   section: string
   /** Keyboard shortcut display (e.g. ["⌘", "K"]) */
   shortcut?: string[]
-  /** Inline SVG icon element */
+  /** Optional icon element shown in the result tile. */
   icon?: React.ReactNode
   onSelect?: () => void
 }
@@ -66,52 +67,6 @@ export function useCommandPalette() {
 }
 
 // ---------------------------------------------------------------------------
-// Icons
-// ---------------------------------------------------------------------------
-
-function SearchIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function ClockIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M7 4V7L9 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function ZapIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M8 2L3.5 8H7L6 12L10.5 6H7L8 2Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function StarIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M7 1.5L8.5 5H12L9 7.5L10 11L7 9L4 11L5 7.5L2 5H5.5L7 1.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function NavigateIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M2 2L12 7L7 9L5 12L2 2Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-// ---------------------------------------------------------------------------
 // Default items (demo)
 // ---------------------------------------------------------------------------
 
@@ -121,14 +76,14 @@ const DEFAULT_ITEMS: CommandItem[] = [
     label: "Chat with Claude",
     description: "Recent conversation",
     section: "recent",
-    icon: <ClockIcon />,
+    icon: <Clock3 size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "r2",
     label: "Aurora design system",
     description: "Opened 2h ago",
     section: "recent",
-    icon: <ClockIcon />,
+    icon: <Clock3 size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "a1",
@@ -136,7 +91,7 @@ const DEFAULT_ITEMS: CommandItem[] = [
     description: "Start a fresh chat",
     section: "actions",
     shortcut: ["⌘", "N"],
-    icon: <ZapIcon />,
+    icon: <Zap size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "a2",
@@ -144,7 +99,7 @@ const DEFAULT_ITEMS: CommandItem[] = [
     description: "Search across your project",
     section: "actions",
     shortcut: ["⌘", "F"],
-    icon: <ZapIcon />,
+    icon: <Search size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "a3",
@@ -152,21 +107,21 @@ const DEFAULT_ITEMS: CommandItem[] = [
     description: "Wipe current context",
     section: "actions",
     shortcut: ["⌘", "⇧", "K"],
-    icon: <ZapIcon />,
+    icon: <Zap size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "s1",
     label: "Code review",
     description: "AI-powered code reviewer",
     section: "skills",
-    icon: <StarIcon />,
+    icon: <Sparkles size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "s2",
     label: "Security review",
     description: "Audit for vulnerabilities",
     section: "skills",
-    icon: <StarIcon />,
+    icon: <Star size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "n1",
@@ -174,14 +129,14 @@ const DEFAULT_ITEMS: CommandItem[] = [
     description: "Open preferences",
     section: "navigate",
     shortcut: ["⌘", ","],
-    icon: <NavigateIcon />,
+    icon: <Navigation size={14} strokeWidth={1.65} aria-hidden />,
   },
   {
     id: "n2",
     label: "Documentation",
     description: "Browse Aurora docs",
     section: "navigate",
-    icon: <NavigateIcon />,
+    icon: <Navigation size={14} strokeWidth={1.65} aria-hidden />,
   },
 ]
 
@@ -244,6 +199,8 @@ export function CommandPalette({
   const [activeIdx, setActiveIdx] = React.useState(0)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const listRef = React.useRef<HTMLDivElement>(null)
+  const reactId = React.useId()
+  const listboxId = `${reactId}-cmd-palette-listbox`
 
   // Filter
   const filtered = query.trim()
@@ -268,6 +225,8 @@ export function CommandPalette({
   })
 
   const flatItems = grouped.flatMap((g) => g.items)
+  const activeItem = flatItems[activeIdx]
+  const activeOptionId = activeItem ? `${reactId}-cmd-option-${activeItem.id}` : undefined
 
   // Focus input when open
   React.useEffect(() => {
@@ -378,14 +337,15 @@ export function CommandPalette({
           }}
         >
           <span style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }}>
-            <SearchIcon />
+            <Search size={16} strokeWidth={1.65} aria-hidden />
           </span>
           <Input
             ref={inputRef}
             type="text"
             role="combobox"
             aria-expanded={true}
-            aria-controls="cmd-palette-listbox"
+            aria-controls={listboxId}
+            aria-activedescendant={activeOptionId}
             aria-autocomplete="list"
             value={query}
             onChange={(e) => {
@@ -412,7 +372,7 @@ export function CommandPalette({
         {/* Results */}
         <div
           ref={listRef}
-          id="cmd-palette-listbox"
+          id={listboxId}
           role="listbox"
           aria-label="Command results"
           style={{
@@ -455,6 +415,7 @@ export function CommandPalette({
                   return (
                     <Button variant="plain" size="unstyled"
                       key={item.id}
+                      id={`${reactId}-cmd-option-${item.id}`}
                       role="option"
                       aria-selected={isActive}
                       data-active={isActive}

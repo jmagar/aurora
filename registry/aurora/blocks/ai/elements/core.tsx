@@ -273,7 +273,7 @@ export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
 
 const taskTone = {
   queued: { color: "var(--aurora-text-muted)", icon: <CircleDashed className="size-4" aria-hidden /> },
-  running: { color: "var(--aurora-accent-primary)", icon: <Spinner size="sm" /> },
+  running: { color: "var(--axon-orange)", icon: <Spinner size="sm" /> },
   completed: { color: "var(--aurora-success)", icon: <CircleCheck className="size-4" aria-hidden /> },
   failed: { color: "var(--aurora-error)", icon: <CircleX className="size-4" aria-hidden /> },
 }
@@ -741,7 +741,7 @@ EnvironmentVariables.displayName = "EnvironmentVariables"
 const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
   ({ label, description, className, style, ...props }, ref) => (
     <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <Save className="mt-0.5 size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
+      <Save className="mt-0.5 size-4" aria-hidden style={{ color: "var(--axon-orange)" }} />
       <div className="min-w-0">
         <div className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{label}</div>
         {description ? <div className="aurora-text-meta">{description}</div> : null}
@@ -895,7 +895,7 @@ const Shimmer = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
       ref={ref}
       className={["h-3 overflow-hidden rounded-full", className].filter(Boolean).join(" ")}
       style={{
-        background: "linear-gradient(90deg, var(--aurora-control-surface), color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent), var(--aurora-control-surface))",
+        background: "linear-gradient(90deg, var(--aurora-control-surface), color-mix(in srgb, var(--axon-orange) 18%, transparent), var(--aurora-control-surface))",
         backgroundSize: "220% 100%",
         animation: "aurora-shimmer 1.4s linear infinite",
         ...style,
@@ -918,8 +918,8 @@ const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
           onClick={onClick}
           className="h-auto min-w-0 justify-start whitespace-normal rounded-[10px] border px-3 py-3 text-left"
           style={{
-            borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 18%, var(--aurora-border-default))",
-            background: "color-mix(in srgb, var(--aurora-accent-primary) 4%, var(--aurora-panel-medium))",
+            borderColor: "color-mix(in srgb, var(--axon-orange) 18%, var(--aurora-border-default))",
+            background: "color-mix(in srgb, var(--axon-orange) 4%, var(--aurora-panel-medium))",
           }}
         >
           <span className="grid min-w-0 gap-1">

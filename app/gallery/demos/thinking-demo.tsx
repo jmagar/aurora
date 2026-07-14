@@ -11,8 +11,7 @@ export default function ThinkingDemo() {
       style={{
         background: "var(--aurora-page-bg)",
         color: "var(--aurora-text-primary)",
-        width: 520,
-        maxWidth: "100%",
+        width: "min(520px, 100%)",
         boxSizing: "border-box",
         padding: "24px 30px",
         display: "flex",

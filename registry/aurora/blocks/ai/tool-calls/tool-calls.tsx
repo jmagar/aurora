@@ -12,7 +12,7 @@ export interface ToolCallsProps {
 }
 
 const statusColor: Record<ToolCall["status"], string> = {
-  running: "var(--aurora-accent-primary)",
+  running: "var(--axon-orange)",
   completed: "var(--aurora-success)",
   error: "var(--aurora-error)",
 }
@@ -103,9 +103,9 @@ function ToolIcon({ tool }: { tool: string }) {
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 7,
-        border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 22%, var(--aurora-border-default))",
-        background: "color-mix(in srgb, var(--aurora-accent-primary) 8%, var(--aurora-control-surface))",
-        color: "var(--aurora-accent-strong)",
+        border: "1px solid var(--axon-orange-border)",
+        background: "var(--axon-orange-surface)",
+        color: "var(--axon-orange)",
         boxShadow: "var(--aurora-highlight-medium)",
         flexShrink: 0,
       }}
@@ -133,9 +133,9 @@ function DetailCard({
         padding: "9px 11px",
         color: tone,
         fontSize: 12,
-        fontFamily: "var(--aurora-font-mono)",
         whiteSpace: "pre-wrap",
-        wordBreak: "break-all",
+        wordBreak: "normal",
+        overflowWrap: "break-word",
         overflowX: "auto",
       }}
     >
@@ -144,6 +144,7 @@ function DetailCard({
           display: "block",
           marginBottom: 6,
           color: "var(--aurora-text-muted)",
+          fontFamily: "var(--aurora-font-sans)",
           fontSize: 10,
           letterSpacing: "0.06em",
           textTransform: "uppercase",
@@ -151,13 +152,15 @@ function DetailCard({
       >
         {label}
       </span>
-      {children}
+      <span style={{ fontFamily: "var(--aurora-font-mono)" }}>{children}</span>
     </div>
   )
 }
 
 function ToolCallRow({ call }: { call: ToolCall }) {
   const [expanded, setExpanded] = React.useState(false)
+  const reactId = React.useId()
+  const detailsId = `${reactId}-tool-call-details`
   const duration = durationMs(call)
   const summary = call.tool.replace(/[._-]+/g, " ")
 
@@ -180,6 +183,7 @@ function ToolCallRow({ call }: { call: ToolCall }) {
         size="unstyled"
         onClick={() => setExpanded((open) => !open)}
         aria-expanded={expanded}
+        aria-controls={detailsId}
         aria-label={`${call.tool} tool call, ${call.status}`}
         style={{
           display: "inline-flex",
@@ -204,7 +208,7 @@ function ToolCallRow({ call }: { call: ToolCall }) {
             fontSize: 12,
             fontWeight: expanded ? 650 : 600,
             lineHeight: 1.35,
-            fontFamily: "var(--aurora-font-mono)",
+            fontFamily: "var(--aurora-font-sans)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -244,6 +248,9 @@ function ToolCallRow({ call }: { call: ToolCall }) {
 
       {expanded && (
         <div
+          id={detailsId}
+          role="region"
+          aria-label={`${call.tool} details`}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -265,6 +272,8 @@ function ToolCallRow({ call }: { call: ToolCall }) {
 
 function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
   const [expanded, setExpanded] = React.useState(false)
+  const reactId = React.useId()
+  const detailsId = `${reactId}-tool-call-group-details`
   const summary = summarizeToolCallGroup(group)
   const count = group.calls.length
 
@@ -291,6 +300,7 @@ function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
         size="unstyled"
         onClick={() => setExpanded((open) => !open)}
         aria-expanded={expanded}
+        aria-controls={detailsId}
         aria-label={`${group.tool} tool calls, ${count} calls, ${group.status}`}
         style={{
           display: "inline-flex",
@@ -315,7 +325,7 @@ function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
             fontSize: 12,
             fontWeight: expanded ? 650 : 600,
             lineHeight: 1.35,
-            fontFamily: "var(--aurora-font-mono)",
+            fontFamily: "var(--aurora-font-sans)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -361,6 +371,9 @@ function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
 
       {expanded && (
         <div
+          id={detailsId}
+          role="region"
+          aria-label={`${group.tool} details`}
           style={{
             display: "flex",
             flexDirection: "column",

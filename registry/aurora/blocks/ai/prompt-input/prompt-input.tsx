@@ -91,6 +91,9 @@ const S = {
     boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
     zIndex: 50,
     overflow: "hidden",
+    maxWidth: "min(100%, calc(100vw - 32px))",
+    maxHeight: "min(320px, 45vh)",
+    overflowY: "auto",
   } as React.CSSProperties,
 
   popupHeader: {
@@ -103,8 +106,8 @@ const S = {
     borderBottom: "1px solid var(--aurora-border-default)",
   } as React.CSSProperties,
 
-  slashPopup: { width: "280px" } as React.CSSProperties,
-  mentionPopup: { width: "260px" } as React.CSSProperties,
+  slashPopup: { width: "min(280px, 100%)" } as React.CSSProperties,
+  mentionPopup: { width: "min(260px, 100%)" } as React.CSSProperties,
 
   slashRowBase: {
     display: "flex",
@@ -122,11 +125,16 @@ const S = {
     fontSize: "13px",
     color: "var(--axon-orange)",
     minWidth: "90px",
+    flexShrink: 0,
   } as React.CSSProperties,
 
   slashDescription: {
     fontSize: "12px",
     color: "var(--aurora-text-muted)",
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap" as const,
   } as React.CSSProperties,
 
   mentionRowBase: {
@@ -142,7 +150,13 @@ const S = {
   } as React.CSSProperties,
 
   mentionIcon: { color: "var(--aurora-text-muted)", flexShrink: 0 } as React.CSSProperties,
-  mentionLabel: { fontSize: "13px" } as React.CSSProperties,
+  mentionLabel: {
+    fontSize: "13px",
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap" as const,
+  } as React.CSSProperties,
   mentionKindLabel: {
     marginLeft: "auto",
     fontSize: "10px",
@@ -154,13 +168,16 @@ const S = {
     position: "absolute",
     bottom: "calc(100% + 6px)",
     right: 0,
-    width: "220px",
+    width: "min(220px, 100%)",
+    maxWidth: "min(100%, calc(100vw - 32px))",
+    maxHeight: "min(280px, 42vh)",
     background: "var(--aurora-surface-raised)",
     border: "1px solid var(--aurora-border-strong)",
     borderRadius: "var(--aurora-radius-2)",
     boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
     zIndex: 50,
     overflow: "hidden",
+    overflowY: "auto",
     padding: "4px",
   } as React.CSSProperties,
 
@@ -269,6 +286,7 @@ const S = {
   toolbar: {
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap" as const,
     gap: "6px",
     padding: "8px 10px 10px",
     borderTop: "1px solid color-mix(in srgb, var(--aurora-border-default) 72%, transparent)",
@@ -276,13 +294,15 @@ const S = {
   } as React.CSSProperties,
 
   fileInput: { display: "none" } as React.CSSProperties,
-  spacer: { flex: 1 } as React.CSSProperties,
+  spacer: { flex: "1 1 auto", minWidth: "12px" } as React.CSSProperties,
   iconBtnShrink: { flexShrink: 0 } as React.CSSProperties,
 
   modelBtn: {
     gap: "5px",
     fontSize: "11px",
     marginLeft: "2px",
+    minWidth: 0,
+    maxWidth: "min(100%, 190px)",
     color: "var(--axon-orange)",
     borderColor: "color-mix(in srgb, var(--axon-orange) 32%, transparent)",
     background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
@@ -333,10 +353,10 @@ function modelRowStyle(active: boolean): React.CSSProperties {
     cursor: "pointer",
     textAlign: "left",
     fontSize: "13px",
-    color: active ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
+    color: active ? "var(--axon-orange)" : "var(--aurora-text-primary)",
     fontWeight: active ? 600 : 400,
     boxShadow: active
-      ? "inset 0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)"
+      ? "inset 0 0 0 1px color-mix(in srgb, var(--axon-orange) 18%, transparent)"
       : "none",
   }
 }
@@ -391,6 +411,11 @@ export function PromptInput({
   const objectUrlsRef = React.useRef<string[]>([])
   const blurTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevAttachmentsRef = React.useRef<Attachment[]>(attachments)
+  const reactId = React.useId()
+  const slashListboxId = `${reactId}-slash-commands`
+  const mentionListboxId = `${reactId}-mentions`
+  const modelButtonId = `${reactId}-model-trigger`
+  const modelListboxId = `${reactId}-models`
 
   const [isFocused, setIsFocused] = React.useState(false)
   const [showModelMenu, setShowModelMenu] = React.useState(false)
@@ -439,6 +464,14 @@ export function PromptInput({
       ),
     [mentionItems, mentionQuery, selectedMentions]
   )
+  const slashActiveIndex = Math.min(slashIndex, Math.max(filteredSlash.length - 1, 0))
+  const mentionActiveIndex = Math.min(mentionIndex, Math.max(filteredMentions.length - 1, 0))
+  const activeSlashId = slashOpen && filteredSlash[slashActiveIndex] ? `${reactId}-slash-${filteredSlash[slashActiveIndex].id}` : undefined
+  const activeMentionId =
+    mentionOpen && filteredMentions[mentionActiveIndex] ? `${reactId}-mention-${filteredMentions[mentionActiveIndex].id}` : undefined
+  const activePopupId = slashOpen ? slashListboxId : mentionOpen ? mentionListboxId : undefined
+  const activeDescendantId = activeSlashId ?? activeMentionId
+  const modelLabel = DEFAULT_MODELS.find((m) => m.id === model)?.label ?? model
 
   // Memoized container styles — only change when isFocused toggles
   const containerStyle = React.useMemo<React.CSSProperties>(
@@ -477,7 +510,7 @@ export function PromptInput({
       }
       if (e.key === "Enter") {
         e.preventDefault()
-        const cmd = filteredSlash[slashIndex]
+        const cmd = filteredSlash[slashActiveIndex]
         if (cmd) insertSlashCommand(cmd)
         return
       }
@@ -497,7 +530,7 @@ export function PromptInput({
       }
       if (e.key === "Enter") {
         e.preventDefault()
-        const item = filteredMentions[mentionIndex]
+        const item = filteredMentions[mentionActiveIndex]
         if (item) insertMention(item)
         return
       }
@@ -597,8 +630,6 @@ export function PromptInput({
     }
   }, [])
 
-  const modelLabel = DEFAULT_MODELS.find((m) => m.id === model)?.label ?? model
-
   function clearBlurTimer() {
     if (blurTimerRef.current) {
       clearTimeout(blurTimerRef.current)
@@ -610,18 +641,19 @@ export function PromptInput({
     <div style={S.root}>
       {/* Slash commands popup */}
       {slashOpen && filteredSlash.length > 0 && (
-        <div role="listbox" aria-label="Slash commands" style={{ ...S.popup, ...S.slashPopup }}>
+        <div id={slashListboxId} role="listbox" aria-label="Slash commands" style={{ ...S.popup, ...S.slashPopup }}>
           <div style={S.popupHeader}>Commands</div>
           {filteredSlash.map((cmd, i) => (
             <Button
               variant="plain"
               size="unstyled"
               key={cmd.id}
+              id={`${reactId}-slash-${cmd.id}`}
               role="option"
-              aria-selected={i === slashIndex}
+              aria-selected={i === slashActiveIndex}
               onClick={() => insertSlashCommand(cmd)}
               onMouseEnter={() => setSlashIndex(i)}
-              style={slashRowStyle(i === slashIndex)}
+              style={slashRowStyle(i === slashActiveIndex)}
             >
               <span style={S.slashLabel}>{cmd.label}</span>
               {cmd.description && <span style={S.slashDescription}>{cmd.description}</span>}
@@ -632,7 +664,7 @@ export function PromptInput({
 
       {/* Mention popup */}
       {mentionOpen && filteredMentions.length > 0 && (
-        <div role="listbox" aria-label="Mentions" style={{ ...S.popup, ...S.mentionPopup }}>
+        <div id={mentionListboxId} role="listbox" aria-label="Mentions" style={{ ...S.popup, ...S.mentionPopup }}>
           <div style={S.popupHeader}>Mention</div>
           {filteredMentions.map((item, i) => {
             const kindLabel = getMentionKindLabel(item)
@@ -641,11 +673,12 @@ export function PromptInput({
                 variant="plain"
                 size="unstyled"
                 key={item.id}
+                id={`${reactId}-mention-${item.id}`}
                 role="option"
-                aria-selected={i === mentionIndex}
+                aria-selected={i === mentionActiveIndex}
                 onClick={() => insertMention(item)}
                 onMouseEnter={() => setMentionIndex(i)}
-                style={mentionRowStyle(i === mentionIndex)}
+                style={mentionRowStyle(i === mentionActiveIndex)}
               >
                 <span style={S.mentionIcon}><FileIcon kind={item.kind} /></span>
                 <span style={S.mentionLabel}>{item.label}</span>
@@ -658,12 +691,13 @@ export function PromptInput({
 
       {/* Model selector dropdown */}
       {showModelMenu && (
-        <div role="listbox" aria-label="Models" style={S.modelPopup}>
+        <div id={modelListboxId} role="listbox" aria-labelledby={modelButtonId} style={S.modelPopup}>
           {DEFAULT_MODELS.map((m) => (
             <Button
               variant="plain"
               size="unstyled"
               key={m.id}
+              id={`${reactId}-model-${m.id}`}
               role="option"
               aria-selected={m.id === model}
               onClick={() => { onModelChange?.(m.id); setShowModelMenu(false) }}
@@ -751,6 +785,11 @@ export function PromptInput({
           placeholder={isStreaming ? "Generating…" : placeholder}
           autoResize
           rows={1}
+          role="combobox"
+          aria-expanded={slashOpen || mentionOpen}
+          aria-controls={activePopupId}
+          aria-activedescendant={activeDescendantId}
+          aria-autocomplete="list"
           aria-label="Prompt input"
           className="border-none focus-visible:outline-none"
           style={S.textarea}
@@ -799,11 +838,13 @@ export function PromptInput({
 
           <Button
             type="button"
+            id={modelButtonId}
             variant="neutral"
             size="sm"
             onClick={() => { clearBlurTimer(); setShowModelMenu((o) => !o); setSlashOpen(false); setMentionOpen(false) }}
             aria-haspopup="listbox"
             aria-expanded={showModelMenu}
+            aria-controls={modelListboxId}
             style={S.modelBtn}
           >
             <Sparkles size={13} strokeWidth={1.6} aria-hidden />
