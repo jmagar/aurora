@@ -3,6 +3,7 @@
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 import * as React from "react"
+import { Check, CircleCheck } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
@@ -44,20 +45,42 @@ export interface OAuthProps {
 }
 
 // ---------------------------------------------------------------------------
-// Icons (inline SVG)
+// Icons
 // ---------------------------------------------------------------------------
+
+const ICON_STROKE = 1.8
+
+const OAUTH_RESPONSIVE_CSS = `
+@media (max-width: 640px) {
+  .aurora-oauth-token-header {
+    display: none !important;
+  }
+
+  .aurora-oauth-token-row {
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+  }
+
+  .aurora-oauth-token-row [data-aurora-token-cell] {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal !important;
+  }
+
+  .aurora-oauth-token-actions {
+    justify-content: flex-start !important;
+  }
+}
+`
 
 function CheckIcon({ size = 14, color = "var(--aurora-success)" }: { size?: number; color?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0 }}>
-      <path
-        d="M2 7L5.5 10.5L12 3.5"
-        stroke={color}
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <Check
+      size={size}
+      strokeWidth={ICON_STROKE}
+      aria-hidden="true"
+      style={{ color, flexShrink: 0 }}
+    />
   )
 }
 
@@ -76,20 +99,12 @@ function AnimatedCheckIcon() {
         animation: "aurora-check-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards",
       }}
     >
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <path
-          d="M5 14L11 20L23 8"
-          stroke="var(--aurora-success)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{
-            strokeDasharray: 30,
-            strokeDashoffset: 0,
-            animation: "aurora-check-draw 0.35s ease-out 0.1s both",
-          }}
-        />
-      </svg>
+      <CircleCheck
+        size={32}
+        strokeWidth={ICON_STROKE}
+        aria-hidden="true"
+        style={{ color: "var(--aurora-success)" }}
+      />
     </div>
   )
 }
@@ -374,7 +389,7 @@ function SuccessView({ app }: { app: OAuthApp }) {
           marginTop: "4px",
         }}
       >
-        Close Window
+        Close window
       </Button>
     </div>
   )
@@ -386,74 +401,78 @@ function SuccessView({ app }: { app: OAuthApp }) {
 
 function TokensView({ tokens = [], onRevoke }: { tokens?: OAuthToken[]; onRevoke?: (id: string) => void }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-      <div
-        style={{
-          fontFamily: "var(--aurora-font-display)",
-          fontSize: "16px",
-          fontWeight: 800,
-          color: "var(--aurora-text-primary)",
-        }}
-      >
-        Active Tokens
-      </div>
-
-      {tokens.length === 0 ? (
+    <>
+      <style>{OAUTH_RESPONSIVE_CSS}</style>
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         <div
           style={{
-            fontFamily: "var(--aurora-font-sans)",
-            fontSize: "13px",
-            color: "var(--aurora-text-muted)",
-            padding: "24px",
-            textAlign: "center",
-            border: "1px solid var(--aurora-border-default)",
-            borderRadius: "12px",
+            fontFamily: "var(--aurora-font-display)",
+            fontSize: "16px",
+            fontWeight: 800,
+            color: "var(--aurora-text-primary)",
           }}
         >
-          No active tokens
+          Active tokens
         </div>
-      ) : (
-        <div
-          style={{
-            border: "1px solid var(--aurora-border-default)",
-            borderRadius: "12px",
-            overflow: "hidden",
-          }}
-        >
-          {/* Header */}
+
+        {tokens.length === 0 ? (
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 100px 100px 70px",
-              padding: "8px 14px",
-              background: "var(--aurora-panel-strong)",
-              borderBottom: "1px solid var(--aurora-border-default)",
               fontFamily: "var(--aurora-font-sans)",
-              fontSize: "11px",
-              fontWeight: 600,
+              fontSize: "13px",
               color: "var(--aurora-text-muted)",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
+              padding: "24px",
+              textAlign: "center",
+              border: "1px solid var(--aurora-border-default)",
+              borderRadius: "12px",
             }}
           >
-            <span>Token</span>
-            <span>Scopes</span>
-            <span>Created</span>
-            <span>Last used</span>
-            <span />
+            No active tokens
           </div>
+        ) : (
+          <div
+            style={{
+              border: "1px solid var(--aurora-border-default)",
+              borderRadius: "12px",
+              overflow: "hidden",
+            }}
+          >
+            {/* Header */}
+            <div
+              className="aurora-oauth-token-header"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 100px 100px 70px",
+                padding: "8px 14px",
+                background: "var(--aurora-panel-strong)",
+                borderBottom: "1px solid var(--aurora-border-default)",
+                fontFamily: "var(--aurora-font-sans)",
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "var(--aurora-text-muted)",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+              }}
+            >
+              <span>Token</span>
+              <span>Scopes</span>
+              <span>Created</span>
+              <span>Last used</span>
+              <span />
+            </div>
 
-          {tokens.map((token, i) => (
-            <TokenRow
-              key={token.id}
-              token={token}
-              onRevoke={onRevoke}
-              isLast={i === tokens.length - 1}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+            {tokens.map((token, i) => (
+              <TokenRow
+                key={token.id}
+                token={token}
+                onRevoke={onRevoke}
+                isLast={i === tokens.length - 1}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   )
 }
 
@@ -469,6 +488,7 @@ function TokenRow({
   const [hovered, setHovered] = React.useState(false)
   return (
     <div
+      className="aurora-oauth-token-row"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -483,6 +503,7 @@ function TokenRow({
       }}
     >
       <span
+        data-aurora-token-cell
         style={{
           fontFamily: "var(--aurora-font-sans)",
           fontSize: "13px",
@@ -496,7 +517,7 @@ function TokenRow({
         {token.name}
       </span>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+      <div data-aurora-token-cell style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
         {token.scopes.slice(0, 2).map((s) => (
           <span
             key={s}
@@ -507,8 +528,9 @@ function TokenRow({
               background: "color-mix(in srgb, var(--aurora-accent-primary) 10%, transparent)",
               border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 18%, transparent)",
               color: "var(--aurora-accent-primary)",
-              fontFamily: "var(--aurora-font-mono)",
+              fontFamily: "var(--aurora-font-sans)",
               fontSize: "10px",
+              fontWeight: 600,
             }}
           >
             {s}
@@ -529,6 +551,7 @@ function TokenRow({
       </div>
 
       <span
+        data-aurora-token-cell
         style={{
           fontFamily: "var(--aurora-font-sans)",
           fontSize: "12px",
@@ -539,6 +562,7 @@ function TokenRow({
       </span>
 
       <span
+        data-aurora-token-cell
         style={{
           fontFamily: "var(--aurora-font-sans)",
           fontSize: "12px",
@@ -548,7 +572,7 @@ function TokenRow({
         {token.lastUsed ?? "—"}
       </span>
 
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <div className="aurora-oauth-token-actions" style={{ display: "flex", justifyContent: "flex-end" }}>
         <RevokeButton onClick={() => onRevoke?.(token.id)} />
       </div>
     </div>

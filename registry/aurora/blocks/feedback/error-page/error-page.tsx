@@ -69,11 +69,11 @@ function ErrorCode({ code, color }: { code: number; color: string }) {
     <div
       style={{
         fontFamily: "var(--aurora-font-display)",
-        fontSize: "clamp(72px, 12vw, 120px)",
+        fontSize: "96px",
         fontWeight: 800,
         color,
         lineHeight: 1,
-        letterSpacing: "-0.04em",
+        letterSpacing: 0,
         opacity: 0.18,
         userSelect: "none",
         position: "absolute",
@@ -89,26 +89,28 @@ function ErrorCode({ code, color }: { code: number; color: string }) {
 }
 
 // ---------------------------------------------------------------------------
-// Mono chip (path, incident ID)
+// Data chip (path, incident ID)
 // ---------------------------------------------------------------------------
 
-function MonoChip({ children }: { children: React.ReactNode }) {
+function DataChip({ children }: { children: React.ReactNode }) {
   return (
-    <code
+    <span
       style={{
         display: "inline-block",
         padding: "3px 10px",
         borderRadius: "6px",
         background: "var(--aurora-control-surface)",
         border: "1px solid var(--aurora-border-default)",
-        fontFamily: "var(--aurora-font-mono)",
+        fontFamily: "var(--aurora-font-sans)",
         fontSize: "12px",
+        fontWeight: 600,
+        fontVariantNumeric: "tabular-nums",
         color: "var(--aurora-text-muted)",
         wordBreak: "break-all",
       }}
     >
       {children}
-    </code>
+    </span>
   )
 }
 
@@ -159,7 +161,7 @@ function CountdownRing({
         textAnchor="middle"
         dominantBaseline="central"
         fill="var(--aurora-accent-primary)"
-        fontFamily="var(--aurora-font-mono)"
+        fontFamily="var(--aurora-font-sans)"
         fontSize="13"
         fontWeight="700"
       >
@@ -187,7 +189,7 @@ function Page404({ path, onRetry }: ErrorPageProps) {
             fontSize: "28px",
             fontWeight: 800,
             color: "var(--aurora-text-primary)",
-            letterSpacing: "-0.02em",
+            letterSpacing: 0,
             marginBottom: "8px",
           }}
         >
@@ -216,13 +218,13 @@ function Page404({ path, onRetry }: ErrorPageProps) {
           >
             Requested path
           </span>
-          <MonoChip>{path}</MonoChip>
+          <DataChip>{path}</DataChip>
         </div>
       )}
 
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-        <ActionButton href="/" variant="primary">Go Home</ActionButton>
-        {onRetry && <ActionButton onClick={onRetry} variant="ghost">Try Again</ActionButton>}
+        <ActionButton href="/" variant="primary">Go home</ActionButton>
+        {onRetry && <ActionButton onClick={onRetry} variant="ghost">Try again</ActionButton>}
       </div>
     </div>
   )
@@ -246,7 +248,7 @@ function Page403({ path }: ErrorPageProps) {
             fontSize: "28px",
             fontWeight: 800,
             color: "var(--aurora-text-primary)",
-            letterSpacing: "-0.02em",
+            letterSpacing: 0,
             marginBottom: "8px",
           }}
         >
@@ -277,13 +279,13 @@ function Page403({ path }: ErrorPageProps) {
           >
             Restricted path
           </span>
-          <MonoChip>{path}</MonoChip>
+          <DataChip>{path}</DataChip>
         </div>
       )}
 
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-        <ActionButton href="/" variant="primary">Go Home</ActionButton>
-        <ActionButton href="mailto:support@example.com" variant="ghost">Contact Support</ActionButton>
+        <ActionButton href="/" variant="primary">Go home</ActionButton>
+        <ActionButton href="mailto:support@example.com" variant="ghost">Contact support</ActionButton>
       </div>
     </div>
   )
@@ -336,11 +338,11 @@ function Page500({ incidentId, onRetry, countdown: initialCountdown = 30 }: Erro
             fontSize: "28px",
             fontWeight: 800,
             color: "var(--aurora-text-primary)",
-            letterSpacing: "-0.02em",
+            letterSpacing: 0,
             marginBottom: "8px",
           }}
         >
-          Something went wrong
+          Internal error
         </div>
         <div
           style={{
@@ -350,7 +352,7 @@ function Page500({ incidentId, onRetry, countdown: initialCountdown = 30 }: Erro
             lineHeight: 1.6,
           }}
         >
-          An internal error occurred. Our team has been notified.
+          An internal error occurred. The incident has been logged.
         </div>
       </div>
 
@@ -365,7 +367,7 @@ function Page500({ incidentId, onRetry, countdown: initialCountdown = 30 }: Erro
           >
             Incident ID
           </span>
-          <MonoChip>{incidentId}</MonoChip>
+          <DataChip>{incidentId}</DataChip>
         </div>
       )}
 
@@ -395,17 +397,17 @@ function Page500({ incidentId, onRetry, countdown: initialCountdown = 30 }: Erro
               color: "var(--aurora-accent-primary)",
             }}
           >
-            Retrying…
+            Retrying...
           </div>
         )}
 
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" }}>
           {onRetry && !retrying && (
             <ActionButton onClick={handleManualRetry} variant="primary">
-              Retry Now
+              Retry now
             </ActionButton>
           )}
-          <ActionButton href="/" variant="ghost">Go Home</ActionButton>
+          <ActionButton href="/" variant="ghost">Go home</ActionButton>
         </div>
       </div>
     </div>

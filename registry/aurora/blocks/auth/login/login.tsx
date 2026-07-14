@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Eye, EyeOff, Mail } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Input } from "@/registry/aurora/ui/input"
 import { InputOTP } from "@/registry/aurora/ui/input-otp"
@@ -38,28 +39,23 @@ export interface LoginProps {
 // Icons
 // ---------------------------------------------------------------------------
 
+const ICON_STROKE = 1.7
+
 function EnvelopeIcon() {
   return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-      <rect x="4" y="9" width="32" height="22" rx="3" stroke="var(--aurora-accent-primary)" strokeWidth="1.8" opacity="0.6" />
-      <path d="M4 13l16 10 16-10" stroke="var(--aurora-accent-primary)" strokeWidth="1.8" strokeLinecap="round" opacity="0.8" />
-    </svg>
+    <Mail
+      size={40}
+      strokeWidth={ICON_STROKE}
+      aria-hidden="true"
+      style={{ color: "var(--aurora-accent-primary)" }}
+    />
   )
 }
 
 function EyeIcon({ visible }: { visible: boolean }) {
-  return visible ? (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <ellipse cx="8" cy="8" rx="7" ry="4.5" stroke="currentColor" strokeWidth="1.2" />
-      <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  ) : (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M2 2l12 12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M6.5 4.2A6 6 0 0 1 8 4c3.9 0 7 4 7 4s-.9 1.5-2.3 2.7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M4.6 5.6C3.3 6.8 1 8 1 8s3.1 4 7 4a5.7 5.7 0 0 0 2.7-.7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  )
+  const Icon = visible ? Eye : EyeOff
+
+  return <Icon size={16} strokeWidth={ICON_STROKE} aria-hidden="true" />
 }
 
 // ---------------------------------------------------------------------------
@@ -246,7 +242,7 @@ function PasswordView({ onSubmit, onMagicLink, providers, footer }: LoginProps) 
       </div>
 
       <Button type="submit" variant="aurora" size="lg" block>
-        Sign In
+        Sign in
       </Button>
 
       {(providers && providers.length > 0) ? (
@@ -264,7 +260,7 @@ function PasswordView({ onSubmit, onMagicLink, providers, footer }: LoginProps) 
             block
             onClick={() => email && onMagicLink?.(email)}
           >
-            Send Magic Link
+            Send magic link
           </Button>
         </>
       )}
@@ -336,9 +332,9 @@ function MagicLinkSentView() {
             lineHeight: 1.5,
           }}
         >
-          We sent a sign-in link to your email.
+          A sign-in link was sent to your email.
           <br />
-          Check your inbox and click the link to continue.
+          Open the link to continue.
         </div>
       </div>
     </div>
@@ -400,15 +396,15 @@ export const Login = React.forwardRef<HTMLDivElement, LoginProps>(
       (mode === "magic-link-sent"
         ? "Magic link sent"
         : mode === "2fa"
-        ? "Two-Factor Auth"
-        : "Sign In")
+        ? "Two-factor auth"
+        : "Sign in")
 
     const sub =
       subtitle ??
       (mode === "2fa"
         ? "Almost there"
         : mode === "magic-link-sent"
-        ? "We just emailed you a link"
+        ? "Check your email for the link."
         : "Welcome back to the console.")
 
     return (
@@ -439,7 +435,7 @@ export const Login = React.forwardRef<HTMLDivElement, LoginProps>(
               fontSize: "30px",
               fontWeight: 800,
               lineHeight: 1.1,
-              letterSpacing: "-0.02em",
+              letterSpacing: 0,
               color: "var(--aurora-text-primary)",
             }}
           >

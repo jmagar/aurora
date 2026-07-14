@@ -14,8 +14,8 @@ export function ErrorPagesDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <GalleryPageIntro
         eyebrow="Feedback"
-        heading="Error Pages"
-        description="404, 403, and 500 error pages with path chips, countdown auto-retry, and Aurora panel styling."
+        heading="Error pages"
+        description="404, 403, and 500 error pages with requested paths, countdown auto-retry, and Aurora panel styling."
       />
 
       {/* 404 */}

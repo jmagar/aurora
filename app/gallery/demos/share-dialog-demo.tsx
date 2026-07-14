@@ -80,12 +80,12 @@ export function ShareDialogDemo() {
             Activity
           </div>
           {lastExport && (
-            <div style={{ fontFamily: "var(--aurora-font-mono)", fontSize: "12px", color: "var(--aurora-accent-primary)" }}>
+            <div style={{ fontFamily: "var(--aurora-font-sans)", fontSize: "12px", fontWeight: 600, color: "var(--aurora-accent-primary)" }}>
               Exported as {lastExport.toUpperCase()}
             </div>
           )}
           {invitedEmails.map((email) => (
-            <div key={email} style={{ fontFamily: "var(--aurora-font-mono)", fontSize: "12px", color: "var(--aurora-success)" }}>
+            <div key={email} style={{ fontFamily: "var(--aurora-font-sans)", fontSize: "12px", fontWeight: 600, color: "var(--aurora-success)" }}>
               Invited {email}
             </div>
           ))}

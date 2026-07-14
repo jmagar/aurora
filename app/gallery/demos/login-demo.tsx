@@ -29,7 +29,7 @@ export function LoginDemo() {
       }}
     >
       <Login
-        title="Sign In"
+        title="Sign in"
         subtitle="Welcome back to the console."
         providers={[
           {
@@ -48,7 +48,7 @@ export function LoginDemo() {
               href="#request-access"
               onClick={(e) => {
                 e.preventDefault()
-                setLastEvent("Request Access")
+                setLastEvent("Request access")
               }}
               style={{
                 color: "var(--aurora-accent-primary)",
@@ -56,7 +56,7 @@ export function LoginDemo() {
                 fontWeight: 500,
               }}
             >
-              Request Access
+              Request access
             </a>
           </span>
         }
@@ -67,8 +67,9 @@ export function LoginDemo() {
           aria-live="polite"
           style={{
             marginTop: "16px",
-            fontFamily: "var(--aurora-font-mono)",
+            fontFamily: "var(--aurora-font-sans)",
             fontSize: "11px",
+            fontWeight: 600,
             color: "var(--aurora-success)",
           }}
         >

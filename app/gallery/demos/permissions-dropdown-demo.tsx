@@ -38,7 +38,7 @@ export function PermissionsDropdownDemo() {
       {/* Header row */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
         <span style={{ fontFamily: "var(--aurora-font-sans)", fontSize: "13px", color: "var(--aurora-text-muted)" }}>
-          Policy Summary:
+          Policy summary:
         </span>
         <PermissionChip tools={tools} onClick={() => setChipOpen((o) => !o)} />
 
@@ -149,7 +149,7 @@ export function PermissionsDropdownDemo() {
           cursor: "pointer",
         }}
       >
-        Reset to Defaults
+        Reset to defaults
       </Button>
     </div>
   )

@@ -2025,7 +2025,9 @@
       "type": "registry:block",
       "title": "Aurora Permissions Dropdown",
       "description": "LLM runtime permission config panel with master toggle, per-tool Allow/Ask/Block segmented controls, state badges, and scrollable tool list. Also exports PermissionChip for compact summary display.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -2205,8 +2207,10 @@
       "name": "aurora-login-block",
       "type": "registry:block",
       "title": "Aurora Login Block",
-      "description": "Full-page login card centered on Aurora radial page wash. Features Labby stacked-plane mark + wordmark, email/password fields with show/hide toggle, Style D glow-border sign-in button, forgot password link, magic-link sent state with envelope icon, and 6-box OTP input that auto-advances on keystroke for 2FA.",
-      "dependencies": [],
+      "description": "Aurora login card with email/password fields, show/hide password toggle, forgot password link, magic-link sent state, provider button slots, and 6-box OTP input for 2FA.",
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -2241,8 +2245,10 @@
       "name": "aurora-oauth",
       "type": "registry:block",
       "title": "Aurora OAuth",
-      "description": "OAuth consent screen with app icon, scope checklist (sensitive scopes highlighted in warn color), and Allow/Deny buttons. Success/callback state with animated SVG check and close-window message. Token management table with token name, scopes chips, created date, last used, and Revoke button.",
-      "dependencies": [],
+      "description": "OAuth consent screen with app icon, scope checklist (sensitive scopes highlighted in warn color), and Allow/Deny buttons. Success/callback state with completion icon and close-window action. Token management table with token name, scopes chips, created date, last used, and Revoke button.",
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -2276,7 +2282,7 @@
       "name": "aurora-error-page",
       "type": "registry:block",
       "title": "Aurora Error Page",
-      "description": "Operator-first error pages for 404 (Not found + mono path + Go home button), 403 (Access denied + contact link), and 500 (Something went wrong + mono incident ID + animated countdown ring with auto-retry). No consumer-app illustrations — uses ghost numeric backdrop instead.",
+      "description": "Operator-first error pages for 404 (Not found + requested path + Go home button), 403 (Access denied + contact link), and 500 (Internal error + incident ID + countdown ring with auto-retry). No consumer-app illustrations — uses ghost numeric backdrop instead.",
       "dependencies": [],
       "registryDependencies": [
         "@aurora/aurora-tokens",
@@ -2382,7 +2388,9 @@
       "type": "registry:block",
       "title": "Aurora Share Dialog",
       "description": "Two-tab share/export dialog: Share tab with copy-link URL input, collaborator rows (avatar + name + role dropdown), and email invite form; Export tab with format radio group (HTML, PDF, PNG, Markdown), inline share chip, and a gradient download button.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-avatar",

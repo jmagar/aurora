@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { ChevronDown, Power, ShieldAlert, ShieldCheck } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
@@ -31,6 +32,8 @@ export interface PermissionsDropdownProps {
 // ---------------------------------------------------------------------------
 // State config
 // ---------------------------------------------------------------------------
+
+const ICON_STROKE = 1.7
 
 const STATE_CONFIG: Record<
   ToolPermissionState,
@@ -145,14 +148,12 @@ function MasterToggle({
       }}
     >
       {/* Power icon */}
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-        <path
-          d="M7.5 2V8M4 4.5A5 5 0 107.5 3"
-          stroke={enabled ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)"}
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        />
-      </svg>
+      <Power
+        size={15}
+        strokeWidth={ICON_STROKE}
+        aria-hidden="true"
+        style={{ color: enabled ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)" }}
+      />
 
       <span
         style={{
@@ -163,7 +164,7 @@ function MasterToggle({
           fontFamily: "var(--aurora-font-sans)",
         }}
       >
-        Tool Permissions
+        Tool permissions
       </span>
 
       {/* Toggle pill */}
@@ -247,7 +248,7 @@ function ToolRow({
             fontSize: 13,
             fontWeight: 600,
             color: "var(--aurora-text-primary)",
-            fontFamily: "var(--aurora-font-mono)",
+            fontFamily: "var(--aurora-font-sans)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -439,6 +440,7 @@ export function PermissionChip({
   const totalCount = tools.length
 
   const hasRestrictions = restrictedCount > 0
+  const ShieldIcon = hasRestrictions ? ShieldAlert : ShieldCheck
 
   return (
     <Button variant="plain" size="unstyled"
@@ -468,19 +470,12 @@ export function PermissionChip({
       }}
     >
       {/* Shield icon */}
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-        <path
-          d="M6 1L10.5 2.8V6C10.5 8.5 8.5 10.5 6 11.5C3.5 10.5 1.5 8.5 1.5 6V2.8L6 1Z"
-          stroke={hasRestrictions ? "var(--aurora-warn)" : "var(--aurora-accent-primary)"}
-          strokeWidth="1.1"
-          fill={
-            hasRestrictions
-              ? "color-mix(in srgb, var(--aurora-warn) 12%, transparent)"
-              : "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)"
-          }
-          strokeLinejoin="round"
-        />
-      </svg>
+      <ShieldIcon
+        size={12}
+        strokeWidth={ICON_STROKE}
+        aria-hidden="true"
+        style={{ color: hasRestrictions ? "var(--aurora-warn)" : "var(--aurora-accent-primary)" }}
+      />
 
       {/* Label */}
       <span
@@ -519,22 +514,12 @@ export function PermissionChip({
 
       {/* Chevron (when clickable) */}
       {onClick && (
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 10 10"
-          fill="none"
+        <ChevronDown
+          size={10}
+          strokeWidth={ICON_STROKE}
           aria-hidden="true"
           style={{ color: "var(--aurora-text-muted)", marginLeft: 2 }}
-        >
-          <path
-            d="M2 4L5 7L8 4"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        />
       )}
     </Button>
   )

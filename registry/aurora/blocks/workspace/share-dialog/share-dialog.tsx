@@ -1,12 +1,14 @@
 "use client"
 
 import * as React from "react"
+import { Check, Copy, Download, Link as LinkGlyph, UserPlus, X } from "lucide-react"
 import { Avatar } from "@/registry/aurora/ui/avatar"
 import { Button } from "@/registry/aurora/ui/button"
 import { Input } from "@/registry/aurora/ui/input"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -54,57 +56,56 @@ const DEFAULT_COLLABORATORS: Collaborator[] = [
 // Icons
 // ---------------------------------------------------------------------------
 
+const ICON_STROKE = 1.7
+
+const SHARE_DIALOG_RESPONSIVE_CSS = `
+@media (max-width: 560px) {
+  .aurora-share-dialog {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px);
+  }
+
+  .aurora-share-dialog-body {
+    max-height: calc(100vh - 124px);
+    overflow-y: auto;
+  }
+
+  .aurora-share-link-row,
+  .aurora-share-invite-form {
+    flex-direction: column !important;
+  }
+
+  .aurora-share-link-row > button,
+  .aurora-share-invite-form > button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+`
+
 function CloseIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M2 2L12 12M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  )
+  return <X size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />
 }
 
 function CopyIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M4.5 9.5H2C1.45 9.5 1 9.05 1 8.5V2C1 1.45 1.45 1 2 1H8.5C9.05 1 9.5 1.45 9.5 2V4.5" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  )
+  return <Copy size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />
 }
 
 function CheckIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <Check size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />
 }
 
 function DownloadIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-      <path d="M7.5 2V10M7.5 10L4.5 7M7.5 10L10.5 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M2 12H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  )
+  return <Download size={15} strokeWidth={ICON_STROKE} aria-hidden="true" />
 }
 
 function LinkIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M5.5 8.5C6.1 9.4 7.4 9.6 8.3 8.8L10.8 6.3C11.7 5.4 11.7 4 10.8 3.1C9.9 2.2 8.5 2.2 7.6 3.1L6.7 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M8.5 5.5C7.9 4.6 6.6 4.4 5.7 5.2L3.2 7.7C2.3 8.6 2.3 10 3.2 10.9C4.1 11.8 5.5 11.8 6.4 10.9L7.3 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  )
+  return <LinkGlyph size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />
 }
 
 function PersonAddIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <circle cx="6" cy="4.5" r="2.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M1 12C1 9.8 3.2 8 6 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M10.5 9V13M8.5 11H12.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
+  return <UserPlus size={14} strokeWidth={ICON_STROKE} aria-hidden="true" />
 }
 
 // ---------------------------------------------------------------------------
@@ -150,11 +151,13 @@ function RoleSelect({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {(["viewer", "editor", "admin"] as CollaboratorRole[]).map((r) => (
-          <SelectItem key={r} value={r}>
-            {ROLE_LABELS[r]}
-          </SelectItem>
-        ))}
+        <SelectGroup>
+          {(["viewer", "editor", "admin"] as CollaboratorRole[]).map((r) => (
+            <SelectItem key={r} value={r}>
+              {ROLE_LABELS[r]}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   )
@@ -209,7 +212,8 @@ function ShareChip({ url }: { url: string }) {
           whiteSpace: "nowrap",
           flex: 1,
           minWidth: 0,
-          fontFamily: "var(--aurora-font-mono)",
+          fontFamily: "var(--aurora-font-sans)",
+          fontWeight: 500,
         }}
       >
         {url}
@@ -326,6 +330,8 @@ export function ShareDialog({
 
   return (
     <>
+      <style>{SHARE_DIALOG_RESPONSIVE_CSS}</style>
+
       {/* Backdrop */}
       <div
         role="presentation"
@@ -340,6 +346,7 @@ export function ShareDialog({
 
       {/* Dialog */}
       <div
+        className="aurora-share-dialog"
         role="dialog"
         aria-modal="true"
         aria-label="Share dialog"
@@ -347,6 +354,7 @@ export function ShareDialog({
           position: "fixed",
           top: "50%",
           left: "50%",
+          transform: "translate(-50%, -50%)",
           zIndex: 201,
           width: "520px",
           maxWidth: "calc(100vw - 32px)",
@@ -412,7 +420,7 @@ export function ShareDialog({
         </div>
 
         {/* Body */}
-        <div style={{ padding: "20px" }}>
+        <div className="aurora-share-dialog-body" style={{ padding: "20px" }}>
           {/* ── Share tab ── */}
           {activeTab === "share" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -429,7 +437,7 @@ export function ShareDialog({
                 >
                   Shareable link
                 </label>
-                <div style={{ display: "flex", gap: "8px" }}>
+                <div className="aurora-share-link-row" style={{ display: "flex", gap: "8px" }}>
                   <div
                     style={{
                       flex: 1,
@@ -449,7 +457,8 @@ export function ShareDialog({
                     <span
                       style={{
                         fontSize: "12px",
-                        fontFamily: "var(--aurora-font-mono)",
+                        fontFamily: "var(--aurora-font-sans)",
+                        fontWeight: 500,
                         color: "var(--aurora-text-muted)",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -572,6 +581,7 @@ export function ShareDialog({
               {/* Invite */}
               <form
                 onSubmit={handleInvite}
+                className="aurora-share-invite-form"
                 style={{ display: "flex", gap: "8px" }}
                 aria-label="Invite people"
               >
