@@ -1,15 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { Check, ListChecks } from "lucide-react"
+import { Check, CircleAlert, ListChecks } from "lucide-react"
 
 // ---------------------------------------------------------------------------
 // Aurora "Plan" — execution-plan card (CD-parity).
 //
 // Self-contained shadcn-registry implementation: a titled card with a progress
 // bar and a vertical status rail (done / inprog / pending / error per step).
-// Rose (`--aurora-accent-pink`) is Aurora's secondary accent and the plan's
-// identity color; success/error use the semantic token layer. No violet.
+// Axon orange is the AI/automation identity color; success/error use the
+// semantic token layer. No violet.
 // ---------------------------------------------------------------------------
 
 export type PlanStepStatus = "pending" | "inprog" | "done" | "error"
@@ -28,7 +28,7 @@ export interface PlanProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 // Accents -------------------------------------------------------------------
-const PLAN_ACCENT = "var(--aurora-accent-pink)" // rose — plan identity / active step
+const PLAN_ACCENT = "var(--axon-orange)"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
@@ -115,12 +115,9 @@ function StepNode({ status }: { status: PlanStepStatus }) {
           border: "1.5px solid var(--aurora-error)",
           background: "var(--aurora-error-surface)",
           color: "var(--aurora-error)",
-          fontSize: "13px",
-          fontWeight: 700,
-          lineHeight: 1,
         }}
       >
-        !
+        <CircleAlert size={13} strokeWidth={2.2} aria-hidden="true" />
       </span>
     )
   }
@@ -158,7 +155,7 @@ export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
       aria-label={title}
       style={{
         background: "var(--aurora-surface-raised)",
-        border: "1px solid var(--aurora-border-default)",
+        border: "1px solid var(--aurora-border-strong)",
         borderRadius: "var(--aurora-radius-2)",
         boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
         padding: "20px 22px",
@@ -168,8 +165,7 @@ export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
       }}
       {...rest}
     >
-        {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
           <ListChecks
             size={16}
             strokeWidth={1.8}
@@ -181,8 +177,9 @@ export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
               fontSize: "15px",
               fontWeight: 700,
               color: "var(--aurora-text-primary)",
-              letterSpacing: "-0.01em",
+              letterSpacing: 0,
               minWidth: 0,
+              flex: "1 1 auto",
             }}
           >
             {title}
@@ -223,8 +220,8 @@ export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
                 height: "100%",
                 width: `${Math.round(progress * 100)}%`,
                 borderRadius: "999px",
-                background: PLAN_ACCENT,
-                transition: "width 0.3s ease",
+                background: "linear-gradient(90deg, var(--axon-orange-deep), var(--axon-orange))",
+                transition: "width var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease)",
               }}
             />
           </div>
@@ -262,8 +259,8 @@ export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
                       width: "1px",
                       borderLeft:
                         step.status === "done"
-                          ? "1px solid var(--aurora-success-border)"
-                          : "1px dashed var(--aurora-border-strong)",
+                            ? "1px solid var(--aurora-success-border)"
+                          : "1px dashed var(--axon-orange-border)",
                     }}
                   />
                 )}

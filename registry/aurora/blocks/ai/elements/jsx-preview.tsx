@@ -3,6 +3,8 @@
 import * as React from "react"
 import { Check, Code, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Badge } from "@/registry/aurora/ui/badge"
+import { Button } from "@/registry/aurora/ui/button"
 
 export interface JsxPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Source to render in the preview surface. */
@@ -109,13 +111,17 @@ const JsxPreview = React.memo(
     ref,
   ) {
     const [copied, setCopied] = React.useState(false)
+    const timer = React.useRef<number | undefined>(undefined)
     const lines = React.useMemo(() => code.split("\n"), [code])
+
+    React.useEffect(() => () => window.clearTimeout(timer.current), [])
 
     const handleCopy = React.useCallback(async () => {
       try {
         await navigator.clipboard.writeText(code)
         setCopied(true)
-        window.setTimeout(() => setCopied(false), 1200)
+        window.clearTimeout(timer.current)
+        timer.current = window.setTimeout(() => setCopied(false), 1200)
       } catch {
         /* clipboard unavailable */
       }
@@ -136,43 +142,22 @@ const JsxPreview = React.memo(
             style={{ color: "var(--aurora-accent-primary)" }}
           />
           <span
-            className="min-w-0 flex-1 truncate"
+            className="min-w-0 flex-1 truncate aurora-text-ui"
             style={{
               color: "var(--aurora-text-primary)",
-              fontFamily: "var(--aurora-font-mono)",
-              fontWeight: 500,
-              fontSize: 15,
-              letterSpacing: "-0.005em",
-              lineHeight: 1.2,
             }}
           >
             {filename ?? "preview"}
           </span>
-          <span
-            className="shrink-0 rounded-[7px] px-1.5 py-0.5"
-            style={{
-              border: "1px solid var(--aurora-accent-pink-border)",
-              background: "var(--aurora-accent-pink-surface)",
-              color: "var(--aurora-accent-pink)",
-              fontFamily: "var(--aurora-font-mono)",
-              fontWeight: 700,
-              fontSize: 10,
-              letterSpacing: "0.08em",
-              lineHeight: 1.4,
-            }}
-          >
+          <Badge tone="rose" size="sm">
             {language}
-          </span>
-          <button
+          </Badge>
+          <Button
             type="button"
+            variant="neutral"
+            size="icon"
             onClick={handleCopy}
             aria-label={copied ? "Copied source" : "Copy source"}
-            className="grid size-8 shrink-0 place-items-center rounded-[8px] transition-colors"
-            style={{
-              border: "1px solid var(--aurora-border-default)",
-              background: "color-mix(in srgb, var(--aurora-panel-medium) 70%, transparent)",
-              color: "var(--aurora-text-muted)",
-            }}
           >
             {copied ? (
               <Check className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
@@ -182,7 +167,7 @@ const JsxPreview = React.memo(
             <span className="sr-only" aria-live="polite" aria-atomic="true">
               {copied ? "Copied" : ""}
             </span>
-          </button>
+          </Button>
         </div>
 
         {/* Divider */}

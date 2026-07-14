@@ -120,7 +120,7 @@ export default function BadgesDemo() {
           <Badge tone="info" dot>Info</Badge>
           <Badge tone="cyan" dot>Syncing</Badge>
           <Badge tone="neutral" dot>Idle</Badge>
-          <Badge tone="rose" icon={<Sparkles size={12} aria-hidden />}>AI</Badge>
+          <Badge tone="rose" icon={<Sparkles size={12} aria-hidden />}>Creative</Badge>
         </div>
 
         <div style={lbl}>Fills</div>

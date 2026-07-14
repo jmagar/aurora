@@ -65,12 +65,16 @@ function CommitAvatar({ seed, size }: { seed: string; size: number }) {
 
 function HashChip({ hash }: { hash: string }) {
   const [copied, setCopied] = React.useState(false)
+  const timer = React.useRef<number | undefined>(undefined)
+
+  React.useEffect(() => () => window.clearTimeout(timer.current), [])
 
   const handleCopy = React.useCallback(async () => {
     try {
       await navigator.clipboard.writeText(hash)
       setCopied(true)
-      window.setTimeout(() => setCopied(false), 1200)
+      window.clearTimeout(timer.current)
+      timer.current = window.setTimeout(() => setCopied(false), 1200)
     } catch {
       /* clipboard unavailable */
     }
@@ -83,9 +87,9 @@ function HashChip({ hash }: { hash: string }) {
       aria-label={copied ? `Copied ${hash}` : `Copy commit ${hash}`}
       className="inline-flex shrink-0 items-center gap-1.5 rounded-[8px] px-2.5 py-1 transition-colors"
       style={{
-        border: "1px solid var(--aurora-accent-pink-border)",
-        background: "var(--aurora-accent-pink-surface)",
-        color: "var(--aurora-accent-pink)",
+        border: "1px solid var(--aurora-border-default)",
+        background: "var(--aurora-control-surface)",
+        color: copied ? "var(--aurora-success)" : "var(--aurora-text-muted)",
       }}
     >
       {copied ? (
@@ -93,7 +97,7 @@ function HashChip({ hash }: { hash: string }) {
       ) : (
         <GitCommitHorizontal className="size-3.5" aria-hidden style={{ opacity: 0.85 }} />
       )}
-      <span className="aurora-text-code" style={{ color: "var(--aurora-accent-pink)" }}>
+      <span className="aurora-text-meta" style={{ color: "currentColor", fontVariantNumeric: "tabular-nums" }}>
         {hash}
       </span>
       <span className="sr-only" aria-live="polite" aria-atomic="true">
@@ -148,15 +152,15 @@ const Commit = React.memo(
               fontFamily: "var(--aurora-font-display)",
               fontWeight: 700,
               fontSize: 16,
-              letterSpacing: "-0.01em",
+              letterSpacing: 0,
               lineHeight: 1.2,
             }}
           >
             {message}
           </span>
           <span
-            className="aurora-text-code shrink-0"
-            style={{ color: "var(--aurora-accent-pink)" }}
+            className="aurora-text-meta shrink-0"
+            style={{ color: "var(--aurora-text-muted)", fontVariantNumeric: "tabular-nums" }}
           >
             {hash}
           </span>
@@ -183,7 +187,7 @@ const Commit = React.memo(
                   fontFamily: "var(--aurora-font-display)",
                   fontWeight: 700,
                   fontSize: 19,
-                  letterSpacing: "-0.015em",
+                  letterSpacing: 0,
                   lineHeight: 1.15,
                 }}
               >
@@ -193,14 +197,15 @@ const Commit = React.memo(
                 <span
                   className="shrink-0 rounded-[7px] px-1.5 py-0.5"
                   style={{
-                    border: "1px solid var(--aurora-accent-pink-border)",
-                    background: "var(--aurora-accent-pink-surface)",
-                    color: "var(--aurora-accent-pink)",
-                    fontFamily: "var(--aurora-font-mono)",
+                    border: "1px solid var(--axon-orange-border)",
+                    background: "var(--axon-orange-surface)",
+                    color: "var(--axon-orange-strong)",
+                    fontFamily: "var(--aurora-font-sans)",
                     fontWeight: 700,
                     fontSize: 10,
-                    letterSpacing: "0.08em",
+                    letterSpacing: "var(--aurora-letter-eyebrow)",
                     lineHeight: 1.4,
+                    textTransform: "uppercase",
                   }}
                 >
                   AI
@@ -235,7 +240,7 @@ const Commit = React.memo(
                       style={{ color: "var(--aurora-text-muted)" }}
                     />
                     <span
-                      className="aurora-text-code truncate"
+                      className="aurora-text-meta truncate"
                       style={{ color: "var(--aurora-text-muted)" }}
                     >
                       {branch}
@@ -243,7 +248,10 @@ const Commit = React.memo(
                   </>
                 ) : null}
               </span>
-              <span className="flex shrink-0 items-center gap-3.5 aurora-text-code">
+              <span
+                className="flex shrink-0 items-center gap-3.5 aurora-text-meta"
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
                 {files != null ? (
                   <span style={{ color: "var(--aurora-text-muted)" }}>{files} files</span>
                 ) : null}

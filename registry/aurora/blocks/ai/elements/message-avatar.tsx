@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
-export type MessageAvatarTone = "rose" | "cyan" | "success" | "muted"
+export type MessageAvatarTone = "axon" | "rose" | "cyan" | "success" | "muted"
 export type MessageAvatarStatus = "online" | "away" | "busy" | "offline"
 
 export interface MessageAvatarProps
@@ -26,6 +26,7 @@ export interface MessageAvatarProps
 // ─── Tone → accent token ──────────────────────────────────────────────────────
 
 const toneColor: Record<MessageAvatarTone, string> = {
+  axon: "var(--axon-orange)",
   rose: "var(--aurora-accent-pink)",
   cyan: "var(--aurora-accent-primary)",
   success: "var(--aurora-success)",
@@ -38,7 +39,7 @@ const statusColor: Record<MessageAvatarStatus, string> = {
   online: "var(--aurora-success)",
   away: "var(--aurora-warn)",
   busy: "var(--aurora-error)",
-  offline: "var(--aurora-status-offline)",
+  offline: "var(--aurora-neutral)",
 }
 
 // ─── MessageAvatar ────────────────────────────────────────────────────────────
@@ -50,7 +51,7 @@ const MessageAvatar = React.forwardRef<
   MessageAvatarProps
 >(
   (
-    { className, label, src, tone = "rose", status, size = 34, style, ...props },
+    { className, label, src, tone = "axon", status, size = 34, style, ...props },
     ref
   ) => {
     const color = toneColor[tone]

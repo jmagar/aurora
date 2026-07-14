@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { Sparkles } from "lucide-react"
+import { Cpu } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/registry/aurora/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/registry/aurora/ui/select"
 
 export interface ModelSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
   models: string[]
@@ -41,7 +41,12 @@ const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
       ...props
     },
     ref
-  ) => (
+  ) => {
+    const reactId = React.useId()
+    const descriptionId = description ? `${reactId}-description` : undefined
+    const fallbackValue = models[0]
+
+    return (
     <div
       ref={ref}
       className={cn("grid gap-3 border p-3", className)}
@@ -57,36 +62,44 @@ const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
       <div className="grid gap-1">
         <div
           className="flex items-center gap-2 aurora-text-label"
-          style={{ color: "var(--aurora-accent-pink)", fontWeight: "var(--aurora-weight-heading)" }}
+          style={{ color: "var(--axon-orange)", fontWeight: "var(--aurora-weight-heading)" }}
         >
-          <Sparkles className="size-3.5" aria-hidden style={{ color: "var(--aurora-accent-pink)" }} />
+          <Cpu className="size-3.5" aria-hidden style={{ color: "var(--axon-orange)" }} />
           {label}
         </div>
-        <p className="aurora-text-meta" style={{ margin: 0 }}>
+        <p id={descriptionId} className="aurora-text-meta" style={{ margin: 0 }}>
           {description}
         </p>
       </div>
       <Select
         value={value}
-        defaultValue={defaultValue ?? models[0]}
+        defaultValue={defaultValue ?? fallbackValue}
         onValueChange={onValueChange}
         name={name}
-        disabled={disabled}
+        disabled={disabled || models.length === 0}
         required={required}
       >
-        <SelectTrigger id={triggerId} aria-label={triggerLabel ?? label} className="h-10 rounded-[10px]">
-          <SelectValue placeholder={placeholder ?? models[0]} />
+        <SelectTrigger
+          id={triggerId}
+          aria-label={triggerLabel ?? label}
+          aria-describedby={descriptionId}
+          className="h-10 rounded-[10px]"
+        >
+          <SelectValue placeholder={placeholder ?? fallbackValue ?? "Select Model"} />
         </SelectTrigger>
         <SelectContent>
-          {models.map((item) => (
-            <SelectItem key={item} value={item}>
-              {item}
-            </SelectItem>
-          ))}
+          <SelectGroup>
+            {models.map((item) => (
+              <SelectItem key={item} value={item}>
+                {item}
+              </SelectItem>
+            ))}
+          </SelectGroup>
         </SelectContent>
       </Select>
     </div>
-  )
+    )
+  }
 )
 ModelSelector.displayName = "ModelSelector"
 

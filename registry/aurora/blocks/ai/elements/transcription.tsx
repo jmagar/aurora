@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Mic } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 /**
  * Transcription — a live transcript panel.
@@ -28,10 +29,13 @@ export interface TranscriptionProps extends React.HTMLAttributes<HTMLDivElement>
   segments: TranscriptionSegment[]
 }
 
-function ConfidenceBadge({ value }: { value: number }) {
+function ConfidenceBadge({ value, className }: { value: number; className?: string }) {
   return (
     <span
-      className="inline-flex shrink-0 items-center rounded-[8px] border px-2.5 py-1 aurora-text-code"
+      className={cn(
+        "inline-flex shrink-0 items-center rounded-[8px] border px-2.5 py-1 aurora-text-control tabular-nums",
+        className
+      )}
       style={{
         color: "var(--aurora-success)",
         borderColor: "var(--aurora-success-border)",
@@ -43,10 +47,13 @@ function ConfidenceBadge({ value }: { value: number }) {
   )
 }
 
-function LiveBadge() {
+function LiveBadge({ className }: { className?: string }) {
   return (
     <span
-      className="inline-flex shrink-0 items-center gap-1.5 rounded-[8px] border px-2.5 py-1 aurora-text-label"
+      className={cn(
+        "inline-flex shrink-0 items-center gap-1.5 rounded-[8px] border px-2.5 py-1 aurora-text-label",
+        className
+      )}
       style={{
         color: "var(--aurora-accent-pink)",
         borderColor: "var(--aurora-accent-pink-border)",
@@ -68,7 +75,7 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
   ({ segments, className, style, ...props }, ref) => (
     <div
       ref={ref}
-      className={["grid gap-3 rounded-[14px] border p-4", className].filter(Boolean).join(" ")}
+      className={cn("grid gap-3 rounded-[var(--aurora-radius-1)] border p-4", className)}
       style={{
         background: "var(--aurora-surface-raised)",
         borderColor: "var(--aurora-border-strong)",
@@ -100,13 +107,13 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
           LIVE
         </div>
       </div>
-      <div className="grid gap-2.5">
+      <div className="grid gap-2.5" role="log" aria-live="polite">
         {segments.map((segment) => {
           const isLive = segment.confidence == null
           return (
             <div
               key={`${segment.speaker}-${segment.timecode}`}
-              className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-start gap-3 rounded-[10px] border px-3.5 py-3"
+              className="grid grid-cols-1 items-start gap-2.5 rounded-[10px] border px-3.5 py-3 sm:grid-cols-[72px_minmax(0,1fr)_auto] sm:gap-3"
               style={{
                 borderColor: isLive
                   ? "var(--aurora-accent-pink-border)"
@@ -118,7 +125,7 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
               }}
             >
               <span
-                className="aurora-text-code"
+                className="aurora-text-meta tabular-nums"
                 style={{ color: "var(--aurora-accent-primary)" }}
               >
                 {segment.timecode}
@@ -126,7 +133,7 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
               <span className="min-w-0">
                 <span
                   className="block aurora-text-label"
-                  style={{ color: "var(--aurora-text-muted)", textTransform: "uppercase" }}
+                  style={{ color: "var(--aurora-text-muted)" }}
                 >
                   {segment.speaker}
                 </span>
@@ -137,7 +144,14 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
                   {segment.text}
                 </span>
               </span>
-              {isLive ? <LiveBadge /> : <ConfidenceBadge value={segment.confidence!} />}
+              {isLive ? (
+                <LiveBadge className="justify-self-start sm:justify-self-end" />
+              ) : (
+                <ConfidenceBadge
+                  value={segment.confidence!}
+                  className="justify-self-start sm:justify-self-end"
+                />
+              )}
             </div>
           )
         })}

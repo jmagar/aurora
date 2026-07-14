@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Avatar as AuroraAvatar } from "@/registry/aurora/ui/avatar"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -15,7 +16,7 @@ export interface MessageProps extends React.HTMLAttributes<HTMLElement> {
 
 export interface MessageAvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
   label: string
-  tone?: "cyan" | "rose" | "muted"
+  tone?: "axon" | "cyan" | "rose" | "muted"
   status?: "online" | "away" | "busy" | "offline"
 }
 
@@ -79,20 +80,13 @@ Message.displayName = "Message"
 const MessageActionButton = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, style, type = "button", ...props }, ref) => (
-  <button
+>(({ className, type = "button", ...props }, ref) => (
+  <Button
     ref={ref}
     type={type}
-    className={[
-      "grid h-6 w-6 place-items-center rounded-[6px] border-none bg-transparent",
-      "cursor-pointer text-[var(--aurora-text-muted)] transition-colors",
-      "hover:bg-[var(--aurora-hover-bg)] hover:text-[var(--aurora-text-primary)]",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring-strong)]",
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ")}
-    style={style}
+    variant="ghost"
+    size="icon"
+    className={["size-6 rounded-[6px] p-0", className].filter(Boolean).join(" ")}
     {...props}
   />
 ))
@@ -103,9 +97,11 @@ MessageActionButton.displayName = "MessageActionButton"
 const MessageAvatar = React.forwardRef<
   React.ElementRef<typeof AuroraAvatar>,
   MessageAvatarProps
->(({ className, label, tone = "muted", status = "online", style, ...props }, ref) => {
+>(({ className, label, tone = "axon", status = "online", style, ...props }, ref) => {
   const color =
-    tone === "rose"
+    tone === "axon"
+      ? "var(--axon-orange)"
+      : tone === "rose"
       ? "var(--aurora-accent-pink)"
       : tone === "cyan"
         ? "var(--aurora-accent-primary)"
@@ -125,7 +121,7 @@ const MessageAvatar = React.forwardRef<
         border: `1.5px solid color-mix(in srgb, ${color} 30%, var(--aurora-border-default))`,
         background: `color-mix(in srgb, ${color} 12%, var(--aurora-panel-medium))`,
         boxShadow: "var(--aurora-highlight-medium)",
-        color: "var(--aurora-accent-pink)",
+        color,
         fontFamily: "var(--aurora-font-display)",
         fontSize: 12,
         fontWeight: 800,
@@ -143,10 +139,10 @@ MessageAvatar.displayName = "MessageAvatar"
 const bubbleTone = {
   assistant: {
     background:
-      "linear-gradient(180deg, var(--aurora-panel-strong), var(--aurora-panel-medium))",
-    borderColor: "var(--aurora-border-default)",
+      "linear-gradient(180deg, color-mix(in srgb, var(--axon-orange) 9%, var(--aurora-panel-strong)), var(--aurora-panel-medium))",
+    borderColor: "color-mix(in srgb, var(--axon-orange) 24%, var(--aurora-border-default))",
     shadow:
-      "0 14px 30px color-mix(in srgb, var(--aurora-page-bg) 60%, transparent), var(--aurora-highlight-medium)",
+      "0 14px 30px color-mix(in srgb, var(--aurora-page-bg) 54%, transparent), var(--aurora-highlight-medium)",
   },
   user: {
     background:

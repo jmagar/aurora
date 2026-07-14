@@ -6,7 +6,7 @@ import { AiImageGrid } from "@/registry/aurora/blocks/ai/elements/ai-image-grid"
 
 // CD-parity composition for the AiImageGrid element: a 2×2 select-one grid of
 // candidate variations with an "AI" identity badge + model pill on the chosen
-// tile, a rose selection ring + check, and a "Regenerate all" header action —
+// tile, a cyan selection ring, Axon-orange check, and a "Regenerate all" header action —
 // reproduced 1:1 from the Claude Design dsCard.
 
 // Candidate scene from the CD source: a radial navy field (variable hue + light
@@ -37,8 +37,8 @@ export default function AiImageGridDemo() {
     <div className="grid gap-6">
       <GalleryPageIntro
         eyebrow="AI Elements"
-        heading="AiImageGrid"
-        description="Candidate variations — a 2×2 select-one grid with AI badge, model pill, a rose selection ring and a regenerate-all action."
+        heading="AI Image Grid"
+        description="Candidate variations — a 2×2 select-one grid with AI badge, model pill, a cyan selection ring and a regenerate-all action."
       />
       <section
         style={{

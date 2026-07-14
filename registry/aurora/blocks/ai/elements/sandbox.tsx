@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { ExternalLink, FileText, Globe, Monitor, SquareTerminal } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 
@@ -36,7 +37,7 @@ function PromptGlyph({ color }: { color: string }) {
         fontWeight: 600,
         lineHeight: 1,
         color,
-        letterSpacing: "-0.04em",
+        letterSpacing: 0,
       }}
     >
       {">_"}
@@ -64,7 +65,7 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
   ) => (
     <div
       ref={ref}
-      className={["grid gap-4 p-[18px]", className].filter(Boolean).join(" ")}
+      className={cn("grid gap-4 p-[18px]", className)}
       style={{
         background: "var(--aurora-surface-raised)",
         border: "1px solid var(--aurora-border-strong)",
@@ -80,9 +81,9 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
           <span
             className="inline-flex size-7 shrink-0 items-center justify-center rounded-[8px]"
             style={{
-              background: "color-mix(in srgb, var(--aurora-accent-primary) 14%, transparent)",
-              border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 32%, transparent)",
-              color: "var(--aurora-accent-strong)",
+              background: "var(--axon-orange-surface)",
+              border: "1px solid var(--axon-orange-border)",
+              color: "var(--axon-orange)",
             }}
           >
             <SquareTerminal className="size-4" aria-hidden />
@@ -94,7 +95,7 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
               fontFamily: "var(--aurora-font-sans)",
               fontSize: "15px",
               fontWeight: 700,
-              letterSpacing: "-0.01em",
+              letterSpacing: 0,
             }}
           >
             {title}
@@ -119,8 +120,8 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
             href={url}
             target="_blank"
             rel="noreferrer"
-            className="aurora-text-code min-w-0 flex-1 truncate"
-            style={{ color: "var(--aurora-accent-strong)", fontSize: "13px" }}
+            className="aurora-text-ui min-w-0 flex-1 truncate"
+            style={{ color: "var(--aurora-accent-strong)" }}
           >
             {url}
           </a>
@@ -133,48 +134,53 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
         <span
           className="inline-flex items-center gap-1.5 rounded-[7px] px-2.5 py-1.5"
           style={{
-            background: "color-mix(in srgb, var(--aurora-accent-primary) 12%, var(--aurora-panel-medium))",
-            border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 30%, transparent)",
+            background: "var(--axon-orange-surface)",
+            border: "1px solid var(--axon-orange-border)",
           }}
         >
-          <PromptGlyph color="var(--aurora-accent-strong)" />
+          <PromptGlyph color="var(--axon-orange-strong)" />
           <span
             className="aurora-text-code"
-            style={{ color: "var(--aurora-accent-strong)", fontSize: "13px" }}
+            style={{ color: "var(--axon-orange-strong)", fontSize: "13px" }}
           >
             {command}
           </span>
         </span>
         <span
-          className="inline-flex items-center rounded-[7px] px-2.5 py-1.5 aurora-text-code"
+          className="inline-flex items-center rounded-[7px] px-2.5 py-1.5 aurora-text-meta"
           style={{
             background: "var(--aurora-control-surface)",
             border: "1px solid var(--aurora-border-default)",
             color: "var(--aurora-text-muted)",
-            fontSize: "13px",
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "var(--aurora-type-caption)",
           }}
         >
           {runtime}
         </span>
         <span
-          className="inline-flex items-center rounded-[7px] px-2.5 py-1.5 aurora-text-code"
+          className="inline-flex items-center rounded-[7px] px-2.5 py-1.5 aurora-text-meta"
           style={{
             background: "var(--aurora-control-surface)",
             border: "1px solid var(--aurora-border-default)",
             color: "var(--aurora-text-muted)",
-            fontSize: "13px",
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "var(--aurora-type-caption)",
+            fontVariantNumeric: "tabular-nums",
           }}
         >
           {envCount} env
         </span>
         {uptime ? (
           <span
-            className="inline-flex items-center rounded-[7px] px-2.5 py-1.5 aurora-text-code"
+            className="inline-flex items-center rounded-[7px] px-2.5 py-1.5 aurora-text-meta"
             style={{
               background: "var(--aurora-control-surface)",
               border: "1px solid var(--aurora-border-default)",
               color: "var(--aurora-text-muted)",
-              fontSize: "13px",
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "var(--aurora-type-caption)",
+              fontVariantNumeric: "tabular-nums",
             }}
           >
             up {uptime}
@@ -194,8 +200,8 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
           <div key={path} className="flex items-center gap-2.5">
             <FileText className="size-4 shrink-0" aria-hidden style={{ color: "var(--aurora-text-muted)" }} />
             <span
-              className="aurora-text-code truncate"
-              style={{ color: "var(--aurora-text-primary)", fontSize: "13px" }}
+              className="aurora-text-meta truncate"
+              style={{ color: "var(--aurora-text-primary)" }}
             >
               {path}
             </span>
@@ -205,12 +211,20 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
 
       {/* Actions */}
       <div className="flex flex-wrap items-center gap-3">
-        <Button type="button" variant="neutral" size="sm">
-          <Monitor className="size-3.5" aria-hidden />
+        <Button
+          type="button"
+          variant="neutral"
+          size="sm"
+          iconLeft={<Monitor className="size-3.5" aria-hidden />}
+        >
           Open Logs
         </Button>
-        <Button type="button" variant="ghost" size="sm">
-          <PromptGlyph color="var(--aurora-text-muted)" />
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          iconLeft={<PromptGlyph color="var(--aurora-text-muted)" />}
+        >
           Attach Shell
         </Button>
       </div>

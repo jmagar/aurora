@@ -28,6 +28,10 @@ export default function PromptInputDemo() {
     setAttachments((prev) => prev.filter((a) => a.id !== id))
   }
 
+  function handleAddAttachment(attachment: Attachment) {
+    setAttachments((prev) => [...prev, attachment])
+  }
+
   return (
     <div
       style={{
@@ -46,6 +50,7 @@ export default function PromptInputDemo() {
           onSubmit={handleSubmit}
           onStop={handleStop}
           attachments={attachments}
+          onAddAttachment={handleAddAttachment}
           onRemoveAttachment={handleRemoveAttachment}
           model={model}
           onModelChange={setModel}

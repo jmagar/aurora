@@ -17,10 +17,12 @@ import { Mic, MicOff } from "lucide-react"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/registry/aurora/ui/select"
+import { Button } from "@/registry/aurora/ui/button"
 import { cn } from "@/lib/utils"
 
 export interface MicSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -94,8 +96,10 @@ const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
             <Mic className="size-3.5" aria-hidden />
             Microphone
           </span>
-          <button
+          <Button
             type="button"
+            variant={isMuted ? "destructive" : "neutral"}
+            size="icon"
             className="aurora-mic__mute"
             aria-pressed={isMuted}
             aria-label={isMuted ? "Unmute microphone" : "Mute microphone"}
@@ -107,7 +111,7 @@ const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
             ) : (
               <Mic className="size-4" aria-hidden />
             )}
-          </button>
+          </Button>
         </div>
 
         <div className="aurora-mic__meter" aria-hidden>
@@ -143,11 +147,13 @@ const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
             <SelectValue placeholder={devices[0]} />
           </SelectTrigger>
           <SelectContent>
-            {devices.map((device) => (
-              <SelectItem key={device} value={device}>
-                {device}
-              </SelectItem>
-            ))}
+            <SelectGroup>
+              {devices.map((device) => (
+                <SelectItem key={device} value={device}>
+                  {device}
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
       </div>

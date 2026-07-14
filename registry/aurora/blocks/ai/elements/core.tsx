@@ -34,9 +34,10 @@ import { Avatar as AuroraAvatar } from "@/registry/aurora/ui/avatar"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 import { Separator } from "@/registry/aurora/ui/separator"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/registry/aurora/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/registry/aurora/ui/select"
 import { Spinner } from "@/registry/aurora/ui/spinner"
 import { Textarea } from "@/registry/aurora/ui/textarea"
+import { cn } from "@/lib/utils"
 
 export interface MessageProps extends React.HTMLAttributes<HTMLElement> {
   role?: "assistant" | "user" | "system"
@@ -281,9 +282,17 @@ const taskTone = {
 const resultVariant = {
   passed: "success",
   failed: "error",
-  skipped: "default",
-  running: "default",
+  skipped: "neutral",
+  running: "neutral",
 } as const
+
+function formatStatusLabel(value: string) {
+  return value
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ")
+}
 
 function panelStyle(style?: React.CSSProperties): React.CSSProperties {
   return {
@@ -378,8 +387,18 @@ function CopyButton({ value, label = "Copy" }: { value: string; label?: string }
   }, [value])
 
   return (
-    <Button type="button" variant="ghost" size="sm" onClick={handleCopy} aria-label={copied ? "Copied to clipboard" : label}>
-      {copied ? <Check className="size-3.5" aria-hidden /> : <Copy className="size-3.5" aria-hidden />}
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      onClick={handleCopy}
+      aria-label={copied ? "Copied to clipboard" : label}
+    >
+      {copied ? (
+        <Check className="size-3.5" data-icon="inline-start" aria-hidden />
+      ) : (
+        <Copy className="size-3.5" data-icon="inline-start" aria-hidden />
+      )}
       <span aria-live="polite" aria-atomic="true">{copied ? "Copied" : label}</span>
     </Button>
   )
@@ -455,11 +474,13 @@ function SelectorCard({
           <SelectValue placeholder={placeholder ?? values[0]} />
         </SelectTrigger>
         <SelectContent>
-          {values.map((item) => (
-            <SelectItem key={item} value={item}>
-              {item}
-            </SelectItem>
-          ))}
+          <SelectGroup>
+            {values.map((item) => (
+              <SelectItem key={item} value={item}>
+                {item}
+              </SelectItem>
+            ))}
+          </SelectGroup>
         </SelectContent>
       </Select>
     </div>
@@ -469,10 +490,10 @@ function SelectorCard({
 const Message = React.forwardRef<HTMLElement, MessageProps>(({ className, role = "assistant", style, ...props }, ref) => (
   <article
     ref={ref}
-    className={[
+    className={cn(
       "grid grid-cols-[auto_minmax(0,1fr)] gap-3",
-      className,
-    ].filter(Boolean).join(" ")}
+      className
+    )}
     data-role={role}
     style={{
       color: "var(--aurora-text-primary)",
@@ -542,11 +563,11 @@ const MessageContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
   ({ className, style, tone = "assistant", ...props }, ref) => (
     <div
       ref={ref}
-      className={[
+      className={cn(
         "min-w-0 border px-4 py-3 aurora-text-body",
         tone === "user" ? "rounded-[16px_16px_6px_16px]" : "rounded-[16px_16px_16px_6px]",
-        className,
-      ].filter(Boolean).join(" ")}
+        className
+      )}
       style={{
         background: bubbleTone[tone].background,
         borderColor: bubbleTone[tone].borderColor,
@@ -564,18 +585,19 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
   ({ className, index, style, children, ...props }, ref) => (
     <a
       ref={ref}
-      className={[
+      className={cn(
         "inline-flex items-center rounded-[4px] border px-1.5 py-0.5 align-baseline no-underline",
         "transition-colors hover:bg-[var(--aurora-hover-bg)]",
         "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
-        className,
-      ].filter(Boolean).join(" ")}
+        className
+      )}
       style={{
         borderColor: "color-mix(in srgb, var(--aurora-accent-primary) 34%, transparent)",
         color: "var(--aurora-accent-strong)",
-        fontFamily: "var(--aurora-font-mono)",
+        fontFamily: "var(--aurora-font-sans)",
         fontSize: 11,
         fontWeight: 700,
+        letterSpacing: "var(--aurora-letter-label)",
         lineHeight: 1,
         ...style,
       }}
@@ -588,7 +610,7 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
 InlineCitation.displayName = "InlineCitation"
 
 const Sources = React.forwardRef<HTMLDivElement, SourcesProps>(({ className, title = "Sources", style, children, ...props }, ref) => (
-  <div ref={ref} className={["grid gap-2 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+  <div ref={ref} className={cn("grid gap-2 border p-3", className)} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
       <FileText className="size-3.5" aria-hidden />
       {title}
@@ -602,11 +624,11 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(({ className, so
   <a
     ref={ref}
     href={source.href ?? "#"}
-    className={[
+    className={cn(
       "grid gap-1 rounded-[7px] border px-3 py-2 no-underline transition-colors hover:bg-[var(--aurora-hover-bg)]",
       "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
-      className,
-    ].filter(Boolean).join(" ")}
+      className
+    )}
     style={{
       borderColor: "var(--aurora-border-default)",
       color: "var(--aurora-text-primary)",
@@ -616,7 +638,7 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(({ className, so
   >
     <span className="flex min-w-0 items-center gap-2">
       <span className="truncate aurora-text-control">{source.title}</span>
-      {source.badge ? <Badge>{source.badge}</Badge> : null}
+      {source.badge ? <Badge shape="tag">{source.badge}</Badge> : null}
       <ExternalLink className="ml-auto size-3.5 shrink-0" aria-hidden style={{ color: "var(--aurora-text-muted)" }} />
     </span>
     {source.description ? <span className="aurora-text-meta">{source.description}</span> : null}
@@ -625,7 +647,7 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(({ className, so
 Source.displayName = "Source"
 
 const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(({ className, tasks, style, ...props }, ref) => (
-  <div ref={ref} className={["grid gap-2 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+  <div ref={ref} className={cn("grid gap-2 border p-3", className)} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
       <ListChecks className="size-3.5" aria-hidden />
       Tasks
@@ -649,7 +671,9 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(({ className, t
               <span className="block truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{task.title}</span>
               {task.description ? <span className="block aurora-text-meta">{task.description}</span> : null}
             </span>
-            <Badge variant={task.status === "failed" ? "error" : task.status === "completed" ? "success" : "default"}>{task.status}</Badge>
+            <Badge tone={task.status === "failed" ? "error" : task.status === "completed" ? "success" : task.status === "running" ? "warn" : "neutral"}>
+              {formatStatusLabel(task.status)}
+            </Badge>
           </div>
         )
       })}
@@ -659,7 +683,7 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(({ className, t
 TaskList.displayName = "TaskList"
 
 const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ className, results, style, ...props }, ref) => (
-  <div ref={ref} className={["grid gap-2 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+  <div ref={ref} className={cn("grid gap-2 border p-3", className)} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
       <FlaskConical className="size-3.5" aria-hidden />
       Test Results
@@ -678,7 +702,9 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ classN
           <span className="truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)", paddingTop: 4 }}>{result.name}</span>
           <span className="aurora-text-meta" style={{ justifySelf: "end", minHeight: 20, paddingTop: 4 }}>{result.duration ?? ""}</span>
           <div style={{ display: "flex", justifyContent: "flex-end", minHeight: 24 }}>
-            <Badge variant={resultVariant[result.status]} dot={result.status === "running"}>{result.status}</Badge>
+            <Badge tone={resultVariant[result.status]} dot={result.status === "running"}>
+              {formatStatusLabel(result.status)}
+            </Badge>
           </div>
           {result.message ? <span className="col-span-3 aurora-text-meta" style={{ paddingTop: 2 }}>{result.message}</span> : null}
         </div>
@@ -689,7 +715,7 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ classN
 TestResults.displayName = "TestResults"
 
 const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(({ className, title = "Stack Trace", frames, style, ...props }, ref) => (
-  <div ref={ref} className={["grid gap-2 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+  <div ref={ref} className={cn("grid gap-2 border p-3", className)} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-error)" }}>
       <CircleAlert className="size-3.5" aria-hidden />
       {title}
@@ -713,7 +739,7 @@ StackTrace.displayName = "StackTrace"
 
 const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariablesProps>(
   ({ className, variables, style, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-2 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid gap-2 rounded-[8px] border p-3", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
         <KeyRound className="size-3.5" aria-hidden />
         Environment
@@ -727,8 +753,8 @@ const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariabl
               {previewValue(item.value, item.secret)}
             </span>
             <span className="flex items-center gap-2 justify-self-end">
-              {item.required ? <Badge variant="warn">Required</Badge> : null}
-              {item.secret ? <Badge variant="rose">Secret</Badge> : null}
+              {item.required ? <Badge tone="warn">Required</Badge> : null}
+              {item.secret ? <Badge tone="rose">Secret</Badge> : null}
             </span>
           </div>
         ))}
@@ -740,7 +766,7 @@ EnvironmentVariables.displayName = "EnvironmentVariables"
 
 const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
   ({ label, description, className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <Save className="mt-0.5 size-4" aria-hidden style={{ color: "var(--axon-orange)" }} />
       <div className="min-w-0">
         <div className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{label}</div>
@@ -753,15 +779,21 @@ Checkpoint.displayName = "Checkpoint"
 
 const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
   ({ title, description, confirmLabel = "Approve", cancelLabel = "Cancel", className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-3 border p-4", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid gap-3 border p-4", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-section" style={{ color: "var(--aurora-text-primary)" }}>
         <CircleAlert className="size-4" aria-hidden style={{ color: "var(--aurora-warn)" }} />
         {title}
       </div>
       {description ? <p className="aurora-text-body" style={{ margin: 0 }}>{description}</p> : null}
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="neutral" size="sm"><X className="size-3.5" aria-hidden />{cancelLabel}</Button>
-        <Button type="button" variant="rose" size="sm"><Check className="size-3.5" aria-hidden />{confirmLabel}</Button>
+        <Button type="button" variant="neutral" size="sm">
+          <X className="size-3.5" data-icon="inline-start" aria-hidden />
+          {cancelLabel}
+        </Button>
+        <Button type="button" variant="rose" size="sm">
+          <Check className="size-3.5" data-icon="inline-start" aria-hidden />
+          {confirmLabel}
+        </Button>
       </div>
     </div>
   )
@@ -775,7 +807,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
     return (
       <div
         ref={ref}
-        className={["grid gap-2 border p-3", className].filter(Boolean).join(" ")}
+        className={cn("grid gap-2 border p-3", className)}
         style={{
           ...panelStyle(style),
           width: "min(520px, 100%)",
@@ -811,7 +843,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
               width: `${percent}%`,
               height: "100%",
               borderRadius: 999,
-              background: "linear-gradient(90deg, var(--aurora-accent-primary), var(--aurora-accent-pink))",
+              background: "linear-gradient(90deg, var(--axon-orange), var(--aurora-accent-primary))",
             }}
           />
           <span
@@ -846,7 +878,7 @@ const Conversation = React.forwardRef<HTMLDivElement, ConversationProps>(
       role="log"
       aria-live="polite"
       aria-label="Conversation"
-      className={["grid gap-4 border p-4", className].filter(Boolean).join(" ")}
+      className={cn("grid gap-4 border p-4", className)}
       style={{
         ...panelStyle(style),
         background: [
@@ -893,7 +925,7 @@ const Shimmer = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
   ({ className, style, ...props }, ref) => (
     <div
       ref={ref}
-      className={["h-3 overflow-hidden rounded-full", className].filter(Boolean).join(" ")}
+      className={cn("h-3 overflow-hidden rounded-full", className)}
       style={{
         background: "linear-gradient(90deg, var(--aurora-control-surface), color-mix(in srgb, var(--axon-orange) 18%, transparent), var(--aurora-control-surface))",
         backgroundSize: "220% 100%",
@@ -908,7 +940,7 @@ Shimmer.displayName = "Shimmer"
 
 const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
   ({ className, style, options, children, onClick, disabled, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-2", className].filter(Boolean).join(" ")} style={{ width: "100%", minWidth: 0, ...style }} {...props}>
+    <div ref={ref} className={cn("grid gap-2", className)} style={{ width: "100%", minWidth: 0, ...style }} {...props}>
       {(options ?? [{ id: "default", title: typeof children === "string" ? children : "Suggested next step" }]).map((option) => (
         <Button
           key={option.id}
@@ -925,7 +957,7 @@ const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
           <span className="grid min-w-0 gap-1">
             <span className="flex min-w-0 flex-wrap items-center gap-2">
               <span className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{option.title}</span>
-              {option.badge ? <Badge>{option.badge}</Badge> : null}
+              {option.badge ? <Badge shape="tag">{option.badge}</Badge> : null}
             </span>
             {option.description ? <span className="aurora-text-meta" style={{ minWidth: 0 }}>{option.description}</span> : null}
           </span>
@@ -938,13 +970,15 @@ Suggestion.displayName = "Suggestion"
 
 const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
   ({ name, role, status = "idle", className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <Bot className="size-[18px]" aria-hidden style={{ color: "var(--axon-orange)" }} />
       <span className="min-w-0">
         <span className="block truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{name}</span>
         {role ? <span className="block aurora-text-meta">{role}</span> : null}
       </span>
-      <Badge variant={status === "blocked" ? "warn" : status === "running" ? "success" : "default"} dot={status === "running"}>{status}</Badge>
+      <Badge tone={status === "blocked" ? "warn" : status === "running" ? "success" : "neutral"} dot={status === "running"}>
+        {formatStatusLabel(status)}
+      </Badge>
     </div>
   )
 )
@@ -952,11 +986,11 @@ Agent.displayName = "Agent"
 
 const Commit = React.forwardRef<HTMLDivElement, CommitProps>(
   ({ hash, message, author, className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <GitCommitHorizontal className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
       <span className="min-w-0">
         <span className="block truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{message}</span>
-        <span className="block aurora-text-code" style={{ color: "var(--aurora-text-muted)" }}>{hash}{author ? ` by ${author}` : ""}</span>
+        <span className="block aurora-text-meta">{hash}{author ? ` by ${author}` : ""}</span>
       </span>
     </div>
   )
@@ -976,11 +1010,11 @@ JsxPreview.displayName = "JsxPreview"
 
 const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
   ({ name, version, description, className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)] gap-3 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-3 rounded-[8px] border p-3", className)} style={panelStyle(style)} {...props}>
       <Package className="size-5" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
       <span className="min-w-0">
         <span className="block truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{name}</span>
-        <span className="block aurora-text-code" style={{ color: "var(--aurora-accent-strong)" }}>{version}</span>
+        <span className="block aurora-text-meta" style={{ color: "var(--aurora-accent-strong)" }}>{version}</span>
         {description ? <span className="block aurora-text-meta">{description}</span> : null}
       </span>
     </div>
@@ -990,22 +1024,24 @@ PackageInfo.displayName = "PackageInfo"
 
 const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
   ({ title = "Sandbox", command = "pnpm dev", status = "running", runtime = "Node 20", paths = ["/workdir/app", "/workdir/.next"], envCount = 8, className, style, children, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Boxes className="size-3.5" aria-hidden />{title}</span>
-        <Badge variant={status === "running" ? "success" : "neutral"} dot={status === "running"}>{status}</Badge>
+        <Badge tone={status === "running" ? "success" : "neutral"} dot={status === "running"}>
+          {formatStatusLabel(status)}
+        </Badge>
       </div>
       <div className="grid gap-3 rounded-[8px] border p-3" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>
         <div className="flex flex-wrap items-center gap-2">
           <Badge>{command}</Badge>
-          <Badge variant="neutral">{runtime}</Badge>
-          <Badge variant="neutral">{envCount} env vars</Badge>
+          <Badge tone="neutral" shape="tag">{runtime}</Badge>
+          <Badge tone="neutral" shape="tag">{envCount} Env Vars</Badge>
         </div>
         <div className="grid gap-2">
           {paths.map((path) => (
             <div key={path} className="flex items-center gap-2 rounded-[7px] border px-3 py-2" style={{ borderColor: "var(--aurora-border-default)" }}>
               <FileText className="size-3.5" aria-hidden style={{ color: "var(--aurora-text-muted)" }} />
-              <span className="aurora-text-code" style={{ color: "var(--aurora-text-primary)" }}>{path}</span>
+              <span className="truncate aurora-text-meta" style={{ color: "var(--aurora-text-primary)" }}>{path}</span>
             </div>
           ))}
         </div>
@@ -1060,7 +1096,7 @@ Snippet.displayName = "Snippet"
 
 const Image = React.forwardRef<HTMLImageElement, AuroraImageProps>(
   ({ caption, className, style, alt = "", ...props }, ref) => (
-    <figure className={["grid gap-2", className].filter(Boolean).join(" ")} style={{ margin: 0 }}>
+    <figure className={cn("grid gap-2", className)} style={{ margin: 0 }}>
       <img ref={ref} alt={alt} className="w-full rounded-[8px] border object-cover" style={{ borderColor: "var(--aurora-border-default)", ...style }} {...props} />
       {caption ? <figcaption className="aurora-text-meta">{caption}</figcaption> : null}
     </figure>
@@ -1071,7 +1107,7 @@ Image.displayName = "Image"
 const OpenInChat = React.forwardRef<HTMLButtonElement, OpenInChatProps>(
   ({ children = "Open in Chat", ...props }, ref) => (
     <Button ref={ref} type="button" variant="neutral" size="sm" {...props}>
-      <Send className="size-3.5" aria-hidden />
+      <Send className="size-3.5" data-icon="inline-start" aria-hidden />
       {children}
     </Button>
   )
@@ -1080,13 +1116,15 @@ OpenInChat.displayName = "OpenInChat"
 
 const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
   ({ title = "Voice Response", duration = "00:42", className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
-      <Button type="button" size="icon" variant="neutral" aria-label={`Play ${title}`}><Play className="size-4" aria-hidden /></Button>
+    <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
+      <Button type="button" size="icon" variant="neutral" aria-label={`Play ${title}`}>
+        <Play className="size-4" data-icon="inline-start" aria-hidden />
+      </Button>
       <span className="min-w-0">
         <span className="block truncate aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{title}</span>
         <span className="block h-1.5 rounded-full" style={{ background: "linear-gradient(90deg, var(--aurora-accent-primary) 48%, var(--aurora-control-surface) 48%)" }} />
       </span>
-      <span className="aurora-text-code" style={{ color: "var(--aurora-text-muted)" }}>{duration}</span>
+      <span className="aurora-text-meta">{duration}</span>
     </div>
   )
 )
@@ -1116,7 +1154,7 @@ MicSelector.displayName = "MicSelector"
 
 const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
   ({ name, description, className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <UserRound className="size-5" aria-hidden style={{ color: "var(--aurora-accent-pink)" }} />
       <span className="min-w-0">
         <span className="block aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{name}</span>
@@ -1131,7 +1169,7 @@ const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
   ({ className, style, ...props }, ref) => (
     <div className="grid gap-2 border p-3" style={panelStyle()}>
       <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Mic className="size-3.5" aria-hidden />Speech Input</div>
-      <Textarea ref={ref} className={["min-h-20 resize-none rounded-[8px] p-3 aurora-text-body", className].filter(Boolean).join(" ")} style={{ ...style }} {...props} />
+      <Textarea ref={ref} className={cn("min-h-20 resize-none rounded-[8px] p-3 aurora-text-body", className)} style={{ ...style }} {...props} />
     </div>
   )
 )
@@ -1139,7 +1177,7 @@ SpeechInput.displayName = "SpeechInput"
 
 const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
   ({ segments, className, style, ...props }, ref) => (
-    <div ref={ref} className={["grid gap-2 rounded-[8px] border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("grid gap-2 rounded-[8px] border p-3", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
         <Mic className="size-3.5" aria-hidden />
         Transcription
@@ -1151,12 +1189,12 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
             className="grid grid-cols-[72px_minmax(0,1fr)_auto] gap-3 rounded-[7px] border px-3 py-2"
             style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}
           >
-            <span className="aurora-text-code" style={{ color: "var(--aurora-accent-primary)" }}>{segment.timecode}</span>
+            <span className="aurora-text-meta" style={{ color: "var(--aurora-accent-strong)" }}>{segment.timecode}</span>
             <span className="min-w-0">
               <span className="block aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>{segment.speaker}</span>
               <span className="block aurora-text-body" style={{ marginTop: 4 }}>{segment.text}</span>
             </span>
-            <Badge variant="neutral">{segment.confidence ? `${segment.confidence}%` : "live"}</Badge>
+            <Badge tone="neutral" shape="tag">{segment.confidence ? `${segment.confidence}%` : "Live"}</Badge>
           </div>
         ))}
       </div>
@@ -1189,14 +1227,14 @@ VoiceSelector.displayName = "VoiceSelector"
 
 const Canvas = React.forwardRef<HTMLDivElement, CanvasProps>(
   ({ className, style, ...props }, ref) => (
-    <div ref={ref} className={["relative min-h-64 border p-4", className].filter(Boolean).join(" ")} style={{ ...panelStyle(style), backgroundImage: "linear-gradient(var(--aurora-border-default) 1px, transparent 1px), linear-gradient(90deg, var(--aurora-border-default) 1px, transparent 1px)", backgroundSize: "24px 24px" }} {...props} />
+    <div ref={ref} className={cn("relative min-h-64 border p-4", className)} style={{ ...panelStyle(style), backgroundImage: "linear-gradient(var(--aurora-border-default) 1px, transparent 1px), linear-gradient(90deg, var(--aurora-border-default) 1px, transparent 1px)", backgroundSize: "24px 24px" }} {...props} />
   )
 )
 Canvas.displayName = "Canvas"
 
 const Connection = React.forwardRef<HTMLDivElement, ConnectionProps>(
   ({ from, to, className, style, ...props }, ref) => (
-    <div ref={ref} className={["flex items-center gap-2 aurora-text-control", className].filter(Boolean).join(" ")} style={{ color: "var(--aurora-text-primary)", ...style }} {...props}>
+    <div ref={ref} className={cn("flex items-center gap-2 aurora-text-control", className)} style={{ color: "var(--aurora-text-primary)", ...style }} {...props}>
       <Network className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />{from}<Route className="size-4" aria-hidden />{to}
     </div>
   )
@@ -1205,14 +1243,14 @@ Connection.displayName = "Connection"
 
 const Controls = React.forwardRef<HTMLDivElement, ControlsProps>(
   ({ className, style, ...props }, ref) => (
-    <div ref={ref} className={["flex items-center gap-2 border p-2", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props} />
+    <div ref={ref} className={cn("flex items-center gap-2 border p-2", className)} style={panelStyle(style)} {...props} />
   )
 )
 Controls.displayName = "Controls"
 
 const Edge = React.forwardRef<HTMLDivElement, EdgeProps>(
-  ({ label = "edge", className, style, ...props }, ref) => (
-    <div ref={ref} className={["flex items-center gap-2 aurora-text-meta", className].filter(Boolean).join(" ")} style={style} {...props}>
+  ({ label = "Edge", className, style, ...props }, ref) => (
+    <div ref={ref} className={cn("flex items-center gap-2 aurora-text-meta", className)} style={style} {...props}>
       <span className="h-px flex-1" style={{ background: "var(--aurora-accent-primary)" }} />
       {label}
       <span className="h-px flex-1" style={{ background: "var(--aurora-accent-primary)" }} />
@@ -1223,7 +1261,7 @@ Edge.displayName = "Edge"
 
 const Node = React.forwardRef<HTMLDivElement, NodeProps>(
   ({ title, description, className, style, ...props }, ref) => (
-    <div ref={ref} className={["w-56 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <div ref={ref} className={cn("w-56 border p-3", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}><Workflow className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />{title}</div>
       {description ? <div className="aurora-text-meta">{description}</div> : null}
     </div>
@@ -1233,7 +1271,7 @@ Node.displayName = "Node"
 
 const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
   ({ title, className, children, style, ...props }, ref) => (
-    <aside ref={ref} className={["grid gap-3 border p-3", className].filter(Boolean).join(" ")} style={panelStyle(style)} {...props}>
+    <aside ref={ref} className={cn("grid gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       {title ? <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Sparkles className="size-3.5 shrink-0" aria-hidden style={{ color: "var(--axon-orange)" }} />{title}</div> : null}
       {children}
     </aside>

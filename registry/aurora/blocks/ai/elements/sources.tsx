@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { ChevronDown, ExternalLink, FileText, Globe } from "lucide-react"
+import { Badge } from "@/registry/aurora/ui/badge"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
 // Types (architecture source of truth — keep the existing registry API)
@@ -24,7 +26,7 @@ export interface SourceItem {
   badge?: string
 }
 
-export interface SourceProps extends React.HTMLAttributes<HTMLAnchorElement> {
+export interface SourceProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   source: SourceItem
   /** Ordinal rendered in the numbered badge. */
   index?: number
@@ -59,19 +61,13 @@ function hostname(href?: string): string | null {
 
 function CountBadge({ count }: { count: number }) {
   return (
-    <span
-      className="inline-flex min-w-[22px] items-center justify-center rounded-full px-1.5 aurora-text-meta"
-      style={{
-        height: 22,
-        background: "color-mix(in srgb, var(--aurora-border-strong) 38%, transparent)",
-        border: "1px solid var(--aurora-border-default)",
-        color: "var(--aurora-text-muted)",
-        fontWeight: 600,
-        fontVariantNumeric: "tabular-nums",
-      }}
+    <Badge
+      tone="neutral"
+      fill="outline"
+      className="min-w-[22px] justify-center px-1.5 tabular-nums"
     >
       {count}
-    </span>
+    </Badge>
   )
 }
 
@@ -137,15 +133,17 @@ const Sources = React.forwardRef<HTMLDivElement, SourcesProps>(
         {...props}
       >
         {collapsible ? (
-          <button
+          <Button
             type="button"
+            variant="plain"
+            size="unstyled"
             onClick={toggle}
             aria-expanded={open}
             className="flex items-center gap-2.5 bg-transparent p-0 text-left outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0"
             style={{ borderRadius: "var(--aurora-radius-1)", cursor: "pointer", color: "inherit" }}
           >
             {headerInner}
-          </button>
+          </Button>
         ) : (
           <div className="flex items-center gap-2.5">{headerInner}</div>
         )}
@@ -161,15 +159,25 @@ Sources.displayName = "Sources"
 // ---------------------------------------------------------------------------
 
 const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(
-  ({ className, source, index, style, ...props }, ref) => {
+  ({ className, source, index, style, target, rel, tabIndex, ...props }, ref) => {
     const host = hostname(source.href)
+    const isLinked = Boolean(source.href)
     return (
       <a
         ref={ref}
-        href={source.href ?? "#"}
+        href={source.href}
+        target={target ?? (isLinked ? "_blank" : undefined)}
+        rel={rel ?? (isLinked ? "noreferrer noopener" : undefined)}
+        tabIndex={tabIndex ?? (isLinked ? undefined : -1)}
+        aria-disabled={isLinked ? undefined : true}
+        aria-label={host ? `${source.title}, ${host}` : source.title}
         className={[
-          "group grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 p-3.5 no-underline transition-colors",
+          "group grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 p-3.5 no-underline",
+          "transition-[background,border-color,box-shadow,transform] duration-150 ease-out",
           "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
+          isLinked
+            ? "hover:-translate-y-px hover:border-[color:var(--aurora-border-strong)] hover:bg-[var(--aurora-hover-bg)]"
+            : undefined,
           className,
         ]
           .filter(Boolean)
@@ -179,6 +187,7 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(
           border: "1px solid var(--aurora-border-default)",
           borderRadius: "calc(var(--aurora-radius-1) - 4px)",
           color: "var(--aurora-text-primary)",
+          boxShadow: "var(--aurora-highlight-medium)",
           ...style,
         }}
         {...props}
@@ -211,27 +220,15 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(
               {source.title}
             </span>
             {source.badge ? (
-              <span
-                className="inline-flex shrink-0 items-center rounded-md px-1.5 aurora-text-code"
-                style={{
-                  height: 22,
-                  background: "color-mix(in srgb, var(--aurora-border-strong) 30%, transparent)",
-                  border: "1px solid var(--aurora-border-default)",
-                  color: "var(--aurora-text-muted)",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                }}
-              >
+              <Badge tone="neutral" fill="outline" className="shrink-0">
                 {source.badge}
-              </span>
+              </Badge>
             ) : null}
           </span>
           {host ? (
             <span
-              className="flex min-w-0 items-center gap-1.5 aurora-text-code"
-              style={{ color: "var(--aurora-text-muted)", fontSize: 13 }}
+              className="flex min-w-0 items-center gap-1.5 aurora-text-meta"
+              style={{ color: "var(--aurora-text-muted)" }}
             >
               <Globe className="size-3.5 shrink-0" aria-hidden />
               <span className="truncate">{host}</span>
@@ -240,11 +237,14 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(
           {source.description ? <span className="aurora-text-meta">{source.description}</span> : null}
         </span>
 
-        <ExternalLink
-          className="size-[18px] shrink-0 self-center transition-colors"
-          aria-hidden
-          style={{ color: "var(--aurora-text-muted)" }}
-        />
+        {isLinked ? (
+          <ExternalLink
+            className="size-[18px] shrink-0 self-center text-[var(--aurora-text-muted)] transition-colors group-hover:text-[var(--aurora-accent-primary)]"
+            aria-hidden
+          />
+        ) : (
+          <span aria-hidden className="size-[18px] shrink-0" />
+        )}
       </a>
     )
   }

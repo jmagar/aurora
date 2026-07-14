@@ -2,17 +2,17 @@
 
 import * as React from "react"
 import { Check, Grid2x2, RotateCw, Sparkles } from "lucide-react"
+import { Button } from "@/registry/aurora/ui/button"
 
 // AiImageGrid — a candidate-variation surface: a 2×2 (or N-up) grid of
 // AI-generated image tiles where exactly one can be selected. A header row
 // carries a grid glyph + caption and a "Regenerate all" affordance; the chosen
-// tile gets a rose selection ring, an "AI" identity badge, a model pill and a
-// rose check button. Selection follows a single-select radiogroup pattern.
+// tile gets a cyan selection ring, an Axon-orange "AI" identity badge, a model
+// pill and a compact check button. Selection follows a single-select radiogroup pattern.
 //
-// Visual spec ported 1:1 from the Claude Design source. Rose
-// (--aurora-accent-pink) is the AI/automation identity + selection accent
-// (violet was removed from the system); the cyan accent drives the idle tile
-// hover ring. All values reference the --aurora-* token layer.
+// Visual spec ported from the Claude Design source. Axon orange is the
+// AI/automation identity accent; cyan drives selection/focus. All values
+// reference the --aurora-* token layer.
 
 // ---------------------------------------------------------------------------
 // Types
@@ -42,14 +42,14 @@ export interface AiImageGridProps
 // Tokens
 // ---------------------------------------------------------------------------
 
-const ROSE = "var(--aurora-accent-pink)"
+const AI_ORANGE = "var(--axon-orange)"
 const CYAN = "var(--aurora-accent-primary)"
 
 // ---------------------------------------------------------------------------
 // Pills
 // ---------------------------------------------------------------------------
 
-function chipStyle(): React.CSSProperties {
+function chipStyle(tone: "neutral" | "ai" = "neutral"): React.CSSProperties {
   return {
     display: "inline-flex",
     alignItems: "center",
@@ -57,15 +57,19 @@ function chipStyle(): React.CSSProperties {
     height: 22,
     padding: "0 8px",
     borderRadius: 7,
-    background: "color-mix(in srgb, var(--aurora-page-bg) 64%, transparent)",
-    border: "1px solid color-mix(in srgb, var(--aurora-border-strong) 80%, transparent)",
-    backdropFilter: "blur(6px)",
-    WebkitBackdropFilter: "blur(6px)",
-    fontFamily: "var(--aurora-font-mono)",
-    fontSize: 11,
+    background:
+      tone === "ai"
+        ? "color-mix(in srgb, var(--axon-orange) 14%, var(--aurora-page-bg))"
+        : "color-mix(in srgb, var(--aurora-page-bg) 64%, transparent)",
+    border:
+      tone === "ai"
+        ? "1px solid var(--axon-orange-border)"
+        : "1px solid color-mix(in srgb, var(--aurora-border-strong) 80%, transparent)",
+    fontFamily: "var(--aurora-font-sans)",
+    fontSize: 11.5,
     fontWeight: 600,
-    letterSpacing: "0.02em",
-    color: "var(--aurora-text-primary)",
+    letterSpacing: "var(--aurora-letter-label)",
+    color: tone === "ai" ? AI_ORANGE : "var(--aurora-text-primary)",
     whiteSpace: "nowrap",
   }
 }
@@ -160,33 +164,15 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
               {caption}
             </span>
             {onRegenerate ? (
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={onRegenerate}
-                className="inline-flex items-center"
-                style={{
-                  gap: 6,
-                  border: "none",
-                  background: "transparent",
-                  padding: 0,
-                  cursor: "pointer",
-                  fontFamily: "var(--aurora-font-sans)",
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  color: "var(--aurora-text-muted)",
-                  transition:
-                    "color var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = CYAN
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "var(--aurora-text-muted)"
-                }}
               >
                 <RotateCw className="size-3.5" aria-hidden />
                 Regenerate All
-              </button>
+              </Button>
             ) : null}
           </div>
         ) : null}
@@ -205,9 +191,11 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
           {images.map((src, i) => {
             const isSelected = i === selected
             return (
-              <button
+              <Button
                 key={i}
                 type="button"
+                variant="plain"
+                size="unstyled"
                 role="radio"
                 aria-checked={isSelected}
                 aria-label={`Candidate ${i + 1}${isSelected ? " (selected)" : ""}`}
@@ -225,13 +213,14 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
                   overflow: "hidden",
                   cursor: "pointer",
                   borderRadius: "var(--aurora-radius-1)",
+                  display: "block",
                   background:
-                    "radial-gradient(120% 120% at 50% 34%, #1c425a 0%, #0d2230 52%, #07131c 100%)",
+                    "radial-gradient(120% 120% at 50% 34%, color-mix(in srgb, var(--aurora-accent-primary) 24%, var(--aurora-panel-strong)) 0%, var(--aurora-panel-strong) 52%, var(--aurora-page-bg) 100%)",
                   border: isSelected
-                    ? `1.5px solid ${ROSE}`
+                    ? `1.5px solid ${CYAN}`
                     : "1.5px solid var(--aurora-border-strong)",
                   boxShadow: isSelected
-                    ? `0 0 0 3px color-mix(in srgb, ${ROSE} 22%, transparent), var(--aurora-shadow-medium)`
+                    ? "var(--aurora-active-glow), var(--aurora-shadow-medium)"
                     : "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
                   transition:
                     "border-color var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease), box-shadow var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease)",
@@ -247,7 +236,6 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
                   }
                 }}
               >
-                { }
                 <img
                   src={src}
                   alt=""
@@ -262,8 +250,8 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
                     className="absolute inset-x-0 top-0 flex items-start justify-between"
                     style={{ padding: 10 }}
                   >
-                    <span style={{ ...chipStyle(), gap: 4 }}>
-                      <Sparkles className="size-3" aria-hidden style={{ color: ROSE }} />
+                    <span style={{ ...chipStyle("ai"), gap: 4 }}>
+                      <Sparkles className="size-3" aria-hidden style={{ color: AI_ORANGE }} />
                       AI
                     </span>
                     {model ? <span style={chipStyle()}>{model}</span> : <span />}
@@ -281,15 +269,15 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
                       width: 28,
                       height: 28,
                       borderRadius: 999,
-                      background: ROSE,
+                      background: AI_ORANGE,
                       color: "var(--aurora-page-bg)",
-                      boxShadow: `0 0 12px color-mix(in srgb, ${ROSE} 50%, transparent)`,
+                      boxShadow: "0 0 12px color-mix(in srgb, var(--axon-orange) 50%, transparent)",
                     }}
                   >
                     <Check className="size-4" strokeWidth={2.5} />
                   </span>
                 ) : null}
-              </button>
+              </Button>
             )
           })}
         </div>

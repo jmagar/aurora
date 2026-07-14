@@ -114,8 +114,14 @@ function CodeCopyButton({ value }: { value: string }) {
       size="icon"
       onClick={handleCopy}
       aria-label={copied ? "Copied to clipboard" : "Copy code"}
+      iconLeft={
+        copied ? (
+          <Check size={14} strokeWidth={1.75} aria-hidden data-icon="inline-start" />
+        ) : (
+          <Copy size={14} strokeWidth={1.75} aria-hidden data-icon="inline-start" />
+        )
+      }
     >
-      {copied ? <Check className="size-3.5" aria-hidden /> : <Copy className="size-3.5" aria-hidden />}
       <span className="sr-only" aria-live="polite" aria-atomic="true">
         {copied ? "Copied" : "Copy code"}
       </span>
@@ -200,8 +206,27 @@ function CitationChip({
   onActivate?: (index: number, source?: ResponseSource) => void
 }) {
   const [open, setOpen] = React.useState(false)
-  const hasPreview = Boolean(source?.title || source?.href)
+  const hasPreview = Boolean(source?.title || source?.description || source?.href)
   const previewId = React.useId()
+  const isLinked = Boolean(source?.href)
+
+  const handleActivate = React.useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!isLinked) event.preventDefault()
+      onActivate?.(index, source)
+    },
+    [index, isLinked, onActivate, source]
+  )
+
+  const handleKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLAnchorElement>) => {
+      if (isLinked) return
+      if (event.key !== "Enter" && event.key !== " ") return
+      event.preventDefault()
+      onActivate?.(index, source)
+    },
+    [index, isLinked, onActivate, source]
+  )
 
   const chip = (
     <a
@@ -210,53 +235,45 @@ function CitationChip({
       rel={source?.href ? "noreferrer noopener" : undefined}
       className={cn(
         "inline-flex items-center justify-center rounded-[5px] border align-baseline no-underline",
-        "transition-colors",
-        "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0",
+        "border-[color:var(--aurora-citation-border)] bg-[var(--aurora-citation-bg)] transition-colors",
+        "hover:border-[color:var(--aurora-citation-border-hover)] hover:bg-[var(--aurora-citation-bg-hover)]",
+        "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-citation-ring)] focus-visible:ring-offset-0",
       )}
       aria-label={
-        source?.title ? `Citation ${index}: ${source.title}` : `Citation ${index}`
+        source?.title
+          ? `Citation ${index}: ${source.title}`
+          : `Citation ${index}: source unavailable`
       }
       aria-describedby={hasPreview && open ? previewId : undefined}
+      role={!isLinked && onActivate ? "button" : undefined}
+      tabIndex={!isLinked && onActivate ? 0 : isLinked ? undefined : -1}
       onMouseEnter={hasPreview ? () => setOpen(true) : undefined}
       onMouseLeave={hasPreview ? () => setOpen(false) : undefined}
       onFocus={hasPreview ? () => setOpen(true) : undefined}
       onBlur={hasPreview ? () => setOpen(false) : undefined}
-      onClick={() => onActivate?.(index, source)}
+      onClick={handleActivate}
+      onKeyDown={handleKeyDown}
       style={{
         minWidth: "1.05rem",
         padding: "1px 6px",
         marginLeft: 3,
-        borderColor: "color-mix(in srgb, var(--aurora-accent-pink) 32%, transparent)",
-        background: "color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent)",
+        ["--aurora-citation-bg" as string]:
+          "color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent)",
+        ["--aurora-citation-bg-hover" as string]:
+          "color-mix(in srgb, var(--aurora-accent-pink) 20%, transparent)",
+        ["--aurora-citation-border" as string]:
+          "color-mix(in srgb, var(--aurora-accent-pink) 32%, transparent)",
+        ["--aurora-citation-border-hover" as string]:
+          "color-mix(in srgb, var(--aurora-accent-pink) 48%, transparent)",
+        ["--aurora-citation-ring" as string]:
+          "color-mix(in srgb, var(--aurora-accent-pink) 45%, transparent)",
         color: "var(--aurora-accent-pink)",
         fontFamily: "var(--aurora-font-mono)",
         fontSize: 11,
         fontWeight: 600,
         lineHeight: 1.45,
-        cursor: "pointer",
-        ["--tw-ring-color" as string]:
-          "color-mix(in srgb, var(--aurora-accent-pink) 45%, transparent)",
+        cursor: isLinked || onActivate ? "pointer" : "default",
       }}
-      onMouseOver={
-        hasPreview
-          ? (e) => {
-              e.currentTarget.style.background =
-                "color-mix(in srgb, var(--aurora-accent-pink) 20%, transparent)"
-              e.currentTarget.style.borderColor =
-                "color-mix(in srgb, var(--aurora-accent-pink) 48%, transparent)"
-            }
-          : undefined
-      }
-      onMouseOut={
-        hasPreview
-          ? (e) => {
-              e.currentTarget.style.background =
-                "color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent)"
-              e.currentTarget.style.borderColor =
-                "color-mix(in srgb, var(--aurora-accent-pink) 32%, transparent)"
-            }
-          : undefined
-      }
     >
       {index}
     </a>
@@ -286,10 +303,8 @@ function CitationChip({
       >
         {source?.title ? (
           <span
+            className="aurora-text-control"
             style={{
-              fontFamily: "var(--aurora-font-sans)",
-              fontSize: 13,
-              fontWeight: 600,
               lineHeight: 1.35,
               color: "var(--aurora-text-primary)",
             }}
@@ -299,9 +314,8 @@ function CitationChip({
         ) : null}
         {source?.description ? (
           <span
+            className="aurora-text-body-sm"
             style={{
-              fontFamily: "var(--aurora-font-sans)",
-              fontSize: 12,
               lineHeight: 1.4,
               color: "var(--aurora-text-muted)",
             }}
@@ -311,9 +325,8 @@ function CitationChip({
         ) : null}
         {source?.href ? (
           <span
+            className="aurora-text-meta"
             style={{
-              fontFamily: "var(--aurora-font-mono)",
-              fontSize: 11,
               lineHeight: 1.4,
               color: "var(--aurora-accent-pink)",
               wordBreak: "break-all",
@@ -464,6 +477,7 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
   ) => {
     const blocks = React.useMemo(() => parseBlocks(markdown), [markdown])
     const lastIndex = blocks.length - 1
+    const isEmpty = blocks.length === 0
 
     return (
       <div
@@ -481,6 +495,25 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
         aria-live={streaming ? "polite" : undefined}
         {...props}
       >
+        {isEmpty && streaming ? (
+          <div className="flex items-center gap-2 aurora-response-block">
+            <span
+              aria-hidden
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "var(--axon-orange)",
+                boxShadow:
+                  "0 0 0 3px color-mix(in srgb, var(--axon-orange) 12%, transparent)",
+                animation: "aurora-msg-caret 1.1s steps(1) infinite",
+              }}
+            />
+            <span className="aurora-text-meta" style={{ color: "var(--aurora-text-muted)" }}>
+              Generating response.
+            </span>
+          </div>
+        ) : null}
         {blocks.map((block, bi) => {
           const isLast = bi === lastIndex
           if (block.kind === "code") {

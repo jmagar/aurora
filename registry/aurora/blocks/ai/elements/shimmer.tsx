@@ -20,7 +20,7 @@ const shimmerVariants = cva("aurora-ai-shimmer-bar shrink-0 overflow-hidden", {
       // Solid block / media placeholder.
       block: "h-24 w-full rounded-[var(--aurora-radius-1)]",
       // Circular avatar placeholder.
-      avatar: "h-10 w-10 rounded-full",
+      avatar: "size-10 rounded-full",
       // Card composition (avatar + text rows in an elevated panel).
       card: "",
     },
@@ -60,7 +60,7 @@ const Shimmer = React.forwardRef<HTMLDivElement, ShimmerProps>(
       role: role ?? "status",
       "aria-busy": true as const,
       "aria-live": "polite" as const,
-      "aria-label": props["aria-label"] ?? "Loading",
+      "aria-label": props["aria-label"] ?? "Loading content",
     }
 
     // Multiple stacked lines; the final line is shortened to read as a paragraph.
@@ -101,7 +101,7 @@ const Shimmer = React.forwardRef<HTMLDivElement, ShimmerProps>(
           {...a11y}
           {...props}
         >
-          <ShimmerBar className="aurora-ai-shimmer-bar h-12 w-12 rounded-full" />
+          <ShimmerBar className="aurora-ai-shimmer-bar size-12 rounded-full" />
           <div className="flex min-w-0 flex-1 flex-col gap-2.5 pt-1">
             <ShimmerBar className="h-3 rounded-full" style={{ width: "52%" }} />
             <ShimmerBar className="h-3 rounded-full" style={{ width: "100%" }} />

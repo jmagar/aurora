@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Layers2, X, CircleAlert } from "lucide-react"
+import { Button } from "@/registry/aurora/ui/button"
 
 export interface ContextSegment {
   /** Display label, e.g. "System" */
@@ -132,7 +133,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
                 height: "100%",
                 borderRadius: 999,
                 background: isWarning
-                  ? "var(--aurora-rose-gradient)"
+                  ? "var(--aurora-error-gradient)"
                   : "linear-gradient(90deg, var(--aurora-accent-primary), var(--aurora-success))",
               }}
             />
@@ -141,10 +142,8 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
             <CircleAlert className="size-3.5 shrink-0" style={{ color: "var(--aurora-error)" }} aria-hidden />
           ) : null}
           <span
-            className="shrink-0 tabular-nums"
+            className="aurora-text-meta shrink-0 tabular-nums"
             style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 12,
               color: "var(--aurora-text-muted)",
             }}
           >
@@ -163,34 +162,24 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
         {...props}
       >
         {/* Header */}
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           {headerLabel}
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-3">
             {onCompact ? (
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={onCompact}
-                className="flex items-center gap-1.5"
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                  color: "var(--aurora-accent-pink)",
-                  fontWeight: 700,
-                  fontSize: 14,
-                  lineHeight: 1,
-                }}
+                iconLeft={<X aria-hidden />}
+                style={{ color: "var(--axon-orange-strong)" }}
               >
-                <X className="size-3.5" aria-hidden />
-                <span>Compact</span>
-              </button>
+                Compact
+              </Button>
             ) : null}
             <span
-              className="tabular-nums"
+              className="aurora-text-meta tabular-nums"
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 13,
                 color: "var(--aurora-text-muted)",
               }}
             >
@@ -272,8 +261,8 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
                 />
                 <span style={{ color: "var(--aurora-text-muted)" }}>{seg.label}</span>
                 <span
-                  className="tabular-nums"
-                  style={{ fontFamily: "var(--font-mono)", color: "var(--aurora-text-primary)", fontWeight: 600 }}
+                  className="aurora-text-meta tabular-nums"
+                  style={{ color: "var(--aurora-text-primary)", fontWeight: 600 }}
                 >
                   {formatTokenCount(seg.value)}
                 </span>
@@ -299,8 +288,8 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
               />
               <span style={{ color: "var(--aurora-text-muted)" }}>Reserved</span>
               <span
-                className="tabular-nums"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--aurora-text-primary)", fontWeight: 600 }}
+                className="aurora-text-meta tabular-nums"
+                style={{ color: "var(--aurora-text-primary)", fontWeight: 600 }}
               >
                 {formatTokenCount(reserved)}
               </span>
@@ -310,11 +299,9 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
 
         {/* "left" footer */}
         <div
-          className="tabular-nums"
+          className="aurora-text-meta tabular-nums"
           style={{
             textAlign: "right",
-            fontFamily: "var(--font-mono)",
-            fontSize: 13,
             color: "var(--aurora-text-muted)",
           }}
         >

@@ -4,6 +4,7 @@ import * as React from "react"
 import { Mic, Square } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Textarea } from "@/registry/aurora/ui/textarea"
+import { cn } from "@/lib/utils"
 
 // ---------------------------------------------------------------------------
 // SpeechInput — voice capture: mic toggle, live level meter, transcript area.
@@ -11,8 +12,8 @@ import { Textarea } from "@/registry/aurora/ui/textarea"
 // CD parity: a raised navy panel with a rose ("LISTENING") status, a pink mic
 // glyph, a pulsing rose status dot, a row of rose pill bars that animate as a
 // live level meter while recording, a neutral icon Stop/Mic toggle, and a
-// transcript Textarea. Rose is the Aurora secondary accent
-// (--aurora-accent-pink family). No violet.
+// transcript Textarea. Rose is the Aurora secondary accent for recording state;
+// AI/automation identity remains Axon orange elsewhere.
 //
 // Architecture stays shadcn: forwardRef to the underlying <textarea> (so the
 // public TextareaHTMLAttributes API is preserved), displayName, React.memo, and
@@ -56,7 +57,7 @@ const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
             style={{
               fontSize: "15px",
               fontWeight: "var(--aurora-weight-heading)",
-              letterSpacing: "-0.01em",
+              letterSpacing: "var(--aurora-letter-ui)",
               color: "var(--aurora-text-primary)",
               whiteSpace: "nowrap",
             }}
@@ -65,7 +66,10 @@ const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
           </span>
 
           {recording && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: "7px", marginLeft: "2px" }}>
+            <span
+              aria-live="polite"
+              style={{ display: "inline-flex", alignItems: "center", gap: "7px", marginLeft: "2px" }}
+            >
               <span
                 className="aurora-speech-dot"
                 aria-hidden="true"
@@ -80,7 +84,7 @@ const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
               />
               <span
                 style={{
-                  fontFamily: "var(--font-mono)",
+                  fontFamily: "var(--aurora-font-sans)",
                   fontSize: "var(--aurora-type-label)",
                   fontWeight: "var(--aurora-weight-label)",
                   letterSpacing: "var(--aurora-letter-eyebrow)",
@@ -145,7 +149,7 @@ const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
         {/* Transcript */}
         <Textarea
           ref={ref}
-          className={["min-h-20 resize-none", className].filter(Boolean).join(" ")}
+          className={cn("min-h-20 resize-none", className)}
           style={{ borderRadius: "12px", ...style }}
           {...props}
         />

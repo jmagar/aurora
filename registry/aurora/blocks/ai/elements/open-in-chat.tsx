@@ -51,9 +51,9 @@ const OpenInChat = React.forwardRef<HTMLButtonElement, OpenInChatProps>(
         variant={VARIANT_MAP[variant]}
         size={size}
         style={rose ? { color: "var(--aurora-accent-pink)", ...style } : style}
+        iconLeft={<Send size={14} strokeWidth={1.75} aria-hidden data-icon="inline-start" />}
         {...props}
       >
-        <Send className="size-3.5" aria-hidden />
         {children}
       </Button>
     )

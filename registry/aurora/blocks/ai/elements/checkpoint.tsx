@@ -59,15 +59,29 @@ const STATUS_TONE = {
 function MetaItem({ icon: Icon, children }: { icon: typeof Clock; children: React.ReactNode }) {
   return (
     <span
-      className="inline-flex items-center gap-1.5"
-      style={{
-        fontFamily: "var(--font-mono)",
-        fontSize: 13,
-        color: "var(--aurora-text-muted)",
-      }}
+      className="aurora-text-meta inline-flex items-center gap-1.5 tabular-nums"
+      style={{ color: "var(--aurora-text-muted)" }}
     >
       <Icon className="size-3.5" aria-hidden style={{ color: "var(--aurora-text-muted)", opacity: 0.85 }} />
       {children}
+    </span>
+  )
+}
+
+function AutomationTag() {
+  return (
+    <span
+      className="aurora-text-caption inline-flex shrink-0 items-center rounded-[4px] border px-1.5 py-0.5"
+      style={{
+        color: "var(--axon-orange-strong)",
+        background: "var(--axon-orange-surface)",
+        borderColor: "var(--axon-orange-border)",
+        fontWeight: 700,
+        letterSpacing: "0.075em",
+        textTransform: "uppercase",
+      }}
+    >
+      Auto
     </span>
   )
 }
@@ -103,9 +117,9 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
           width: compact ? 36 : 44,
           height: compact ? 36 : 44,
           borderRadius: 12,
-          background: "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)",
-          border: "1px solid color-mix(in srgb, var(--aurora-accent-primary) 36%, transparent)",
-          color: "var(--aurora-accent-primary)",
+          background: "var(--axon-orange-surface)",
+          border: "1px solid var(--axon-orange-border)",
+          color: "var(--axon-orange)",
         }}
       >
         <Save className={compact ? "size-4" : "size-5"} />
@@ -156,10 +170,10 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
           <div
             className="min-w-0 flex-1 truncate"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--aurora-font-display)",
               fontSize: 17,
               fontWeight: 800,
-              letterSpacing: "-0.02em",
+              letterSpacing: 0,
               color: "var(--aurora-text-primary)",
             }}
           >
@@ -182,30 +196,19 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
               <span
                 className="truncate"
                 style={{
-                  fontFamily: "var(--font-display)",
+                  fontFamily: "var(--aurora-font-display)",
                   fontSize: 19,
                   fontWeight: 700,
-                  letterSpacing: "-0.02em",
+                  letterSpacing: 0,
                   color: "var(--aurora-text-primary)",
                 }}
               >
                 {label}
               </span>
-              {badge ? (
-                <Badge variant="rose" style={{ letterSpacing: "0.14em" }}>
-                  Auto
-                </Badge>
-              ) : null}
+              {badge ? <AutomationTag /> : null}
             </div>
             {description ? (
-              <div
-                className="mt-1"
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: 14,
-                  color: "var(--aurora-text-muted)",
-                }}
-              >
+              <div className="aurora-text-body-sm mt-1" style={{ color: "var(--aurora-text-muted)" }}>
                 {description}
               </div>
             ) : null}
@@ -221,7 +224,7 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
           <div className="flex items-center gap-5">
             {showMeta ? (
               <div className="flex min-w-0 flex-1 flex-wrap items-center gap-5">
-                {step != null ? <MetaItem icon={Hexagon}>step {step}</MetaItem> : null}
+                {step != null ? <MetaItem icon={Hexagon}>Step {step}</MetaItem> : null}
                 {time != null ? <MetaItem icon={Clock}>{time}</MetaItem> : null}
                 {size != null ? <MetaItem icon={Database}>{size}</MetaItem> : null}
               </div>
@@ -231,14 +234,12 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
             {showActions ? (
               <div className="flex items-center gap-2.5">
                 {typeof onView === "function" ? (
-                  <Button type="button" variant="ghost" size="sm" onClick={onView}>
-                    <Eye className="size-4" aria-hidden />
+                  <Button type="button" variant="ghost" size="sm" iconLeft={<Eye aria-hidden />} onClick={onView}>
                     Diff
                   </Button>
                 ) : null}
                 {typeof onRestore === "function" ? (
-                  <Button type="button" variant="aurora" size="sm" onClick={onRestore}>
-                    <RotateCcw className="size-4" aria-hidden />
+                  <Button type="button" variant="aurora" size="sm" iconLeft={<RotateCcw aria-hidden />} onClick={onRestore}>
                     Restore
                   </Button>
                 ) : null}

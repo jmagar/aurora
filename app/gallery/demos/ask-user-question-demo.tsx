@@ -31,8 +31,8 @@ export default function AskUserQuestionDemo() {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "var(--aurora-space-8)",
-        padding: "var(--aurora-space-8) var(--aurora-space-4)",
+        gap: 32,
+        padding: "32px 16px",
         overflowX: "hidden",
       }}
     >
@@ -77,7 +77,7 @@ export default function AskUserQuestionDemo() {
                   margin: "3px 0 0",
                   fontSize: 12,
                   color: "var(--aurora-text-muted)",
-                  fontFamily: "var(--aurora-font-mono)",
+                  fontFamily: "var(--aurora-font-sans)",
                 }}
               >
                 {answer}

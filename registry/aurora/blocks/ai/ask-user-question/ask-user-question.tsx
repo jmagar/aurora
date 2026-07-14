@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { ArrowRight, Check } from "lucide-react"
+import { ArrowRight, Check, CircleHelp } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
+import { EmptyState } from "@/registry/aurora/ui/empty-state"
 import { Textarea } from "@/registry/aurora/ui/textarea"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
@@ -159,12 +160,12 @@ function OptionCard({ option, selected, type, onToggle }: OptionCardProps) {
               width: 8,
               height: 8,
               borderRadius: "50%",
-              background: "var(--aurora-accent-foreground)",
+              background: "var(--aurora-page-bg)",
             }}
           />
         )}
         {selected && type === "multi" && (
-          <Check size={12} strokeWidth={2} aria-hidden="true" style={{ color: "var(--aurora-accent-foreground)" }} />
+          <Check size={12} strokeWidth={2} aria-hidden="true" style={{ color: "var(--aurora-page-bg)" }} />
         )}
       </div>
 
@@ -287,6 +288,7 @@ function SubmitButton({
       size="lg"
       disabled={disabled}
       onClick={onClick}
+      iconRight={<ArrowRight size={16} strokeWidth={1.65} aria-hidden="true" />}
       style={{
         gap: 8,
         alignSelf: "flex-end",
@@ -297,7 +299,6 @@ function SubmitButton({
       }}
     >
       {label}
-      <ArrowRight size={16} strokeWidth={1.65} aria-hidden="true" />
     </Button>
   )
 }
@@ -369,6 +370,20 @@ export function AskUserQuestion({
       {/* Text input */}
       {type === "text" ? (
         <TextInput placeholder={placeholder} onSubmit={(v) => onSubmit(v)} />
+      ) : options.length === 0 ? (
+        <EmptyState
+          icon={<CircleHelp size={26} strokeWidth={1.6} />}
+          title="No answer options."
+          description="Provide options for radio or multi-select questions, or switch to a text answer."
+          as="h3"
+          style={{
+            width: "100%",
+            padding: "28px 24px",
+            border: "1.5px dashed var(--aurora-border-default)",
+            borderRadius: "var(--aurora-radius-2)",
+            background: "var(--aurora-panel-medium)",
+          }}
+        />
       ) : (
         <>
           {/* Option cards */}

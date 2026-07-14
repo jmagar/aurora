@@ -3,6 +3,7 @@
 import * as React from "react"
 import { CheckCheck, FileText, RotateCcw } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Button } from "@/registry/aurora/ui/button"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -48,8 +49,8 @@ const bubbleTone: Record<
 > = {
   assistant: {
     background:
-      "linear-gradient(180deg, var(--aurora-panel-strong), var(--aurora-panel-medium))",
-    borderColor: "var(--aurora-border-strong)",
+      "linear-gradient(180deg, color-mix(in srgb, var(--axon-orange) 9%, var(--aurora-panel-strong)), var(--aurora-panel-medium))",
+    borderColor: "color-mix(in srgb, var(--axon-orange) 26%, var(--aurora-border-strong))",
     shadow:
       "0 14px 30px color-mix(in srgb, var(--aurora-page-bg) 60%, transparent), var(--aurora-highlight-medium)",
     radius: "16px 16px 16px 6px",
@@ -179,9 +180,8 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
             ) : null}
             {time != null && !isUser ? (
               <span
+                className="aurora-text-meta"
                 style={{
-                  fontFamily: "var(--aurora-font-mono)",
-                  fontSize: 12,
                   color: "var(--aurora-text-muted)",
                 }}
               >
@@ -194,10 +194,8 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
         {/* Bare timestamp above a user bubble */}
         {isUser && time != null ? (
           <span
-            className="mb-[7px]"
+            className="mb-[7px] aurora-text-meta"
             style={{
-              fontFamily: "var(--aurora-font-mono)",
-              fontSize: 12,
               color: "var(--aurora-text-muted)",
             }}
           >
@@ -272,23 +270,21 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
 
         {/* Retry affordance beneath an error bubble */}
         {onRetry ? (
-          <button
+          <Button
             type="button"
             onClick={onRetry}
             aria-label="Retry sending message"
-            className={cn(
-              "mt-[10px] grid size-9 place-items-center rounded-[10px] border bg-transparent",
-              "cursor-pointer transition-colors",
-              "hover:bg-[var(--aurora-hover-bg)]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring-strong)]"
-            )}
+            variant="destructive"
+            size="icon"
+            className="mt-[10px] size-9 rounded-[10px]"
             style={{
               borderColor: "color-mix(in srgb, var(--aurora-error) 38%, var(--aurora-border-default))",
               color: "var(--aurora-error)",
             }}
+            iconLeft={<RotateCcw size={16} strokeWidth={1.75} aria-hidden data-icon="inline-start" />}
           >
-            <RotateCcw className="size-4" aria-hidden />
-          </button>
+            <span className="sr-only">Retry sending message</span>
+          </Button>
         ) : null}
       </div>
     )

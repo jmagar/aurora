@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { CircleAlert } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Badge } from "@/registry/aurora/ui/badge"
 
 /**
  * StackTrace — an error stack-trace panel.
@@ -57,7 +59,7 @@ const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
   ({ className, title = "Stack Trace", error, frames, style, ...props }, ref) => (
     <div
       ref={ref}
-      className={["grid gap-3.5 p-4", className].filter(Boolean).join(" ")}
+      className={cn("grid gap-3.5 p-4", className)}
       style={{
         background: "var(--aurora-surface-raised)",
         border: "1px solid var(--aurora-border-strong)",
@@ -84,12 +86,8 @@ const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
         </span>
         <div className="min-w-0 flex-1">
           <div
+            className="aurora-text-section"
             style={{
-              fontFamily: "var(--font-display)",
-              fontSize: 19,
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              lineHeight: 1.2,
               color: "var(--aurora-text-primary)",
             }}
           >
@@ -99,7 +97,7 @@ const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
             <div
               className="mt-1.5 break-words"
               style={{
-                fontFamily: "var(--font-mono)",
+                fontFamily: "var(--aurora-font-mono)",
                 fontSize: 14,
                 fontWeight: 500,
                 color: "var(--aurora-error)",
@@ -135,7 +133,7 @@ const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
               <span
                 className="text-right tabular-nums"
                 style={{
-                  fontFamily: "var(--font-mono)",
+                  fontFamily: "var(--aurora-font-mono)",
                   fontSize: 14,
                   color: "var(--aurora-text-muted)",
                 }}
@@ -148,7 +146,7 @@ const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
                     <span
                       className="truncate"
                       style={{
-                        fontFamily: "var(--font-mono)",
+                        fontFamily: "var(--aurora-font-mono)",
                         fontSize: 15,
                         fontWeight: 600,
                         color: vendor
@@ -160,29 +158,15 @@ const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
                     </span>
                   ) : null}
                   {vendor ? (
-                    <span
-                      className="shrink-0 uppercase"
-                      style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: 11,
-                        fontWeight: 700,
-                        letterSpacing: "0.12em",
-                        lineHeight: 1,
-                        padding: "4px 7px",
-                        borderRadius: 6,
-                        color: "var(--aurora-text-muted)",
-                        border: "1px solid var(--aurora-border-default)",
-                        background: "var(--aurora-control-surface)",
-                      }}
-                    >
+                    <Badge tone="neutral" size="sm">
                       Vendor
-                    </span>
+                    </Badge>
                   ) : null}
                 </span>
                 <span
                   className="mt-1 block truncate"
                   style={{
-                    fontFamily: "var(--font-mono)",
+                    fontFamily: "var(--aurora-font-mono)",
                     fontSize: 14,
                     color: "var(--aurora-text-muted)",
                   }}

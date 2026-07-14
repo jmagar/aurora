@@ -46,7 +46,7 @@ export default function AiElementsDemo() {
 
       <section style={panel}>
         <Message>
-          <MessageAvatar label="AI" tone="rose" />
+          <MessageAvatar label="AI" tone="orange" />
           <MessageContent>
             Gateway policy was updated after validating the registry manifest <InlineCitation index={1} href="#source-manifest" /> and the runtime logs <InlineCitation index={2} href="#source-logs" />.
             <div style={{ marginTop: 14 }}>

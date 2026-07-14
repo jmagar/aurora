@@ -5,7 +5,7 @@ import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { ChainOfThought } from "@/registry/aurora/blocks/ai/elements/chain-of-thought"
 
 // CD-parity composition for the ChainOfThought AI element: a streaming reasoning
-// timeline with per-step status nodes, the rose "AI" identity badge, and a header
+// timeline with per-step status nodes, the Axon-orange "AI" identity badge, and a header
 // summary — reproduced 1:1 from the Claude Design dsCard.
 export default function AiChainOfThoughtDemo() {
   return (

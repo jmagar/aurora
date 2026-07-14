@@ -1,17 +1,18 @@
 "use client"
 
 import * as React from "react"
+import { CheckCircle2, ListChecks, LoaderCircle } from "lucide-react"
+import { Badge } from "@/registry/aurora/ui/badge"
 
 /**
  * Queue — a live processing queue: a titled panel with a running-count summary
  * and a list of jobs. Each job carries a status:
  *   - `done`     dimmed title, teal check ring, outlined "DONE" badge
- *   - `running`  the "head" job — highlighted in a rose-bordered box with a
- *                pink spinner and a filled "RUNNING" badge (live dot)
+ *   - `running`  the "head" job — highlighted with Axon-orange automation
+ *                identity and a live "RUNNING" badge
  *   - `queued`   numbered by queue position, plain muted "QUEUED" trailing label
  *
- * Self-contained, CD-parity implementation. No violet. Icons are inline SVG so
- * the component ships without external icon deps.
+ * Self-contained, CD-parity implementation. No violet/purple AI emphasis.
  */
 
 export type QueueStatus = "done" | "running" | "queued"
@@ -68,7 +69,7 @@ const Queue = React.forwardRef<HTMLDivElement, QueueProps>(
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
-            <ListIcon />
+            <ListChecks className="size-5 shrink-0" aria-hidden style={{ color: "var(--axon-orange)" }} />
             <span
               className="aurora-text-label"
               style={{ color: "var(--aurora-text-primary)", fontWeight: 700, fontSize: "1.05rem" }}
@@ -77,10 +78,9 @@ const Queue = React.forwardRef<HTMLDivElement, QueueProps>(
             </span>
           </div>
           <span
+            className="aurora-text-meta tabular-nums"
             style={{
               flex: "none",
-              fontFamily: "var(--aurora-font-mono)",
-              fontSize: "0.9rem",
               color: "var(--aurora-text-muted)",
               whiteSpace: "nowrap",
             }}
@@ -122,17 +122,17 @@ function QueueRow({ item, position }: { item: QueueItem; position?: number }) {
         display: "grid",
         gridTemplateColumns: "28px minmax(0, 1fr) auto",
         alignItems: "center",
-        gap: "16px",
+        gap: "14px",
         padding: running ? "13px 14px" : "11px 14px",
         borderRadius: "var(--aurora-radius-2)",
         border: running
-          ? "1px solid color-mix(in srgb, var(--aurora-accent-pink) 55%, transparent)"
+          ? "1px solid var(--axon-orange-border)"
           : "1px solid transparent",
         background: running
-          ? "color-mix(in srgb, var(--aurora-accent-pink) 8%, transparent)"
+          ? "var(--axon-orange-surface)"
           : "transparent",
         boxShadow: running
-          ? "0 0 18px color-mix(in srgb, var(--aurora-accent-pink) 14%, transparent)"
+          ? "0 0 18px color-mix(in srgb, var(--axon-orange) 14%, transparent)"
           : "none",
         transition:
           "border-color var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease), background var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease)",
@@ -170,9 +170,8 @@ function QueueRow({ item, position }: { item: QueueItem; position?: number }) {
         </span>
         {item.meta ? (
           <span
+            className="aurora-text-meta tabular-nums"
             style={{
-              fontFamily: "var(--aurora-font-mono)",
-              fontSize: "0.82rem",
               color: "var(--aurora-text-muted)",
             }}
           >
@@ -191,19 +190,7 @@ function QueueRow({ item, position }: { item: QueueItem; position?: number }) {
 
 function StatusBadge({ status }: { status: QueueStatus }) {
   if (status === "queued") {
-    return (
-      <span
-        style={{
-          fontFamily: "var(--aurora-font-mono)",
-          fontSize: "0.78rem",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "var(--aurora-text-muted)",
-        }}
-      >
-        Queued
-      </span>
-    )
+    return <Badge tone="neutral" fill="outline">Queued</Badge>
   }
 
   if (status === "running") {
@@ -215,13 +202,14 @@ function StatusBadge({ status }: { status: QueueStatus }) {
           gap: "7px",
           padding: "5px 11px",
           borderRadius: "999px",
-          border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 55%, transparent)",
-          background: "color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent)",
-          fontFamily: "var(--aurora-font-mono)",
-          fontSize: "0.78rem",
-          letterSpacing: "0.08em",
+          border: "1px solid var(--axon-orange-border)",
+          background: "var(--axon-orange-surface)",
+          fontFamily: "var(--aurora-font-sans)",
+          fontSize: "var(--aurora-type-caption)",
+          fontWeight: 700,
+          letterSpacing: "0.075em",
           textTransform: "uppercase",
-          color: "var(--aurora-accent-pink-strong)",
+          color: "var(--axon-orange-strong)",
           whiteSpace: "nowrap",
         }}
       >
@@ -231,8 +219,8 @@ function StatusBadge({ status }: { status: QueueStatus }) {
             width: "7px",
             height: "7px",
             borderRadius: "999px",
-            background: "var(--aurora-accent-pink)",
-            boxShadow: "0 0 6px color-mix(in srgb, var(--aurora-accent-pink) 70%, transparent)",
+            background: "var(--axon-orange)",
+            boxShadow: "0 0 6px color-mix(in srgb, var(--axon-orange) 70%, transparent)",
           }}
         />
         Running
@@ -241,34 +229,14 @@ function StatusBadge({ status }: { status: QueueStatus }) {
   }
 
   // done
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        padding: "5px 11px",
-        borderRadius: "999px",
-        border: "1px solid var(--aurora-success-border)",
-        background: "transparent",
-        fontFamily: "var(--aurora-font-mono)",
-        fontSize: "0.78rem",
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
-        color: "var(--aurora-success)",
-        whiteSpace: "nowrap",
-      }}
-    >
-      Done
-    </span>
-  )
+  return <Badge tone="success" fill="outline">Done</Badge>
 }
 
 function PositionNumber({ children }: { children?: React.ReactNode }) {
   return (
     <span
+      className="aurora-text-meta tabular-nums"
       style={{
-        fontFamily: "var(--aurora-font-mono)",
-        fontSize: "0.95rem",
         color: "var(--aurora-text-muted)",
       }}
     >
@@ -277,68 +245,20 @@ function PositionNumber({ children }: { children?: React.ReactNode }) {
   )
 }
 
-function ListIcon() {
-  return (
-    <svg
-      aria-hidden
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="var(--aurora-accent-pink)"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ flex: "none" }}
-    >
-      <line x1="4" y1="7" x2="20" y2="7" />
-      <line x1="4" y1="12" x2="20" y2="12" />
-      <line x1="4" y1="17" x2="20" y2="17" />
-    </svg>
-  )
-}
-
 function CheckRing() {
   return (
-    <svg aria-hidden width="22" height="22" viewBox="0 0 24 24" fill="none" style={{ flex: "none" }}>
-      <circle
-        cx="12"
-        cy="12"
-        r="9"
-        stroke="var(--aurora-success)"
-        strokeWidth="1.75"
-        opacity="0.85"
-      />
-      <path
-        d="M8.5 12.2l2.3 2.3 4.6-4.8"
-        stroke="var(--aurora-success)"
-        strokeWidth="1.9"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <CheckCircle2 className="size-[22px] shrink-0" aria-hidden style={{ color: "var(--aurora-success)" }} />
   )
 }
 
 function Spinner() {
   return (
-    <svg
+    <LoaderCircle
       aria-hidden
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      className="animate-spin"
-      style={{ flex: "none" }}
-    >
-      <circle cx="12" cy="12" r="9" stroke="var(--aurora-accent-pink)" strokeWidth="2" opacity="0.22" />
-      <path
-        d="M12 3a9 9 0 0 1 9 9"
-        stroke="var(--aurora-accent-pink)"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
+      className="size-6 shrink-0 animate-spin"
+      strokeWidth={2}
+      style={{ color: "var(--axon-orange)" }}
+    />
   )
 }
 

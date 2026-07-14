@@ -8,6 +8,8 @@ export interface InlineCitationProps
   index: number
   /** Source title shown in the hover/focus preview popover. */
   title?: string
+  /** Optional context line shown below the title. */
+  description?: string
   /** Source URL shown in the hover/focus preview popover. */
   url?: string
 }
@@ -18,66 +20,105 @@ export interface InlineCitationProps
  * keyboard focus; otherwise it renders as a plain numbered chip.
  */
 const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
-  ({ className, index, title, url, style, children, ...props }, ref) => {
+  (
+    {
+      className,
+      index,
+      title,
+      description,
+      url,
+      style,
+      children,
+      href,
+      target,
+      rel,
+      tabIndex,
+      onMouseEnter,
+      onMouseLeave,
+      onFocus,
+      onBlur,
+      ...props
+    },
+    ref
+  ) => {
     const [open, setOpen] = React.useState(false)
-    const hasPreview = Boolean(title || url)
+    const resolvedHref = href ?? url
+    const hasPreview = Boolean(title || description || url)
     const previewId = React.useId()
+    const resolvedTarget = target ?? (resolvedHref ? "_blank" : undefined)
+    const resolvedRel = rel ?? (resolvedHref ? "noreferrer noopener" : undefined)
+
+    const handleMouseEnter = React.useCallback(
+      (event: React.MouseEvent<HTMLAnchorElement>) => {
+        if (hasPreview) setOpen(true)
+        onMouseEnter?.(event)
+      },
+      [hasPreview, onMouseEnter]
+    )
+    const handleMouseLeave = React.useCallback(
+      (event: React.MouseEvent<HTMLAnchorElement>) => {
+        if (hasPreview) setOpen(false)
+        onMouseLeave?.(event)
+      },
+      [hasPreview, onMouseLeave]
+    )
+    const handleFocus = React.useCallback(
+      (event: React.FocusEvent<HTMLAnchorElement>) => {
+        if (hasPreview) setOpen(true)
+        onFocus?.(event)
+      },
+      [hasPreview, onFocus]
+    )
+    const handleBlur = React.useCallback(
+      (event: React.FocusEvent<HTMLAnchorElement>) => {
+        if (hasPreview) setOpen(false)
+        onBlur?.(event)
+      },
+      [hasPreview, onBlur]
+    )
 
     const chip = (
       <a
         ref={ref}
         className={[
           "inline-flex items-center justify-center rounded-[5px] border align-baseline no-underline",
-          "transition-colors",
-          "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0",
+          "border-[color:var(--aurora-citation-border)] bg-[var(--aurora-citation-bg)] transition-colors",
+          "hover:border-[color:var(--aurora-citation-border-hover)] hover:bg-[var(--aurora-citation-bg-hover)]",
+          "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-citation-ring)] focus-visible:ring-offset-0",
           className,
         ]
           .filter(Boolean)
           .join(" ")}
+        href={resolvedHref}
+        target={resolvedTarget}
+        rel={resolvedRel}
+        tabIndex={tabIndex ?? (hasPreview && !resolvedHref ? 0 : undefined)}
+        aria-label={title ? `Citation ${index}: ${title}` : `Citation ${index}`}
         aria-describedby={hasPreview && open ? previewId : undefined}
-        onMouseEnter={hasPreview ? () => setOpen(true) : undefined}
-        onMouseLeave={hasPreview ? () => setOpen(false) : undefined}
-        onFocus={hasPreview ? () => setOpen(true) : undefined}
-        onBlur={hasPreview ? () => setOpen(false) : undefined}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         style={{
           minWidth: "1.05rem",
           padding: "1px 5px",
-          borderColor:
-            "color-mix(in srgb, var(--aurora-accent-pink) 32%, transparent)",
-          background:
+          ["--aurora-citation-bg" as string]:
             "color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent)",
+          ["--aurora-citation-bg-hover" as string]:
+            "color-mix(in srgb, var(--aurora-accent-pink) 20%, transparent)",
+          ["--aurora-citation-border" as string]:
+            "color-mix(in srgb, var(--aurora-accent-pink) 32%, transparent)",
+          ["--aurora-citation-border-hover" as string]:
+            "color-mix(in srgb, var(--aurora-accent-pink) 48%, transparent)",
+          ["--aurora-citation-ring" as string]:
+            "color-mix(in srgb, var(--aurora-accent-pink) 45%, transparent)",
           color: "var(--aurora-accent-pink)",
           fontFamily: "var(--aurora-font-mono)",
           fontSize: 11,
           fontWeight: 600,
           lineHeight: 1.45,
-          // focus ring color, also surfaced on hover via the data attr below
-          ["--tw-ring-color" as string]:
-            "color-mix(in srgb, var(--aurora-accent-pink) 45%, transparent)",
           ...style,
         }}
-        onMouseOver={
-          hasPreview
-            ? (e) => {
-                e.currentTarget.style.background =
-                  "color-mix(in srgb, var(--aurora-accent-pink) 20%, transparent)"
-                e.currentTarget.style.borderColor =
-                  "color-mix(in srgb, var(--aurora-accent-pink) 48%, transparent)"
-                props.onMouseOver?.(e)
-              }
-            : props.onMouseOver
-        }
-        onMouseOut={
-          hasPreview
-            ? (e) => {
-                e.currentTarget.style.background =
-                  "color-mix(in srgb, var(--aurora-accent-pink) 12%, transparent)"
-                e.currentTarget.style.borderColor =
-                  "color-mix(in srgb, var(--aurora-accent-pink) 32%, transparent)"
-                props.onMouseOut?.(e)
-              }
-            : props.onMouseOut
-        }
         {...props}
       >
         {children ?? index}
@@ -112,10 +153,8 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
         >
           {title ? (
             <span
+              className="aurora-text-control"
               style={{
-                fontFamily: "var(--aurora-font-sans)",
-                fontSize: 13,
-                fontWeight: 600,
                 lineHeight: 1.35,
                 color: "var(--aurora-text-primary)",
               }}
@@ -123,11 +162,15 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
               {title}
             </span>
           ) : null}
+          {description ? (
+            <span className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)" }}>
+              {description}
+            </span>
+          ) : null}
           {url ? (
             <span
+              className="aurora-text-meta"
               style={{
-                fontFamily: "var(--aurora-font-mono)",
-                fontSize: 11,
                 lineHeight: 1.4,
                 color: "var(--aurora-accent-pink)",
                 wordBreak: "break-all",

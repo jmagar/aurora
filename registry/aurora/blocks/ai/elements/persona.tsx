@@ -19,7 +19,7 @@ export interface PersonaProps extends React.HTMLAttributes<HTMLDivElement> {
   presence?: PersonaPresence
   /** Capability chips (full variant only). */
   tags?: string[]
-  /** Show the rose "AI" badge next to the name (full variant). */
+  /** Show the Axon orange "AI" badge next to the name (full variant). */
   badge?: boolean
   variant?: "default" | "compact"
   /** Compact: render as a selected (rose-outlined) row. */
@@ -33,6 +33,19 @@ const PRESENCE: Record<PersonaPresence, string> = {
   offline: "var(--aurora-neutral)",
 }
 
+const PRESENCE_LABEL: Record<PersonaPresence, string> = {
+  online: "Online",
+  busy: "Busy",
+  away: "Away",
+  offline: "Offline",
+}
+
+const AI_STYLE: React.CSSProperties = {
+  color: "var(--axon-orange)",
+  background: "var(--axon-orange-surface)",
+  borderColor: "var(--axon-orange-border)",
+}
+
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).slice(0, 2)
   return parts.map((p) => p[0]?.toUpperCase() ?? "").join("") || "?"
@@ -41,14 +54,54 @@ function initials(name: string): string {
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
 const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
-  ({ name, role, description, presence, tags, badge = false, variant = "default", selected = false, className, onClick, ...props }, ref) => {
+  (
+    {
+      name,
+      role,
+      description,
+      presence,
+      tags,
+      badge = false,
+      variant = "default",
+      selected = false,
+      className,
+      style,
+      role: elementRole,
+      tabIndex,
+      onClick,
+      onKeyDown,
+      ...props
+    },
+    ref
+  ) => {
     const sub = role ?? description
     const dotColor = presence ? PRESENCE[presence] : null
     const isCompact = variant === "compact"
     const dotSize = isCompact ? 10 : 13
+    const interactiveProps = onClick
+      ? {
+          role: elementRole ?? "button",
+          tabIndex: tabIndex ?? 0,
+        }
+      : {
+          role: elementRole,
+          tabIndex,
+        }
+
+    const handleKeyDown = React.useCallback(
+      (event: React.KeyboardEvent<HTMLDivElement>) => {
+        onKeyDown?.(event)
+        if (event.defaultPrevented || !onClick) return
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault()
+          event.currentTarget.click()
+        }
+      },
+      [onClick, onKeyDown]
+    )
 
     const avatar = (
-      <span className="aurora-persona__av" aria-hidden="true">
+      <span className="aurora-persona__av" aria-hidden="true" style={badge ? AI_STYLE : undefined}>
         {initials(name)}
         {dotColor ? (
           <span
@@ -64,7 +117,19 @@ const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
         <div
           ref={ref}
           className={cn("aurora-persona aurora-persona--compact", selected && "aurora-persona--selected", onClick && "aurora-persona--clickable", className)}
+          style={
+            selected
+              ? {
+                  background: "var(--aurora-selected-bg)",
+                  borderColor: "var(--aurora-border-strong)",
+                  boxShadow: "var(--aurora-active-glow)",
+                  ...style,
+                }
+              : style
+          }
           onClick={onClick}
+          onKeyDown={handleKeyDown}
+          {...interactiveProps}
           {...props}
         >
           {avatar}
@@ -77,27 +142,48 @@ const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
     }
 
     return (
-      <div ref={ref} className={cn("aurora-persona aurora-persona--default", onClick && "aurora-persona--clickable", className)} onClick={onClick} {...props}>
+      <div
+        ref={ref}
+        className={cn("aurora-persona aurora-persona--default", onClick && "aurora-persona--clickable", className)}
+        style={style}
+        onClick={onClick}
+        onKeyDown={handleKeyDown}
+        {...interactiveProps}
+        {...props}
+      >
         <div className="aurora-persona__head">
           {avatar}
           <span className="min-w-0" style={{ flex: 1 }}>
             <span className="aurora-persona__titlerow">
               <span className="aurora-persona__name" style={{ fontSize: 19 }}>{name}</span>
-              {badge ? <span className="aurora-persona__aibadge">AI</span> : null}
+              {badge ? <span className="aurora-persona__aibadge" style={AI_STYLE}>AI</span> : null}
             </span>
             {sub ? <span className="aurora-persona__role" style={{ display: "block", fontSize: 15 }}>{sub}</span> : null}
           </span>
           {presence ? (
-            <span className="aurora-persona__status">
+            <span
+              className="aurora-persona__status"
+              style={{
+                fontFamily: "var(--aurora-font-sans)",
+                letterSpacing: "var(--aurora-letter-label)",
+                textTransform: "none",
+              }}
+            >
               <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor ?? "transparent", boxShadow: dotColor ? `0 0 6px ${dotColor}` : undefined }} />
-              {presence}
+              {PRESENCE_LABEL[presence]}
             </span>
           ) : null}
         </div>
         {tags && tags.length ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
             {tags.map((t) => (
-              <span key={t} className="aurora-persona__chip">{t}</span>
+              <span
+                key={t}
+                className="aurora-persona__chip"
+                style={{ fontFamily: "var(--aurora-font-sans)" }}
+              >
+                {t}
+              </span>
             ))}
           </div>
         ) : null}

@@ -89,7 +89,7 @@ const S = {
     border: "1px solid var(--aurora-border-strong)",
     borderRadius: "var(--aurora-radius-2)",
     boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
-    zIndex: 50,
+    zIndex: "var(--z-popover)",
     overflow: "hidden",
     maxWidth: "min(100%, calc(100vw - 32px))",
     maxHeight: "min(320px, 45vh)",
@@ -175,7 +175,7 @@ const S = {
     border: "1px solid var(--aurora-border-strong)",
     borderRadius: "var(--aurora-radius-2)",
     boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
-    zIndex: 50,
+    zIndex: "var(--z-popover)",
     overflow: "hidden",
     overflowY: "auto",
     padding: "4px",
@@ -251,6 +251,7 @@ const S = {
     textOverflow: "ellipsis",
     whiteSpace: "nowrap" as const,
     minWidth: 0,
+    maxWidth: "140px",
   } as React.CSSProperties,
 
   attachRemove: {
@@ -302,10 +303,45 @@ const S = {
     fontSize: "11px",
     marginLeft: "2px",
     minWidth: 0,
+    flex: "1 1 168px",
     maxWidth: "min(100%, 190px)",
     color: "var(--axon-orange)",
     borderColor: "color-mix(in srgb, var(--axon-orange) 32%, transparent)",
     background: "color-mix(in srgb, var(--axon-orange) 12%, var(--aurora-panel-medium))",
+  } as React.CSSProperties,
+
+  modelLabel: {
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap" as const,
+  } as React.CSSProperties,
+
+  streamingStatus: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "6px",
+    minHeight: 28,
+    padding: "0 9px",
+    borderRadius: "999px",
+    border: "1px solid var(--axon-orange-border)",
+    background: "var(--axon-orange-surface)",
+    color: "var(--axon-orange-strong)",
+    fontFamily: "var(--aurora-font-sans)",
+    fontSize: "11px",
+    fontWeight: 650,
+    letterSpacing: "0.012em",
+    lineHeight: 1,
+    whiteSpace: "nowrap" as const,
+  } as React.CSSProperties,
+
+  streamingDot: {
+    width: 5,
+    height: 5,
+    borderRadius: "50%",
+    background: "var(--axon-orange)",
+    boxShadow: "0 0 7px color-mix(in srgb, var(--axon-orange) 70%, transparent)",
+    flexShrink: 0,
   } as React.CSSProperties,
 
   toolbarBtn: {
@@ -710,7 +746,7 @@ export function PromptInput({
       )}
 
       {/* Main container */}
-      <div style={containerStyle}>
+      <div style={containerStyle} aria-busy={isStreaming}>
         {/* Mention chips row */}
         {selectedMentions.length > 0 && (
           <div style={S.mentionChipsRow}>
@@ -736,7 +772,7 @@ export function PromptInput({
         {attachments.length > 0 && (
           <div style={S.attachChipsRow}>
             {attachments.map((att) => (
-              <div key={att.id} style={attachChipStyle(att.type === "image")}>
+              <div key={att.id} style={attachChipStyle(att.type === "image")} title={att.name}>
                 {att.type === "image" && att.url ? (
                   <img src={att.url} alt={att.name} style={S.attachImg} />
                 ) : (
@@ -797,8 +833,20 @@ export function PromptInput({
 
         {/* Bottom toolbar */}
         <div style={S.toolbar}>
-          <input ref={fileInputRef} type="file" multiple style={{ display: "none" }} onChange={handleFileSelect} />
-          <ToolbarButton onClick={() => fileInputRef.current?.click()} aria-label="Attach File" title="Attach File">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            disabled={isStreaming || !onAddAttachment}
+            style={S.fileInput}
+            onChange={handleFileSelect}
+          />
+          <ToolbarButton
+            onClick={() => fileInputRef.current?.click()}
+            aria-label={onAddAttachment ? "Attach File" : "Attachments unavailable"}
+            title={onAddAttachment ? "Attach File" : "Attachments unavailable"}
+            disabled={isStreaming || !onAddAttachment}
+          >
             <Paperclip size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
 
@@ -815,6 +863,7 @@ export function PromptInput({
             }}
             aria-label="Slash commands"
             title="Commands"
+            disabled={isStreaming}
           >
             <Command size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
@@ -830,8 +879,9 @@ export function PromptInput({
               setShowModelMenu(false)
               textareaRef.current?.focus()
             }}
-            aria-label="Mention"
+            aria-label="Mention File or Agent"
             title="Mention File or Agent"
+            disabled={isStreaming}
           >
             <AtSign size={15} strokeWidth={1.65} aria-hidden />
           </ToolbarButton>
@@ -845,12 +895,20 @@ export function PromptInput({
             aria-haspopup="listbox"
             aria-expanded={showModelMenu}
             aria-controls={modelListboxId}
+            disabled={isStreaming}
             style={S.modelBtn}
           >
             <Sparkles size={13} strokeWidth={1.6} aria-hidden />
-            {modelLabel}
+            <span style={S.modelLabel}>{modelLabel}</span>
             <ChevronDown size={12} strokeWidth={1.65} aria-hidden />
           </Button>
+
+          {isStreaming && (
+            <div role="status" aria-live="polite" style={S.streamingStatus}>
+              <span aria-hidden="true" style={S.streamingDot} />
+              Generating
+            </div>
+          )}
 
           <div style={S.spacer} />
 

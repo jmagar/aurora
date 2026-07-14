@@ -17,7 +17,7 @@ export interface MessageProps extends React.HTMLAttributes<HTMLElement> {
 export interface MessageAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string
   /** Accent family for the avatar ring + glyph. */
-  tone?: "cyan" | "rose" | "muted"
+  tone?: "axon" | "cyan" | "rose" | "muted"
 }
 
 // ─── Conversation ─────────────────────────────────────────────────────────────
@@ -76,9 +76,11 @@ Message.displayName = "Message"
 const MessageAvatar = React.forwardRef<
   React.ElementRef<typeof AuroraAvatar>,
   MessageAvatarProps
->(({ className, label, tone = "muted", style, ...props }, ref) => {
+>(({ className, label, tone = "axon", style, ...props }, ref) => {
   const color =
-    tone === "cyan"
+    tone === "axon"
+      ? "var(--axon-orange)"
+      : tone === "cyan"
       ? "var(--aurora-accent-primary)"
       : tone === "rose"
         ? "var(--aurora-accent-pink)"
@@ -113,11 +115,11 @@ MessageAvatar.displayName = "MessageAvatar"
 const bubbleTone = {
   assistant: {
     background:
-      "linear-gradient(180deg, color-mix(in srgb, var(--aurora-text-muted) 8%, var(--aurora-panel-medium)), color-mix(in srgb, var(--aurora-text-muted) 4%, var(--aurora-panel-medium)))",
+      "linear-gradient(180deg, color-mix(in srgb, var(--axon-orange) 9%, var(--aurora-panel-medium)), color-mix(in srgb, var(--axon-orange) 4%, var(--aurora-panel-medium)))",
     borderColor:
-      "color-mix(in srgb, var(--aurora-text-muted) 22%, var(--aurora-border-default))",
+      "color-mix(in srgb, var(--axon-orange) 24%, var(--aurora-border-default))",
     shadow:
-      "0 14px 30px color-mix(in srgb, #000 18%, transparent), var(--aurora-highlight-medium)",
+      "0 14px 30px color-mix(in srgb, var(--aurora-page-bg) 48%, transparent), var(--aurora-highlight-medium)",
   },
   user: {
     background:

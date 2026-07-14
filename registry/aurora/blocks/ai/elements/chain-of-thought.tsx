@@ -5,8 +5,8 @@ import { Brain, Check, ChevronDown } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ChainOfThought — collapsible reasoning timeline with per-step status + streaming.
-// Visual spec ported 1:1 from the Claude Design source. Rose (--aurora-accent-pink)
-// is the AI/automation identity accent here (violet was removed from the system).
+// Visual spec ported 1:1 from the Claude Design source. Axon orange is the
+// AI/automation identity accent here (violet was removed from the system).
 // Status colors come from the semantic token layer (success / error / muted).
 
 // ---------------------------------------------------------------------------
@@ -32,9 +32,9 @@ export interface ChainOfThoughtProps
   steps?: CotStep[]
   /** Header summary on the right (e.g. "Thought for 4.2s"). */
   summary?: string
-  /** Show the rose "AI" identity badge next to the title. */
+  /** Show the orange "AI" identity badge next to the title. */
   badge?: boolean
-  /** Streaming mode — pulses the rose accent and adds a cursor to the active step. */
+  /** Streaming mode — pulses the orange accent and adds a cursor to the active step. */
   isStreaming?: boolean
   /** Whether the timeline starts expanded. Defaults to open. */
   defaultOpen?: boolean
@@ -44,7 +44,7 @@ export interface ChainOfThoughtProps
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
-const ROSE = "var(--aurora-accent-pink)"
+const AXON = "var(--axon-orange)"
 
 // ---------------------------------------------------------------------------
 // Streaming cursor
@@ -58,7 +58,7 @@ function Cursor() {
         display: "inline-block",
         width: "2px",
         height: "1em",
-        background: ROSE,
+        background: AXON,
         marginLeft: "3px",
         verticalAlign: "text-bottom",
         borderRadius: "1px",
@@ -139,7 +139,7 @@ function StatusNode({ status }: { status: CotStepStatus }) {
     )
   }
 
-  // inprog — rose ring with a spinning rose arc
+  // inprog — orange ring with a spinning arc
   return (
     <span
       aria-label="In progress"
@@ -150,8 +150,8 @@ function StatusNode({ status }: { status: CotStepStatus }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        border: `1.5px solid var(--aurora-accent-pink-border)`,
-        background: "var(--aurora-accent-pink-surface)",
+        border: "1.5px solid var(--axon-orange-border)",
+        background: "var(--axon-orange-surface)",
         flexShrink: 0,
       }}
     >
@@ -161,7 +161,7 @@ function StatusNode({ status }: { status: CotStepStatus }) {
           width: "16px",
           height: "16px",
           borderRadius: "50%",
-          border: `2px solid ${ROSE}`,
+          border: `2px solid ${AXON}`,
           borderTopColor: "transparent",
           animation: "aurora-cot-spin 0.8s linear infinite",
         }}
@@ -213,8 +213,10 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
           style={{
             display: "flex",
             alignItems: "center",
+            flexWrap: "wrap",
             gap: "10px",
             width: "100%",
+            minWidth: 0,
             padding: "16px 20px",
             background: "none",
             border: "none",
@@ -227,7 +229,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
             strokeWidth={1.9}
             aria-hidden="true"
             style={{
-              color: ROSE,
+              color: AXON,
               flexShrink: 0,
               animation: isStreaming ? "aurora-cot-pulse 1.8s ease-in-out infinite" : "none",
             }}
@@ -237,7 +239,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
               fontSize: "16px",
               fontWeight: 700,
               color: "var(--aurora-text-primary)",
-              whiteSpace: "nowrap",
+              minWidth: 0,
             }}
           >
             {title}
@@ -245,14 +247,13 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
 
           {badge && (
             <span
+              className="aurora-text-caption"
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "11px",
                 fontWeight: 600,
-                letterSpacing: "0.04em",
-                color: ROSE,
-                background: "var(--aurora-accent-pink-surface)",
-                border: "1px solid var(--aurora-accent-pink-border)",
+                letterSpacing: "0.075em",
+                color: "var(--axon-orange-strong)",
+                background: "var(--axon-orange-surface)",
+                border: "1px solid var(--axon-orange-border)",
                 borderRadius: "7px",
                 padding: "2px 7px",
                 flexShrink: 0,
@@ -264,10 +265,9 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
 
           {summary && (
             <span
+              className="aurora-text-meta tabular-nums"
               style={{
                 marginLeft: "auto",
-                fontFamily: "var(--font-mono)",
-                fontSize: "13px",
                 color: "var(--aurora-text-muted)",
                 whiteSpace: "nowrap",
               }}
@@ -351,9 +351,8 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
                       </div>
                       {step.duration && (
                         <span
+                          className="aurora-text-meta tabular-nums"
                           style={{
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "13px",
                             color: "var(--aurora-text-muted)",
                             whiteSpace: "nowrap",
                             flexShrink: 0,

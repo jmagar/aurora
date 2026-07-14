@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Check, CodeXml, Copy } from "lucide-react"
+import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 
 export interface SnippetProps extends React.HTMLAttributes<HTMLPreElement> {
@@ -109,11 +110,19 @@ function highlight(code: string): React.ReactNode[] {
 
 function CopyIconButton({ value }: { value: string }) {
   const [copied, setCopied] = React.useState(false)
+  const timer = React.useRef<number | undefined>(undefined)
+
+  React.useEffect(() => () => window.clearTimeout(timer.current), [])
 
   const handleCopy = React.useCallback(async () => {
-    await navigator.clipboard.writeText(value)
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1200)
+    try {
+      await navigator.clipboard.writeText(value)
+      setCopied(true)
+      window.clearTimeout(timer.current)
+      timer.current = window.setTimeout(() => setCopied(false), 1200)
+    } catch {
+      /* clipboard unavailable */
+    }
   }, [value])
 
   return (
@@ -162,25 +171,9 @@ const Snippet = React.forwardRef<HTMLPreElement, SnippetProps>(
       >
         <div className="flex items-center gap-2.5">
           <CodeXml className="size-4" aria-hidden style={{ color: "var(--aurora-text-muted)" }} />
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              height: 22,
-              padding: "0 9px",
-              borderRadius: 7,
-              fontFamily: "var(--aurora-font-mono)",
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "var(--aurora-accent-pink)",
-              background: "var(--aurora-accent-pink-surface)",
-              border: "1px solid var(--aurora-accent-pink-border)",
-            }}
-          >
+          <Badge tone="rose" size="sm">
             {language}
-          </span>
+          </Badge>
         </div>
         <CopyIconButton value={code} />
       </div>

@@ -39,9 +39,9 @@ const taskTone: Record<AgentTask["status"], TaskTone> = {
     active: false,
   },
   running: {
-    color: "var(--aurora-accent-pink)",
-    icon: <Spinner size="sm" tone="rose" />,
-    badge: "rose",
+    color: "var(--axon-orange)",
+    icon: <Spinner size="sm" tone="muted" style={{ color: "var(--axon-orange)" }} />,
+    badge: "warn",
     dot: true,
     active: true,
   },
@@ -59,6 +59,13 @@ const taskTone: Record<AgentTask["status"], TaskTone> = {
     dot: true,
     active: true,
   },
+}
+
+const TASK_STATUS_LABEL: Record<AgentTask["status"], string> = {
+  queued: "Queued",
+  running: "Running",
+  completed: "Completed",
+  failed: "Failed",
 }
 
 const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
@@ -79,7 +86,6 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
         }}
         {...props}
       >
-        {/* Header: title + progress counter, gradient seam underneath */}
         <div
           className="flex items-center justify-between"
           style={{ paddingBottom: 12 }}
@@ -91,23 +97,21 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
               fontFamily: "var(--aurora-font-sans, Inter, sans-serif)",
               fontSize: 17,
               fontWeight: 700,
-              letterSpacing: "-0.01em",
+              letterSpacing: 0,
             }}
           >
             <ListChecks
               className="size-[18px] shrink-0"
               aria-hidden
-              style={{ color: "var(--aurora-text-muted)" }}
+              style={{ color: "var(--axon-orange)" }}
             />
             Tasks
           </span>
           <span
+            className="aurora-text-meta tabular-nums"
             style={{
-              color: "var(--aurora-accent-pink-strong)",
-              fontFamily: "var(--aurora-font-mono, 'JetBrains Mono', monospace)",
-              fontSize: 13,
-              fontWeight: 600,
-              letterSpacing: "0.02em",
+              color: "var(--axon-orange-strong)",
+              fontWeight: 700,
             }}
           >
             {done}/{tasks.length}
@@ -119,11 +123,10 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
             height: 2,
             borderRadius: 999,
             background:
-              "linear-gradient(90deg, var(--aurora-accent-primary) 0%, var(--aurora-accent-pink) 55%, transparent 100%)",
+              "linear-gradient(90deg, var(--aurora-accent-primary) 0%, var(--axon-orange) 58%, transparent 100%)",
           }}
         />
 
-        {/* Rows */}
         <div className="grid" style={{ gap: 4, paddingTop: 12 }}>
           {tasks.map((task) => {
             const tone = taskTone[task.status]
@@ -136,10 +139,10 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
                   borderRadius: 12,
                   border: "1px solid transparent",
                   borderColor: tone.active
-                    ? "var(--aurora-accent-pink-border)"
+                    ? "var(--axon-orange-border)"
                     : "transparent",
                   background: tone.active
-                    ? "var(--aurora-accent-pink-surface)"
+                    ? "var(--axon-orange-surface)"
                     : "transparent",
                   padding: "10px 14px",
                   transition:
@@ -157,7 +160,7 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
                       fontFamily: "var(--aurora-font-sans, Inter, sans-serif)",
                       fontSize: 15.5,
                       fontWeight: 600,
-                      letterSpacing: "-0.005em",
+                      letterSpacing: 0,
                     }}
                   >
                     {task.title}
@@ -167,7 +170,7 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
                   ) : null}
                 </span>
                 <Badge variant={tone.badge} dot={tone.dot} pulse={tone.active}>
-                  {task.status}
+                  {TASK_STATUS_LABEL[task.status]}
                 </Badge>
               </div>
             )

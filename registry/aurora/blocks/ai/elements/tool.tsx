@@ -18,7 +18,7 @@ import { Button } from "@/registry/aurora/ui/button"
  * `displayName`, and `React.memo`. Fully a11y: the trigger drives
  * `aria-expanded`/`aria-controls` and the body is a labelled `region`.
  *
- * Visuals ported 1:1 from the Claude Design `Tool.dsCard`: rose accent on the
+ * Visuals ported 1:1 from the Claude Design `Tool.dsCard`: Axon orange on the
  * wrench + tool name, status glyph on the right, a JSON args card with
  * syntax tints, and muted footer children.
  */
@@ -27,7 +27,7 @@ export type ToolStatus = "pending" | "running" | "done" | "error"
 
 export interface ToolProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  /** Tool identifier, e.g. `axon.search`. Rendered in the rose accent. */
+  /** Tool identifier, e.g. `axon.search`. Rendered in the Axon orange accent. */
   name: string
   /** Lifecycle status — drives the right-hand status glyph. */
   status?: ToolStatus
@@ -53,7 +53,7 @@ const STATUS_META: Record<
   }
 > = {
   pending: { color: "var(--aurora-text-muted)", Icon: CircleDashed, label: "pending" },
-  running: { color: "var(--aurora-accent-primary)", spin: true, Icon: CircleDashed, label: "running" },
+  running: { color: "var(--axon-orange)", spin: true, Icon: CircleDashed, label: "running" },
   done: { color: "var(--aurora-success)", Icon: Check, label: "done" },
   error: { color: "var(--aurora-error)", Icon: CircleAlert, label: "error" },
 }
@@ -173,8 +173,9 @@ const ToolImpl = React.forwardRef<HTMLDivElement, ToolProps>(function Tool(
       ref={ref}
       style={{
         width: "100%",
+        minWidth: 0,
         border: `1px solid ${open ? "var(--aurora-border-strong)" : "var(--aurora-border-default)"}`,
-        borderRadius: 16,
+        borderRadius: "var(--aurora-radius-2)",
         background: "var(--aurora-panel-strong)",
         boxShadow: open
           ? "var(--aurora-shadow-medium), var(--aurora-highlight-medium)"
@@ -197,6 +198,7 @@ const ToolImpl = React.forwardRef<HTMLDivElement, ToolProps>(function Tool(
           alignItems: "center",
           gap: 12,
           width: "100%",
+          minWidth: 0,
           padding: "16px 18px",
           background: open
             ? "linear-gradient(180deg, var(--aurora-panel-strong-top) 0%, var(--aurora-panel-strong) 100%)"
@@ -221,17 +223,16 @@ const ToolImpl = React.forwardRef<HTMLDivElement, ToolProps>(function Tool(
           size={16}
           strokeWidth={2}
           aria-hidden="true"
-          style={{ color: "var(--aurora-accent-pink)", flexShrink: 0 }}
+          style={{ color: "var(--axon-orange)", flexShrink: 0 }}
         />
         <span
+          className="aurora-text-control"
           style={{
             minWidth: 0,
             flex: 1,
-            color: "var(--aurora-accent-pink)",
-            fontSize: 16,
+            color: "var(--axon-orange-strong)",
             fontWeight: 600,
             lineHeight: 1.3,
-            fontFamily: "var(--aurora-font-mono)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",

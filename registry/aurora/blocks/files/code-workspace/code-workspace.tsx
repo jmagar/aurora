@@ -1,8 +1,11 @@
 "use client"
 
 import * as React from "react"
+import { FileQuestion, PanelLeft } from "lucide-react"
 import { FileTree, TreeNode } from "@/registry/aurora/blocks/files/file-tree/file-tree"
 import { CodeEditor } from "@/registry/aurora/blocks/files/code-editor/code-editor"
+import { Badge } from "@/registry/aurora/ui/badge"
+import { EmptyState } from "@/registry/aurora/ui/empty-state"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -67,6 +70,13 @@ function firstFileId(nodes: TreeNode[]): string | undefined {
   return undefined
 }
 
+function countFileNodes(nodes: TreeNode[]): number {
+  return nodes.reduce((count, node) => {
+    if (node.type === "file") return count + 1
+    return count + countFileNodes(node.children ?? [])
+  }, 0)
+}
+
 // ---------------------------------------------------------------------------
 // CodeWorkspace
 // ---------------------------------------------------------------------------
@@ -83,6 +93,7 @@ export function CodeWorkspace({
   const initialId = defaultSelectedId ?? firstFileId(tree)
   const [activeId, setActiveId] = React.useState<string | undefined>(initialId)
 
+  const fileCount = React.useMemo(() => countFileNodes(tree), [tree])
   const activeFile = activeId ? files[activeId] : undefined
 
   function handleSelect(node: TreeNode) {
@@ -111,7 +122,7 @@ export function CodeWorkspace({
             border: "1px solid var(--aurora-border-default)",
             borderRadius: "var(--aurora-radius-2)",
             overflow: "hidden",
-            boxShadow: "var(--aurora-shadow-medium)",
+            boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
             background: "var(--aurora-panel-medium)",
             ...style,
           }}
@@ -135,12 +146,14 @@ export function CodeWorkspace({
                 flexShrink: 0,
                 display: "flex",
                 alignItems: "center",
+                gap: "8px",
                 paddingLeft: "12px",
                 paddingRight: "8px",
                 borderBottom: "1px solid var(--aurora-border-default)",
                 background: "var(--aurora-panel-strong)",
               }}
             >
+              <PanelLeft size={14} strokeWidth={1.65} aria-hidden style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
               <span
                 style={{
                   fontFamily: "var(--aurora-font-sans)",
@@ -150,10 +163,22 @@ export function CodeWorkspace({
                   textTransform: "uppercase",
                   color: "var(--aurora-text-muted)",
                   userSelect: "none",
+                  flex: 1,
+                  minWidth: 0,
                 }}
               >
                 Explorer
               </span>
+              <Badge
+                tone="neutral"
+                fill="outline"
+                shape="pill"
+                size="sm"
+                aria-label={`${fileCount} files`}
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
+                {fileCount}
+              </Badge>
             </div>
 
             {/* Tree scroll area */}
@@ -178,7 +203,6 @@ export function CodeWorkspace({
               />
             </div>
           ) : (
-            /* Empty state when no file is selected or file map has no entry */
             <div
               className="aurora-code-workspace__editor"
               style={{
@@ -186,12 +210,22 @@ export function CodeWorkspace({
                 alignItems: "center",
                 justifyContent: "center",
                 background: "var(--aurora-control-surface)",
-                color: "var(--aurora-text-muted)",
-                fontFamily: "var(--aurora-font-sans)",
-                fontSize: "13px",
+                padding: "24px",
               }}
             >
-              Select a file to view its contents
+              <EmptyState
+                icon={<FileQuestion size={26} strokeWidth={1.6} />}
+                title="No file selected."
+                description="Select a file from Explorer to preview its contents."
+                as="h3"
+                style={{
+                  width: "min(420px, 100%)",
+                  padding: "32px 24px",
+                  border: "1.5px dashed var(--aurora-border-default)",
+                  borderRadius: "var(--aurora-radius-2)",
+                  background: "var(--aurora-panel-medium)",
+                }}
+              />
             </div>
           )}
         </div>

@@ -7,20 +7,20 @@ import { Button } from "@/registry/aurora/ui/button"
 // ---------------------------------------------------------------------------
 // Reasoning — collapsible chain-of-thought summary.
 //
-// CD parity: rose rail + rose brain glyph, "Reasoned for Ns" / "Reasoning…"
-// label, a streaming bullet, and a blinking cursor on the live tail. Rose is the
-// Aurora secondary accent (--aurora-accent-pink family). No violet.
+// CD parity: orange rail + orange brain glyph, "Reasoned for Ns" / "Reasoning…"
+// label, a streaming bullet, and a blinking cursor on the live tail. Axon orange
+// is the AI/automation identity color. No violet.
 //
 // Architecture is kept standalone (not delegated to Thinking) so the Reasoning
-// surface can carry its own CD-exact rose styling without leaking into the
+// surface can carry its own reasoning styling without leaking into the
 // shared Chain-of-thought / Plan variants.
 // ---------------------------------------------------------------------------
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
-const ROSE = "var(--aurora-accent-pink)"
+const AXON = "var(--axon-orange)"
 
 export interface ReasoningProps {
-  /** Streaming summary tail — shows the "Reasoning…" rose label, bullet and cursor. */
+  /** Streaming summary tail — shows the "Reasoning…" orange label, bullet and cursor. */
   isStreaming?: boolean
   /** Seconds spent reasoning — renders the "Reasoned for Ns" label. */
   duration?: number
@@ -40,7 +40,7 @@ function Cursor() {
         display: "inline-block",
         width: "2px",
         height: "1em",
-        background: ROSE,
+        background: AXON,
         marginLeft: "2px",
         verticalAlign: "text-bottom",
         borderRadius: "1px",
@@ -70,8 +70,10 @@ const Reasoning = React.forwardRef<HTMLDivElement, ReasoningProps>(
           style={{
             display: "inline-flex",
             alignItems: "center",
+            flexWrap: "wrap",
             gap: "8px",
             padding: "4px 0",
+            maxWidth: "100%",
             minHeight: 0,
             background: "none",
             border: "none",
@@ -83,23 +85,23 @@ const Reasoning = React.forwardRef<HTMLDivElement, ReasoningProps>(
             size={16}
             strokeWidth={1.8}
             aria-hidden="true"
-            style={{ color: ROSE, flexShrink: 0 }}
+            style={{ color: AXON, flexShrink: 0 }}
           />
 
           <span
             style={{
               fontSize: "15px",
               fontWeight: 700,
-              letterSpacing: "-0.01em",
-              color: isStreaming ? ROSE : "var(--aurora-text-primary)",
-              whiteSpace: "nowrap",
+              letterSpacing: 0,
+              color: isStreaming ? AXON : "var(--aurora-text-primary)",
+              minWidth: 0,
             }}
           >
             {label}
           </span>
 
           {isStreaming && (
-            <span aria-hidden="true" style={{ color: ROSE, fontSize: "15px", lineHeight: 1 }}>
+            <span aria-hidden="true" style={{ color: AXON, fontSize: "15px", lineHeight: 1 }}>
               •
             </span>
           )}
@@ -115,15 +117,15 @@ const Reasoning = React.forwardRef<HTMLDivElement, ReasoningProps>(
           />
         </Button>
 
-        {/* Body — rose left rail + reasoning text */}
+        {/* Body — orange left rail + reasoning text */}
         {open && (
           <div
             style={{
-              borderLeft: `2px solid ${ROSE}`,
+              borderLeft: `3px solid ${AXON}`,
               paddingLeft: "16px",
               marginLeft: "8px",
-              fontSize: "16px",
-              lineHeight: "1.6",
+              fontSize: "var(--aurora-type-body)",
+              lineHeight: "var(--aurora-line-body)",
               color: "var(--aurora-text-muted)",
               whiteSpace: "pre-wrap",
             }}

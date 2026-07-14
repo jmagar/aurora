@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Brain, CircleCheck, ChevronDown, Circle, CircleAlert, ListChecks, ListTree } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
+import { Skeleton } from "@/registry/aurora/ui/skeleton"
 
 // Axon orange marks AI/automation identity.
 // Do not use for semantic state (success/warn/error) — use the semantic token layer for that.
@@ -72,20 +73,22 @@ function StepIcon({ status }: { status: StepStatus }) {
 // Shimmer skeleton
 // ---------------------------------------------------------------------------
 
-function SkeletonLines() {
+function SkeletonLines({ id }: { id: string }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "12px 14px" }}>
+    <div
+      id={id}
+      role="status"
+      aria-label="Reasoning in progress"
+      style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "12px 14px" }}
+    >
       {[100, 85, 92, 70].map((w, i) => (
-        <div
+        <Skeleton
           key={i}
+          width={`${w}%`}
+          height={11}
           style={{
-            height: "11px",
             borderRadius: "6px",
-            width: `${w}%`,
-            background:
-              "linear-gradient(90deg, var(--aurora-border-default) 25%, var(--aurora-hover-bg) 50%, var(--aurora-border-default) 75%)",
-            backgroundSize: "200% 100%",
-            animation: `aurora-thinking-shimmer 1.4s ease ${i * 0.12}s infinite`,
+            animationDelay: `${i * 0.12}s`,
           }}
         />
       ))}
@@ -131,6 +134,8 @@ function ThinkingBlock({
   defaultOpen?: boolean
 }) {
   const [open, setOpen] = React.useState(defaultOpen ?? false)
+  const reactId = React.useId()
+  const contentId = `${reactId}-thinking-content`
 
   const borderLeftColor = isStreaming ? AI_ACCENT : "var(--aurora-border-strong)"
 
@@ -143,6 +148,7 @@ function ThinkingBlock({
 
   return (
     <div
+      aria-busy={isStreaming}
       style={{
         display: open ? "block" : "inline-block",
         width: open ? "100%" : "max-content",
@@ -159,6 +165,7 @@ function ThinkingBlock({
       <Button variant="plain" size="unstyled"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
+        aria-controls={contentId}
         style={{
           display: open ? "flex" : "inline-flex",
           alignItems: "center",
@@ -205,9 +212,12 @@ function ThinkingBlock({
 
       {open && (
         showSkeleton ? (
-          <SkeletonLines />
+          <SkeletonLines id={contentId} />
         ) : (
           <div
+            id={contentId}
+            role="region"
+            aria-label="Reasoning details"
             style={{
               padding: "0 14px 12px",
               fontSize: "13px",
@@ -216,7 +226,7 @@ function ThinkingBlock({
               whiteSpace: "pre-wrap",
             }}
           >
-            {content}
+            {content ?? "No reasoning captured."}
             {isStreaming && <Cursor />}
           </div>
         )
@@ -239,12 +249,15 @@ function CotBlock({
   defaultOpen?: boolean
 }) {
   const [open, setOpen] = React.useState(defaultOpen ?? false)
+  const reactId = React.useId()
+  const contentId = `${reactId}-chain-of-thought-content`
 
   return (
-    <div>
+    <div aria-busy={isStreaming}>
       <Button variant="plain" size="unstyled"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
+        aria-controls={contentId}
         style={{
           display: "flex",
           alignItems: "center",
@@ -282,7 +295,20 @@ function CotBlock({
       </Button>
 
       {open && (
-        <div style={{ padding: "4px 14px 12px" }}>
+        <div id={contentId} role="region" aria-label="Chain of Thought steps" style={{ padding: "4px 14px 12px" }}>
+          {steps.length === 0 ? (
+            <p
+              style={{
+                margin: 0,
+                color: "var(--aurora-text-muted)",
+                fontFamily: "var(--aurora-font-sans)",
+                fontSize: "13px",
+                lineHeight: 1.5,
+              }}
+            >
+              No reasoning steps captured.
+            </p>
+          ) : (
           <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
             {steps.map((step, i) => (
               <li
@@ -358,6 +384,7 @@ function CotBlock({
               </li>
             ))}
           </ol>
+          )}
         </div>
       )}
     </div>
@@ -378,13 +405,16 @@ function PlanBlock({
   defaultOpen?: boolean
 }) {
   const [open, setOpen] = React.useState(defaultOpen ?? false)
+  const reactId = React.useId()
+  const contentId = `${reactId}-plan-content`
   const doneCount = steps.filter((s) => s.status === "done").length
 
   return (
-    <div>
+    <div aria-busy={isStreaming}>
       <Button variant="plain" size="unstyled"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
+        aria-controls={contentId}
         style={{
           display: "flex",
           alignItems: "center",
@@ -435,7 +465,25 @@ function PlanBlock({
       </Button>
 
       {open && (
-        <div style={{ padding: "4px 14px 12px", display: "flex", flexDirection: "column", gap: "2px" }}>
+        <div
+          id={contentId}
+          role="region"
+          aria-label="Plan steps"
+          style={{ padding: "4px 14px 12px", display: "flex", flexDirection: "column", gap: "2px" }}
+        >
+          {steps.length === 0 && (
+            <p
+              style={{
+                margin: 0,
+                color: "var(--aurora-text-muted)",
+                fontFamily: "var(--aurora-font-sans)",
+                fontSize: "13px",
+                lineHeight: 1.5,
+              }}
+            >
+              No plan steps captured.
+            </p>
+          )}
           {steps.map((step, i) => (
             <div
               key={i}

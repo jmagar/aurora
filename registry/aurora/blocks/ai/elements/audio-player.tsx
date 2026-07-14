@@ -15,8 +15,9 @@
  */
 
 import * as React from "react"
-import { Download, Play, Star } from "lucide-react"
+import { Download, Play, Sparkles } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
+import { Separator } from "@/registry/aurora/ui/separator"
 import { Spinner } from "@/registry/aurora/ui/spinner"
 
 export interface AudioPlayerProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -28,7 +29,7 @@ export interface AudioPlayerProps extends React.HTMLAttributes<HTMLDivElement> {
   progress?: number
   /** Transport state. `synthesizing` swaps the play control for a spinner and hides the waveform. */
   status?: "idle" | "synthesizing"
-  /** Render the rose "AI VOICE" pill beside the title. */
+  /** Render the Axon orange "AI Voice" pill beside the title. */
   badge?: boolean
   /** Show the square download control in the footer. */
   download?: boolean
@@ -51,6 +52,8 @@ const WAVE_COMPACT = [
   0.84, 0.78, 0.62, 0.5, 0.36, 0.28, 0.44, 0.58, 0.66, 0.52, 0.4, 0.5, 0.6,
   0.46, 0.34, 0.5, 0.42, 0.3, 0.56, 0.44, 0.36, 0.5, 0.28,
 ]
+
+const AI_ORANGE = "var(--axon-orange)"
 
 function parseSeconds(value: string): number {
   const parts = value.split(":").map((p) => Number.parseInt(p, 10))
@@ -76,10 +79,12 @@ function Waveform({
   height: number
   className?: string
 }) {
-  const playedCount = Math.round(bars.length * Math.min(1, Math.max(0, progress)))
+  const clampedProgress = Math.min(1, Math.max(0, progress))
+  const playedCount = Math.round(bars.length * clampedProgress)
   return (
     <span
-      role="presentation"
+      role="img"
+      aria-label={`Playback waveform ${Math.round(clampedProgress * 100)}% played`}
       className={["flex min-w-0 flex-1 items-center", className].filter(Boolean).join(" ")}
       style={{ gap: 3, height }}
     >
@@ -157,7 +162,7 @@ const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
           </Button>
           <Waveform bars={WAVE_COMPACT} progress={progress} height={22} />
           <span
-            className="aurora-text-code shrink-0 tabular-nums"
+            className="aurora-text-control shrink-0 tabular-nums"
             style={{ color: "var(--aurora-text-muted)" }}
           >
             {duration}
@@ -216,13 +221,15 @@ const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
                   style={{
                     padding: "3px 8px",
                     borderRadius: 999,
-                    color: "var(--aurora-accent-pink)",
-                    border: "1px solid var(--aurora-accent-pink-border)",
-                    background: "var(--aurora-accent-pink-surface)",
-                    letterSpacing: "0.06em",
+                    color: AI_ORANGE,
+                    border: "1px solid var(--axon-orange-border)",
+                    background: "var(--axon-orange-surface)",
+                    fontFamily: "var(--aurora-font-sans)",
+                    letterSpacing: "var(--aurora-letter-label)",
+                    textTransform: "none",
                   }}
                 >
-                  <Star className="size-3" aria-hidden style={{ fill: "currentColor" }} />
+                  <Sparkles className="size-3" aria-hidden />
                   AI Voice
                 </span>
               ) : null}
@@ -230,8 +237,13 @@ const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
             <div style={{ marginTop: 10 }}>
               {synthesizing ? (
                 <span
-                  className="block text-right aurora-text-code uppercase"
-                  style={{ color: "var(--aurora-text-muted)", letterSpacing: "0.08em" }}
+                  className="block text-right aurora-text-label"
+                  style={{
+                    color: "var(--aurora-text-muted)",
+                    fontFamily: "var(--aurora-font-sans)",
+                    letterSpacing: "var(--aurora-letter-eyebrow)",
+                    textTransform: "uppercase",
+                  }}
                 >
                   Synthesizing
                 </span>
@@ -242,13 +254,10 @@ const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
           </div>
         </div>
 
-        <span
-          className="block h-px"
-          style={{ background: "var(--aurora-border-default)" }}
-        />
+        <Separator />
 
         <div className="flex items-center justify-between gap-3">
-          <span className="aurora-text-code tabular-nums">
+          <span className="aurora-text-control tabular-nums">
             <span style={{ color: "var(--aurora-text-primary)", fontWeight: 600 }}>{current}</span>
             <span style={{ color: "var(--aurora-text-muted)", margin: "0 7px" }}>/</span>
             <span style={{ color: "var(--aurora-text-muted)" }}>{duration}</span>

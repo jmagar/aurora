@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Bot, CircleDashed, CirclePlus, Clock, SquareCode, Star } from "lucide-react"
+import { Bot, CircleDashed, CirclePlus, Clock, SquareCode } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Spinner } from "@/registry/aurora/ui/spinner"
 
@@ -14,9 +15,9 @@ export interface AgentProps extends React.HTMLAttributes<HTMLDivElement> {
   role?: string
   /** Lifecycle status — drives the status pill and live affordances. */
   status?: AgentStatus
-  /** Render the rose "AGENT" identity chip beside the name. */
+  /** Render the Axon-orange Agent identity chip beside the name. */
   badge?: boolean
-  /** Model identifier shown in the metadata footer (mono). */
+  /** Model identifier shown in the metadata footer. */
   model?: string
   /** Current task description shown in the activity row. */
   task?: string
@@ -30,11 +31,18 @@ export interface AgentProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "compact"
 }
 
-const statusTone: Record<AgentStatus, "success" | "warn" | "neutral"> = {
-  running: "success",
+const statusTone: Record<AgentStatus, "info" | "success" | "warn" | "neutral"> = {
+  running: "info",
   completed: "success",
   blocked: "warn",
   idle: "neutral",
+}
+
+const statusLabel: Record<AgentStatus, string> = {
+  idle: "Idle",
+  running: "Running",
+  blocked: "Blocked",
+  completed: "Completed",
 }
 
 function formatTokens(value: number): string {
@@ -74,15 +82,15 @@ function AgentAvatar({ status, size }: AvatarProps) {
         width: size,
         height: size,
         borderRadius: "calc(var(--aurora-radius-1) - 2px)",
-        background: "color-mix(in srgb, var(--aurora-accent-pink) 8%, var(--aurora-control-surface))",
-        border: "1px solid color-mix(in srgb, var(--aurora-accent-pink) 24%, var(--aurora-border-strong))",
+        background: "var(--axon-orange-surface)",
+        border: "1px solid var(--axon-orange-border)",
       }}
     >
       <Bot
         style={{
           width: Math.round(size * 0.5),
           height: Math.round(size * 0.5),
-          color: "var(--aurora-accent-pink)",
+          color: "var(--axon-orange)",
         }}
       />
       {status === "running" ? (
@@ -94,9 +102,9 @@ function AgentAvatar({ status, size }: AvatarProps) {
             width: dotSize,
             height: dotSize,
             borderRadius: "50%",
-            backgroundColor: "var(--aurora-success)",
+            backgroundColor: "var(--axon-orange)",
             border: "2px solid var(--aurora-page-bg)",
-            boxShadow: "0 0 6px var(--aurora-success)",
+            boxShadow: "0 0 8px color-mix(in srgb, var(--axon-orange) 60%, transparent)",
           }}
         />
       ) : null}
@@ -131,19 +139,19 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
       return (
         <div
           ref={ref}
-          className={["flex items-center gap-3", className].filter(Boolean).join(" ")}
+          className={cn("flex items-center gap-3", className)}
           style={panelStyle({ padding: "12px 14px", ...style })}
           {...props}
         >
           <AgentAvatar status={status} size={36} />
           <span
             className="min-w-0 flex-1 truncate aurora-text-control"
-            style={{ color: "var(--aurora-text-primary)", fontWeight: 700, fontSize: "15px" }}
+            style={{ color: "var(--aurora-text-primary)", fontWeight: 700 }}
           >
             {name}
           </span>
           <Badge variant={tone} size="sm" dot={status === "running"}>
-            {status}
+            {statusLabel[status]}
           </Badge>
         </div>
       )
@@ -152,41 +160,44 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
     return (
       <div
         ref={ref}
-        className={["flex flex-col", className].filter(Boolean).join(" ")}
+        className={cn("flex flex-col", className)}
         style={panelStyle({ padding: "16px 18px", gap: "14px", ...style })}
         {...props}
       >
         {/* Header */}
-        <div className="flex items-start gap-3">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3">
           <AgentAvatar status={status} size={52} />
           <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-2">
+            <span className="flex min-w-0 flex-wrap items-center gap-2">
               <span
-                className="truncate"
+                className="truncate aurora-text-section"
                 style={{
                   color: "var(--aurora-text-primary)",
-                  fontFamily: "var(--aurora-font-display)",
-                  fontWeight: 700,
-                  fontSize: "18px",
-                  lineHeight: 1.2,
                 }}
               >
                 {name}
               </span>
               {badge ? (
-                <Badge variant="rose" size="sm">
-                  <Star aria-hidden style={{ width: 10, height: 10 }} />
+                <span
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-[4px] border px-2 py-0.5 aurora-text-label"
+                  style={{
+                    borderColor: "var(--axon-orange-border)",
+                    background: "var(--axon-orange-surface)",
+                    color: "var(--axon-orange-strong)",
+                    fontSize: "var(--aurora-type-micro)",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  <Bot aria-hidden style={{ width: 11, height: 11 }} />
                   Agent
-                </Badge>
+                </span>
               ) : null}
             </span>
             {role ? (
               <span
-                className="block truncate"
+                className="block truncate aurora-text-body-sm"
                 style={{
                   color: "var(--aurora-text-muted)",
-                  fontFamily: "var(--aurora-font-sans)",
-                  fontSize: "14px",
                   marginTop: 2,
                 }}
               >
@@ -195,7 +206,7 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
             ) : null}
           </span>
           <Badge variant={tone} dot={status === "running" || status === "completed"}>
-            {status}
+            {statusLabel[status]}
           </Badge>
         </div>
 
@@ -204,7 +215,7 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-3">
               {status === "running" ? (
-                <Spinner size="sm" tone="cyan" />
+                <Spinner size="sm" tone="muted" style={{ color: "var(--axon-orange)" }} />
               ) : (
                 <CircleDashed
                   aria-hidden
@@ -212,12 +223,8 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
                 />
               )}
               <span
-                className="min-w-0 flex-1 truncate"
-                style={{
-                  color: "var(--aurora-text-primary)",
-                  fontFamily: "var(--aurora-font-sans)",
-                  fontSize: "16px",
-                }}
+                className="min-w-0 flex-1 truncate aurora-text-ui"
+                style={{ color: "var(--aurora-text-primary)" }}
               >
                 {task}
               </span>
@@ -225,8 +232,9 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
                 <span
                   style={{
                     color: "var(--aurora-text-muted)",
-                    fontFamily: "var(--aurora-font-mono)",
-                    fontSize: "15px",
+                    fontFamily: "var(--aurora-font-sans)",
+                    fontSize: "var(--aurora-type-caption)",
+                    fontVariantNumeric: "tabular-nums",
                     flexShrink: 0,
                   }}
                 >
@@ -243,7 +251,7 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
                 style={{
                   height: 6,
                   borderRadius: 999,
-                  background: "color-mix(in srgb, var(--aurora-success) 14%, var(--aurora-control-surface))",
+                  background: "color-mix(in srgb, var(--axon-orange) 14%, var(--aurora-control-surface))",
                   overflow: "hidden",
                 }}
               >
@@ -253,8 +261,8 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
                     height: "100%",
                     width: `${pct}%`,
                     borderRadius: 999,
-                    background: "var(--aurora-success)",
-                    boxShadow: "0 0 8px color-mix(in srgb, var(--aurora-success) 50%, transparent)",
+                    background: "var(--axon-orange)",
+                    boxShadow: "0 0 8px color-mix(in srgb, var(--axon-orange) 50%, transparent)",
                     transition: "width var(--motion-medium, 240ms) ease",
                   }}
                 />
@@ -266,7 +274,7 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
         {/* Footer */}
         {model || typeof tokens === "number" || elapsed ? (
           <div
-            className="flex items-center justify-between gap-3"
+            className="flex flex-wrap items-center justify-between gap-3"
             style={{ borderTop: "1px solid var(--aurora-border-default)", paddingTop: 12 }}
           >
             {model ? (
@@ -276,11 +284,9 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
                   style={{ width: 16, height: 16, color: "var(--aurora-text-muted)", flexShrink: 0 }}
                 />
                 <span
-                  className="truncate"
+                  className="truncate aurora-text-meta"
                   style={{
                     color: "var(--aurora-text-muted)",
-                    fontFamily: "var(--aurora-font-mono)",
-                    fontSize: "15px",
                   }}
                 >
                   {model}
@@ -297,11 +303,8 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
                     style={{ width: 16, height: 16, color: "var(--aurora-text-muted)", flexShrink: 0 }}
                   />
                   <span
-                    style={{
-                      color: "var(--aurora-text-primary)",
-                      fontFamily: "var(--aurora-font-mono)",
-                      fontSize: "15px",
-                    }}
+                    className="aurora-text-meta"
+                    style={{ color: "var(--aurora-text-primary)" }}
                   >
                     {formatTokens(tokens)}
                   </span>
@@ -314,11 +317,8 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
                     style={{ width: 16, height: 16, color: "var(--aurora-text-muted)", flexShrink: 0 }}
                   />
                   <span
-                    style={{
-                      color: "var(--aurora-text-primary)",
-                      fontFamily: "var(--aurora-font-mono)",
-                      fontSize: "15px",
-                    }}
+                    className="aurora-text-meta"
+                    style={{ color: "var(--aurora-text-primary)" }}
                   >
                     {elapsed}
                   </span>

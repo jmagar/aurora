@@ -15,7 +15,10 @@
 
 import * as React from "react"
 import { Download, Layers } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
+import { Separator } from "@/registry/aurora/ui/separator"
 
 export type PackageInfoVariant = "default" | "compact"
 
@@ -69,9 +72,7 @@ const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
     return (
       <div
         ref={ref}
-        className={["aurora-pkg", isCompact && "aurora-pkg--compact", className]
-          .filter(Boolean)
-          .join(" ")}
+        className={cn("aurora-pkg", isCompact && "aurora-pkg--compact", className)}
         {...props}
       >
         <div className="aurora-pkg__head">
@@ -87,14 +88,14 @@ const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
               <span className="aurora-pkg__name">{name}</span>
               <span className="aurora-pkg__version">{version}</span>
               {latest ? (
-                <span className="aurora-pkg__badge aurora-pkg__badge--latest">
+                <Badge tone="success" size="sm">
                   Latest
-                </span>
+                </Badge>
               ) : null}
               {outdated ? (
-                <span className="aurora-pkg__badge aurora-pkg__badge--outdated">
+                <Badge tone="warn" size="sm">
                   Outdated
-                </span>
+                </Badge>
               ) : null}
             </span>
             {description ? (
@@ -105,7 +106,7 @@ const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
 
         {hasFooter ? (
           <>
-            <hr className="aurora-pkg__divider" aria-hidden />
+            <Separator className="aurora-pkg__divider" />
             <div className="aurora-pkg__foot">
               <div className="aurora-pkg__meta">
                 {registry ? (
@@ -125,6 +126,7 @@ const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
                   filled
                   size="sm"
                   onClick={onInstall}
+                  disabled={!onInstall}
                   iconLeft={<Download className="size-4" aria-hidden />}
                 >
                   Install

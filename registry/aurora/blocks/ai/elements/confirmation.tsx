@@ -15,7 +15,7 @@
  */
 
 import * as React from "react"
-import { CircleAlert, TriangleAlert } from "lucide-react"
+import { ChevronRight, CircleAlert, TriangleAlert } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 export type ConfirmationIntent = "default" | "danger"
@@ -25,7 +25,7 @@ export interface ConfirmationProps extends React.HTMLAttributes<HTMLDivElement> 
   description?: string
   /** Optional list of statements/lines previewing exactly what will run. */
   details?: React.ReactNode[]
-  /** `danger` swaps the icon to a triangle-alert and tints the badge rose. */
+  /** `danger` swaps the icon to a triangle-alert and uses destructive action styling. */
   intent?: ConfirmationIntent
   confirmLabel?: string
   cancelLabel?: string
@@ -51,6 +51,9 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
     },
     ref
   ) => {
+    const reactId = React.useId()
+    const titleId = `${reactId}-title`
+    const descriptionId = description ? `${reactId}-description` : undefined
     const Icon = intent === "danger" ? TriangleAlert : CircleAlert
     const cls = [
       "aurora-confirm",
@@ -61,14 +64,21 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
       .join(" ")
 
     return (
-      <div ref={ref} className={cls} role="alertdialog" aria-label={title} {...props}>
+      <div
+        ref={ref}
+        className={cls}
+        role="alertdialog"
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+        {...props}
+      >
         <div className="aurora-confirm__head">
           <span className="aurora-confirm__badge" aria-hidden>
             <Icon className="size-6" aria-hidden />
           </span>
           <div className="aurora-confirm__text">
-            <h3 className="aurora-confirm__title">{title}</h3>
-            {description ? <p className="aurora-confirm__desc">{description}</p> : null}
+            <h3 id={titleId} className="aurora-confirm__title">{title}</h3>
+            {description ? <p id={descriptionId} className="aurora-confirm__desc">{description}</p> : null}
           </div>
         </div>
 
@@ -76,9 +86,7 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
           <div className="aurora-confirm__details">
             {details.map((detail, index) => (
               <div className="aurora-confirm__detail" key={index}>
-                <span className="aurora-confirm__chevron" aria-hidden>
-                  &rsaquo;
-                </span>
+                <ChevronRight className="aurora-confirm__chevron size-3.5" aria-hidden />
                 <span>{detail}</span>
               </div>
             ))}
@@ -89,7 +97,7 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
           <Button type="button" variant="neutral" size="sm" onClick={onCancel}>
             {cancelLabel}
           </Button>
-          <Button type="button" variant="rose" size="sm" onClick={onConfirm}>
+          <Button type="button" variant={intent === "danger" ? "destructive" : "aurora"} size="sm" onClick={onConfirm}>
             {confirmLabel}
           </Button>
         </div>

@@ -25,6 +25,7 @@ export default function ThinkingDemo() {
         defaultOpen
         content="The struct derives Serialize, so serde generates the impl at compile time. No runtime reflection is involved."
       />
+      <Thinking type="thinking" isStreaming defaultOpen />
       <Thinking
         type="plan"
         defaultOpen

@@ -34,13 +34,11 @@ export interface SchemaDisplayProps extends React.HTMLAttributes<HTMLDivElement>
 
 // ---------------------------------------------------------------------------
 // Type-tone mapping — each JSON-schema scalar maps to an Aurora status tone.
-// (No violet: array/string → success, integer/number → warn, boolean → rose.)
+// Array/string -> success, integer/number -> warn, boolean -> rose.
 // ---------------------------------------------------------------------------
 
 type TypeTone = {
-  text: string
-  border: string
-  bg: string
+  badge: "info" | "success" | "warn" | "rose"
 }
 
 function toneForType(type: string): TypeTone {
@@ -49,28 +47,20 @@ function toneForType(type: string): TypeTone {
     case "integer":
     case "number":
       return {
-        text: "var(--aurora-warn-foreground)",
-        border: "var(--aurora-warn-border)",
-        bg: "var(--aurora-warn-surface)",
+        badge: "warn",
       }
     case "boolean":
       return {
-        text: "var(--aurora-accent-pink-strong)",
-        border: "var(--aurora-accent-pink-border)",
-        bg: "var(--aurora-accent-pink-surface)",
+        badge: "rose",
       }
     case "object":
       return {
-        text: "var(--aurora-info-foreground)",
-        border: "var(--aurora-info-border)",
-        bg: "var(--aurora-info-surface)",
+        badge: "info",
       }
     // string, array (string[]), and anything else → success teal
     default:
       return {
-        text: "var(--aurora-success-foreground)",
-        border: "var(--aurora-success-border)",
-        bg: "var(--aurora-success-surface)",
+        badge: "success",
       }
   }
 }
@@ -156,15 +146,16 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
     const fieldNames = Object.keys(properties)
 
     const tabBase =
-      "rounded-[8px] px-3 py-1.5 text-[12px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2"
+      "rounded-[8px] px-3 py-1.5 aurora-text-control transition-colors focus-visible:outline-none focus-visible:ring-2"
 
     return (
       <div
         ref={ref}
-        className={cn("overflow-hidden rounded-[14px] border", className)}
+        className={cn("overflow-hidden rounded-[var(--aurora-radius-1)] border", className)}
         style={{
-          borderColor: "var(--aurora-border-default)",
-          background: "var(--aurora-panel-strong)",
+          borderColor: "var(--aurora-border-strong)",
+          background: "var(--aurora-surface-raised)",
+          boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
           fontFamily: "var(--aurora-font-sans)",
           ...style,
         }}
@@ -178,7 +169,7 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
           <div className="flex min-w-0 items-center gap-2.5">
             <Code
               className="size-[18px] shrink-0"
-              style={{ color: "var(--aurora-accent-pink)" }}
+              style={{ color: "var(--axon-orange)" }}
               aria-hidden
             />
             <span
@@ -206,9 +197,10 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
               style={
                 view === "fields"
                   ? {
-                      color: "var(--aurora-accent-pink-strong)",
-                      background: "var(--aurora-accent-pink-surface)",
-                      border: "1px solid var(--aurora-accent-pink-border)",
+                      color: "var(--aurora-accent-primary)",
+                      background: "var(--aurora-accent-primary-surface)",
+                      border: "1px solid var(--aurora-accent-primary-border)",
+                      boxShadow: "var(--aurora-active-glow)",
                     }
                   : {
                       color: "var(--aurora-text-muted)",
@@ -228,9 +220,10 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
               style={
                 view === "json"
                   ? {
-                      color: "var(--aurora-text-primary)",
-                      background: "var(--aurora-hover-bg)",
-                      border: "1px solid var(--aurora-border-strong)",
+                      color: "var(--aurora-accent-primary)",
+                      background: "var(--aurora-accent-primary-surface)",
+                      border: "1px solid var(--aurora-accent-primary-border)",
+                      boxShadow: "var(--aurora-active-glow)",
                     }
                   : {
                       color: "var(--aurora-text-muted)",
@@ -263,7 +256,7 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
                 return (
                   <div
                     key={name}
-                    className="flex items-start justify-between gap-4 px-5 py-4"
+                    className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 px-5 py-4"
                     style={
                       index < fieldNames.length - 1
                         ? { borderBottom: "1px solid var(--aurora-border-default)" }
@@ -279,8 +272,8 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
                           {name}
                         </span>
                         {isRequired ? (
-                          <Badge tone="rose" size="sm" shape="label">
-                            Req
+                          <Badge tone="warn" size="sm" shape="label">
+                            Required
                           </Badge>
                         ) : null}
                       </div>
@@ -293,17 +286,9 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
                         </p>
                       ) : null}
                     </div>
-                    <span
-                      className="mt-0.5 inline-flex shrink-0 items-center whitespace-nowrap rounded-[8px] border px-2.5 py-1 text-[13px] font-semibold"
-                      style={{
-                        color: tone.text,
-                        borderColor: tone.border,
-                        background: tone.bg,
-                        fontFamily: "var(--aurora-font-mono)",
-                      }}
-                    >
+                    <Badge tone={tone.badge} size="sm" shape="tag">
                       {type}
-                    </span>
+                    </Badge>
                   </div>
                 )
               })

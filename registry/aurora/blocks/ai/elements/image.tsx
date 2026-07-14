@@ -9,9 +9,8 @@ import { Spinner } from "@/registry/aurora/ui/spinner"
 // states, an "AI" identity badge, model pill, prompt overlay, metadata footer
 // (caption / dimensions / seed) and expand + regenerate / retry affordances.
 //
-// Visual spec ported 1:1 from the Claude Design source. Rose
-// (--aurora-accent-pink) is the AI/automation identity accent (violet was
-// removed from the system); the cyan accent drives the progress bar; status
+// Visual spec ported from the Claude Design source. Axon orange is the
+// AI/automation identity accent; cyan remains the primary UI accent; status
 // colors come from the semantic token layer.
 
 // ---------------------------------------------------------------------------
@@ -67,18 +66,18 @@ function aspectValue(aspect: AiImageAspect): string {
     : "4 / 3"
 }
 
-const ROSE = "var(--aurora-accent-pink)"
+const AI_ORANGE = "var(--axon-orange)"
 
 // Translucent scrim sits over the (opaque) image — opaque→translucent over an
 // image is intentional (no banding seam against a flat surface).
 const PROMPT_SCRIM =
-  "linear-gradient(180deg, rgba(7,19,28,0) 0%, rgba(7,19,28,0.78) 100%)"
+  "linear-gradient(180deg, color-mix(in srgb, var(--aurora-page-bg) 0%, transparent) 0%, color-mix(in srgb, var(--aurora-page-bg) 82%, transparent) 100%)"
 
 // ---------------------------------------------------------------------------
 // Pills
 // ---------------------------------------------------------------------------
 
-function chipStyle(): React.CSSProperties {
+function chipStyle(tone: "neutral" | "ai" = "neutral"): React.CSSProperties {
   return {
     display: "inline-flex",
     alignItems: "center",
@@ -86,15 +85,19 @@ function chipStyle(): React.CSSProperties {
     height: 22,
     padding: "0 8px",
     borderRadius: 7,
-    background: "color-mix(in srgb, var(--aurora-page-bg) 64%, transparent)",
-    border: "1px solid color-mix(in srgb, var(--aurora-border-strong) 80%, transparent)",
-    backdropFilter: "blur(6px)",
-    WebkitBackdropFilter: "blur(6px)",
-    fontFamily: "var(--aurora-font-mono)",
-    fontSize: 11,
+    background:
+      tone === "ai"
+        ? "color-mix(in srgb, var(--axon-orange) 14%, var(--aurora-page-bg))"
+        : "color-mix(in srgb, var(--aurora-page-bg) 64%, transparent)",
+    border:
+      tone === "ai"
+        ? "1px solid var(--axon-orange-border)"
+        : "1px solid color-mix(in srgb, var(--aurora-border-strong) 80%, transparent)",
+    fontFamily: "var(--aurora-font-sans)",
+    fontSize: 11.5,
     fontWeight: 600,
-    letterSpacing: "0.02em",
-    color: "var(--aurora-text-primary)",
+    letterSpacing: "var(--aurora-letter-label)",
+    color: tone === "ai" ? AI_ORANGE : "var(--aurora-text-primary)",
     whiteSpace: "nowrap",
   }
 }
@@ -144,7 +147,7 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
       overflow: "hidden",
       borderRadius: "var(--aurora-radius-1)",
       background:
-        "radial-gradient(120% 120% at 62% 28%, #1c425a 0%, #0d2230 52%, #07131c 100%)",
+        "radial-gradient(120% 120% at 62% 28%, color-mix(in srgb, var(--aurora-accent-primary) 24%, var(--aurora-panel-strong)) 0%, var(--aurora-panel-strong) 52%, var(--aurora-page-bg) 100%)",
       border: isFailed
         ? "1px solid color-mix(in srgb, var(--aurora-error) 42%, var(--aurora-border-strong))"
         : "1px solid var(--aurora-border-strong)",
@@ -161,7 +164,6 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
         <div style={frameStyle}>
           {/* Image (ready only) */}
           {isReady && src ? (
-             
             <img
               src={src}
               alt={alt}
@@ -176,8 +178,8 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
               className="absolute inset-x-0 top-0 flex items-start justify-between"
               style={{ padding: 10 }}
             >
-              <span style={{ ...chipStyle(), gap: 4 }}>
-                <Sparkles className="size-3" aria-hidden style={{ color: ROSE }} />
+              <span style={{ ...chipStyle("ai"), gap: 4 }}>
+                <Sparkles className="size-3" aria-hidden style={{ color: AI_ORANGE }} />
                 AI
               </span>
               {model ? <span style={chipStyle()}>{model}</span> : <span />}
@@ -214,7 +216,7 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
                   style={{
                     top: 10,
                     right: model ? 88 : 10,
-                    opacity: 0,
+                    opacity: 0.92,
                     transition: "opacity var(--motion-duration-fast, 160ms) var(--motion-ease-out, ease)",
                   }}
                 >
@@ -231,7 +233,7 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
                 <Spinner size="lg" tone="cyan" />
                 <span
                   style={{
-                    fontFamily: "var(--aurora-font-mono)",
+                    fontFamily: "var(--aurora-font-sans)",
                     fontSize: 12,
                     fontWeight: 600,
                     letterSpacing: "0.12em",
@@ -256,8 +258,9 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
                   style={{
                     height: "100%",
                     width: pct !== null ? `${pct}%` : "40%",
-                    background: `linear-gradient(90deg, ${ROSE}, color-mix(in srgb, ${ROSE} 70%, var(--aurora-accent-primary)))`,
-                    boxShadow: `0 0 10px color-mix(in srgb, ${ROSE} 45%, transparent)`,
+                    background:
+                      "linear-gradient(90deg, var(--axon-orange), color-mix(in srgb, var(--axon-orange) 58%, var(--aurora-accent-primary)))",
+                    boxShadow: "0 0 10px color-mix(in srgb, var(--axon-orange) 45%, transparent)",
                     transition: "width var(--motion-duration-slow, 360ms) var(--motion-ease-out, ease)",
                   }}
                 />
@@ -303,7 +306,7 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
               <div className="flex items-end justify-between gap-3">
                 {dimensions || seed ? (
                   <span
-                    className="aurora-text-code"
+                    className="aurora-text-meta tabular-nums"
                     style={{ color: "var(--aurora-text-muted)", fontSize: 11, lineHeight: 1.5 }}
                   >
                     {dimensions}

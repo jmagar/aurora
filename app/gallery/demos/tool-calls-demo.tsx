@@ -23,9 +23,10 @@ const since = (start: number) => ({
 })
 
 const lbl: React.CSSProperties = {
-  fontFamily: "var(--aurora-font-mono)",
+  fontFamily: "var(--aurora-font-sans)",
   fontSize: 11,
-  letterSpacing: "0.14em",
+  fontWeight: 650,
+  letterSpacing: "var(--aurora-letter-eyebrow)",
   textTransform: "uppercase",
   color: "var(--aurora-text-muted)",
 }
@@ -180,7 +181,7 @@ const EDIT_SESSION: ToolCall[] = [
     status: "completed",
     args: {
       path: "registry/aurora/styles/aurora.css",
-      diff: "+  --aurora-accent-strong: #67cbfa;",
+      diff: "+  --aurora-accent-strong: var(--aurora-accent-primary);",
     },
     result: "1 insertion(+) · token added to :root",
     ...span(4200, 3900),

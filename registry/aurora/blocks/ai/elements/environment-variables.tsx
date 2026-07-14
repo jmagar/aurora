@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Check, Copy, Eye, EyeOff, KeyRound } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 import { Separator } from "@/registry/aurora/ui/separator"
@@ -82,7 +83,7 @@ const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariabl
     return (
       <div
         ref={ref}
-        className={["grid gap-3 p-4", className].filter(Boolean).join(" ")}
+        className={cn("grid gap-3 p-4", className)}
         style={panelStyle(style)}
         {...props}
       >
@@ -91,11 +92,11 @@ const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariabl
             <KeyRound className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
             <span style={{ color: "var(--aurora-text-primary)" }}>Environment</span>
             <span
-              className="aurora-text-code"
+              className="aurora-text-meta"
               style={{
                 color: "var(--aurora-text-muted)",
-                fontSize: "var(--aurora-type-caption)",
                 lineHeight: 1,
+                fontVariantNumeric: "tabular-nums",
               }}
             >
               {variables.length}
@@ -126,7 +127,7 @@ const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariabl
             return (
               <div
                 key={item.key}
-                className="grid grid-cols-[minmax(0,1fr)_minmax(0,168px)_auto_auto] items-center gap-3 rounded-[6px] px-2 py-1.5"
+                className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 rounded-[6px] px-2 py-1.5 sm:grid-cols-[minmax(0,1fr)_minmax(0,168px)_auto]"
               >
                 <span
                   className="truncate aurora-text-code"
@@ -143,11 +144,9 @@ const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariabl
                 >
                   {display}
                 </span>
-                <span className="flex items-center gap-2 justify-self-end">
+                <span className="col-span-2 flex items-center justify-end gap-2 sm:col-span-1">
                   {item.required ? <Badge variant="warn">Required</Badge> : null}
                   {item.secret ? <Badge variant="rose">Secret</Badge> : null}
-                </span>
-                <span className="justify-self-end">
                   {item.value ? <RowCopyButton value={item.value} label={item.key} /> : null}
                 </span>
               </div>

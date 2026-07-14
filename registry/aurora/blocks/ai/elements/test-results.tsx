@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { CircleCheck, FlaskConical, CircleMinus, CircleX } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
 
 export interface TestResult {
@@ -20,25 +21,25 @@ const statusMeta = {
     color: "var(--aurora-success)",
     icon: CircleCheck,
     badge: "success" as const,
-    label: "passed",
+    label: "Passed",
   },
   failed: {
     color: "var(--aurora-error)",
     icon: CircleX,
     badge: "error" as const,
-    label: "failed",
+    label: "Failed",
   },
   skipped: {
     color: "var(--aurora-neutral)",
     icon: CircleMinus,
     badge: "neutral" as const,
-    label: "skipped",
+    label: "Skipped",
   },
   running: {
     color: "var(--aurora-info)",
     icon: FlaskConical,
     badge: "info" as const,
-    label: "running",
+    label: "Running",
   },
 } as const
 
@@ -70,11 +71,11 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
     return (
       <div
         ref={ref}
-        className={["grid", className].filter(Boolean).join(" ")}
+        className={cn("grid", className)}
         style={panelStyle({ gap: 14, padding: 16, ...style })}
         {...props}
       >
-        <div className="flex items-center justify-between" style={{ gap: 12 }}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div
             className="flex items-center aurora-text-control"
             style={{ gap: 8, color: "var(--aurora-text-primary)", fontWeight: 600 }}
@@ -86,12 +87,12 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
             />
             Test Results
           </div>
-          <div className="flex items-center" style={{ gap: 8 }}>
-            {passed > 0 ? <Badge variant="success">{passed} pass</Badge> : null}
-            {failed > 0 ? <Badge variant="error">{failed} fail</Badge> : null}
-            {running > 0 ? <Badge variant="info">{running} run</Badge> : null}
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            {passed > 0 ? <Badge variant="success">{passed} Passed</Badge> : null}
+            {failed > 0 ? <Badge variant="error">{failed} Failed</Badge> : null}
+            {running > 0 ? <Badge variant="info">{running} Running</Badge> : null}
             {skipped > 0 && passed === 0 && failed === 0 ? (
-              <Badge variant="neutral">{skipped} skip</Badge>
+              <Badge variant="neutral">{skipped} Skipped</Badge>
             ) : null}
           </div>
         </div>
@@ -121,6 +122,18 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
         ) : null}
 
         <div className="grid" style={{ gap: 2 }}>
+          {results.length === 0 ? (
+            <div
+              className="rounded-[10px] px-3 py-2.5 aurora-text-body-sm"
+              style={{
+                border: "1px solid var(--aurora-border-default)",
+                background: "var(--aurora-control-surface)",
+                color: "var(--aurora-text-muted)",
+              }}
+            >
+              No tests reported.
+            </div>
+          ) : null}
           {results.map((result) => {
             const meta = statusMeta[result.status]
             const StatusIcon = meta.icon
@@ -129,7 +142,7 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
                 key={result.name}
                 className="grid items-center"
                 style={{
-                  gridTemplateColumns: "auto minmax(0,1fr) auto auto",
+                  gridTemplateColumns: "auto minmax(0,1fr) minmax(4.75rem,auto) auto",
                   columnGap: 12,
                   rowGap: 4,
                   borderRadius: 10,
@@ -153,8 +166,9 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
                 <span
                   className="truncate"
                   style={{
-                    fontFamily: "var(--aurora-font-mono)",
-                    fontSize: 14,
+                    fontFamily: "var(--aurora-font-sans)",
+                    fontSize: "var(--aurora-type-body-sm)",
+                    fontWeight: "var(--aurora-weight-ui)",
                     color: "var(--aurora-text-primary)",
                   }}
                 >
@@ -163,9 +177,9 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
                 <span
                   className="aurora-text-meta"
                   style={{
-                    fontFamily: "var(--aurora-font-mono)",
                     justifySelf: "end",
                     color: "var(--aurora-text-muted)",
+                    fontVariantNumeric: "tabular-nums",
                   }}
                 >
                   {result.duration ?? ""}

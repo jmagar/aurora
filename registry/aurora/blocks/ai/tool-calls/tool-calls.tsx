@@ -2,7 +2,9 @@
 
 import * as React from "react"
 import { ChevronDown, FilePenLine, FileText, Search, Terminal, Wrench } from "lucide-react"
+import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
+import { EmptyState } from "@/registry/aurora/ui/empty-state"
 import { groupConsecutiveCalls, summarizeToolCallGroup, type ToolCallGroup, type ToolCallModel } from "./tool-calls-model"
 
 export type ToolCall = ToolCallModel
@@ -28,6 +30,12 @@ function durationMs(call: ToolCall): number | null {
 function formatDuration(ms: number): string {
   if (ms < 1000) return `${ms}ms`
   return `${(ms / 1000).toFixed(1)}s`
+}
+
+function formatToolSummary(tool: string): string {
+  return tool
+    .replace(/[._-]+/g, " ")
+    .replace(/\b\w/g, (match) => match.toUpperCase())
 }
 
 function Chevron({ expanded }: { expanded: boolean }) {
@@ -146,7 +154,7 @@ function DetailCard({
           color: "var(--aurora-text-muted)",
           fontFamily: "var(--aurora-font-sans)",
           fontSize: 10,
-          letterSpacing: "0.06em",
+          letterSpacing: "var(--aurora-letter-eyebrow)",
           textTransform: "uppercase",
         }}
       >
@@ -162,10 +170,11 @@ function ToolCallRow({ call }: { call: ToolCall }) {
   const reactId = React.useId()
   const detailsId = `${reactId}-tool-call-details`
   const duration = durationMs(call)
-  const summary = call.tool.replace(/[._-]+/g, " ")
+  const summary = formatToolSummary(call.tool)
 
   return (
     <div
+      aria-busy={call.status === "running"}
       style={{
         display: "block",
         width: expanded ? "min(100%, 560px)" : "fit-content",
@@ -258,9 +267,9 @@ function ToolCallRow({ call }: { call: ToolCall }) {
             padding: "0 12px 12px",
           }}
         >
-          <DetailCard label="input">{JSON.stringify(call.args, null, 2)}</DetailCard>
+          <DetailCard label="Input">{JSON.stringify(call.args, null, 2)}</DetailCard>
           {call.result && (
-            <DetailCard label="output" tone={call.status === "error" ? "var(--aurora-error)" : "var(--aurora-text-primary)"}>
+            <DetailCard label="Output" tone={call.status === "error" ? "var(--aurora-error)" : "var(--aurora-text-primary)"}>
               {call.result}
             </DetailCard>
           )}
@@ -274,7 +283,7 @@ function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
   const [expanded, setExpanded] = React.useState(false)
   const reactId = React.useId()
   const detailsId = `${reactId}-tool-call-group-details`
-  const summary = summarizeToolCallGroup(group)
+  const summary = formatToolSummary(summarizeToolCallGroup(group))
   const count = group.calls.length
 
   if (count === 1) {
@@ -283,6 +292,7 @@ function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
 
   return (
     <div
+      aria-busy={group.status === "running"}
       style={{
         display: "block",
         width: expanded ? "min(100%, 560px)" : "fit-content",
@@ -333,24 +343,16 @@ function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
         >
           {expanded ? group.tool : summary}
         </span>
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minWidth: 22,
-            height: 18,
-            padding: "0 7px",
-            borderRadius: 999,
-            border: "1px solid var(--aurora-border-default)",
-            color: "var(--aurora-text-muted)",
-            fontSize: 11,
-            fontVariantNumeric: "tabular-nums",
-            lineHeight: 1,
-          }}
+        <Badge
+          tone="neutral"
+          fill="outline"
+          shape="pill"
+          size="sm"
+          aria-label={`${count} grouped calls`}
+          style={{ fontVariantNumeric: "tabular-nums" }}
         >
           {count}
-        </span>
+        </Badge>
         <span
           style={
             expanded
@@ -405,9 +407,9 @@ function ToolCallGroupRow({ group }: { group: ToolCallGroup }) {
                 <span>{call.tool}</span>
                 <span style={{ fontVariantNumeric: "tabular-nums" }}>#{index + 1}</span>
               </div>
-              <DetailCard label="input">{JSON.stringify(call.args, null, 2)}</DetailCard>
+              <DetailCard label="Input">{JSON.stringify(call.args, null, 2)}</DetailCard>
               {call.result && (
-                <DetailCard label="output" tone={call.status === "error" ? "var(--aurora-error)" : "var(--aurora-text-primary)"}>
+                <DetailCard label="Output" tone={call.status === "error" ? "var(--aurora-error)" : "var(--aurora-text-primary)"}>
                   {call.result}
                 </DetailCard>
               )}
@@ -439,14 +441,19 @@ export function ToolCalls({ calls }: ToolCallsProps) {
       ))}
 
       {calls.length === 0 && (
-        <div
+        <EmptyState
+          icon={<Wrench size={26} strokeWidth={1.6} />}
+          title="No tool calls yet."
+          description="Tool activity appears here after the agent starts running commands."
+          as="h3"
           style={{
-            color: "var(--aurora-text-muted)",
-            fontSize: 12,
+            width: "100%",
+            padding: "28px 24px",
+            border: "1.5px dashed var(--aurora-border-default)",
+            borderRadius: "var(--aurora-radius-2)",
+            background: "var(--aurora-panel-medium)",
           }}
-        >
-          No tool calls yet
-        </div>
+        />
       )}
     </div>
   )

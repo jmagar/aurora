@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/registry/aurora/ui/button"
+import { EmptyState } from "@/registry/aurora/ui/empty-state"
 import {
   ChevronRight,
   Copy,
@@ -50,7 +51,7 @@ export interface FileChipProps {
 
 function FolderIcon({ open }: { open: boolean }) {
   const Icon = open ? FolderOpen : Folder
-  return <Icon className="size-3.5 shrink-0" strokeWidth={1.7} style={{ color: "var(--aurora-text-muted)" }} aria-hidden />
+  return <Icon size={14} strokeWidth={1.7} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} aria-hidden />
 }
 
 function FileIcon({ language }: { language?: string }) {
@@ -73,18 +74,19 @@ function FileIcon({ language }: { language?: string }) {
       ? "var(--aurora-text-muted)"
       : "var(--aurora-text-muted)"
 
-  return <Icon className="size-3.5 shrink-0" strokeWidth={1.65} style={{ color }} aria-hidden />
+  return <Icon size={14} strokeWidth={1.65} style={{ color, flexShrink: 0 }} aria-hidden />
 }
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <ChevronRight
-      className="size-3 shrink-0"
+      size={12}
       strokeWidth={1.8}
       style={{
         transform: open ? "rotate(90deg)" : "rotate(0deg)",
         transition: "transform 0.15s ease",
         color: "var(--aurora-text-muted)",
+        flexShrink: 0,
       }}
       aria-hidden
     />
@@ -124,10 +126,10 @@ function ContextMenu({ x, y, node, onAction, onClose }: ContextMenuProps) {
   }, [onClose])
 
   const items: { action: ContextAction; label: string; icon: React.ReactNode; danger?: boolean }[] = [
-    { action: "new-file", label: "New File", icon: <Plus className="size-3.5" aria-hidden /> },
-    { action: "rename", label: "Rename", icon: <Pencil className="size-3.5" aria-hidden /> },
-    { action: "copy-path", label: "Copy Path", icon: <Copy className="size-3.5" aria-hidden /> },
-    { action: "delete", label: "Delete", icon: <Trash2 className="size-3.5" aria-hidden />, danger: true },
+    { action: "new-file", label: "New File", icon: <Plus size={14} strokeWidth={1.65} aria-hidden /> },
+    { action: "rename", label: "Rename", icon: <Pencil size={14} strokeWidth={1.65} aria-hidden /> },
+    { action: "copy-path", label: "Copy Path", icon: <Copy size={14} strokeWidth={1.65} aria-hidden /> },
+    { action: "delete", label: "Delete", icon: <Trash2 size={14} strokeWidth={1.65} aria-hidden />, danger: true },
   ]
 
   return (
@@ -137,7 +139,7 @@ function ContextMenu({ x, y, node, onAction, onClose }: ContextMenuProps) {
         position: "fixed",
         left: x,
         top: y,
-        zIndex: 9999,
+        zIndex: "var(--z-popover)",
         background: "var(--aurora-panel-strong)",
         border: "1px solid var(--aurora-border-strong)",
         borderRadius: 8,
@@ -146,6 +148,8 @@ function ContextMenu({ x, y, node, onAction, onClose }: ContextMenuProps) {
         minWidth: "160px",
         fontFamily: "var(--aurora-font-sans)",
       }}
+      role="menu"
+      aria-label={`Actions for ${node.name}`}
     >
       <div
         style={{
@@ -199,6 +203,7 @@ function ContextMenuItem({
   const [hovered, setHovered] = React.useState(false)
   return (
     <Button variant="plain" size="unstyled"
+      role="menuitem"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -223,7 +228,7 @@ function ContextMenuItem({
         transition: "background 0.1s, color 0.1s",
       }}
     >
-      <span style={{ alignItems: "center", display: "inline-flex", justifyContent: "center", width: 14 }}>{icon}</span>
+      <span style={{ alignItems: "center", display: "inline-flex", justifyContent: "center", width: 16, flexShrink: 0 }}>{icon}</span>
       {label}
     </Button>
   )
@@ -263,6 +268,7 @@ function TreeRow({
         role="treeitem"
         aria-selected={isSelected}
         aria-expanded={isFolder ? isOpen : undefined}
+        aria-level={depth + 1}
         tabIndex={0}
         className="aurora-tree-item"
         onMouseEnter={() => setHovered(true)}
@@ -281,8 +287,17 @@ function TreeRow({
             if (isFolder) onToggle(node.id)
             onSelect(node)
           }
+          if (e.key === "ArrowRight" && isFolder && !isOpen) {
+            e.preventDefault()
+            onToggle(node.id)
+          }
+          if (e.key === "ArrowLeft" && isFolder && isOpen) {
+            e.preventDefault()
+            onToggle(node.id)
+          }
         }}
         style={{
+          boxSizing: "border-box",
           display: "flex",
           alignItems: "center",
           gap: "6px",
@@ -292,16 +307,16 @@ function TreeRow({
           borderRadius: 8,
           cursor: "pointer",
           background: isSelected
-            ? "color-mix(in srgb, var(--aurora-accent-primary) 12%, transparent)"
+            ? "var(--aurora-selected-bg)"
             : hovered
             ? "var(--aurora-hover-bg)"
             : "transparent",
           border: isSelected
-            ? "1px solid color-mix(in srgb, var(--aurora-accent-primary) 22%, transparent)"
+            ? "1px solid var(--aurora-border-strong)"
             : "1px solid transparent",
-          boxShadow: "none",
+          boxShadow: isSelected ? "var(--aurora-active-glow)" : "none",
           color: isSelected
-            ? "var(--aurora-accent-primary)"
+            ? "var(--aurora-text-primary)"
             : hovered
             ? "var(--aurora-text-primary)"
             : "var(--aurora-text-muted)",
@@ -311,6 +326,7 @@ function TreeRow({
           userSelect: "none",
           transition: "background 0.1s, border-color 0.1s, color 0.1s",
           margin: "1px 0",
+          minWidth: 0,
         }}
       >
         {isFolder ? (
@@ -395,6 +411,7 @@ export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, 
   return (
     <div
       role="tree"
+      aria-label="File tree"
       style={{
         background: "transparent",
         border: "none",
@@ -402,9 +419,23 @@ export function FileTree({ tree, onSelect, onContextAction, defaultExpandedIds, 
         padding: "0",
         fontFamily: "var(--aurora-font-sans)",
         overflowY: "auto",
+        minWidth: 0,
       }}
     >
-      {tree.map((node) => (
+      {tree.length === 0 ? (
+        <EmptyState
+          icon={<Folder size={26} strokeWidth={1.6} />}
+          title="No files."
+          description="Files and folders appear here when a project is loaded."
+          as="h3"
+          style={{
+            padding: "28px 20px",
+            border: "1.5px dashed var(--aurora-border-default)",
+            borderRadius: "var(--aurora-radius-2)",
+            background: "var(--aurora-panel-medium)",
+          }}
+        />
+      ) : tree.map((node) => (
         <TreeRow
           key={node.id}
           node={node}
@@ -452,10 +483,21 @@ export function FileChip({ node, onDismiss }: FileChipProps) {
         color: "var(--aurora-text-primary)",
         verticalAlign: "middle",
         lineHeight: 1,
+        maxWidth: "min(220px, 100%)",
+        minWidth: 0,
       }}
     >
       <FileIcon language={node.language} />
-      <span>{node.name}</span>
+      <span
+        style={{
+          minWidth: 0,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {node.name}
+      </span>
       {onDismiss && (
         <Button variant="plain" size="unstyled"
           onClick={() => onDismiss(node)}
@@ -478,7 +520,7 @@ export function FileChip({ node, onDismiss }: FileChipProps) {
             transition: "background 0.1s, color 0.1s",
           }}
         >
-          <X className="size-3" aria-hidden />
+          <X size={12} strokeWidth={1.65} aria-hidden />
         </Button>
       )}
     </span>
