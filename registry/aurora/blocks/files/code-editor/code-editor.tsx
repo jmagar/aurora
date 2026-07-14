@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { FileCode, X } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
@@ -818,16 +819,12 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
         {/* Title bar */}
         <div style={CE.titleBar}>
           {/* File icon */}
-          <svg width="13" height="14" viewBox="0 0 13 14" fill="none" style={CE.titleBarFileIcon}>
-            <path
-              d="M7.5 1H2C1.448 1 1 1.448 1 2V12C1 12.552 1.448 13 2 13H11C11.552 13 12 12.552 12 12V5.5L7.5 1Z"
-              stroke="var(--aurora-accent-primary)"
-              strokeWidth="1"
-              fill="none"
-              opacity="0.8"
-            />
-            <path d="M7.5 1V5.5H12" stroke="var(--aurora-accent-primary)" strokeWidth="1" opacity="0.5" />
-          </svg>
+          <FileCode
+            size={14}
+            strokeWidth={1.65}
+            aria-hidden
+            style={{ ...CE.titleBarFileIcon, color: "var(--aurora-accent-primary)" }}
+          />
 
           <span style={CE.titleBarFilename}>{filename}</span>
 
@@ -842,7 +839,7 @@ export const CodeEditor = React.forwardRef<HTMLDivElement, CodeEditorProps>(
               aria-label="Close"
               style={CE.titleBarCloseBtn}
             >
-              ×
+              <X size={13} strokeWidth={1.65} aria-hidden />
             </Button>
           )}
         </div>

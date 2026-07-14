@@ -1,6 +1,13 @@
 "use client"
 
 import * as React from "react"
+import {
+  ShieldAlert,
+  ShieldCheck,
+  Terminal,
+  TriangleAlert,
+  X,
+} from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
@@ -30,69 +37,48 @@ export interface PermissionPromptProps {
 }
 
 // ---------------------------------------------------------------------------
-// Inline SVG icons
+// Icons
 // ---------------------------------------------------------------------------
 
+const ICON_STROKE = 1.65
+
 function ShieldIcon({ danger }: { danger?: boolean }) {
-  const color = danger ? "var(--aurora-error)" : "var(--aurora-accent-primary)"
+  const Icon = danger ? ShieldAlert : ShieldCheck
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <path
-        d="M9 2L15.5 4.5V9C15.5 12.5 12.5 15.5 9 16.5C5.5 15.5 2.5 12.5 2.5 9V4.5L9 2Z"
-        stroke={color}
-        strokeWidth="1.4"
-        fill={`color-mix(in srgb, ${color} 10%, transparent)`}
-        strokeLinejoin="round"
-      />
-      {danger ? (
-        <path
-          d="M9 6.5V10M9 12V12.1"
-          stroke={color}
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        />
-      ) : (
-        <path
-          d="M6.5 9L8.2 10.7L11.5 7.3"
-          stroke={color}
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      )}
-    </svg>
+    <Icon
+      size={18}
+      strokeWidth={ICON_STROKE}
+      aria-hidden
+      style={{ color: danger ? "var(--aurora-error)" : "var(--aurora-accent-primary)" }}
+    />
   )
 }
 
 function WarningIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M8 2L14.5 13H1.5L8 2Z"
-        stroke="var(--aurora-warn)"
-        strokeWidth="1.3"
-        fill="color-mix(in srgb, var(--aurora-warn) 10%, transparent)"
-        strokeLinejoin="round"
-      />
-      <path d="M8 6.5V9.5M8 11V11.1" stroke="var(--aurora-warn)" strokeWidth="1.3" strokeLinecap="round" />
-    </svg>
+    <TriangleAlert
+      size={16}
+      strokeWidth={ICON_STROKE}
+      aria-hidden
+      style={{ color: "var(--aurora-warn)", flex: "0 0 auto" }}
+    />
   )
 }
 
 function CloseIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M3 3L11 11M11 3L3 11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
+  return <X size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function TerminalIcon() {
+  return <Terminal size={13} strokeWidth={ICON_STROKE} aria-hidden />
+}
+
+function isCommandTarget(target: string): boolean {
   return (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-      <rect x="1" y="1" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M3.5 5L5.5 6.5L3.5 8M7 8H9.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    target.startsWith("$") ||
+    /^[a-z]+\s/.test(target) ||
+    target.includes("&&") ||
+    target.includes("|")
   )
 }
 
@@ -126,7 +112,7 @@ function ActionButtons({
         size={size}
         onClick={onAllow}
       >
-        {isDangerous ? "Run Anyway" : "Allow"}
+        {isDangerous ? "Run anyway" : "Allow"}
       </Button>
 
       {!isDangerous && (
@@ -136,7 +122,7 @@ function ActionButtons({
           size={size}
           onClick={onAllowAlways}
         >
-          Allow Always
+          Allow always
         </Button>
       )}
 
@@ -157,11 +143,7 @@ function ActionButtons({
 // ---------------------------------------------------------------------------
 
 function TargetChip({ target }: { target: string }) {
-  const isCommand =
-    target.startsWith("$") ||
-    /^[a-z]+\s/.test(target) ||
-    target.includes("&&") ||
-    target.includes("|")
+  const isCommand = isCommandTarget(target)
 
   return (
     <div
@@ -183,7 +165,7 @@ function TargetChip({ target }: { target: string }) {
       <code
         style={{
           fontSize: 12,
-          fontFamily: "var(--aurora-font-mono)",
+          fontFamily: isCommand ? "var(--aurora-font-mono)" : "var(--aurora-font-sans)",
           color: isCommand ? "var(--aurora-accent-strong)" : "var(--aurora-text-primary)",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -448,6 +430,7 @@ function BannerPrompt({
   style,
 }: PermissionPromptProps) {
   if (!open) return null
+  const targetIsCommand = target ? isCommandTarget(target) : false
 
   return (
     <div
@@ -490,14 +473,14 @@ function BannerPrompt({
             marginLeft: 6,
           }}
         >
-          — {action}
+          - {action}
         </span>
         {target && (
           <code
             style={{
               marginLeft: 8,
               fontSize: 11,
-              fontFamily: "var(--aurora-font-mono)",
+              fontFamily: targetIsCommand ? "var(--aurora-font-mono)" : "var(--aurora-font-sans)",
               color: "var(--aurora-accent-strong)",
               background: "var(--aurora-control-surface)",
               borderRadius: 5,

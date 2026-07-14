@@ -13,11 +13,14 @@ export default function CodeBlockDemo() {
     <div
       style={{
         display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr)",
         placeItems: "center",
         padding: "var(--aurora-space-8) var(--aurora-space-6)",
+        width: "100%",
+        minWidth: 0,
       }}
     >
-      <div style={{ width: "100%", maxWidth: "480px" }}>
+      <div style={{ width: "100%", maxWidth: "480px", minWidth: 0 }}>
         <CodeBlock code={INSTALL_CODE} language="bash" />
       </div>
     </div>

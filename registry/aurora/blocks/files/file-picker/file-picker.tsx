@@ -1,6 +1,24 @@
 "use client"
 
 import * as React from "react"
+import {
+  Check,
+  Clock3,
+  CloudUpload,
+  Download,
+  File,
+  FileAudio,
+  FileCode2,
+  FileImage,
+  FileText,
+  FileVideo,
+  Folder,
+  Grid2X2,
+  List,
+  Search,
+  Upload,
+  X,
+} from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { Input } from "@/registry/aurora/ui/input"
 
@@ -83,6 +101,8 @@ function matchesFilter(file: FileItem, filter: FilterChip): boolean {
   if (filter === "code") return file.type === "code"
   return true
 }
+
+const ICON_STROKE = 1.65
 
 // ---------------------------------------------------------------------------
 // Static style objects — hoisted to module scope
@@ -504,6 +524,84 @@ const FP = {
   } as React.CSSProperties,
 } as const
 
+const FILE_PICKER_RESPONSIVE_CSS = `
+  @media (max-width: 640px) {
+    .aurora-file-picker-dialog {
+      width: calc(100vw - 24px) !important;
+      height: min(640px, calc(100vh - 24px)) !important;
+      max-height: calc(100vh - 24px) !important;
+    }
+
+    .aurora-file-picker-body {
+      flex-direction: column !important;
+      min-height: 0;
+    }
+
+    .aurora-file-picker-sidebar {
+      width: 100% !important;
+      min-height: 56px;
+      flex-direction: row !important;
+      align-items: center;
+      overflow-x: auto;
+      border-right: 0 !important;
+      border-bottom: 1px solid var(--aurora-border-default);
+      padding: 8px !important;
+      scrollbar-width: none;
+    }
+
+    .aurora-file-picker-sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .aurora-file-picker-sidebar-title,
+    .aurora-file-picker-upload-spacer {
+      display: none;
+    }
+
+    .aurora-file-picker-sidebar button {
+      width: auto !important;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .aurora-file-picker-main {
+      min-height: 0;
+    }
+
+    .aurora-file-picker-toolbar {
+      flex-wrap: wrap;
+      align-items: stretch !important;
+      padding: 10px !important;
+    }
+
+    .aurora-file-picker-search {
+      flex-basis: 100%;
+      min-width: 0;
+    }
+
+    .aurora-file-picker-filters {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .aurora-file-picker-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .aurora-file-picker-footer {
+      align-items: stretch !important;
+      flex-direction: column !important;
+    }
+
+    .aurora-file-picker-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+`
+
 // ---------------------------------------------------------------------------
 // Derived style helpers (vary by active/selected/hovered state)
 // ---------------------------------------------------------------------------
@@ -627,101 +725,42 @@ function confirmBtnStyle(hasSelection: boolean): React.CSSProperties {
 function FileTypeIcon({ type }: { type: FileItemType }) {
   switch (type) {
     case "image":
-      return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <rect x="2" y="2" width="12" height="12" rx="2" stroke="var(--aurora-accent-pink)" strokeWidth="1.2" />
-          <circle cx="5.5" cy="5.5" r="1.2" fill="var(--aurora-accent-pink)" />
-          <path d="M2 10.5L5 7.5L7.5 10L10 7.5L14 11.5" stroke="var(--aurora-accent-pink)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      )
+      return <FileImage size={16} strokeWidth={ICON_STROKE} aria-hidden style={{ color: "var(--aurora-accent-pink)" }} />
     case "code":
-      return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M5 4.5L2 8L5 11.5M11 4.5L14 8L11 11.5M9 3L7 13" stroke="var(--aurora-accent-primary)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      )
+      return <FileCode2 size={16} strokeWidth={ICON_STROKE} aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
     case "video":
-      return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <rect x="1.5" y="3" width="10" height="10" rx="1.5" stroke="var(--aurora-warn)" strokeWidth="1.2" />
-          <path d="M11.5 6L14.5 4.5V11.5L11.5 10V6Z" stroke="var(--aurora-warn)" strokeWidth="1.2" strokeLinejoin="round" />
-        </svg>
-      )
+      return <FileVideo size={16} strokeWidth={ICON_STROKE} aria-hidden style={{ color: "var(--aurora-warn)" }} />
     case "audio":
-      return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M3 6V10M6 4V12M9 5.5V10.5M12 7V9" stroke="var(--aurora-success)" strokeWidth="1.4" strokeLinecap="round" />
-        </svg>
-      )
+      return <FileAudio size={16} strokeWidth={ICON_STROKE} aria-hidden style={{ color: "var(--aurora-success)" }} />
     case "document":
-      return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M3 2.5C3 1.95 3.45 1.5 4 1.5H9L13 5.5V13.5C13 14.05 12.55 14.5 12 14.5H4C3.45 14.5 3 14.05 3 13.5V2.5Z" stroke="var(--aurora-text-muted)" strokeWidth="1.2" fill="none" />
-          <path d="M9 1.5V5.5H13" stroke="var(--aurora-text-muted)" strokeWidth="1.2" />
-          <path d="M5.5 8.5H10.5M5.5 10.5H8.5" stroke="var(--aurora-text-muted)" strokeWidth="1.2" strokeLinecap="round" />
-        </svg>
-      )
+      return <FileText size={16} strokeWidth={ICON_STROKE} aria-hidden style={{ color: "var(--aurora-text-muted)" }} />
     default:
-      return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M3 2.5C3 1.95 3.45 1.5 4 1.5H9L13 5.5V13.5C13 14.05 12.55 14.5 12 14.5H4C3.45 14.5 3 14.05 3 13.5V2.5Z" stroke="var(--aurora-border-strong)" strokeWidth="1.2" fill="none" />
-          <path d="M9 1.5V5.5H13" stroke="var(--aurora-border-strong)" strokeWidth="1.2" />
-        </svg>
-      )
+      return <File size={16} strokeWidth={ICON_STROKE} aria-hidden style={{ color: "var(--aurora-border-strong)" }} />
   }
 }
 
 function SearchIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.3" />
-      <path d="M9.5 9.5L12 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-    </svg>
-  )
+  return <Search size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function GridIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.2" />
-      <rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.2" />
-      <rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.2" />
-      <rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  )
+  return <Grid2X2 size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function ListIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M1.5 3.5H12.5M1.5 7H12.5M1.5 10.5H12.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-    </svg>
-  )
+  return <List size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function CheckIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-      <path d="M2 5L4.5 7.5L8.5 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <Check size={10} strokeWidth={2} aria-hidden />
 }
 
 function CloseIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-      <path d="M2 2L10 10M10 2L2 10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  )
+  return <X size={12} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function UploadCloudIcon() {
-  return (
-    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
-      <path d="M26 24C28.8 24 31 21.8 31 19C31 16.5 29.2 14.4 26.8 13.9C27 13.3 27 12.7 27 12C27 8.7 24.3 6 21 6C18.6 6 16.5 7.3 15.4 9.2C14.7 8.8 13.8 8.5 12.9 8.5C10.2 8.5 8 10.7 8 13.4C8 13.6 8 13.9 8.1 14.1C6.1 14.8 5 16.7 5 18.5C5 21.5 7.2 24 10 24" stroke="var(--aurora-accent-primary)" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M18 16V28M18 16L14 20M18 16L22 20" stroke="var(--aurora-accent-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <CloudUpload size={36} strokeWidth={1.5} aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
 }
 
 // ---------------------------------------------------------------------------
@@ -732,51 +771,27 @@ const SIDEBAR_ITEMS: { id: SidebarSection; label: string; icon: React.ReactNode 
   {
     id: "recent",
     label: "Recent",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-        <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M7 4V7L9 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
+    icon: <Clock3 size={14} strokeWidth={ICON_STROKE} aria-hidden />,
   },
   {
     id: "documents",
     label: "Documents",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-        <path d="M2.5 2C2.5 1.45 2.95 1 3.5 1H8L11.5 4.5V12C11.5 12.55 11.05 13 10.5 13H3.5C2.95 13 2.5 12.55 2.5 12V2Z" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M8 1V4.5H11.5" stroke="currentColor" strokeWidth="1.2" />
-      </svg>
-    ),
+    icon: <FileText size={14} strokeWidth={ICON_STROKE} aria-hidden />,
   },
   {
     id: "downloads",
     label: "Downloads",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-        <path d="M7 1V9M7 9L4.5 6.5M7 9L9.5 6.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M2 11H12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    ),
+    icon: <Download size={14} strokeWidth={ICON_STROKE} aria-hidden />,
   },
   {
     id: "project",
     label: "Project",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-        <path d="M1.5 4C1.5 3.17 2.17 2.5 3 2.5H5.5L7 4H11C11.83 4 12.5 4.67 12.5 5.5V10.5C12.5 11.33 11.83 12 11 12H3C2.17 12 1.5 11.33 1.5 10.5V4Z" stroke="currentColor" strokeWidth="1.2" />
-      </svg>
-    ),
+    icon: <Folder size={14} strokeWidth={ICON_STROKE} aria-hidden />,
   },
   {
     id: "uploads",
     label: "Uploads",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-        <path d="M7 10V2M7 2L4.5 4.5M7 2L9.5 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M2 12H12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    ),
+    icon: <Upload size={14} strokeWidth={ICON_STROKE} aria-hidden />,
   },
 ]
 
@@ -984,6 +999,8 @@ export function FilePicker({
 
   return (
     <>
+      <style>{FILE_PICKER_RESPONSIVE_CSS}</style>
+
       {/* Backdrop */}
       <div
         role="presentation"
@@ -1050,10 +1067,7 @@ export function FilePicker({
               onClick={() => uploadInputRef.current?.click()}
               style={FP.uploadBtn}
             >
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-                <path d="M6.5 9V1M6.5 1L3.5 4M6.5 1L9.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M1.5 11H11.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-              </svg>
+              <Upload size={13} strokeWidth={ICON_STROKE} aria-hidden />
               Upload
             </Button>
           </div>
@@ -1192,8 +1206,8 @@ export function FilePicker({
                   style={confirmBtnStyle(hasSelection)}
                 >
                   {hasSelection
-                    ? `Attach ${selected.size} ${selected.size === 1 ? "File" : "Files"}`
-                    : "Select Files"}
+                    ? `Attach ${selected.size} ${selected.size === 1 ? "file" : "files"}`
+                    : "Select files"}
                 </Button>
               </div>
             </div>

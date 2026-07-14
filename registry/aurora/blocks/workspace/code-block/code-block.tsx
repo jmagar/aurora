@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Check, Copy } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
@@ -250,30 +251,25 @@ function CopyButton({ code }: { code: string }) {
       size="sm"
       onClick={handleCopy}
       aria-label={copied ? "Copied" : "Copy code"}
-      title={copied ? "Copied!" : "Copy to Clipboard"}
+      title={copied ? "Copied" : "Copy to clipboard"}
       style={{
         gap: "6px",
         fontSize: "13px",
         fontWeight: 600,
         fontFamily: "var(--aurora-font-sans)",
-        color: copied ? "var(--aurora-accent-primary)" : "var(--aurora-text-primary)",
+        color: copied ? "var(--aurora-success)" : "var(--aurora-text-primary)",
         padding: "4px 6px",
         flexShrink: 0,
       }}
     >
       {copied ? (
         <>
-          <svg width="15" height="15" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path d="M2 6L4.5 8.5L10 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <Check size={15} strokeWidth={1.75} aria-hidden />
           Copied
         </>
       ) : (
         <>
-          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <rect x="5" y="1.5" width="7.5" height="8.5" rx="1.75" stroke="currentColor" strokeWidth="1.3" />
-            <path d="M1.5 4.5H4V12.5H9.5V10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <Copy size={15} strokeWidth={1.65} aria-hidden />
           Copy
         </>
       )}
@@ -324,6 +320,9 @@ export function CodeBlock({
   return (
     <div
       style={{
+        width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
         background: "var(--aurora-panel-strong)",
         border: "1px solid var(--aurora-border-default)",
         borderRadius: "var(--aurora-radius-2)",
@@ -338,6 +337,7 @@ export function CodeBlock({
           alignItems: "center",
           gap: "10px",
           padding: "10px 16px",
+          minWidth: 0,
           background: "var(--aurora-panel-medium)",
           borderBottom: "1px solid var(--aurora-border-default)",
           boxShadow: "var(--aurora-highlight-medium)",
@@ -351,6 +351,10 @@ export function CodeBlock({
             fontSize: "14px",
             color: "var(--aurora-text-muted)",
             fontFamily: "var(--aurora-font-mono)",
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           {filename ?? language}
@@ -366,6 +370,7 @@ export function CodeBlock({
         style={{
           overflowX: "auto",
           overflowY: "auto",
+          minWidth: 0,
           maxHeight: "480px",
           padding: "16px 0",
         }}

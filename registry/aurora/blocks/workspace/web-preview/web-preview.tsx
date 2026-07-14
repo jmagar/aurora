@@ -1,6 +1,16 @@
 "use client"
 
 import * as React from "react"
+import {
+  CircleAlert,
+  ExternalLink,
+  Globe2,
+  Lock,
+  Monitor,
+  RefreshCw,
+  Smartphone,
+  Tablet,
+} from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // ---------------------------------------------------------------------------
@@ -27,87 +37,42 @@ export interface WebPreviewProps {
 }
 
 // ---------------------------------------------------------------------------
-// Icons (inline SVG)
+// Icons
 // ---------------------------------------------------------------------------
 
+const ICON_STROKE = 1.65
+
 function ReloadIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path
-        d="M12 7A5 5 0 1 1 7 2c1.38 0 2.63.56 3.54 1.46L13 6"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path d="M13 2v4H9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <RefreshCw size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 
 function LockIcon() {
-  return (
-    <svg width="10" height="12" viewBox="0 0 10 12" fill="none" aria-hidden="true">
-      <rect x="1" y="5" width="8" height="6.5" rx="1.2" stroke="currentColor" strokeWidth="1.1" />
-      <path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
-    </svg>
-  )
+  return <Lock size={12} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function GlobeIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" />
-      <ellipse cx="8" cy="8" rx="2.8" ry="6.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M1.5 8h13M8 1.5C6 3.5 5 5.5 5 8s1 4.5 3 6.5M8 1.5c2 2 3 4 3 6.5s-1 4.5-3 6.5" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  )
+  return <Globe2 size={16} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function DesktopIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <rect x="1" y="2" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M5 14h6M8 12v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  )
+  return <Monitor size={16} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function TabletIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-      <circle cx="8" cy="12.5" r="0.8" fill="currentColor" />
-    </svg>
-  )
+  return <Tablet size={16} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function MobileIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <rect x="4.5" y="1" width="7" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-      <circle cx="8" cy="12.5" r="0.7" fill="currentColor" />
-    </svg>
-  )
+  return <Smartphone size={16} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function ExternalLinkIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M6 2H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M9 1h4m0 0v4m0-4L7 7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <ExternalLink size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function AlertIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <circle cx="16" cy="16" r="14" stroke="var(--aurora-error)" strokeWidth="2" opacity="0.4" />
-      <path d="M16 9v8M16 22v1" stroke="var(--aurora-error)" strokeWidth="2.5" strokeLinecap="round" />
-    </svg>
-  )
+  return <CircleAlert size={32} strokeWidth={1.75} aria-hidden style={{ color: "var(--aurora-error)" }} />
 }
 
 // ---------------------------------------------------------------------------
@@ -321,7 +286,7 @@ function BrowserChrome({
             })}
           </div>
         )}
-        <ChromeButton title="Open in New Tab"><ExternalLinkIcon /></ChromeButton>
+        <ChromeButton title="Open in new tab"><ExternalLinkIcon /></ChromeButton>
       </div>
 
       {/* Content area */}
@@ -409,7 +374,8 @@ function BrowserChrome({
                   borderRadius: "10px",
                   background: "color-mix(in srgb, var(--aurora-warn) 18%, transparent)",
                   color: "var(--aurora-warn)",
-                  fontFamily: "var(--aurora-font-mono)",
+                  fontFamily: "var(--aurora-font-sans)",
+                  fontVariantNumeric: "tabular-nums",
                   fontSize: "10px",
                   fontWeight: 600,
                 }}

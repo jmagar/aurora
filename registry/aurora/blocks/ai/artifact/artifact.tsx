@@ -1,6 +1,16 @@
 "use client"
 
 import * as React from "react"
+import {
+  Check,
+  ChevronDown,
+  Code2,
+  Copy,
+  Download,
+  Eye,
+  Maximize2,
+  Minimize2,
+} from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
@@ -23,58 +33,33 @@ export interface ArtifactProps {
 }
 
 // ---------------------------------------------------------------------------
-// Inline SVG icons
+// Icons
 // ---------------------------------------------------------------------------
 
+const ICON_STROKE = 1.65
+
 function CopyIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <rect x="4.5" y="1.5" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M2.5 4.5H2a1 1 0 00-1 1V12a1 1 0 001 1h6.5a1 1 0 001-1v-.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  )
+  return <Copy size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function DownloadIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M7 2v7M4.5 6.5L7 9l2.5-2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M2 11.5h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  )
+  return <Download size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function ExpandIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M8.5 1.5H12.5V5.5M5.5 12.5H1.5V8.5M12.5 1.5L8 6M1.5 12.5L6 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <Maximize2 size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function CollapseIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M9.5 4.5H12.5M9.5 4.5V1.5M9.5 4.5L13 1M4.5 9.5H1.5M4.5 9.5V12.5M4.5 9.5L1 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <Minimize2 size={14} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function CodeIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-      <path d="M4 3.5L1 6.5L4 9.5M9 3.5L12 6.5L9 9.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
+  return <Code2 size={13} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 function EyeIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-      <ellipse cx="6.5" cy="6.5" rx="5" ry="3.5" stroke="currentColor" strokeWidth="1.2" />
-      <circle cx="6.5" cy="6.5" r="1.5" fill="currentColor" />
-    </svg>
-  )
+  return <Eye size={13} strokeWidth={ICON_STROKE} aria-hidden />
 }
 
 // ---------------------------------------------------------------------------
@@ -191,7 +176,7 @@ function CodeDisplay({
             display: "inline-block",
             width: 2,
             height: "1em",
-            background: "var(--aurora-accent-primary)",
+            background: "var(--axon-orange, #ff9645)",
             marginLeft: 1,
             verticalAlign: "text-bottom",
             borderRadius: 1,
@@ -327,7 +312,7 @@ function ArtifactPanel({
               width: 8,
               height: 8,
               borderRadius: "50%",
-              border: "1.5px solid var(--aurora-accent-primary)",
+              border: "1.5px solid var(--axon-orange, #ff9645)",
               borderTopColor: "transparent",
               animation: "aurora-spin 0.7s linear infinite",
             }}
@@ -358,11 +343,9 @@ function ArtifactPanel({
 
           {/* Toolbar on right */}
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 2 }}>
-            <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy Code"}>
+            <ToolbarBtn onClick={copy} title={copied ? "Copied" : "Copy code"}>
               {copied ? (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path d="M2 7L5.5 10.5L12 4" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <Check size={14} strokeWidth={1.75} aria-hidden style={{ color: "var(--aurora-success)" }} />
               ) : (
                 <CopyIcon />
               )}
@@ -396,11 +379,9 @@ function ArtifactPanel({
             background: "var(--aurora-panel-strong)",
           }}
         >
-          <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy Code"}>
+          <ToolbarBtn onClick={copy} title={copied ? "Copied" : "Copy code"}>
             {copied ? (
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path d="M2 7L5.5 10.5L12 4" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <Check size={14} strokeWidth={1.75} aria-hidden style={{ color: "var(--aurora-success)" }} />
             ) : (
               <CopyIcon />
             )}
@@ -503,27 +484,23 @@ function ArtifactCard({ title, language, code, isStreaming, style }: ArtifactPro
               width: 7,
               height: 7,
               borderRadius: "50%",
-              border: "1.5px solid var(--aurora-accent-primary)",
+              border: "1.5px solid var(--axon-orange, #ff9645)",
               borderTopColor: "transparent",
               animation: "aurora-spin 0.7s linear infinite",
             }}
           />
         )}
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          aria-hidden="true"
+        <ChevronDown
+          size={12}
+          strokeWidth={ICON_STROKE}
+          aria-hidden
           style={{
             color: "var(--aurora-text-muted)",
             transform: open ? "rotate(180deg)" : "rotate(0deg)",
             transition: "transform 0.15s",
             flexShrink: 0,
           }}
-        >
-          <path d="M2.5 4.5L6 7.5L9.5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        />
       </Button>
 
       {/* Collapsed preview */}
@@ -562,11 +539,9 @@ function ArtifactCard({ title, language, code, isStreaming, style }: ArtifactPro
               background: "var(--aurora-panel-strong)",
             }}
           >
-            <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy"}>
+            <ToolbarBtn onClick={copy} title={copied ? "Copied" : "Copy"}>
               {copied ? (
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path d="M2 7L5.5 10.5L12 4" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <Check size={14} strokeWidth={1.75} aria-hidden style={{ color: "var(--aurora-success)" }} />
               ) : (
                 <CopyIcon />
               )}
@@ -619,11 +594,9 @@ function ArtifactInline({ title, language, code, isStreaming, style }: ArtifactP
         >
           {title}
         </span>
-        <ToolbarBtn onClick={copy} title={copied ? "Copied!" : "Copy"}>
+        <ToolbarBtn onClick={copy} title={copied ? "Copied" : "Copy"}>
           {copied ? (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7L5.5 10.5L12 4" stroke="var(--aurora-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <Check size={14} strokeWidth={1.75} aria-hidden style={{ color: "var(--aurora-success)" }} />
           ) : (
             <CopyIcon />
           )}

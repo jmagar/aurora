@@ -1771,7 +1771,9 @@
       "type": "registry:block",
       "title": "Aurora Code Block",
       "description": "Syntax-highlighted code display with Aurora titlebar, copy button, optional line numbers, diff variant, and inline CodeChip export. Supports TypeScript, Rust, Bash, JSON, TOML, diff.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -1914,7 +1916,9 @@
       "type": "registry:block",
       "title": "Aurora Artifact",
       "description": "Artifact panel with preview/code tab switcher, copy/download/expand toolbar, language badge, and streaming cursor. Three variants: panel (full-featured), card (compact collapsible in-chat), inline (bare code strip).",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -1949,7 +1953,9 @@
       "type": "registry:block",
       "title": "Aurora Permission Prompt",
       "description": "Three-variant permission prompt (modal, banner, inline) showing tool name, action description, target chip, Allow/Deny/Allow-always buttons. Danger mode adds red border, warning strip, and destructive copy.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button"
@@ -2091,7 +2097,9 @@
       "type": "registry:block",
       "title": "Aurora Code Editor",
       "description": "Display-only code editor panel with title bar (filename, language badge, close button), line numbers, syntax highlighting, minimap column, diff mode (add/remove line backgrounds), error diagnostics (squiggly underlines, gutter icons, error panel), status bar, and a compact variant.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -2161,7 +2169,9 @@
       "type": "registry:block",
       "title": "Aurora Web Preview",
       "description": "Browser chrome component with Aurora panel titlebar, three neutral square window dots, address bar with lock icon, reload and share icon buttons. Four variants: browser (full chrome), unfurl-card (link preview with favicon, title, description, domain chip), skeleton (shimmer loading), and error (failed to load).",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
@@ -2411,7 +2421,9 @@
       "type": "registry:block",
       "title": "Aurora File Picker",
       "description": "Modal file picker with sidebar navigation (Recent, Documents, Downloads, Project, Uploads), grid and list view modes, search bar, filter chips (All, Images, Documents, Code), drag-drop upload overlay, staged selection chips below the grid, and a multi-select confirm action using --font-sans for all file names.",
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react@^1.21.0"
+      ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
