@@ -217,8 +217,9 @@
             color: var(--aurora-text-primary);
             cursor: pointer;
             padding: 0 10px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: var(--aurora-type-control);
+            font-weight: var(--aurora-weight-ui);
+            letter-spacing: var(--aurora-letter-ui);
             font-family: var(--aurora-font-sans);
             box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
             touch-action: manipulation;

@@ -499,7 +499,7 @@ export function Marketplace({
         <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0 max-w-3xl">
             <p className="aurora-text-eyebrow" style={{ color: "var(--aurora-text-muted)" }}>{eyebrow}</p>
-            <h2 className="aurora-text-section" style={{ fontSize: 28, marginTop: 8 }}>{heading}</h2>
+            <h2 className="aurora-text-display-2" style={{ marginTop: 8 }}>{heading}</h2>
             <p className="mt-2 aurora-text-body" style={{ color: "var(--aurora-text-muted)" }}>
               {intro}
             </p>

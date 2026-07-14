@@ -281,10 +281,7 @@ export function DinglebearFleetPage({ registryCount }: { registryCount: number }
             <h1 id="hero-title" className="aurora-text-display-1">
               dinglebear.ai
             </h1>
-            <p
-              className="aurora-text-body max-w-xl"
-              style={{ color: "var(--aurora-text-muted)", fontSize: 15 }}
-            >
+            <p className="aurora-text-lead max-w-xl" style={{ color: "var(--aurora-text-muted)" }}>
               Published Rust MCP servers for the workflows agents actually touch: homelab,
               media, network, infrastructure, notifications, observability, and
               provider-runtime automation.
@@ -607,7 +604,7 @@ function ServerCard({ server }: { server: ServerEntry }) {
         >
           <code
             className="aurora-text-code truncate"
-            style={{ color: "var(--aurora-text-primary)", fontSize: 12 }}
+            style={{ color: "var(--aurora-text-primary)" }}
           >
             {command}
           </code>
@@ -767,7 +764,7 @@ function Wordmark() {
   return (
     <span
       className="aurora-text-section"
-      style={{ fontSize: 17, letterSpacing: "-0.01em", color: "var(--aurora-text-primary)" }}
+      style={{ letterSpacing: "-0.01em", color: "var(--aurora-text-primary)" }}
     >
       dinglebear
       <span style={{ color: "var(--aurora-accent-pink)" }}>.ai</span>

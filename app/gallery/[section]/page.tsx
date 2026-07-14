@@ -57,7 +57,7 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
             Components
           </p>
           <h1
-            className="aurora-text-display-2"
+            className="aurora-text-display-1"
             style={{ margin: 0, color: "var(--aurora-text-primary)", textWrap: "balance" }}
           >
             {title}

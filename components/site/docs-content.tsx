@@ -27,16 +27,7 @@ const MODERN_REGISTRY_COMMANDS = [
 
 function H({ children }: { children: React.ReactNode }) {
   return (
-    <h2
-      style={{
-        fontFamily: "var(--aurora-font-display)",
-        fontWeight: 800,
-        fontSize: 22,
-        letterSpacing: "-0.03em",
-        margin: "32px 0 12px",
-        color: "var(--aurora-text-primary)",
-      }}
-    >
+    <h2 className="aurora-text-display-2" style={{ margin: "32px 0 12px" }}>
       {children}
     </h2>
   )
@@ -120,16 +111,7 @@ function StartPage() {
   return (
     <div>
       <Eyebrow>Getting Started</Eyebrow>
-      <h1
-        style={{
-          fontFamily: "var(--aurora-font-display)",
-          fontWeight: 800,
-          fontSize: 38,
-          letterSpacing: "-0.04em",
-          margin: "10px 0 14px",
-          color: "var(--aurora-text-primary)",
-        }}
-      >
+      <h1 className="aurora-text-display-1" style={{ margin: "10px 0 14px" }}>
         Aurora
       </h1>
       <P>

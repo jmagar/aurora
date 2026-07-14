@@ -138,16 +138,7 @@ export function PaletteWall() {
           <span className="aurora-text-eyebrow" style={{ color: "var(--aurora-text-muted)" }}>
             The Palette
           </span>
-          <h2
-            style={{
-              fontFamily: "var(--aurora-font-display)",
-              fontWeight: 800,
-              fontSize: "clamp(24px, 3vw, 30px)",
-              letterSpacing: "-0.03em",
-              margin: "8px 0 0",
-              color: "var(--aurora-text-primary)",
-            }}
-          >
+          <h2 className="aurora-text-display-1" style={{ margin: "8px 0 0" }}>
             Navy Base, Three Accents, Muted Status
           </h2>
         </div>

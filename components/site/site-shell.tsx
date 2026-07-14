@@ -129,7 +129,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <button
           onClick={() => setCmdOpen(true)}
           aria-label="Search — open the command palette"
-          className="hidden h-[34px] items-center gap-2 rounded-[10px] px-3 sm:flex"
+          className="aurora-text-control hidden h-[34px] items-center gap-2 rounded-[10px] px-3 sm:flex"
           style={{
             background: "linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.1))",
             border: "1px solid var(--aurora-border-strong)",

@@ -106,7 +106,7 @@ export function ThemesGrid() {
   return (
     <section className="pt-12">
       <div className="aurora-reveal aurora-text-eyebrow mb-2.5">Themes</div>
-      <h1 className="aurora-reveal aurora-text-display-2 mb-2" style={{ animationDelay: "50ms" }}>
+      <h1 className="aurora-reveal aurora-text-display-1 mb-2" style={{ animationDelay: "50ms" }}>
         Aurora Everywhere You Work
       </h1>
       <p className="aurora-reveal aurora-text-lead mb-7 max-w-[620px]" style={{ animationDelay: "100ms" }}>

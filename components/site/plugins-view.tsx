@@ -91,7 +91,7 @@ export function PluginsView() {
         <p className="aurora-text-eyebrow" style={{ color: "var(--aurora-accent-strong)" }}>
           Plugins
         </p>
-        <h1 className="aurora-text-display-2">One Marketplace, Three Agents</h1>
+        <h1 className="aurora-text-display-1">One Marketplace, Three Agents</h1>
         <p className="aurora-text-body max-w-2xl" style={{ color: "var(--aurora-text-muted)" }}>
           The dendrite marketplace packages agent skills, MCP integrations, hooks, commands, and
           companion agents for Claude Code and Codex, with Gemini CLI extension manifests bundled
