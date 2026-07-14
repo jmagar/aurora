@@ -85,9 +85,10 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
   `themes/shell/{p10k,statusline,bat,mc,nano,zsh}`. Per-tool READMEs +
   [`themes/README.md`](themes/README.md). Served copies under
   `public/{chrome,zed,warp}/` — those install URLs are canonical, keep them stable.
-- `dinglebear/` + `public/dinglebear/` + `proxy.ts` — **co-hosted tenant**: a
-  separate site (dinglebear.ai) served via host rewrite, unrelated to Aurora
-  (see `dinglebear/README.md`). Don't wire Aurora into it.
+- `app/dinglebear/` + `proxy.ts` — **co-hosted tenant**: dinglebear.ai served
+  via host rewrite as an Aurora-native page composing registry components
+  (see `dinglebear/README.md`). `public/dinglebear/` holds the retired
+  static-HTML tenant as handoff artifacts only.
 - `scripts/` — `export-aurora-tokens.mjs`, `audit-composition.mjs`
 - `registry.json` — shadcn registry manifest (source of truth for the build)
 
