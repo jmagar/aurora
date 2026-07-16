@@ -10,9 +10,9 @@ while IFS=: read -r file line command; do
     echo "$file:$line: documented copy source does not exist: $source_path" >&2
     status=1
   fi
-done < <(rg --no-heading --line-number 'cp[[:space:]]+(\./)?themes/' README.md plugin themes)
+done < <(grep -RInE --include='*.md' 'cp[[:space:]]+(\./)?themes/' README.md plugin themes)
 
-publish_headings="$(rg --count '^## Publish$' themes/editors/zed/README.md | cut -d: -f2)"
+publish_headings="$(grep -c '^## Publish$' themes/editors/zed/README.md || true)"
 if [[ "${publish_headings:-0}" -ne 1 ]]; then
   echo "themes/editors/zed/README.md must contain exactly one Publish section" >&2
   status=1

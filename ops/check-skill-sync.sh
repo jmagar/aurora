@@ -13,13 +13,13 @@ for path in \
   registry/aurora/styles/aurora.css \
   app/gallery/demo-map.tsx \
   references/android.md; do
-  rg -q -F "$path" "$canonical" || {
+  grep -q -F "$path" "$canonical" || {
     echo "canonical skill does not reference current path: $path" >&2
     exit 1
   }
 done
 
-if rg -q 'badgeVariants' "$canonical"; then
+if grep -q 'badgeVariants' "$canonical"; then
   echo "canonical skill contains a retired Badge or demo-map API" >&2
   exit 1
 fi

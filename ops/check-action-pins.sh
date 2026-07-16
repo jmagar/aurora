@@ -11,6 +11,6 @@ while IFS=: read -r file line usage; do
     echo "$file:$line: action is not pinned to a full commit SHA: $usage" >&2
     status=1
   fi
-done < <(rg --no-heading --line-number --only-matching 'uses:[[:space:]]*[^[:space:]]+([[:space:]]*#.*)?' .github/workflows)
+done < <(grep -RInoE --include='*.yml' --include='*.yaml' 'uses:[[:space:]]*[^[:space:]]+([[:space:]]*#.*)?' .github/workflows)
 
 exit "$status"
