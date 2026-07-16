@@ -168,6 +168,13 @@ everything else aligns to. Served copies live under `public/{chrome,zed,warp}/`
 for `curl` install from `aurora.tootie.tv` — those URLs are canonical, keep them
 stable.
 
+## Reproducible installs
+
+The `aurora.tootie.tv/r/*` endpoints are mutable discovery URLs. Production
+consumers should pin a full Git commit in the raw GitHub registry URL; see
+[`docs/versioning.md`](docs/versioning.md) for the install command and upgrade
+procedure.
+
 ## Development
 
 ```bash
@@ -176,7 +183,6 @@ pnpm dev        # starts on http://localhost:3000
 pnpm lint
 pnpm audit:composition
 pnpm exec tsc --noEmit
-pnpm audit --audit-level high
 pnpm build
 pnpm audit:standalone
 pnpm registry:build
@@ -187,8 +193,7 @@ pnpm test:unit
 
 # Android gates
 cd android
-./gradlew :app:testDebugUnitTest --no-daemon
-./gradlew :aurora:lintDebug --no-daemon
+./gradlew androidCheck --no-daemon
 ```
 
 > **Build side-effect:** `pnpm build` runs `pnpm readmes:generate` as a
@@ -204,6 +209,14 @@ cd android
 3. Register in `app/gallery/[section]/page.tsx`
 4. Update `registry.json` with the new entry
 5. Use inline styles with Aurora CSS vars — never hardcode hex values
+
+## Deployment
+
+Local development uses `docker compose --profile dev up aurora-dev`. A local
+standalone smoke uses `docker compose --profile prod-build up aurora-prod-build`
+on port 50001. Public traffic uses only the digest-pinned, read-only production
+overlay documented in [`docs/deployment.md`](docs/deployment.md); it never
+serves the source bind mount or a mutable image tag.
 
 ## Security
 

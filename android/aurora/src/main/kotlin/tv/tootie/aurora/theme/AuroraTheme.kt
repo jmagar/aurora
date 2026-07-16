@@ -3,10 +3,12 @@ package tv.tootie.aurora.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import tv.tootie.aurora.tokens.AuroraColors
+import tv.tootie.aurora.tokens.AuroraLightColors
 
 // =================================================================================================
 // Aurora → Material3 ColorScheme Mapping Rationale
@@ -148,14 +150,60 @@ private val AuroraDarkColorScheme = darkColorScheme(
     scrim                    = Color(0xFF040A0E),
 )
 
+private val AuroraLightColorScheme = lightColorScheme(
+    primary = AuroraLightColors.accentPrimaryBase,
+    onPrimary = AuroraLightColors.accentForeground,
+    primaryContainer = AuroraLightColors.accentPrimarySurface,
+    onPrimaryContainer = AuroraLightColors.accentDeep,
+    primaryFixed = AuroraLightColors.accentStrong,
+    primaryFixedDim = AuroraLightColors.accentPrimaryBase,
+    onPrimaryFixed = AuroraLightColors.accentForeground,
+    onPrimaryFixedVariant = AuroraLightColors.accentDeep,
+    surfaceTint = AuroraLightColors.accentPrimaryBase,
+    inversePrimary = AuroraLightColors.accentStrong,
+    secondary = AuroraLightColors.accentPinkButton,
+    onSecondary = AuroraLightColors.accentForeground,
+    secondaryContainer = AuroraLightColors.accentPinkSurface,
+    onSecondaryContainer = AuroraLightColors.accentPinkDeep,
+    secondaryFixed = AuroraLightColors.accentPinkStrong,
+    secondaryFixedDim = AuroraLightColors.accentPinkBase,
+    onSecondaryFixed = AuroraLightColors.accentForeground,
+    onSecondaryFixedVariant = AuroraLightColors.accentPinkDeep,
+    tertiary = AuroraLightColors.axonOrangeBase,
+    onTertiary = AuroraLightColors.accentForeground,
+    tertiaryContainer = AuroraLightColors.axonOrangeSurface,
+    onTertiaryContainer = AuroraLightColors.axonOrangeDeep,
+    background = AuroraLightColors.pageBg,
+    onBackground = AuroraLightColors.textPrimary,
+    surface = AuroraLightColors.panelMediumBase,
+    onSurface = AuroraLightColors.textPrimary,
+    onSurfaceVariant = AuroraLightColors.textMuted,
+    surfaceVariant = AuroraLightColors.controlSurfaceBase,
+    surfaceContainerLowest = AuroraLightColors.pageBg,
+    surfaceContainerLow = AuroraLightColors.controlSurfaceBase,
+    surfaceContainer = AuroraLightColors.panelMediumBase,
+    surfaceContainerHigh = AuroraLightColors.panelStrongBase,
+    surfaceContainerHighest = AuroraLightColors.navBg,
+    surfaceDim = AuroraLightColors.controlSurfaceBase,
+    surfaceBright = AuroraLightColors.pageBg,
+    inverseSurface = AuroraLightColors.textPrimary,
+    inverseOnSurface = AuroraLightColors.pageBg,
+    outline = AuroraLightColors.borderDefault,
+    outlineVariant = AuroraLightColors.borderStrong,
+    error = AuroraLightColors.errorBase,
+    onError = AuroraLightColors.errorForeground,
+    errorContainer = AuroraLightColors.errorSurface,
+    onErrorContainer = AuroraLightColors.errorForeground,
+    scrim = Color(0xFF040A0E),
+)
+
 /**
  * Aurora design system theme wrapper.
  *
  * Wrap all Aurora UI in this composable to apply Aurora colors, typography, and shapes.
  *
- * The [darkTheme] parameter defaults to the system setting via [isSystemInDarkTheme]. Light theme
- * is planned; currently both `darkTheme = true` and `darkTheme = false` resolve to the dark color
- * scheme and dark extra-colors until the Aurora light token set ships.
+ * The [darkTheme] parameter defaults to the system setting via [isSystemInDarkTheme]. Both color
+ * schemes are generated from the canonical CSS token namespaces.
  *
  * Usage:
  * ```kotlin
@@ -169,8 +217,8 @@ public fun AuroraTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = if (darkTheme) AuroraDarkColorScheme else AuroraDarkColorScheme
-    val extraColors = if (darkTheme) DarkAuroraExtraColors else DarkAuroraExtraColors
+    val colorScheme = if (darkTheme) AuroraDarkColorScheme else AuroraLightColorScheme
+    val extraColors = if (darkTheme) DarkAuroraExtraColors else LightAuroraExtraColors
 
     CompositionLocalProvider(
         LocalAuroraColors provides extraColors,

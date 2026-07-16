@@ -23,9 +23,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.CallSplit
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.CallSplit
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.filled.Edit
@@ -44,7 +44,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -189,7 +189,7 @@ fun SessionsSidebar(
 
         HorizontalDivider(color = aurora.borderDefault)
 
-        TabRow(selectedTabIndex = threadFilter.ordinal) {
+        PrimaryTabRow(selectedTabIndex = threadFilter.ordinal) {
             Tab(
                 selected = threadFilter == ThreadFilter.Active,
                 onClick = { onThreadFilterChange(ThreadFilter.Active) },
@@ -566,7 +566,7 @@ private fun SessionRow(
             DropdownMenuItem(
                 leadingIcon = {
                     Icon(
-                        Icons.Default.CallSplit,
+                        Icons.AutoMirrored.Filled.CallSplit,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
                     )

@@ -35,9 +35,8 @@ export interface ConfirmationProps extends React.HTMLAttributes<HTMLDivElement> 
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
-const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
-  (
-    {
+const Confirmation = (
+    { ref,
       title,
       description,
       details,
@@ -48,8 +47,7 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
       onCancel,
       className,
       ...props
-    },
-    ref
+    }: ConfirmationProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const reactId = React.useId()
     const titleId = `${reactId}-title`
@@ -104,7 +102,6 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
       </div>
     )
   }
-)
 Confirmation.displayName = "Confirmation"
 
 const MemoConfirmation = React.memo(Confirmation)

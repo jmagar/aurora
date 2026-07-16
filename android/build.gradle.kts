@@ -5,3 +5,30 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinx.serialization) apply false
 }
+
+/**
+ * Canonical native gate. CI and release automation should invoke only this task
+ * so app/library debug and release variants cannot drift apart.
+ */
+val verifyGradleWrapper by tasks.registering(Exec::class) {
+    group = "verification"
+    commandLine("bash", rootDir.resolve("scripts/verify-gradle-wrapper.sh").absolutePath)
+}
+
+tasks.register("androidCheck") {
+    group = "verification"
+    description = "Run all Android unit, lint, release packaging, and visual-regression gates"
+    dependsOn(
+        verifyGradleWrapper,
+        ":app:testDebugUnitTest",
+        ":app:testReleaseUnitTest",
+        ":app:lintDebug",
+        ":app:lintRelease",
+        ":app:assembleRelease",
+        ":aurora:testDebugUnitTest",
+        ":aurora:testReleaseUnitTest",
+        ":aurora:lintDebug",
+        ":aurora:lintRelease",
+        ":aurora:verifyRoborazziDebug",
+    )
+}

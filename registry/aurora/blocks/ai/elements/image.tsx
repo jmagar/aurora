@@ -106,9 +106,8 @@ function chipStyle(tone: "neutral" | "ai" = "neutral"): React.CSSProperties {
 // Component
 // ---------------------------------------------------------------------------
 
-const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
-  (
-    {
+const Image = (
+    { ref,
       src,
       alt = "",
       status,
@@ -126,8 +125,7 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: AuroraImageProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const resolved: AiImageStatus =
       status ?? (loading ? "generating" : src ? "ready" : "generating")
@@ -328,7 +326,6 @@ const Image = React.forwardRef<HTMLDivElement, AuroraImageProps>(
       </figure>
     )
   }
-)
 Image.displayName = "Image"
 
 export { Image }

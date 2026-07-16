@@ -13,13 +13,13 @@ import { cn } from "@/lib/utils"
 // trailing edge, body content, and an optional footer separated by a hairline
 // rule. Tones map onto Aurora accents: cyan, rose, orange, and neutral.
 //
-// Architecture: standalone forwardRef + memo, superset of the original
-// `title` + children API (both still render). The optional `icon` prefers a
-// Lucide icon component or element; legacy path strings remain compatible.
+// Architecture: standalone component + memo, superset of the original
+// `title` + children API (both still render). The optional `icon` accepts a
+// Lucide icon component or trusted React SVG element.
 // ---------------------------------------------------------------------------
 
 type PanelTone = "cyan" | "rose" | "orange" | "neutral"
-type PanelIcon = LucideIcon | React.ReactElement<React.SVGProps<SVGSVGElement>> | string
+type PanelIcon = LucideIcon | React.ReactElement<React.SVGProps<SVGSVGElement>>
 
 const toneColor: Record<PanelTone, string> = {
   cyan: "var(--aurora-accent-primary)",
@@ -37,7 +37,7 @@ export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   title?: React.ReactNode
   /** Accent family for the eyebrow + icon tile. Defaults to cyan. No violet. */
   tone?: PanelTone
-  /** Lucide icon component/element. Legacy path markup is accepted for compatibility. */
+  /** Lucide icon component or trusted SVG element. */
   icon?: PanelIcon
   /** Trailing-edge actions slot (buttons rendered with `.aurora-ael__btn`). */
   actions?: React.ReactNode
@@ -45,8 +45,7 @@ export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   footer?: React.ReactNode
 }
 
-const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
-  ({ eyebrow, title, tone = "cyan", icon, actions, footer, className, children, style, ...props }, ref) => {
+const Panel = ({ ref, eyebrow, title, tone = "cyan", icon, actions, footer, className, children, style, ...props }: PanelProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const hasHeader = Boolean(eyebrow || title || icon || actions)
 
     return (
@@ -80,8 +79,7 @@ const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
         {footer ? <div className="aurora-ael__foot">{footer}</div> : null}
       </aside>
     )
-  },
-)
+  }
 
 Panel.displayName = "Panel"
 
@@ -89,22 +87,6 @@ const MemoPanel = React.memo(Panel)
 MemoPanel.displayName = "Panel"
 
 function renderPanelIcon(icon: PanelIcon): React.ReactNode {
-  if (typeof icon === "string") {
-    return (
-      <svg
-        width={18}
-        height={18}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.65}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        dangerouslySetInnerHTML={{ __html: icon }}
-      />
-    )
-  }
-
   if (React.isValidElement<React.SVGProps<SVGSVGElement>>(icon)) {
     return React.cloneElement(icon, {
       width: 18,

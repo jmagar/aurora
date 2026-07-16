@@ -660,12 +660,16 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
      * decision string. All other approval types use [repo.sendApproval] as before.
      */
     fun approveToolCall(approval: ToolApproval, decision: String) {
+        val safeDecision = classifyApprovalDecisions(
+            approval.availableDecisions,
+            elicitation = approval is ToolApproval.Elicitation,
+        ).firstOrNull { it.wireValue == decision } ?: return
         val sent = if (approval is ToolApproval.Elicitation) {
             // MCP elicitation response: { id, result: { action: "accept"|"cancel", content?: {} } }
             // On accept we send an empty content object — full field collection is a future feature.
-            repo.respondElicitation(approval.rawServerId, decision)
+            repo.respondElicitation(approval.rawServerId, safeDecision.wireValue)
         } else {
-            repo.sendApproval(approval.rawServerId, decision)
+            repo.sendApproval(approval.rawServerId, safeDecision.wireValue)
         }
         if (sent) {
             _state.update {
@@ -810,6 +814,13 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     // --- Turn event dispatch (unchanged from original, minus model/skill branches) ---
 
     private fun handle(event: CodexEvent.TurnEvent) {
+        val decoded = ChatProtocolDecoder.decode(event)
+        if (decoded is DecodedChatProtocolEvent.Approval) {
+            _state.update { state ->
+                state.copy(pendingApprovals = reduceApprovals(state.pendingApprovals, decoded.event))
+            }
+            return
+        }
         val msg = event.msg
         val params = msg.params?.jsonObject
         val result = msg.result?.jsonObject

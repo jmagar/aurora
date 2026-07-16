@@ -45,9 +45,8 @@ function PromptGlyph({ color }: { color: string }) {
   )
 }
 
-const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
-  (
-    {
+const Sandbox = (
+    { ref,
       title = "Sandbox",
       command = "pnpm dev",
       status = "running",
@@ -60,8 +59,7 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
       style,
       children,
       ...props
-    },
-    ref
+    }: SandboxProps & { ref?: React.Ref<HTMLDivElement> }
   ) => (
     <div
       ref={ref}
@@ -232,7 +230,6 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
       {children}
     </div>
   )
-)
 Sandbox.displayName = "Sandbox"
 
 export { Sandbox }

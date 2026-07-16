@@ -77,8 +77,8 @@ const VIEWPORTS: ReadonlyArray<{
 ]
 
 const WebPreview = React.memo(
-  React.forwardRef<HTMLDivElement, WebPreviewProps>(function WebPreview(
-    {
+  function WebPreview(
+    { ref,
       url = "preview",
       children,
       height = 232,
@@ -92,8 +92,7 @@ const WebPreview = React.memo(
       className,
       style,
       ...props
-    },
-    ref,
+    }: WebPreviewProps & { ref?: React.Ref<HTMLDivElement> },
   ) {
     const [internalViewport, setInternalViewport] =
       React.useState<WebPreviewViewport>(defaultViewport)
@@ -341,7 +340,7 @@ const WebPreview = React.memo(
         ) : null}
       </div>
     )
-  }),
+  },
 )
 WebPreview.displayName = "WebPreview"
 

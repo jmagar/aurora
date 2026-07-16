@@ -28,9 +28,8 @@ export interface ProgressRingProps
   children?: React.ReactNode;
 }
 
-export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
-  function ProgressRing(
-    {
+export const ProgressRing = function ProgressRing(
+    { ref,
       value,
       size = 80,
       thickness = 6,
@@ -41,8 +40,7 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
       className,
       style,
       ...props
-    },
-    ref,
+    }: ProgressRingProps & { ref?: React.Ref<HTMLDivElement> },
   ) {
     // Guard non-finite input (NaN/Infinity): Math.max/min would propagate NaN
     // into aria-valuenow and the dash math, so floor it to 0.
@@ -109,8 +107,7 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
         )}
       </div>
     );
-  },
-);
+  };
 
 ProgressRing.displayName = "ProgressRing";
 

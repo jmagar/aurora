@@ -7,6 +7,48 @@ breaking changes and will be listed here.
 
 ---
 
+## Unreleased
+
+### Breaking and migration notes
+
+- **Production delivery is immutable.** The public service no longer uses the
+  writable `pnpm dev` container. Operators must deploy the tested GHCR digest
+  through `ops/compose/production.yaml`; `docker compose up` without an explicit
+  development profile is intentionally a no-op. See `docs/deployment.md`.
+- **Node 24 ESM is the project contract.** Local and CI tooling now require Node
+  24 and treat `.js`/`.ts` as ES modules. Remove CommonJS-only test assumptions
+  and use `import`/`export` in project tooling.
+- **Android local consumption requires explicit composite substitution.** Aurora
+  is not published to Maven. Consumers must include this repository's `android/`
+  build and substitute `tv.tootie.aurora:aurora`; use the current checkout path,
+  not the retired `aurora-design-system` path. See the packaged skill's Android
+  reference.
+
+### Security and delivery
+
+- Added per-request nonce CSP propagation and removed `script-src 'unsafe-inline'`.
+- Added short caching for mutable `/r/*.json` discovery URLs and documented
+  commit-SHA registry URLs for reproducible installs.
+- Added exact-SHA image builds, SBOM/provenance attestations, vulnerability
+  scanning, keyless signing, signature verification, and digest-only promotion.
+- Split OpenWiki generation (model secret, read-only repository token) from PR
+  creation (write token, no model secret), pinned its dependency graph, and use
+  fresh superseding branches.
+- Added public landing/content-negotiation/schema/checksum/TLS synthetics,
+  optional failure webhooks, production resource/log limits, and tracked
+  Compose/SWAG topology.
+
+### Registry and tokens
+
+- Mutable registry URLs remain supported for interactive discovery and receive
+  short revalidation caching. Production consumers should pin the immutable
+  `raw.githubusercontent.com/jmagar/aurora/<full-commit>/public/r/<name>.json`
+  form described in `docs/versioning.md`.
+- Current main includes registry graph, component API, token export, theme, and
+  Android light/dark parity changes made after v0.3.1. Consumers upgrading from
+  v0.3.1 should rebuild vendored components, review changed component props,
+  regenerate Android tokens, and verify both color modes before release.
+
 ## [0.3.1](https://github.com/jmagar/aurora/compare/v0.3.0...v0.3.1) (2026-07-11)
 
 

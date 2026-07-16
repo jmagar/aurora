@@ -12,6 +12,7 @@ import {
   Minimize2,
 } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
@@ -222,14 +223,9 @@ function TabPill({
 // ---------------------------------------------------------------------------
 
 function useCopy(text: string) {
-  const [copied, setCopied] = React.useState(false)
-  const copy = React.useCallback(() => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1600)
-    })
-  }, [text])
-  return { copied, copy }
+  const clipboard = useClipboard(1600)
+  const copy = React.useCallback(() => void clipboard.copy(text), [clipboard, text])
+  return { copied: clipboard.copied, error: clipboard.error, copy }
 }
 
 // ---------------------------------------------------------------------------

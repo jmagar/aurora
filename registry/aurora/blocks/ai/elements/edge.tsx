@@ -1,5 +1,3 @@
-"use client"
-
 /**
  * Aurora Edge — a graph edge label rendered as a compact, tone-tinted pill.
  *
@@ -53,9 +51,8 @@ export interface EdgeProps extends React.HTMLAttributes<HTMLDivElement> {
 const ARROW_BACK = "←" // ←
 const ARROW_FORWARD = "→" // →
 
-const Edge = React.forwardRef<HTMLDivElement, EdgeProps>(
-  (
-    {
+const Edge = (
+    { ref,
       label = "edge",
       tone = "muted",
       direction = "none",
@@ -63,8 +60,7 @@ const Edge = React.forwardRef<HTMLDivElement, EdgeProps>(
       animated = false,
       className,
       ...props
-    },
-    ref
+    }: EdgeProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const flowing = animated
     const showBack = direction === "back" || direction === "both"
@@ -100,7 +96,6 @@ const Edge = React.forwardRef<HTMLDivElement, EdgeProps>(
       </div>
     )
   }
-)
 Edge.displayName = "Edge"
 
 const MemoEdge = React.memo(Edge)

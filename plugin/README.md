@@ -4,6 +4,10 @@ Claude Code plugin packaging the Aurora design system skill — dark-first, navy
 base with cyan/rose/Axon-orange accents, served from the `@aurora` shadcn registry at
 `aurora.tootie.tv`.
 
+The plugin has its own packaging version (`0.1.0`) and does not version registry
+components. For reproducible component installs, pin the Aurora Git commit as
+documented in `../docs/versioning.md`.
+
 ## Installation
 
 From this repository:

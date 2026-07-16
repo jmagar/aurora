@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Focus, Grid2X2, Minus, Move, Plus, RotateCcw } from "lucide-react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import {
   Controls,
@@ -32,7 +33,7 @@ export default function AiControlsDemo() {
       >
         <Controls>
           <ControlButton
-            icon='<path d="M5 12h14"/>'
+            icon={Minus}
             aria-label="Zoom out"
             onClick={() => setZoom((z) => Math.max(25, z - 25))}
           />
@@ -49,32 +50,32 @@ export default function AiControlsDemo() {
             {zoom}%
           </span>
           <ControlButton
-            icon='<path d="M12 5v14M5 12h14"/>'
+            icon={Plus}
             aria-label="Zoom in"
             onClick={() => setZoom((z) => Math.min(400, z + 25))}
           />
           <ControlsDivider />
-          <ControlButton icon='<path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>'>
+          <ControlButton icon={Focus}>
             Fit
           </ControlButton>
         </Controls>
 
         <Controls orientation="vertical">
           <ControlButton
-            icon='<path d="m5 9 5-5 5 5M5 15l5 5 5-5"/>'
+            icon={Move}
             aria-label="Move"
             active={tool === "move"}
             onClick={() => setTool("move")}
           />
           <ControlButton
-            icon='<path d="M3 3h7v7H3zM14 14h7v7h-7z"/>'
+            icon={Grid2X2}
             aria-label="Select"
             active={tool === "select"}
             onClick={() => setTool("select")}
           />
           <ControlsDivider />
           <ControlButton
-            icon='<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>'
+            icon={RotateCcw}
             aria-label="Reset"
             onClick={() => {
               setZoom(100)

@@ -2,7 +2,6 @@ package tv.tootie.aurora.app.codex
 
 import android.util.Log
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,12 +23,30 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 
 private const val TAG = "CodexClient"
+private const val INBOUND_CAPACITY = 512
+private const val OUTBOUND_CAPACITY = 512
 
-class CodexClient(private val url: String, private val token: String? = null) {
+internal enum class FrameSendResult(val accepted: Boolean) {
+    Sent(true), Queued(true), Rejected(false),
+}
+
+data class RpcBufferStats(
+    val inboundOverloads: Long = 0,
+    val outboundRejected: Long = 0,
+)
+
+class CodexClient(
+    private val url: String,
+    private val token: String? = null,
+    private val onRequestCreated: (Int, RequestKind) -> Unit = { _, _ -> },
+    private val onTerminated: (CodexClient, Int, String) -> Unit = { _, _, _ -> },
+) {
 
     private val json = Json { ignoreUnknownKeys = true }
     private val http = OkHttpClient()
@@ -43,10 +60,16 @@ class CodexClient(private val url: String, private val token: String? = null) {
      * if a caller sends before the socket is open (e.g., a race between `connect()`
      * returning and `onOpen` being dispatched on OkHttp's async thread).
      */
-    private val outboundQueue = ConcurrentLinkedQueue<String>()
+    private val outboundQueue = ArrayBlockingQueue<String>(OUTBOUND_CAPACITY)
+    private val terminated = AtomicBoolean(false)
+    private val inboundOverloads = AtomicLong(0)
+    private val outboundRejected = AtomicLong(0)
 
-    private val _msgs = Channel<RpcMessage>(Channel.UNLIMITED)
+    private val _msgs = Channel<RpcMessage>(INBOUND_CAPACITY)
     val messages: Flow<RpcMessage> = _msgs.receiveAsFlow()
+
+    private val _bufferStats = MutableStateFlow(RpcBufferStats())
+    val bufferStats: StateFlow<RpcBufferStats> = _bufferStats.asStateFlow()
 
     /**
      * Becomes `true` once the server responds to the `initialize` handshake with
@@ -64,7 +87,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
         ws = http.newWebSocket(req, object : WebSocketListener() {
             override fun onOpen(ws: WebSocket, r: Response) {
                 Log.d(TAG, "open")
-                ws.send(json.encodeToString(buildJsonObject {
+                sendFrame(json.encodeToString(buildJsonObject {
                     put("method", "initialize")
                     put("id", 0)
                     put("params", buildJsonObject {
@@ -77,11 +100,11 @@ class CodexClient(private val url: String, private val token: String? = null) {
                             put("requestAttestation", false)
                         })
                     })
-                }))
-                ws.send(json.encodeToString(buildJsonObject {
+                }), method = "initialize", bypassReady = true)
+                sendFrame(json.encodeToString(buildJsonObject {
                     put("method", "initialized")
                     put("params", JsonObject(emptyMap()))
-                }))
+                }), method = "initialized", bypassReady = true)
             }
             override fun onMessage(ws: WebSocket, text: String) {
                 // All server notifications (including "account/login/completed",
@@ -101,33 +124,54 @@ class CodexClient(private val url: String, private val token: String? = null) {
                         }
                         Log.d(TAG, "initialized — drained outboundQueue")
                     }
-                    _msgs.trySendBlocking(msg)
+                    emitInbound(ws, msg)
                 } catch (e: Exception) { Log.w(TAG, "parse error len=${text.length}: ${e.javaClass.simpleName}: ${e.message}") }
             }
             override fun onFailure(ws: WebSocket, t: Throwable, r: Response?) {
                 Log.e(TAG, "failure", t)
                 _isInitialized.value = false
                 outboundQueue.clear()
-                _msgs.trySendBlocking(RpcMessage(error = RpcError(-1, t.message ?: "error")))
+                emitInbound(ws, RpcMessage(error = RpcError(-1, t.message ?: "error")))
+                terminate(-1, t.message ?: "WebSocket failure")
             }
-            override fun onClosed(ws: WebSocket, code: Int, reason: String) {
-                val wasReady = _isInitialized.value
+            override fun onClosing(ws: WebSocket, code: Int, reason: String) {
                 _isInitialized.value = false
                 outboundQueue.clear()
-                // Emit a synthetic error for unexpected server-side closes (code != 1000)
-                // so demux() receives a termination signal and ChatViewModel can clear thinking=true.
-                // Code 1000 = normal user-initiated close via disconnect(); no error needed.
-                if (wasReady && code != 1000) {
-                    _msgs.trySendBlocking(
-                        RpcMessage(error = RpcError(code, reason.ifBlank { "server closed connection (code $code)" }))
-                    )
-                }
+                emitInbound(
+                    ws,
+                    RpcMessage(error = RpcError(code, reason.ifBlank { "server closing connection (code $code)" })),
+                )
+                terminate(code, reason.ifBlank { "server closing connection" })
+                // Complete the close handshake so OkHttp delivers onClosed and the
+                // peer/socket resources are released even for normal code 1000.
+                ws.close(code, reason)
+            }
+            override fun onClosed(ws: WebSocket, code: Int, reason: String) {
+                _isInitialized.value = false
+                outboundQueue.clear()
+                emitInbound(
+                    ws,
+                    RpcMessage(error = RpcError(code, reason.ifBlank { "server closed connection (code $code)" })),
+                )
+                terminate(code, reason.ifBlank { "server closed connection" })
                 _msgs.close()
             }
         })
     }
 
     fun disconnect() { ws?.close(1000, "bye"); ws = null }
+
+    private fun emitInbound(socket: WebSocket, message: RpcMessage) {
+        if (_msgs.trySend(message).isSuccess) return
+        val count = inboundOverloads.incrementAndGet()
+        _bufferStats.value = RpcBufferStats(count, outboundRejected.get())
+        Log.e(TAG, "inbound RPC buffer saturated; closing connection count=$count")
+        socket.close(1013, "client inbound buffer overloaded")
+    }
+
+    private fun terminate(code: Int, reason: String) {
+        if (terminated.compareAndSet(false, true)) onTerminated(this, code, reason)
+    }
 
     fun startThread(model: String? = null, effort: String? = null, cwd: String? = null): Int {
         val id = ids.incrementAndGet()
@@ -258,7 +302,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
             threadId, text, attachments, model, effort, images,
             approvalPolicy, granularPolicy, approvalsReviewer, sandboxPolicy, cwd,
         )
-        ws?.send(frame)
+        sendFrame(frame, "turn/start", id, RequestKind.Other)
         return id
     }
 
@@ -473,7 +517,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     fun steerTurn(threadId: String, text: String, expectedTurnId: String): Int {
         val (frame, id) = buildSteerFrame(threadId, text, expectedTurnId)
-        ws?.send(frame)
+        sendFrame(frame, "turn/steer", id, RequestKind.Steer)
         return id
     }
 
@@ -498,7 +542,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     fun setGoal(threadId: String, objective: String, tokenBudget: Int? = null): Int {
         val (frame, id) = buildSetGoalFrame(threadId, objective, tokenBudget)
-        ws?.send(frame)
+        sendFrame(frame, "thread/goal/set", id, RequestKind.GoalSet)
         return id
     }
 
@@ -519,7 +563,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     fun getGoal(threadId: String): Int {
         val (frame, id) = buildGetGoalFrame(threadId)
-        ws?.send(frame)
+        sendFrame(frame, "thread/goal/get", id, RequestKind.GoalGet)
         return id
     }
 
@@ -540,7 +584,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     fun clearGoal(threadId: String): Int {
         val (frame, id) = buildClearGoalFrame(threadId)
-        ws?.send(frame)
+        sendFrame(frame, "thread/goal/clear", id, RequestKind.GoalClear)
         return id
     }
 
@@ -561,7 +605,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
 
     fun listMcpServers(): Int {
         val (frame, id) = buildListMcpServersFrame()
-        ws?.send(frame)
+        sendFrame(frame, "mcpServerStatus/list", id, RequestKind.McpServers)
         return id
     }
 
@@ -696,7 +740,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
             put("id", rawServerId)
             put("result", decision)
         }.toString()
-        return ws?.send(json) ?: false
+        return sendFrame(json).accepted
     }
 
     /**
@@ -749,7 +793,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 if (action == "accept") put("content", content)
             })
         })
-        return ws?.send(frame) ?: false
+        return sendFrame(frame).accepted
     }
 
     /**
@@ -903,7 +947,7 @@ class CodexClient(private val url: String, private val token: String? = null) {
                 put("chatgptAccountId", chatgptAccountId)
             })
         })
-        return ws?.send(frame) ?: false
+        return sendFrame(frame).accepted
     }
 
     /**
@@ -1270,26 +1314,78 @@ class CodexClient(private val url: String, private val token: String? = null) {
         return id
     }
 
-    private fun send(method: String, params: JsonElement, id: Int? = null) {
+    private fun send(method: String, params: JsonElement, id: Int? = null): FrameSendResult {
         val msg = buildJsonObject {
             put("method", method)
             if (id != null) put("id", id)
             put("params", params)
         }
-        val frame = json.encodeToString(msg)
+        return sendFrame(json.encodeToString(msg), method, id, requestKindFor(method))
+    }
+
+    private fun sendFrame(
+        frame: String,
+        method: String? = null,
+        id: Int? = null,
+        kind: RequestKind = RequestKind.Other,
+        bypassReady: Boolean = false,
+    ): FrameSendResult {
+        if (id != null) onRequestCreated(id, kind)
         val socket = ws
-        when {
+        return when {
             socket == null -> {
-                // Not yet connected — should not happen in normal flow since CodexRepository
-                // guards calls with isReady, but enqueue defensively rather than silently drop.
                 Log.w(TAG, "send: ws null, queuing method=$method")
-                outboundQueue.add(frame)
+                queueFrame(frame)
             }
-            !_isInitialized.value -> {
-                // Socket open but handshake not yet acknowledged — queue until drain in onMessage.
-                outboundQueue.add(frame)
+            !_isInitialized.value && !bypassReady -> {
+                queueFrame(frame)
             }
-            else -> socket.send(frame)
+            socket.send(frame) -> FrameSendResult.Sent
+            else -> FrameSendResult.Rejected
         }
+    }
+
+    private fun queueFrame(frame: String): FrameSendResult {
+        if (outboundQueue.offer(frame)) return FrameSendResult.Queued
+        val count = outboundRejected.incrementAndGet()
+        _bufferStats.value = RpcBufferStats(inboundOverloads.get(), count)
+        Log.e(TAG, "outbound RPC queue saturated; rejecting frame count=$count")
+        return FrameSendResult.Rejected
+    }
+
+    private fun requestKindFor(method: String): RequestKind = when (method) {
+        "thread/start" -> RequestKind.ThreadStart
+        "thread/list" -> RequestKind.Thread
+        "thread/loaded/list" -> RequestKind.LoadedThreads
+        "thread/metadata/update" -> RequestKind.MetadataUpdate
+        "thread/resume" -> RequestKind.ThreadResume
+        "thread/read" -> RequestKind.ThreadRead
+        "thread/name/set" -> RequestKind.ThreadName
+        "thread/archive" -> RequestKind.ThreadArchive
+        "thread/unarchive" -> RequestKind.ThreadUnarchive
+        "thread/fork" -> RequestKind.ThreadFork
+        "gitDiffToRemote" -> RequestKind.GitDiff
+        "turn/steer" -> RequestKind.Steer
+        "thread/goal/set" -> RequestKind.GoalSet
+        "thread/goal/get" -> RequestKind.GoalGet
+        "thread/goal/clear" -> RequestKind.GoalClear
+        "mcpServerStatus/list" -> RequestKind.McpServers
+        "model/list" -> RequestKind.Models
+        "skills/list" -> RequestKind.Skills
+        "plugin/list" -> RequestKind.Plugins
+        "plugin/installed" -> RequestKind.InstalledPlugins
+        "configRequirements/read" -> RequestKind.ConfigRequirements
+        "config/read" -> RequestKind.ConfigRead
+        "config/value/write", "config/batchWrite" -> RequestKind.ConfigWrite
+        "experimentalFeature/list" -> RequestKind.ExperimentalFeatures
+        "experimentalFeature/enablement/set" -> RequestKind.ExperimentalEnablement
+        "account/read" -> RequestKind.AccountRead
+        "account/rateLimits/read" -> RequestKind.RateLimitsRead
+        "fuzzyFileSearch" -> RequestKind.FuzzySearch
+        "review/start" -> RequestKind.ReviewStart
+        "thread/shellCommand" -> RequestKind.ShellCommand
+        "command/exec" -> RequestKind.ExecCommand
+        "thread/compact/start" -> RequestKind.CompactStart
+        else -> RequestKind.Other
     }
 }

@@ -136,8 +136,7 @@ function renderJsonValue(value: unknown, depth = 0): React.ReactNode {
 // SchemaDisplay
 // ---------------------------------------------------------------------------
 
-const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
-  ({ schema, title = "Schema", defaultView = "fields", className, style, ...props }, ref) => {
+const SchemaDisplay = ({ ref, schema, title = "Schema", defaultView = "fields", className, style, ...props }: SchemaDisplayProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const [view, setView] = React.useState<"fields" | "json">(defaultView)
 
     const typed = (schema ?? {}) as JsonSchema
@@ -307,7 +306,6 @@ const SchemaDisplay = React.forwardRef<HTMLDivElement, SchemaDisplayProps>(
       </div>
     )
   }
-)
 SchemaDisplay.displayName = "SchemaDisplay"
 
 export { SchemaDisplay }

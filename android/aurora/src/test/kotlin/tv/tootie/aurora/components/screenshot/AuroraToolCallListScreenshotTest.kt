@@ -14,7 +14,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.captureRoboImage
 import tv.tootie.aurora.components.AuroraToolCall
@@ -36,7 +37,10 @@ import tv.tootie.aurora.theme.AuroraTheme
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [34], qualifiers = "w400dp-h800dp-xhdpi")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
+@OptIn(ExperimentalRoborazziApi::class)
 class AuroraToolCallListScreenshotTest {
+
+    private val screenshotOptions = RoborazziOptions()
 
     @get:Rule
     val composeRule = createComposeRule()
@@ -44,8 +48,10 @@ class AuroraToolCallListScreenshotTest {
     @get:Rule
     val roborazziRule = RoborazziRule(
         options = RoborazziRule.Options(
-            roborazziOptions = RoborazziOptions(),
-            captureType = RoborazziRule.CaptureType.LastImage(),
+            roborazziOptions = screenshotOptions,
+            // The assertions use onRoot().captureRoboImage() explicitly; keep
+            // the rule from scheduling a second root-less LastImage capture.
+            captureType = RoborazziRule.CaptureType.None,
         ),
     )
 
@@ -66,7 +72,7 @@ class AuroraToolCallListScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureRoboImage(roborazziOptions = screenshotOptions)
     }
 
     @Test
@@ -101,7 +107,7 @@ class AuroraToolCallListScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureRoboImage(roborazziOptions = screenshotOptions)
     }
 
     @Test
@@ -122,7 +128,7 @@ class AuroraToolCallListScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureRoboImage(roborazziOptions = screenshotOptions)
     }
 
     @Test
@@ -145,7 +151,7 @@ class AuroraToolCallListScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureRoboImage(roborazziOptions = screenshotOptions)
     }
 
     @Test
@@ -158,6 +164,6 @@ class AuroraToolCallListScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        composeRule.onRoot().captureRoboImage(roborazziOptions = screenshotOptions)
     }
 }

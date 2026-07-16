@@ -28,9 +28,8 @@ export interface VoiceSelectorProps extends React.HTMLAttributes<HTMLDivElement>
 const WAVEFORM_BARS = [9, 14, 7, 18, 11, 22, 8, 16, 6, 13, 9]
 const AI_ORANGE = "var(--axon-orange)"
 
-const VoiceSelector = React.forwardRef<HTMLDivElement, VoiceSelectorProps>(
-  (
-    {
+const VoiceSelector = (
+    { ref,
       voices,
       value,
       defaultValue,
@@ -43,8 +42,7 @@ const VoiceSelector = React.forwardRef<HTMLDivElement, VoiceSelectorProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: VoiceSelectorProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const [internalValue, setInternalValue] = React.useState<string>(
       value ?? defaultValue ?? voices[0]
@@ -194,7 +192,6 @@ const VoiceSelector = React.forwardRef<HTMLDivElement, VoiceSelectorProps>(
       </div>
     )
   }
-)
 VoiceSelector.displayName = "VoiceSelector"
 
 export { VoiceSelector }

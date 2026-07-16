@@ -583,10 +583,8 @@ function TokenRow({
 // Main OAuth component
 // ---------------------------------------------------------------------------
 
-export const OAuth = React.forwardRef<HTMLDivElement, OAuthProps>(
-  function OAuth(
-    { app, scopes, mode = "consent", tokens, onAllow, onDeny, onRevoke },
-    ref
+export const OAuth = function OAuth(
+    { ref, app, scopes, mode = "consent", tokens, onAllow, onDeny, onRevoke }: OAuthProps & { ref?: React.Ref<HTMLDivElement> }
   ) {
     return (
       <div
@@ -628,6 +626,5 @@ export const OAuth = React.forwardRef<HTMLDivElement, OAuthProps>(
       </div>
     )
   }
-)
 
 export default OAuth

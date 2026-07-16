@@ -15,8 +15,7 @@ export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: "horizontal" | "vertical"
 }
 
-const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
-  ({ className, orientation = "horizontal", style, ...props }, ref) => (
+const ButtonGroup = ({ ref, className, orientation = "horizontal", style, ...props }: ButtonGroupProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       role="group"
@@ -42,7 +41,6 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
       {...props}
     />
   )
-)
 ButtonGroup.displayName = "ButtonGroup"
 
 /**
@@ -57,8 +55,7 @@ export interface ButtonGroupItemProps
   selected?: boolean
 }
 
-const ButtonGroupItem = React.forwardRef<HTMLButtonElement, ButtonGroupItemProps>(
-  ({ className, selected, type = "button", ...props }, ref) => (
+const ButtonGroupItem = ({ ref, className, selected, type = "button", ...props }: ButtonGroupItemProps & { ref?: React.Ref<HTMLButtonElement> }) => (
     <button
       ref={ref}
       type={type}
@@ -67,7 +64,6 @@ const ButtonGroupItem = React.forwardRef<HTMLButtonElement, ButtonGroupItemProps
       {...props}
     />
   )
-)
 ButtonGroupItem.displayName = "ButtonGroupItem"
 
 export { ButtonGroup, ButtonGroupItem }

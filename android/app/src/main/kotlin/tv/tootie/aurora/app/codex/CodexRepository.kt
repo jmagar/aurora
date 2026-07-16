@@ -27,9 +27,44 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import java.util.concurrent.ConcurrentHashMap
 
 private const val TAG = "CodexRepository"
+
+/**
+ * Race-safe request registry. [registerBeforeSend] runs inside CodexClient before
+ * transport. Legacy wrapper assignments then become acknowledgements. Whether a
+ * response arrives before or after that acknowledgement, a completed request can
+ * never be reinserted as stale pending state.
+ */
+private class RequestKindRegistry {
+    private enum class Phase { PreRegistered, CompletedBeforeWrapperReturn }
+    private val lock = Any()
+    private val kinds = mutableMapOf<String, RequestKind>()
+    private val phases = mutableMapOf<String, Phase>()
+
+    fun registerBeforeSend(key: String, kind: RequestKind) = synchronized(lock) {
+        kinds[key] = kind
+        phases[key] = Phase.PreRegistered
+    }
+
+    operator fun set(key: String, kind: RequestKind) = synchronized(lock) {
+        when (phases.remove(key)) {
+            Phase.PreRegistered, Phase.CompletedBeforeWrapperReturn -> Unit
+            null -> kinds[key] = kind
+        }
+    }
+
+    fun remove(key: String): RequestKind? = synchronized(lock) {
+        val kind = kinds.remove(key)
+        if (phases[key] == Phase.PreRegistered) phases[key] = Phase.CompletedBeforeWrapperReturn
+        kind
+    }
+
+    fun clear() = synchronized(lock) {
+        kinds.clear()
+        phases.clear()
+    }
+}
 
 /**
  * Classifies outgoing requests so responses can be routed to the right flow.
@@ -115,12 +150,14 @@ sealed class CodexEvent {
      * [error] is non-null when the RPC returned an error.
      */
     data class ConfigResult(
+        val requestId: String,
         val config: JsonObject?,
         val layers: JsonObject?,
         val error: String? = null,
     ) : CodexEvent()
 
     data class ConfigWriteAck(
+        val requestId: String,
         val success: Boolean,
         val raw: JsonObject? = null,
         val error: String? = null,
@@ -172,7 +209,7 @@ sealed class CodexEvent {
 class CodexRepository {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val pendingKinds = ConcurrentHashMap<String, RequestKind>()
+    private val pendingKinds = RequestKindRegistry()
     /** Guards connect/reconnect/disconnect so concurrent calls are serialized. */
     private val connectionMutex = Mutex()
     private var client: CodexClient? = null
@@ -296,7 +333,27 @@ class CodexRepository {
      */
     private fun startClientLocked(url: String, token: String?) {
         Log.d(TAG, "connecting to $url")
-        val c = CodexClient(url, token)
+        val c = CodexClient(
+            url = url,
+            token = token,
+            onRequestCreated = { id, kind -> pendingKinds.registerBeforeSend(id.toString(), kind) },
+            onTerminated = { terminatedClient, code, reason ->
+                scope.launch {
+                    connectionMutex.withLock {
+                        if (client === terminatedClient) {
+                            client = null
+                            _currentClient.value = null
+                            pendingKinds.clear()
+                            _errorsFlow.tryEmit(
+                                CodexEvent.ConnectionError(
+                                    if (code == 1000) "Connection closed" else "$reason (code $code)",
+                                ),
+                            )
+                        }
+                    }
+                }
+            },
+        )
         client = c
         _currentClient.value = c
         c.connect()
@@ -1046,8 +1103,10 @@ class CodexRepository {
     }
 
     private fun routeConfigResponse(msg: RpcMessage) {
+        val requestId = (msg.id as? JsonPrimitive)?.contentOrNull ?: return
         if (msg.error != null) {
             _configFlow.tryEmit(CodexEvent.ConfigResult(
+                requestId = requestId,
                 config = null,
                 layers = null,
                 error = msg.error.message,
@@ -1057,14 +1116,16 @@ class CodexRepository {
         val result = msg.result?.jsonObject ?: return
         val config = result["config"]?.jsonObject
         val layers = result["layers"]?.jsonObject
-        _configFlow.tryEmit(CodexEvent.ConfigResult(config = config, layers = layers))
+        _configFlow.tryEmit(CodexEvent.ConfigResult(requestId = requestId, config = config, layers = layers))
     }
 
     private fun routeConfigWriteResponse(msg: RpcMessage) {
+        val requestId = (msg.id as? JsonPrimitive)?.contentOrNull ?: return
         val success = msg.error == null
         if (!success) Log.w(TAG, "config write failed: ${msg.error?.message}")
         _configWriteFlow.tryEmit(
             CodexEvent.ConfigWriteAck(
+                requestId = requestId,
                 success = success,
                 raw = msg.result?.jsonObject,
                 error = msg.error?.message,

@@ -1,5 +1,3 @@
-"use client"
-
 /**
  * Aurora Card — the canonical panel. Two tiers (strong / medium), optional
  * accent edge, optional interactive hover-lift + glow.

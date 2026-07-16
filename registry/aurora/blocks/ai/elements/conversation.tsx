@@ -22,8 +22,7 @@ export interface MessageAvatarProps extends React.HTMLAttributes<HTMLDivElement>
 
 // ─── Conversation ─────────────────────────────────────────────────────────────
 
-const Conversation = React.forwardRef<HTMLDivElement, ConversationProps>(
-  ({ className, style, maxHeight = 520, ...props }, ref) => (
+const Conversation = ({ ref, className, style, maxHeight = 520, ...props }: ConversationProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       role="log"
@@ -43,13 +42,11 @@ const Conversation = React.forwardRef<HTMLDivElement, ConversationProps>(
       {...props}
     />
   )
-)
 Conversation.displayName = "Conversation"
 
 // ─── Message (row) ────────────────────────────────────────────────────────────
 
-const Message = React.forwardRef<HTMLElement, MessageProps>(
-  ({ className, role = "assistant", style, ...props }, ref) => {
+const Message = ({ ref, className, role = "assistant", style, ...props }: MessageProps & { ref?: React.Ref<HTMLElement> }) => {
     const isUser = role === "user"
     return (
       <article
@@ -68,15 +65,11 @@ const Message = React.forwardRef<HTMLElement, MessageProps>(
       />
     )
   }
-)
 Message.displayName = "Message"
 
 // ─── MessageAvatar ────────────────────────────────────────────────────────────
 
-const MessageAvatar = React.forwardRef<
-  React.ElementRef<typeof AuroraAvatar>,
-  MessageAvatarProps
->(({ className, label, tone = "axon", style, ...props }, ref) => {
+const MessageAvatar = ({ ref, className, label, tone = "axon", style, ...props }: MessageAvatarProps & { ref?: React.Ref<React.ElementRef<typeof AuroraAvatar>> }) => {
   const color =
     tone === "axon"
       ? "var(--axon-orange)"
@@ -107,7 +100,7 @@ const MessageAvatar = React.forwardRef<
       {...props}
     />
   )
-})
+}
 MessageAvatar.displayName = "MessageAvatar"
 
 // ─── MessageContent (bubble) ──────────────────────────────────────────────────
@@ -137,14 +130,11 @@ const bubbleTone = {
   },
 } as const
 
-const MessageContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & {
+const MessageContent = ({ ref, className, style, tone = "assistant", prose, ...props }: React.HTMLAttributes<HTMLDivElement> & {
     tone?: MessageProps["role"]
     /** Constrain prose width like a chat bubble. */
     prose?: boolean
-  }
->(({ className, style, tone = "assistant", prose, ...props }, ref) => {
+  } & { ref?: React.Ref<HTMLDivElement> }) => {
   const t = tone ?? "assistant"
   return (
     <div
@@ -171,7 +161,7 @@ const MessageContent = React.forwardRef<
       {...props}
     />
   )
-})
+}
 MessageContent.displayName = "MessageContent"
 
 export { Conversation, Message, MessageAvatar, MessageContent }

@@ -26,20 +26,30 @@ ENV CHOKIDAR_USEPOLLING=true
 
 COPY . .
 
+RUN mkdir -p /pnpm/store /app/.next \
+  && chown -R node:node /pnpm /app
+
+USER node
+
 EXPOSE 3000
 
 CMD ["pnpm", "dev", "--hostname", "0.0.0.0"]
 
 FROM base AS builder
 
+ARG AURORA_BUILD_SHA=development
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV AURORA_BUILD_SHA=$AURORA_BUILD_SHA
 
 RUN pnpm build
 
 FROM node:24-alpine@sha256:156b55f92e98ccd5ef49578a8cea0df4679826564bad1c9d4ef04462b9f0ded6 AS runner
+
+ARG AURORA_BUILD_SHA=development
 
 WORKDIR /app
 
@@ -47,6 +57,10 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
+ENV AURORA_BUILD_SHA=$AURORA_BUILD_SHA
+
+LABEL org.opencontainers.image.source="https://github.com/jmagar/aurora" \
+  org.opencontainers.image.revision=$AURORA_BUILD_SHA
 
 COPY --from=builder --chown=node:node /app/public ./public
 COPY --from=builder --chown=node:node /app/.next/standalone ./

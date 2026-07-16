@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Copy, Check } from "lucide-react"
+import { useClipboard } from "@/lib/use-clipboard"
 
 export function SpectrumBar({
   colors,
@@ -23,7 +24,7 @@ export function SpectrumBar({
 }
 
 export function CopyLine({ cmd }: { cmd: string }) {
-  const [done, setDone] = React.useState(false)
+  const { state, copied, copy } = useClipboard(1200)
   return (
     <div
       className="flex items-center gap-2 rounded-[10px] px-2.5 py-2"
@@ -42,12 +43,8 @@ export function CopyLine({ cmd }: { cmd: string }) {
         {cmd}
       </code>
       <button
-        aria-label="Copy command"
-        onClick={() => {
-          navigator.clipboard?.writeText(cmd)
-          setDone(true)
-          setTimeout(() => setDone(false), 1200)
-        }}
+        aria-label={state === "error" ? "Copy failed; retry" : copied ? "Copied command" : "Copy command"}
+        onClick={() => void copy(cmd)}
         className="grid size-[26px] shrink-0 place-items-center rounded-[7px]"
         style={{
           background: "var(--aurora-panel-medium)",
@@ -55,8 +52,10 @@ export function CopyLine({ cmd }: { cmd: string }) {
           color: "var(--aurora-text-muted)",
         }}
       >
-        {done ? (
+        {copied ? (
           <Check size={13} strokeWidth={2} style={{ color: "var(--aurora-success)" }} />
+        ) : state === "error" ? (
+          <span className="text-[10px]" style={{ color: "var(--aurora-error)" }}>!</span>
         ) : (
           <Copy size={13} strokeWidth={1.75} />
         )}
@@ -64,4 +63,3 @@ export function CopyLine({ cmd }: { cmd: string }) {
     </div>
   )
 }
-

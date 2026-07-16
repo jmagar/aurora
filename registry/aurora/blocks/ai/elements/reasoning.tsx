@@ -50,8 +50,7 @@ function Cursor() {
   )
 }
 
-const Reasoning = React.forwardRef<HTMLDivElement, ReasoningProps>(
-  function Reasoning({ isStreaming, duration, defaultOpen, content, children }, ref) {
+const Reasoning = function Reasoning({ ref, isStreaming, duration, defaultOpen, content, children }: ReasoningProps & { ref?: React.Ref<HTMLDivElement> }) {
     const [open, setOpen] = React.useState(defaultOpen ?? false)
 
     const label =
@@ -136,8 +135,7 @@ const Reasoning = React.forwardRef<HTMLDivElement, ReasoningProps>(
         )}
       </div>
     )
-  },
-)
+  }
 
 Reasoning.displayName = "Reasoning"
 

@@ -228,9 +228,8 @@ function NavItem({
 // Main Sidebar — operator nav rail, collapsible
 // ---------------------------------------------------------------------------
 
-export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
-  function Sidebar(
-    {
+export const Sidebar = function Sidebar(
+    { ref,
       items,
       brand,
       footer,
@@ -244,8 +243,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
       "aria-label": ariaLabel = "Sidebar",
       style,
       ...rest
-    },
-    ref,
+    }: SidebarProps & { ref?: React.Ref<HTMLElement> },
   ) {
     const [activeInternal, setActiveInternal] = React.useState(
       defaultActiveId ?? items[0]?.id,
@@ -408,8 +406,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         )}
       </nav>
     )
-  },
-)
+  }
 
 Sidebar.displayName = "Sidebar"
 

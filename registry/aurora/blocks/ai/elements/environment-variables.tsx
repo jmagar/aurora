@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 import { Separator } from "@/registry/aurora/ui/separator"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 export interface EnvironmentVariable {
   key: string
@@ -41,21 +42,8 @@ function previewValue(value: string | undefined, secret: boolean, revealed: bool
 }
 
 function RowCopyButton({ value, label }: { value: string; label: string }) {
-  const [copied, setCopied] = React.useState(false)
-  const timer = React.useRef<number | undefined>(undefined)
-
-  React.useEffect(() => () => window.clearTimeout(timer.current), [])
-
-  const handleCopy = React.useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(value)
-    } catch {
-      // Clipboard may be unavailable (insecure context) — degrade silently.
-    }
-    setCopied(true)
-    window.clearTimeout(timer.current)
-    timer.current = window.setTimeout(() => setCopied(false), 1200)
-  }, [value])
+  const { copied, error, copy } = useClipboard(1200)
+  const handleCopy = React.useCallback(() => void copy(value), [copy, value])
 
   return (
     <Button
@@ -63,7 +51,7 @@ function RowCopyButton({ value, label }: { value: string; label: string }) {
       variant="ghost"
       size="icon"
       onClick={handleCopy}
-      aria-label={copied ? `Copied ${label}` : `Copy ${label}`}
+      aria-label={copied ? `Copied ${label}` : error ? `Unable to copy ${label}` : `Copy ${label}`}
       style={{ height: 26, width: 26, borderRadius: 6 }}
     >
       {copied ? (
@@ -75,8 +63,7 @@ function RowCopyButton({ value, label }: { value: string; label: string }) {
   )
 }
 
-const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariablesProps>(
-  ({ className, variables, style, ...props }, ref) => {
+const EnvironmentVariables = ({ ref, className, variables, style, ...props }: EnvironmentVariablesProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const [revealed, setRevealed] = React.useState(false)
     const hasSecret = variables.some((item) => item.secret)
 
@@ -156,7 +143,6 @@ const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariabl
       </div>
     )
   }
-)
 EnvironmentVariables.displayName = "EnvironmentVariables"
 
 export { EnvironmentVariables }

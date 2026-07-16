@@ -4,19 +4,24 @@ A Jetpack Compose component library mirroring the [Aurora design system](https:/
 
 ## Installation
 
-The library is not yet published to Maven Central. Add it as a local module:
+The library is not yet published to Maven Central. Consume the repository as a
+composite build so Gradle builds the library with its own settings and token task:
 
 ```kotlin
-// settings.gradle.kts
-include(":aurora")
-project(":aurora").projectDir = file("path/to/aurora/android/aurora")
+// settings.gradle.kts in the consumer
+includeBuild("../aurora/android") {
+    dependencySubstitution {
+        substitute(module("tv.tootie.aurora:aurora"))
+            .using(project(":aurora"))
+    }
+}
 ```
 
 Then depend on it:
 
 ```kotlin
 // build.gradle.kts
-implementation(project(":aurora"))
+implementation("tv.tootie.aurora:aurora")
 ```
 
 ## Token Pipeline
@@ -24,10 +29,11 @@ implementation(project(":aurora"))
 Design tokens are defined in CSS (`registry/aurora/styles/aurora.css`) and exported to Kotlin via Style Dictionary:
 
 ```bash
-pnpm run tokens:generate   # Runs from repo root — generates AuroraColors.kt
+pnpm run tokens:generate   # Generates dark and light Kotlin token objects
 ```
 
-Generated file: `android/aurora/build/generated/aurora-tokens/kotlin/tv/tootie/aurora/tokens/AuroraColors.kt`
+Generated files: `AuroraColors.kt` (dark) and `AuroraLightColors.kt` (light) under
+`android/aurora/build/generated/aurora-tokens/kotlin/tv/tootie/aurora/tokens/`.
 
 ## Verification
 
@@ -38,9 +44,12 @@ pnpm run tokens:generate
 pnpm run registry:build
 
 cd android
-./gradlew :app:testDebugUnitTest --no-daemon
-./gradlew :aurora:lintDebug --no-daemon
-./gradlew :app:assembleDebug --no-daemon
+./gradlew androidCheck --no-daemon
+bash scripts/verify-gradle-wrapper.sh
+
+# With an emulator/device attached:
+./gradlew :app:connectedDebugAndroidTest --no-daemon
+bash scripts/smoke-release-apk.sh
 ```
 
 ## Token Mapping
@@ -75,6 +84,9 @@ AuroraTheme {
     AuroraButton(onClick = {}) { Text("Click me") }
 }
 ```
+
+`AuroraTheme` follows the system by default. Pass `darkTheme = true` or
+`darkTheme = false` to select the generated dark or light scheme explicitly.
 
 ## Components
 
@@ -115,7 +127,7 @@ The Android library exposes reusable surfaces for the Axon primitive-convergence
 
 ## Notes
 
-- v1 ships dark theme only; light theme support is planned for a future release.
+- Dark and light themes are generated from the matching canonical CSS namespaces.
 - Fonts (Manrope, Inter, JetBrains Mono) are bundled as `res/font/` TTF assets — downloadable
   fonts are not used because they fail silently on devices without Google Mobile Services.
 - `color-mix()` and gradient tokens in `aurora.css` are resolved to concrete ARGB hex before

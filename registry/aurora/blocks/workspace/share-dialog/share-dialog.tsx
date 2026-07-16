@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/registry/aurora/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/radio-group"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -179,13 +180,8 @@ const EXPORT_FORMATS: { id: ExportFormat; label: string; description: string }[]
 // ---------------------------------------------------------------------------
 
 function ShareChip({ url }: { url: string }) {
-  const [copied, setCopied] = React.useState(false)
-
-  function copy() {
-    navigator.clipboard.writeText(url).catch(() => {})
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+  const { copied, error, copy } = useClipboard(2000)
+  const copyLink = React.useCallback(() => void copy(url), [copy, url])
 
   return (
     <div
@@ -219,8 +215,8 @@ function ShareChip({ url }: { url: string }) {
         {url}
       </span>
       <Button variant="plain" size="unstyled"
-        onClick={copy}
-        aria-label="Copy link"
+        onClick={copyLink}
+        aria-label={copied ? "Copied link" : error ? "Unable to copy link" : "Copy link"}
         style={{
           background: "none",
           border: "none",
@@ -291,18 +287,14 @@ export function ShareDialog({
   onInvite,
 }: ShareDialogProps) {
   const [activeTab, setActiveTab] = React.useState<"share" | "export">("share")
-  const [copied, setCopied] = React.useState(false)
+  const { copied, error: copyError, copy } = useClipboard(2500)
   const [roles, setRoles] = React.useState<Record<string, CollaboratorRole>>(
     () => Object.fromEntries(collaborators.map((c) => [c.id, c.role]))
   )
   const [inviteEmail, setInviteEmail] = React.useState("")
   const [exportFormat, setExportFormat] = React.useState<ExportFormat>("pdf")
 
-  function copyLink() {
-    navigator.clipboard.writeText(url).catch(() => {})
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2500)
-  }
+  const copyLink = React.useCallback(() => void copy(url), [copy, url])
 
   function handleRoleChange(id: string, role: CollaboratorRole) {
     setRoles((prev) => ({ ...prev, [id]: role }))
@@ -471,6 +463,7 @@ export function ShareDialog({
                   </div>
                   <Button variant="plain" size="unstyled"
                     onClick={copyLink}
+                    aria-label={copied ? "Copied link" : copyError ? "Unable to copy link" : "Copy link"}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -493,7 +486,7 @@ export function ShareDialog({
                     }}
                   >
                     {copied ? <CheckIcon /> : <CopyIcon />}
-                    {copied ? "Copied" : "Copy"}
+                    {copied ? "Copied" : copyError ? "Copy Failed" : "Copy"}
                   </Button>
                 </div>
               </div>

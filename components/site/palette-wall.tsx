@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useClipboard } from "@/lib/use-clipboard"
 
 /**
  * PaletteWall — the Aurora palette made literal. Ported from the Claude Design
@@ -97,6 +98,7 @@ export function PaletteWall() {
   const [hexes, setHexes] = React.useState<Record<string, string>>({})
   const [copied, setCopied] = React.useState<string | null>(null)
   const [light, setLight] = React.useState(false)
+  const clipboard = useClipboard(1100)
 
   // Resolve hexes after mount and whenever the html theme class flips.
   React.useEffect(() => {
@@ -110,16 +112,10 @@ export function PaletteWall() {
     return () => obs.disconnect()
   }, [])
 
-  const copy = (token: string) => {
+  const copy = async (token: string) => {
     const hex = hexes[token]
     if (!hex) return
-    try {
-      navigator.clipboard?.writeText(hex)
-    } catch {
-      /* clipboard unavailable — no-op */
-    }
-    setCopied(token)
-    window.setTimeout(() => setCopied((c) => (c === token ? null : c)), 1100)
+    if (await clipboard.copy(hex)) setCopied(token)
   }
 
   return (
@@ -170,7 +166,7 @@ export function PaletteWall() {
               }}
             >
               {grp.swatches.map((s) => {
-                const isC = copied === s.token
+                const isC = clipboard.copied && copied === s.token
                 const hex = hexes[s.token] || ""
                 return (
                   <button

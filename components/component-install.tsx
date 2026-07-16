@@ -2,38 +2,16 @@
 
 import * as React from "react"
 import type { RegistryMeta } from "@/lib/registry-meta"
+import { useClipboard } from "@/lib/use-clipboard"
 
 function CopyButton({ value }: { value: string }) {
-  const [copied, setCopied] = React.useState(false)
-
-  function handleCopy() {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1800)
-    }).catch(() => {
-      // Fallback for non-secure contexts or denied permissions
-      try {
-        const el = document.createElement("textarea")
-        el.value = value
-        el.style.position = "fixed"
-        el.style.opacity = "0"
-        document.body.appendChild(el)
-        el.select()
-        document.execCommand("copy")
-        document.body.removeChild(el)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 1800)
-      } catch {
-        // silent — nothing useful to surface to the user
-      }
-    })
-  }
+  const { state, copied, copy } = useClipboard()
 
   return (
     <button
       type="button"
-      onClick={handleCopy}
-      aria-label={copied ? "Copied" : "Copy install command"}
+      onClick={() => void copy(value)}
+      aria-label={copied ? "Copied" : state === "error" ? "Copy failed; retry" : "Copy install command"}
       style={{
         display: "inline-flex",
         alignItems: "center",
@@ -57,7 +35,7 @@ function CopyButton({ value }: { value: string }) {
           : undefined,
       }}
     >
-      {copied ? (
+      {state === "error" ? "Copy Failed" : copied ? (
         <>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
             <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

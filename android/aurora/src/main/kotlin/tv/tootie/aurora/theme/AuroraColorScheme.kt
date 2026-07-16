@@ -5,6 +5,7 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import tv.tootie.aurora.tokens.AuroraColors
+import tv.tootie.aurora.tokens.AuroraLightColors
 
 @Immutable
 public data class AuroraExtraColors(
@@ -108,6 +109,56 @@ public val DarkAuroraExtraColors: AuroraExtraColors = AuroraExtraColors(
     focusRingStrong = AuroraColors.focusRingStrong,
     codeType = AuroraColors.codeType,
     codeFunction = AuroraColors.codeFunction,
+)
+
+public val LightAuroraExtraColors: AuroraExtraColors = AuroraExtraColors(
+    accentPink = AuroraLightColors.accentPinkBase,
+    accentPinkSurface = AuroraLightColors.accentPinkSurface,
+    accentPinkBorder = AuroraLightColors.accentPinkBorder,
+    accentPinkButton = AuroraLightColors.accentPinkButton,
+    axonOrange = AuroraLightColors.axonOrangeBase,
+    axonOrangeStrong = AuroraLightColors.axonOrangeStrong,
+    axonOrangeDeep = AuroraLightColors.axonOrangeDeep,
+    axonOrangeButton = AuroraLightColors.axonOrangeButton,
+    axonOrangeSurface = AuroraLightColors.axonOrangeSurface,
+    axonOrangeBorder = AuroraLightColors.axonOrangeBorder,
+    accentViolet = AuroraLightColors.axonOrangeBase,
+    accentVioletSurface = AuroraLightColors.axonOrangeSurface,
+    accentVioletBorder = AuroraLightColors.axonOrangeBorder,
+    accentVioletButton = AuroraLightColors.axonOrangeButton,
+    success = AuroraLightColors.successBase,
+    successSurface = AuroraLightColors.successSurface,
+    successBorder = AuroraLightColors.successBorder,
+    successForeground = AuroraLightColors.successForeground,
+    warn = AuroraLightColors.warnBase,
+    warnSurface = AuroraLightColors.warnSurface,
+    warnBorder = AuroraLightColors.warnBorder,
+    warnForeground = AuroraLightColors.warnForeground,
+    info = AuroraLightColors.infoBase,
+    infoSurface = AuroraLightColors.infoSurface,
+    infoBorder = AuroraLightColors.infoBorder,
+    infoForeground = AuroraLightColors.infoForeground,
+    neutral = AuroraLightColors.neutralBase,
+    neutralSurface = AuroraLightColors.neutralSurface,
+    neutralBorder = AuroraLightColors.neutralBorder,
+    neutralForeground = AuroraLightColors.neutralForeground,
+    error = AuroraLightColors.errorBase,
+    errorSurface = AuroraLightColors.errorSurface,
+    errorBorder = AuroraLightColors.errorBorder,
+    errorForeground = AuroraLightColors.errorForeground,
+    borderDefault = AuroraLightColors.borderDefault,
+    borderStrong = AuroraLightColors.borderStrong,
+    hoverBg = AuroraLightColors.hoverBg,
+    subtleBg = AuroraLightColors.subtleBg,
+    selectedBg = AuroraLightColors.selectedBg,
+    pressedBg = AuroraLightColors.pressedBg,
+    disabledText = AuroraLightColors.disabledText,
+    disabledSurface = AuroraLightColors.disabledSurface,
+    overlay = AuroraLightColors.overlay,
+    focusRing = AuroraLightColors.accentPrimaryBase,
+    focusRingStrong = AuroraLightColors.focusRingStrong,
+    codeType = AuroraLightColors.codeType,
+    codeFunction = AuroraLightColors.codeFunction,
 )
 
 public val LocalAuroraColors: ProvidableCompositionLocal<AuroraExtraColors> = staticCompositionLocalOf { DarkAuroraExtraColors }

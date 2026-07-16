@@ -51,9 +51,8 @@ export type LoaderProps = Omit<React.HTMLAttributes<HTMLDivElement>, "color"> &
     size?: number
   }
 
-const Loader = React.forwardRef<HTMLDivElement, LoaderProps>(
-  (
-    {
+const Loader = (
+    { ref,
       className,
       style,
       variant = "spinner",
@@ -62,8 +61,7 @@ const Loader = React.forwardRef<HTMLDivElement, LoaderProps>(
       size = 22,
       role,
       ...props
-    },
-    ref
+    }: LoaderProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const toneToken = TONE_TOKEN[tone ?? "rose"]
 
@@ -177,7 +175,6 @@ const Loader = React.forwardRef<HTMLDivElement, LoaderProps>(
       </div>
     )
   }
-)
 Loader.displayName = "Loader"
 
 export { Loader, loaderVariants }

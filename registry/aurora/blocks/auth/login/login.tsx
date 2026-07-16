@@ -386,10 +386,8 @@ function TwoFactorView({ onSubmit }: LoginProps) {
 // Main Login component
 // ---------------------------------------------------------------------------
 
-export const Login = React.forwardRef<HTMLDivElement, LoginProps>(
-  function Login(
-    { mode = "password", title, subtitle, onSubmit, onMagicLink, providers, footer },
-    ref
+export const Login = function Login(
+    { ref, mode = "password", title, subtitle, onSubmit, onMagicLink, providers, footer }: LoginProps & { ref?: React.Ref<HTMLDivElement> }
   ) {
     const heading =
       title ??
@@ -470,6 +468,5 @@ export const Login = React.forwardRef<HTMLDivElement, LoginProps>(
       </div>
     )
   }
-)
 
 export default Login

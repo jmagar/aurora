@@ -39,8 +39,7 @@ const VARIANT_MAP = {
   ghost: "ghost",
 } as const
 
-const OpenInChat = React.forwardRef<HTMLButtonElement, OpenInChatProps>(
-  ({ variant = "default", size = "default", children = "Open in Chat", style, ...props }, ref) => {
+const OpenInChat = ({ ref, variant = "default", size = "default", children = "Open in Chat", style, ...props }: OpenInChatProps & { ref?: React.Ref<HTMLButtonElement> }) => {
     // The rose intent paints its label + icon in the pink accent (CD spec); the
     // neutral/ghost intents inherit their Button variant's text color.
     const rose = variant === "default"
@@ -58,7 +57,6 @@ const OpenInChat = React.forwardRef<HTMLButtonElement, OpenInChatProps>(
       </Button>
     )
   }
-)
 OpenInChat.displayName = "OpenInChat"
 
 export { OpenInChat }

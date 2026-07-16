@@ -59,7 +59,8 @@ Source-of-truth files in `~/workspace/aurora`:
 - `registry/aurora/blocks/<domain>/<name>/*.tsx` — composed product blocks (ai, auth, feedback, files, navigation, workspace).
 - `registry.json` — shadcn registry source. **Read this before claiming registry status or counts.**
 - `public/r/registry.json` and `public/r/aurora-*.json` — generated output. Stale until `pnpm registry:build` runs.
-- `app/gallery/[section]/page.tsx` — gallery routes and live demos. Verify exact route inventory here, not from memory.
+- `app/gallery/demo-map.tsx` — live demo component resolution.
+- `app/gallery/[section]/page.tsx` and `app/gallery/nav-data.ts` — gallery route and navigation inventory. Verify exact routes here, not from memory.
 - `app/globals.css` — imports `registry/aurora/styles/aurora.css`.
 
 Derive counts, route lists, and component inventories from these files — do not hard-code them in commits or PR descriptions. The "Component inventory" section below is a *category map* for orienting, not a count source.

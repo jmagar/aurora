@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Activity, LayoutGrid, TriangleAlert } from "lucide-react";
 import { StatCard } from "@/registry/aurora/ui/stat-card";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
@@ -37,7 +38,7 @@ export default function StatCardDemo() {
       <div style={stageStyle}>
         <div style={rowStyle}>
           <StatCard
-            icon='<path d="M3 12h4l3 8 4-16 3 8h4"/>'
+            icon={<Activity size={16} aria-hidden />}
             label="P99 Latency"
             value="42ms"
             delta="-8%"
@@ -45,14 +46,14 @@ export default function StatCardDemo() {
             sub="vs 24h"
           />
           <StatCard
-            icon='<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>'
+            icon={<LayoutGrid size={16} aria-hidden />}
             label="Active Gateways"
             value="7"
             delta="+1"
             trend="flat"
           />
           <StatCard
-            icon='<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>'
+            icon={<TriangleAlert size={16} aria-hidden />}
             label="Error Rate"
             value="0.3%"
             delta="+0.1%"

@@ -3,45 +3,90 @@ name: CI
 on:
   pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
+
+permissions: {}
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  policy:
+    name: Workflow and dependency policy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Require immutable action references
+        run: ops/check-action-pins.sh
+      - name: Require pinned OpenWiki artifact integrity
+        run: ops/check-openwiki-pin.sh
+      - name: Validate workflow syntax
+        uses: docker://rhysd/actionlint@sha256:ef8299f97635c4c30e2298f48f30763ab782a4ad2c95b744649439a039421e36 # 1.7.10
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
+      - name: Validate deployment topology
+        run: ops/check-production-topology.sh
+      - name: Validate documentation commands
+        run: ops/check-doc-snippets.sh
+      - name: Validate generated skill documentation
+        run: node scripts/sync-agent-skill.mjs --check && ops/check-skill-sync.sh
+
+  osv:
+    name: OSV dependency scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: google/osv-scanner-action/osv-scanner-action@e92b5d07338d4f0ba0981dffed17c48976ca4730 # v2.2.3
+        with:
+          scan-args: |-
+            --lockfile=pnpm-lock.yaml
+
   web:
     name: Web, registry, and standalone
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
         with:
           version: 10.33.2
-
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache: pnpm
-
       - name: Cache Next.js build
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .next/cache
-          # Bust the cache when lockfile or Next config changes.
-          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'next.config.*') }}
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'next.config.*', 'proxy.ts') }}
           restore-keys: nextjs-${{ runner.os }}-
-
       - run: pnpm install --frozen-lockfile
       - run: pnpm run lint
       - run: pnpm run audit:composition
       - run: pnpm exec tsc --noEmit
-      - run: pnpm audit --audit-level high
       - run: pnpm run test:unit
-      - run: pnpm run build
+      - run: pnpm run test:coverage
+      - name: Build the tested revision
+        env:
+          AURORA_BUILD_SHA: ${{ github.sha }}
+        run: pnpm run build
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Browser and strict Storybook accessibility contracts
+        run: pnpm run test:e2e
+      - run: pnpm run refs:check
       - run: pnpm run audit:standalone
+      - name: Smoke production security and cache headers
+        env:
+          AURORA_BUILD_SHA: ${{ github.sha }}
+        run: ops/smoke-production.sh
       - run: pnpm run registry:check
       - run: pnpm run registry:validate
       - run: pnpm run registry:smoke
@@ -50,36 +95,52 @@ jobs:
         run: git diff --exit-code
 
   android:
-    name: Android
+    name: Android app and library variants
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
         with:
           version: 10.33.2
-
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache: pnpm
-
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
           distribution: temurin
           java-version: "21"
-
       - name: Cache Gradle wrapper and caches
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: |
             ~/.gradle/wrapper
             ~/.gradle/caches
           key: gradle-${{ runner.os }}-${{ hashFiles('android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
-
       - run: pnpm install --frozen-lockfile
-      - run: ./gradlew :app:testDebugUnitTest --no-daemon
+      - name: Gate all app/library variants, release lint/package, wrapper, and Roborazzi goldens
+        run: ./gradlew androidCheck --no-daemon
         working-directory: android
-      - run: ./gradlew :aurora:lintDebug --no-daemon
-        working-directory: android
+      - name: Smoke external composite-build consumption
+        run: ops/smoke-android-composite.sh
+
+  alert:
+    name: Alert on CI failure
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    needs: [policy, osv, web, android]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send optional homelab alert
+        env:
+          ALERT_WEBHOOK_URL: ${{ secrets.AURORA_ALERT_WEBHOOK_URL }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          message="Aurora CI failed: $RUN_URL"
+          echo "::error::$message"
+          if [[ -n "$ALERT_WEBHOOK_URL" ]]; then
+            jq -n --arg message "$message" '{message: $message, service: "aurora"}' \
+              | curl --fail --silent --show-error -H 'Content-Type: application/json' --data-binary @- "$ALERT_WEBHOOK_URL"
+          fi

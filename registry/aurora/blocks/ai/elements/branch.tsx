@@ -54,9 +54,8 @@ function clampIndex(value: number, length: number) {
   return value
 }
 
-const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
-  (
-    {
+const Branch = (
+    { ref,
       versions,
       defaultIndex = 0,
       index: indexProp,
@@ -68,8 +67,7 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: BranchProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const count = versions.length
     const isControlled = indexProp != null
@@ -216,7 +214,6 @@ const Branch = React.forwardRef<HTMLDivElement, BranchProps>(
       </div>
     )
   }
-)
 Branch.displayName = "Branch"
 
 export { Branch }
