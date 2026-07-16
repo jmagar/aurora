@@ -11,7 +11,8 @@ if [[ ! -f "$env_file" ]]; then
 fi
 
 set -a
-# shellcheck disable=SC1090 -- operator-selected non-secret deployment topology.
+# Operator-selected non-secret deployment topology.
+# shellcheck disable=SC1090
 source "$env_file"
 set +a
 
@@ -33,13 +34,74 @@ set +a
 command -v cosign >/dev/null || { echo "cosign is required" >&2; exit 1; }
 cosign verify \
   --certificate-identity-regexp '^https://github.com/jmagar/aurora/.github/workflows/publish.yml@refs/heads/main$' \
-  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
-  "$AURORA_IMAGE_REF" >/dev/null
+    --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+    "$AURORA_IMAGE_REF" >/dev/null
 
-docker compose --env-file "$env_file" -f ops/compose/production.yaml pull
-docker compose --env-file "$env_file" -f ops/compose/production.yaml up -d --remove-orphans
+compose=(docker compose --env-file "$env_file" -f ops/compose/production.yaml)
+legacy_id=""
+legacy_name=""
+legacy_was_running="false"
+
+wait_local_ready() {
+  local attempts="${1:-30}"
+  local attempt
+  for ((attempt = 1; attempt <= attempts; attempt += 1)); do
+    if curl --fail --silent --show-error "http://127.0.0.1:${AURORA_PUBLIC_PORT:-50000}/" >/dev/null 2>&1; then
+      return 0
+    fi
+    sleep 2
+  done
+  return 1
+}
+
+rollback_legacy() {
+  local status="$1"
+  trap - EXIT
+  if (( status != 0 )) && [[ -n "$legacy_id" ]]; then
+    echo "Deployment failed; restoring legacy Aurora container." >&2
+    "${compose[@]}" down --remove-orphans >/dev/null 2>&1 || true
+    if [[ -n "$legacy_name" ]] && docker container inspect "$legacy_name" >/dev/null 2>&1; then
+      docker rename "$legacy_name" aurora
+    fi
+    if [[ "$legacy_was_running" == "true" ]] && docker container inspect aurora >/dev/null 2>&1; then
+      docker start aurora >/dev/null
+      wait_local_ready 60 || echo "Legacy Aurora container restarted but did not become ready in time." >&2
+    fi
+  fi
+  exit "$status"
+}
+trap 'rollback_legacy $?' EXIT
+
+"${compose[@]}" pull
+
+# The former development topology used the same fixed container name under the
+# `aurora` Compose project. Preserve it as a stopped rollback candidate while
+# the immutable production project takes ownership of the public port/name.
+if docker container inspect aurora >/dev/null 2>&1; then
+  existing_project="$(docker container inspect --format '{{ index .Config.Labels "com.docker.compose.project" }}' aurora 2>/dev/null || true)"
+  if [[ "$existing_project" != "aurora-production" ]]; then
+    legacy_id="$(docker container inspect --format '{{.Id}}' aurora)"
+    legacy_name="aurora-legacy-${legacy_id:0:12}"
+    legacy_was_running="$(docker container inspect --format '{{.State.Running}}' aurora)"
+    if [[ "$legacy_was_running" == "true" ]]; then
+      docker stop aurora >/dev/null
+    fi
+    docker rename aurora "$legacy_name"
+  fi
+fi
+
+"${compose[@]}" up -d --remove-orphans
+if ! wait_local_ready 30; then
+  docker logs --tail 100 aurora >&2 || true
+  false
+fi
 AURORA_PUBLIC_URL="${AURORA_PUBLIC_URL:-https://aurora.tootie.tv}" \
   AURORA_EXPECTED_SHA="$AURORA_EXPECTED_SHA" \
   ops/synthetic-check.sh
+
+if [[ -n "$legacy_name" ]]; then
+  docker rm "$legacy_name" >/dev/null
+fi
+trap - EXIT
 
 echo "Deployed and verified $AURORA_IMAGE_REF ($AURORA_EXPECTED_SHA)."
