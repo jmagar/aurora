@@ -4,7 +4,17 @@ import { expect, test } from "@playwright/test"
 const stories = [
   { id: "aurora-interaction-contracts--combobox-keyboard", assert: async (page: import("@playwright/test").Page) => expect(page.getByRole("button", { name: /Beta/i })).toBeFocused() },
   { id: "aurora-interaction-contracts--radio-group-keyboard", assert: async (page: import("@playwright/test").Page) => expect(page.getByRole("radio", { name: "Beta" })).toBeChecked() },
-  { id: "aurora-interaction-contracts--popover-focus-and-escape", assert: async (page: import("@playwright/test").Page) => expect(page.getByRole("button", { name: "Open" })).toBeFocused() },
+  {
+    id: "aurora-interaction-contracts--popover-focus-and-escape",
+    assert: async (page: import("@playwright/test").Page) => {
+      const trigger = page.getByRole("button", { name: "Open" })
+      // Storybook starts play functions after the iframe is ready. On a cold,
+      // contended runner that can outlive Playwright's default five-second
+      // assertion timeout, so wait for the interaction's unique final state.
+      await expect(trigger).toBeFocused({ timeout: 30_000 })
+      await expect(trigger).toHaveAttribute("aria-expanded", "false")
+    },
+  },
 ] as const
 
 for (const story of stories) {

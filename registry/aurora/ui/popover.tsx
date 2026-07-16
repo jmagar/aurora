@@ -120,20 +120,19 @@ export interface PopoverContentProps extends React.HTMLAttributes<HTMLDivElement
 
 export function PopoverContent({ ref, className, align = "start", style, ...props }: PopoverContentProps & { ref?: React.Ref<HTMLDivElement> }) {
     const ctx = React.useContext(PopoverContext)
+    const open = ctx?.open
+    const focusContent = ctx?.focusContent
     const setRefs = (node: HTMLDivElement | null) => {
       ctx?.registerContent(node)
       assignRef(ref, node)
     }
 
-    React.useEffect(() => {
-      if (!ctx?.open) return
-      const frame = requestAnimationFrame(() => {
-        ctx.focusContent()
-      })
-      return () => cancelAnimationFrame(frame)
-    }, [ctx])
+    React.useLayoutEffect(() => {
+      if (!open || !focusContent) return
+      focusContent()
+    }, [open, focusContent])
 
-    if (!ctx?.open) return null
+    if (!open || !ctx) return null
 
     return (
       <div
