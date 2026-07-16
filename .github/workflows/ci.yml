@@ -29,6 +29,8 @@ jobs:
         uses: gradle/actions/wrapper-validation@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
       - name: Validate deployment topology
         run: ops/check-production-topology.sh
+      - name: Validate deployment shell
+        run: shellcheck ops/deploy.sh
       - name: Validate documentation commands
         run: ops/check-doc-snippets.sh
       - name: Validate generated skill documentation
