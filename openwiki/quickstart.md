@@ -1,0 +1,36 @@
+# Quickstart
+
+This repository now has a minimal OpenWiki reference for maintaining `aurora` documentation. Use this page as the entrypoint for future updates.
+
+## What this wiki currently covers
+
+- Repository context: `Aurora Design System` is a Next.js 16 / React 19 codebase with a shadcn-compatible registry and Android/theme/tooling companions. Start with [`README.md`](../README.md) for the full product description.
+- OpenWiki maintenance: current workflow and command/credential model used by scheduled updates.
+- What was changed in this maintenance run: OpenWiki workflow moved to `openrouter` execution and PR scope now includes OpenWiki metadata/config files.
+
+## Primary navigation
+
+- [OpenWiki Update Workflow](./operations/openwiki-update.md): details of the scheduled and manual update process and how it writes docs.
+
+## Current maintenance state
+
+- No prior `.last-update.json` was present before this run.
+- This run added/updated:
+  - `/openwiki/quickstart.md`
+  - `/openwiki/operations/openwiki-update.md`
+  - `/openwiki/.last-update.json`
+
+## How to add to this wiki cleanly
+
+When updating again, follow the same rule set used here:
+
+- Start from recent changed source files, not the full tree.
+- Limit edits to pages directly affected by the change set.
+- Keep each concept in one canonical page.
+- If a domain is out of scope, add it to `## Backlog` rather than inventing stale pages.
+
+## Backlog
+
+- `architecture/overview`: [`registry/aurora/styles/aurora.css`](../registry/aurora/styles/aurora.css), [`registry/aurora/ui`](../registry/aurora/ui), [`registry/aurora/blocks`](../registry/aurora/blocks), and [`app/gallery`](../app/gallery) define the full product architecture, but this update only covered OpenWiki operations.
+- `flows/registry-delivery`: [`README.md`](../README.md), [`scripts/registry`](../scripts), and `public/r/*.json` govern publish/build behavior and are intentionally deferred in this update.
+- `integrations/android-theme-parity`: [`android/`](../android) and [`themes/`](../themes) contain substantial cross-platform parity work and were unchanged in this maintenance pass.
