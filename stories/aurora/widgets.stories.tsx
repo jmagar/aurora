@@ -45,5 +45,6 @@ export const PopoverFocusAndEscape: Story = {
     await userEvent.keyboard("{Escape}")
     await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
     await expect(trigger).toHaveFocus()
+    trigger.dataset.interactionComplete = "true"
   },
 }
