@@ -30,14 +30,11 @@ export default function DescriptionListDemo() {
         <DescriptionList>
           <DescriptionItem
             label="Gateway"
-            value={<span style={{ fontFamily: "var(--aurora-font-mono)" }}>labby.local:8765</span>}
+            value="labby.local:8765"
           />
           <DescriptionItem active label="Status" value="Healthy · 200 OK" />
           <DescriptionItem label="Region" value="us-east · edge-1" />
-          <DescriptionItem
-            label="Version"
-            value={<span style={{ fontFamily: "var(--aurora-font-mono)" }}>v0.9.4</span>}
-          />
+          <DescriptionItem label="Version" value="v0.9.4" />
         </DescriptionList>
       </section>
     </div>

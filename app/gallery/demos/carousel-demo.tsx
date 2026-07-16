@@ -37,8 +37,9 @@ const statusRow: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
-  fontFamily: "var(--aurora-font-mono)",
-  fontSize: 12,
+  fontFamily: "var(--aurora-font-sans)",
+  fontSize: "var(--aurora-type-body-sm)",
+  fontWeight: "var(--aurora-weight-ui)" as React.CSSProperties["fontWeight"],
   color: "var(--aurora-success)",
   marginTop: 8,
 }

@@ -33,7 +33,7 @@
     "family": "base",
     "batteriesIncluded": true
   },
-  "docs": "Batteries-included Aurora setup. Installs aurora-components, tokens, component CSS, fonts, common primitives, and agent/workspace blocks through the @aurora registry namespace. After install, import the generated CSS once from your root stylesheet and set your root html element to className=\"dark\" for the default Aurora mode.",
+  "docs": "Batteries-included Aurora setup. Installs aurora-components, tokens, component CSS, fonts, common primitives, and agent/workspace blocks through the @aurora registry namespace. After install, import the generated CSS once from your root stylesheet and set your root html element to className=\"dark\" for the default Aurora mode.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`, `aurora-fonts`, `aurora-button`, `aurora-badge`, `aurora-input`, `aurora-textarea`, `aurora-card`, `aurora-dialog`, `aurora-tabs`, `aurora-command-palette`, `aurora-prompt-input`, `aurora-terminal-block`, `aurora-file-tree`.",
   "categories": [
     "aurora",
     "base",

@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { expect, userEvent, within } from "storybook/test"
+import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import { Combobox } from "@/registry/aurora/ui/combobox"
-import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@/registry/aurora/ui/popover"
+import { MultiSelect } from "@/registry/aurora/ui/multi-select"
+import { Popover, PopoverContent, PopoverTrigger } from "@/registry/aurora/ui/popover"
 import { RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/radio-group"
 
 const meta = { title: "Aurora/Interaction Contracts", parameters: { layout: "centered" } } satisfies Meta
@@ -30,21 +31,47 @@ export const RadioGroupKeyboard: Story = {
     radios[0].focus()
     await userEvent.keyboard("{ArrowDown}")
     await expect(radios[1]).toHaveFocus()
-    await expect(radios[1]).toHaveAttribute("aria-checked", "true")
-    await expect(radios[0]).toHaveAttribute("tabindex", "-1")
+    await expect(radios[1]).toBeChecked()
+    await expect(radios[0]).not.toBeChecked()
+  },
+}
+
+export const MultiSelectKeyboard: Story = {
+  render: () => (
+    <div className="w-80">
+      <MultiSelect
+        aria-label="Environments"
+        options={[
+          { value: "alpha", label: "Alpha" },
+          { value: "beta", label: "Beta" },
+        ]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const combobox = canvas.getByRole("combobox", { name: "Environments" })
+    combobox.focus()
+    await userEvent.keyboard("{ArrowDown}{ArrowDown}{Enter}")
+    await expect(canvas.getByRole("option", { name: "Beta" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    )
+    await expect(combobox).toHaveAttribute("aria-activedescendant", expect.stringContaining("option-1"))
   },
 }
 
 export const PopoverFocusAndEscape: Story = {
-  render: () => <Popover><PopoverAnchor><PopoverTrigger>Open</PopoverTrigger><PopoverContent><button type="button">First Action</button></PopoverContent></PopoverAnchor></Popover>,
+  render: () => <Popover><PopoverTrigger>Open</PopoverTrigger><PopoverContent><button type="button">First Action</button></PopoverContent></Popover>,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    const documentBody = within(canvasElement.ownerDocument.body)
     const trigger = canvas.getByRole("button", { name: "Open" })
     await userEvent.click(trigger)
-    await expect(canvas.getByRole("button", { name: "First Action" })).toHaveFocus()
+    await expect(documentBody.getByRole("button", { name: "First Action" })).toHaveFocus()
     await userEvent.keyboard("{Escape}")
-    await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
-    await expect(trigger).toHaveFocus()
+    await expect(trigger).toHaveAttribute("data-state", "closed")
+    await waitFor(() => expect(trigger).toHaveFocus())
     trigger.dataset.interactionComplete = "true"
   },
 }

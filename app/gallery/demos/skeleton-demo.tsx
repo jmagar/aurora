@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Skeleton } from "@/registry/aurora/ui/skeleton";
+import { Skeleton, SkeletonRow } from "@/registry/aurora/ui/skeleton";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
 // Demo chrome ported 1:1 from the Claude Design `Skeleton.dsCard` source.
@@ -42,7 +42,7 @@ export default function SkeletonDemo() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
           gap: 18,
         }}
       >
@@ -76,18 +76,8 @@ export default function SkeletonDemo() {
           <div style={label}>List rows</div>
           <div style={panel}>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {[0, 1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  style={{ display: "flex", gap: 11, alignItems: "center" }}
-                >
-                  <Skeleton circle height={30} />
-                  <div style={col}>
-                    <Skeleton width={i % 2 ? "70%" : "50%"} height={10} />
-                    <Skeleton width={i % 2 ? "40%" : "60%"} height={8} />
-                  </div>
-                  <Skeleton width={38} height={20} style={{ borderRadius: 6 }} />
-                </div>
+              {Array.from({ length: 4 }, (_, i) => (
+                <SkeletonRow key={i} />
               ))}
             </div>
           </div>

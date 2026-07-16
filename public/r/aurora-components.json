@@ -22,7 +22,7 @@
     "requiresTokens": true,
     "sourcePath": "registry/aurora/styles/aurora-components.css"
   },
-  "docs": "Install after aurora-tokens. Provides the @layer aurora-components base styles for all Aurora components. Your app must declare the layer order: @layer theme, base, components, aurora-components, utilities;",
+  "docs": "Install after aurora-tokens. Provides the @layer aurora-components base styles for all Aurora components. Your app must declare the layer order: @layer theme, base, components, aurora-components, utilities;\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "style"

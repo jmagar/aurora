@@ -5,6 +5,7 @@ import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -40,11 +41,13 @@ export default function SelectDemo() {
             <SelectValue placeholder="Select a model" />
           </SelectTrigger>
           <SelectContent>
-            {models.map((model) => (
-              <SelectItem key={model.value} value={model.value}>
-                {model.label}
-              </SelectItem>
-            ))}
+            <SelectGroup>
+              {models.map((model) => (
+                <SelectItem key={model.value} value={model.value}>
+                  {model.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
       </section>

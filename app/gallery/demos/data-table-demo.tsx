@@ -11,9 +11,7 @@ const columns: Column<Row>[] = [
     key: "gw",
     label: "Gateway",
     sortable: true,
-    render: (v) => (
-      <span style={{ fontFamily: "var(--aurora-font-mono)" }}>{v as string}</span>
-    ),
+    render: (v) => <span>{v as string}</span>,
   },
   {
     key: "code",
@@ -23,7 +21,6 @@ const columns: Column<Row>[] = [
     render: (v) => (
       <span
         style={{
-          fontFamily: "var(--aurora-font-mono)",
           color:
             v === 200 ? "var(--aurora-success)" : "var(--aurora-error)",
         }}
@@ -48,7 +45,7 @@ export default function DataTableDemo() {
       <GalleryPageIntro
         eyebrow="Components"
         heading="Data Table"
-        description="Sortable table — click any header to cycle ascending, descending, then unsorted. Status codes and gateway IDs render in the mono stack."
+        description="Sortable table — click any header to cycle ascending, descending, then unsorted. Status codes and gateway IDs keep the same UI text treatment as the rest of the grid."
       />
 
       <div style={{ maxWidth: 520 }}>

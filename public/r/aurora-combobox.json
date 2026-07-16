@@ -9,8 +9,9 @@
   ],
   "registryDependencies": [
     "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
     "@aurora/aurora-input",
-    "@aurora/aurora-search-results"
+    "@aurora/aurora-listbox"
   ],
   "files": [
     {
@@ -34,7 +35,7 @@
     "sourcePath": "registry/aurora/ui/combobox.tsx",
     "installTarget": "@ui/aurora/combobox.tsx"
   },
-  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/combobox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-input`, `aurora-search-results`.",
+  "docs": "Aurora Combobox installs with its declared Aurora registry dependencies.\n\nInstall `aurora-tokens`, `aurora-button`, `aurora-input`, and `aurora-listbox` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/combobox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-listbox`.",
   "categories": [
     "aurora",
     "ui",

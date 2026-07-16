@@ -7,6 +7,7 @@
 
 import * as React from "react"
 import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react"
+import { Button } from "@/registry/aurora/ui/button"
 import { cn } from "@/lib/utils"
 
 // ─── Pagination root ──────────────────────────────────────────────────────────
@@ -16,7 +17,7 @@ function Pagination({ ref, className, ...props }: React.ComponentProps<"nav"> & 
     <nav
       ref={ref}
       role="navigation"
-      aria-label="pagination"
+      aria-label="Pagination"
       className={cn("flex w-full max-w-full items-center justify-center overflow-x-auto", className)}
       {...props}
     />
@@ -43,62 +44,90 @@ function PaginationItem({ ref, className, ...props }: React.ComponentProps<"li">
 
 // ─── PaginationLink ───────────────────────────────────────────────────────────
 
-export interface PaginationLinkProps
-  extends React.ComponentPropsWithoutRef<"a"> {
+type PaginationBaseProps = {
   isActive?: boolean
   size?: "default" | "sm" | "lg"
 }
 
-function PaginationLink({ ref, className, isActive, size = "default", style, ...props }: PaginationLinkProps & { ref?: React.Ref<HTMLAnchorElement> }) {
-    const activeStyle: React.CSSProperties = isActive
-      ? {
-          color: "var(--aurora-accent-primary)",
-          backgroundColor: "var(--aurora-control-surface)",
-          borderColor: "var(--aurora-accent-primary)",
-          boxShadow: "var(--aurora-active-glow)",
-        }
-      : {
-          color: "var(--aurora-text-muted)",
-          backgroundColor: "var(--aurora-control-surface)",
-          borderColor: "var(--aurora-border-default)",
-        }
+type PaginationAnchorProps = PaginationBaseProps &
+  React.ComponentProps<"a"> & {
+    href: string
+  }
 
+type PaginationButtonProps = PaginationBaseProps &
+  Omit<
+    React.ComponentProps<typeof Button>,
+    "variant" | "size" | "asChild" | "filled" | "block" | "shape" | "loading" | "pulse"
+  > & {
+    href?: undefined
+  }
+
+export type PaginationLinkProps = PaginationAnchorProps | PaginationButtonProps
+
+function PaginationLink({ ref, className, isActive, size = "default", style, href, ...props }: PaginationLinkProps) {
+  const activeStyle: React.CSSProperties = isActive
+    ? {
+        color: "var(--aurora-accent-primary)",
+        backgroundColor: "var(--aurora-control-surface)",
+        borderColor: "var(--aurora-accent-primary)",
+        boxShadow: "var(--aurora-active-glow)",
+      }
+    : {
+        color: "var(--aurora-text-muted)",
+        backgroundColor: "var(--aurora-control-surface)",
+        borderColor: "var(--aurora-border-default)",
+      }
+
+  const sharedProps = {
+    "aria-current": isActive ? "page" as const : undefined,
+    className: cn(
+      "inline-flex items-center justify-center rounded-[var(--aurora-radius-1)]",
+      "border transition-all duration-150",
+      "select-none cursor-pointer",
+      "hover:border-[var(--aurora-border-strong)] hover:text-[var(--aurora-text-primary)]",
+      "focus-visible:outline-none focus-visible:ring-2",
+      "[&:focus-visible]:ring-[var(--aurora-focus-ring)]",
+      size === "sm" && "h-7 min-w-7 px-2",
+      size === "default" && "h-8 min-w-8 px-2.5",
+      size === "lg" && "h-10 min-w-10 px-3",
+      className
+    ),
+    style: {
+      fontFamily: "var(--aurora-font-sans)",
+      fontSize: size === "lg" ? "var(--aurora-type-body)" : size === "sm" ? "var(--aurora-type-label)" : "var(--aurora-type-control)",
+      fontWeight: isActive ? "var(--aurora-weight-label)" : "var(--aurora-weight-ui)",
+      letterSpacing: "var(--aurora-letter-ui)",
+      lineHeight: "var(--aurora-line-dense)",
+      ...activeStyle,
+      ...style,
+    },
+  }
+
+  if (href != null) {
     return (
-      <a
-        ref={ref}
-        aria-current={isActive ? "page" : undefined}
-        className={cn(
-          "inline-flex items-center justify-center rounded-[var(--aurora-radius-1)]",
-          "border transition-all duration-150",
-          "select-none cursor-pointer",
-          "hover:border-[var(--aurora-border-strong)] hover:text-[var(--aurora-text-primary)]",
-          "focus-visible:outline-none focus-visible:ring-2",
-          "[&:focus-visible]:ring-[var(--aurora-focus-ring)]",
-          size === "sm" && "h-7 min-w-7 px-2",
-          size === "default" && "h-8 min-w-8 px-2.5",
-          size === "lg" && "h-10 min-w-10 px-3",
-          className
-        )}
-        style={{
-          fontFamily: "var(--aurora-font-sans)",
-          fontSize: size === "lg" ? "var(--aurora-type-body)" : size === "sm" ? "var(--aurora-type-label)" : "var(--aurora-type-control)",
-          fontWeight: isActive ? "var(--aurora-weight-label)" : "var(--aurora-weight-ui)",
-          letterSpacing: "var(--aurora-letter-ui)",
-          lineHeight: "var(--aurora-line-dense)",
-          ...activeStyle,
-          ...style,
-        }}
-        {...props}
-      />
+      <Button asChild variant="plain" size="unstyled" {...sharedProps}>
+        <a ref={ref as React.Ref<HTMLAnchorElement>} href={href} {...(props as React.ComponentPropsWithoutRef<"a">)} />
+      </Button>
     )
+  }
+
+  return (
+    <Button
+      ref={ref as React.Ref<HTMLButtonElement>}
+      variant="plain"
+      size="unstyled"
+      type="button"
+      {...sharedProps}
+      {...(props as Omit<React.ComponentPropsWithoutRef<typeof Button>, "variant" | "size" | "asChild">)}
+    />
+  )
 }
 
 // ─── PaginationPrevious ───────────────────────────────────────────────────────
 
-function PaginationPrevious({ ref, className, children, ...props }: React.ComponentProps<typeof PaginationLink> & { ref?: React.Ref<HTMLAnchorElement> }) {
+function PaginationPrevious({ className, children, ...props }: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink
-      ref={ref}
       aria-label="Go to previous page"
       className={cn("gap-1 pl-2.5 pr-3", className)}
       {...props}
@@ -111,10 +140,9 @@ function PaginationPrevious({ ref, className, children, ...props }: React.Compon
 
 // ─── PaginationNext ───────────────────────────────────────────────────────────
 
-function PaginationNext({ ref, className, children, ...props }: React.ComponentProps<typeof PaginationLink> & { ref?: React.Ref<HTMLAnchorElement> }) {
+function PaginationNext({ className, children, ...props }: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink
-      ref={ref}
       aria-label="Go to next page"
       className={cn("gap-1 pl-3 pr-2.5", className)}
       {...props}
@@ -131,7 +159,8 @@ function PaginationEllipsis({ ref, className, ...props }: React.ComponentProps<"
   return (
     <span
       ref={ref}
-      aria-hidden="true"
+      role="img"
+      aria-label="More pages"
       className={cn(
         "flex h-8 w-8 items-center justify-center",
         className
@@ -139,8 +168,7 @@ function PaginationEllipsis({ ref, className, ...props }: React.ComponentProps<"
       style={{ color: "var(--aurora-text-muted)" }}
       {...props}
     >
-      <Ellipsis className="size-4" />
-      <span className="sr-only">More pages</span>
+      <Ellipsis className="size-4" aria-hidden />
     </span>
   )
 }

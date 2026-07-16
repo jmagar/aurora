@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { GalleryPageIntro } from "@/components/gallery-page-intro";
 import {
   FilterBar,
   FilterSearch,
@@ -10,74 +11,89 @@ import {
 
 export default function FiltersDemo() {
   const [query, setQuery] = React.useState("prod");
+  const [showScope, setShowScope] = React.useState(true);
   const [showStatus, setShowStatus] = React.useState(true);
   const [showRegion, setShowRegion] = React.useState(true);
-  const [showVersion, setShowVersion] = React.useState(true);
+  const [showSource, setShowSource] = React.useState(true);
 
-  const hasFilters = showStatus || showRegion || showVersion;
+  const activeCount = [showScope, showStatus, showRegion, showSource].filter(Boolean)
+    .length;
 
   function clearAll() {
     setQuery("");
+    setShowScope(false);
     setShowStatus(false);
     setShowRegion(false);
-    setShowVersion(false);
+    setShowSource(false);
   }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-      <p
+      <GalleryPageIntro
+        eyebrow="Components"
+        heading="Filters"
+        description="A denser filter composition for workflow screens, with removable chips, live counts, and an empty state after clear-all."
+      />
+
+      <section
         style={{
-          fontSize: 11,
-          fontWeight: 600,
-          letterSpacing: "0.14em",
-          textTransform: "uppercase",
-          color: "var(--aurora-text-muted)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 14,
+          padding: "28px 24px",
+          borderRadius: "var(--aurora-radius-2)",
+          border: "1px solid var(--aurora-border-strong)",
+          background: "var(--aurora-panel-strong)",
         }}
       >
-        Gateway Filter Bar
-      </p>
+        <FilterBar
+          onClearAll={clearAll}
+          showClearAll={activeCount > 0 || query.length > 0}
+        >
+          <FilterSearch
+            placeholder="Search gateways…"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onClear={() => setQuery("")}
+          />
 
-      <FilterBar
-        onClearAll={clearAll}
-        showClearAll={hasFilters || query.length > 0}
-      >
-        <FilterSearch
-          placeholder="Search gateways…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onClear={() => setQuery("")}
-        />
+          {showScope && (
+            <FilterTag onRemove={() => setShowScope(false)}>
+              Scope: Production
+            </FilterTag>
+          )}
 
-        {showStatus && (
-          <FilterTag onRemove={() => setShowStatus(false)}>
-            Status: Live
-          </FilterTag>
-        )}
+          {showStatus && (
+            <FilterTagRose onRemove={() => setShowStatus(false)}>
+              Status: Live
+            </FilterTagRose>
+          )}
 
-        {showRegion && (
-          <FilterTagRose onRemove={() => setShowRegion(false)}>
-            Region: EU
-          </FilterTagRose>
-        )}
+          {showRegion && (
+            <FilterTagRose onRemove={() => setShowRegion(false)}>
+              Region: EU
+            </FilterTagRose>
+          )}
 
-        {showVersion && (
-          <FilterTag onRemove={() => setShowVersion(false)}>
-            Version: v2.4
-          </FilterTag>
-        )}
-      </FilterBar>
+          {showSource && (
+            <FilterTagRose onRemove={() => setShowSource(false)}>
+              Source: Edge Mesh
+            </FilterTagRose>
+          )}
+        </FilterBar>
 
-      {!hasFilters && !query && (
         <p
+          className="aurora-text-body-sm"
           style={{
-            fontSize: 13,
             color: "var(--aurora-text-muted)",
-            fontStyle: "italic",
+            margin: 0,
           }}
         >
-          All filters cleared — use the controls above to restore them.
+          {activeCount > 0 || query
+            ? `${activeCount} filters active across ${query ? "the current search." : "the gateway set."}`
+            : "All filters cleared. The list is back to its default state."}
         </p>
-      )}
+      </section>
     </div>
   );
 }

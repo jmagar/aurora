@@ -66,7 +66,9 @@ test("StatusIndicator supports labeled and dot-only status surfaces", () => {
     "showLabel?: boolean",
     "dotClassName?: string",
     "dotStyle?: React.CSSProperties",
-    "showLabel ? label ?? safeTone : null",
+    "const DEFAULT_LABEL: Record<StatusTone, string>",
+    "aria-label={iconOnlyLabel}",
+    "showLabel ? resolvedLabel : null",
     "\"automating\"",
   ]
 
@@ -87,4 +89,49 @@ test("Button artifact preserves disabled/loading asChild guards", () => {
     "? { \"aria-disabled\": true, tabIndex: -1 }",
     "aria-busy={loading ? \"true\" : undefined}",
   ])
+})
+
+test("migrated compound primitives preserve public aliases and refs", () => {
+  assertAllIncludes("accordion", read("registry/aurora/ui/accordion.tsx"), [
+    "export type AccordionProps = AuroraAccordionProps",
+    "export type AccordionItemProps = AuroraAccordionItemProps",
+    "ref?: React.Ref<React.ComponentRef<typeof AccordionPrimitive.Root>>",
+    "type = \"multiple\"",
+  ])
+  assertAllIncludes("menubar", read("registry/aurora/ui/menubar.tsx"), [
+    "export type MenubarProps",
+    "export type MenubarTriggerProps",
+  ])
+  assertAllIncludes("popover", read("registry/aurora/ui/popover.tsx"), [
+    "export type PopoverTriggerProps",
+    "export type PopoverContentProps",
+  ])
+  assertAllIncludes("alert-dialog", read("registry/aurora/ui/alert-dialog.tsx"), [
+    "function AlertDialogBody",
+    "AlertDialogBody,",
+  ])
+  assertAllIncludes("collapsible", read("registry/aurora/ui/collapsible.tsx"), [
+    "ref?: React.Ref<React.ComponentRef<typeof CollapsiblePrimitive.Root>>",
+    "ref={ref}",
+  ])
+  assertAllIncludes("pagination", read("registry/aurora/ui/pagination.tsx"), [
+    "ref={ref as React.Ref<HTMLAnchorElement>}",
+    "ref={ref as React.Ref<HTMLButtonElement>}",
+  ])
+})
+
+test("Lucide-using Banner and DataTable registry entries install Lucide", () => {
+  const registry = JSON.parse(read("registry.json")) as {
+    items: Array<{ name: string; dependencies?: string[] }>
+  }
+
+  for (const name of ["aurora-banner", "aurora-data-table"]) {
+    const item = registry.items.find((candidate) => candidate.name === name)
+    assert.ok(item, `${name} is missing from registry.json`)
+    assert.equal(
+      item.dependencies?.some((dependency) => dependency.startsWith("lucide-react@")),
+      true,
+      `${name} must install lucide-react`
+    )
+  }
 })

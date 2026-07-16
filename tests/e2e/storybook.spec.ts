@@ -4,6 +4,7 @@ import { expect, test } from "@playwright/test"
 const stories = [
   { id: "aurora-interaction-contracts--combobox-keyboard", assert: async (page: import("@playwright/test").Page) => expect(page.getByRole("button", { name: /Beta/i })).toBeFocused() },
   { id: "aurora-interaction-contracts--radio-group-keyboard", assert: async (page: import("@playwright/test").Page) => expect(page.getByRole("radio", { name: "Beta" })).toBeChecked() },
+  { id: "aurora-interaction-contracts--multi-select-keyboard", assert: async (page: import("@playwright/test").Page) => expect(page.getByRole("option", { name: "Beta" })).toHaveAttribute("aria-selected", "true") },
   {
     id: "aurora-interaction-contracts--popover-focus-and-escape",
     assert: async (page: import("@playwright/test").Page) => {

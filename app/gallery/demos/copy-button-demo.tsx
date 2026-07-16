@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { CopyButton } from "@/registry/aurora/ui/copy-button"
 
@@ -21,12 +20,15 @@ export default function CopyButtonDemo() {
           background: "var(--aurora-page-bg)",
           color: "var(--aurora-text-primary)",
           display: "flex",
+          flexWrap: "wrap",
           gap: 12,
           alignItems: "center",
         }}
       >
         <CopyButton value="ghp_xxx" label="Copy Token" />
+        <CopyButton value="registry/aurora/ui/copy-button.tsx" label="Copy Path" />
         <CopyButton value="ghp_xxx" />
+        <CopyButton value="ghp_xxx" label="Disabled" disabled />
       </section>
     </div>
   )

@@ -39,6 +39,8 @@ export const ProgressRing = function ProgressRing(
       children,
       className,
       style,
+      "aria-label": ariaLabel,
+      "aria-valuetext": ariaValueText,
       ...props
     }: ProgressRingProps & { ref?: React.Ref<HTMLDivElement> },
   ) {
@@ -57,6 +59,8 @@ export const ProgressRing = function ProgressRing(
         aria-valuenow={Math.round(clamped)}
         aria-valuemin={0}
         aria-valuemax={100}
+        aria-label={ariaLabel ?? "Progress"}
+        aria-valuetext={ariaValueText ?? `${Math.round(clamped)}%`}
         className={cn("relative inline-flex items-center justify-center", className)}
         style={{ width: size, height: size, ...style }}
         {...props}
@@ -95,11 +99,11 @@ export const ProgressRing = function ProgressRing(
           <div
             className="absolute inset-0 flex items-center justify-center"
             style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 700,
+              fontFamily: "var(--aurora-font-sans)",
+              fontWeight: "var(--aurora-weight-label)",
               fontSize: Math.max(11, Math.round(size * 0.26)),
               color: "var(--aurora-text-primary)",
-              letterSpacing: "-0.01em",
+              letterSpacing: 0,
             }}
           >
             {children ?? `${Math.round(clamped)}%`}

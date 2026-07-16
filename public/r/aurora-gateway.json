@@ -26,7 +26,7 @@
     "family": "page",
     "starter": "gateway"
   },
-  "docs": "Starter page for an Aurora gateway workspace. Installs to `app/aurora/gateway/page.tsx` and depends on `aurora-base`.",
+  "docs": "Starter page for an Aurora gateway workspace. Installs to `app/aurora/gateway/page.tsx` and depends on `aurora-base`.\n\nRegistry dependencies: `aurora-base`, `aurora-card`, `aurora-timeline`, `aurora-badge`, `aurora-button`.",
   "categories": [
     "aurora",
     "page",

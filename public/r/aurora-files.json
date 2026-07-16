@@ -23,7 +23,7 @@
     "family": "page",
     "starter": "files"
   },
-  "docs": "Starter page for an Aurora files workspace. Installs to `app/aurora/files/page.tsx` and depends on `aurora-base`.",
+  "docs": "Starter page for an Aurora files workspace. Installs to `app/aurora/files/page.tsx` and depends on `aurora-base`.\n\nRegistry dependencies: `aurora-base`, `aurora-file-tree`.",
   "categories": [
     "aurora",
     "page",

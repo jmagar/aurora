@@ -76,7 +76,7 @@ export function Chart({
                   textAnchor="end"
                   dominantBaseline="middle"
                   fontSize="5.5"
-                  fontFamily="var(--aurora-font-mono, monospace)"
+                  fontFamily="var(--aurora-font-sans)"
                   fill="var(--aurora-text-muted)"
                 >
                   {tickValue}
@@ -155,13 +155,14 @@ export function Chart({
               flex: "1 1 0",
               minWidth: 0,
               textAlign: "center",
-              fontSize: "10px",
-              fontFamily: "var(--aurora-font-mono)",
+              fontSize: "var(--aurora-type-caption)",
+              fontFamily: "var(--aurora-font-sans)",
+              fontWeight: "var(--aurora-weight-ui)",
               color: "var(--aurora-text-muted)",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-              lineHeight: 1.4,
+              lineHeight: "var(--aurora-line-dense)",
             }}
           >
             {item.label !== "" ? item.label : item.value}

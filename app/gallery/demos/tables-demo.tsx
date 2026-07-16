@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
+import { Badge } from "@/registry/aurora/ui/badge";
 import { DataTable, type Column } from "@/registry/aurora/ui/data-table";
 
 // ---------------------------------------------------------------------------
@@ -20,32 +21,16 @@ const STATUS_CONFIG: Record<GatewayStatus, { color: string; label: string }> = {
 function StatusBadge({ status }: { status: GatewayStatus }) {
   const { color, label } = STATUS_CONFIG[status];
   return (
-    <span
+    <Badge
+      dot
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 5,
-        padding: "2px 8px 2px 5px",
-        borderRadius: 20,
-        fontSize: 11,
-        fontWeight: 600,
         background: `color-mix(in srgb, ${color} 14%, transparent)`,
-        border: `1px solid color-mix(in srgb, ${color} 28%, transparent)`,
+        borderColor: `color-mix(in srgb, ${color} 28%, transparent)`,
         color,
       }}
     >
-      <span
-        style={{
-          width: 6,
-          height: 6,
-          borderRadius: "50%",
-          background: color,
-          boxShadow: `0 0 4px 1px ${color}66`,
-          flexShrink: 0,
-        }}
-      />
       {label}
-    </span>
+    </Badge>
   );
 }
 
@@ -55,19 +40,15 @@ function StatusBadge({ status }: { status: GatewayStatus }) {
 
 function VersionChip({ version }: { version: string }) {
   return (
-    <span
+    <Badge
       style={{
-        fontFamily: "var(--aurora-font-mono)",
-        fontSize: 11,
-        padding: "2px 6px",
-        borderRadius: 4,
         background: "var(--aurora-control-surface)",
         border: "1px solid var(--aurora-border-default)",
         color: "var(--aurora-text-muted)",
       }}
     >
       {version}
-    </span>
+    </Badge>
   );
 }
 
@@ -103,11 +84,7 @@ const COLUMNS: Column<Record<string, unknown>>[] = [
     key: "name",
     label: "Name",
     sortable: false,
-    render: (val) => (
-      <span style={{ fontFamily: "var(--aurora-font-mono)", fontSize: 12 }}>
-        {val as string}
-      </span>
-    ),
+    render: (val) => <span style={{ fontSize: 12 }}>{val as string}</span>,
   },
   {
     key: "status",

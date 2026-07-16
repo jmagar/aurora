@@ -18,7 +18,7 @@
     "tool": "shell",
     "targetScope": "project-root"
   },
-  "docs": "Installs project-local shell theme notes for source files under `themes/shell/*`. Shadcn cannot write into the user's actual home directory; copy reviewed files into shell config paths deliberately.",
+  "docs": "Installs project-local shell theme notes for source files under `themes/shell/*`. Shadcn cannot write into the user's actual home directory; copy reviewed files into shell config paths deliberately.\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "theme",

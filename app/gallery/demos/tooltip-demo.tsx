@@ -57,7 +57,12 @@ function Tip({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={name ?? (typeof label === "string" ? label : undefined)} style={color ? { color } : undefined}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={name ?? (typeof label === "string" ? label : undefined)}
+          style={color ? { color } : undefined}
+        >
           {children}
         </Button>
       </TooltipTrigger>
@@ -79,25 +84,28 @@ export default function TooltipDemo() {
         <div>
           <div style={lbl}>Toolbar triggers</div>
           <div style={row}>
-            <Tip name="Restart Gateway" label={<span>Restart Gateway <Kbd>⌘R</Kbd></span>}><RotateCcw size={16} aria-hidden /></Tip>
-            <Tip label="Open Terminal"><SquareTerminal size={16} aria-hidden /></Tip>
-            <Tip label="Settings"><Settings size={16} aria-hidden /></Tip>
-            <Tip label="Delete · Permanent" color="var(--aurora-error)"><Trash2 size={16} aria-hidden /></Tip>
+            <Tip name="Restart Gateway" label={<span>Restart Gateway <Kbd>⌘R</Kbd></span>}><RotateCcw aria-hidden /></Tip>
+            <Tip label="Open Terminal"><SquareTerminal aria-hidden /></Tip>
+            <Tip label="Settings"><Settings aria-hidden /></Tip>
+            <Tip label="Delete · Permanent" color="var(--aurora-error)"><Trash2 aria-hidden /></Tip>
           </div>
 
           <div style={lbl}>Sides</div>
           <div style={row}>
-            <Tip label="Top" side="top"><ArrowUp size={16} aria-hidden /></Tip>
-            <Tip label="Right" side="right"><ArrowRight size={16} aria-hidden /></Tip>
-            <Tip label="Bottom" side="bottom"><ArrowDown size={16} aria-hidden /></Tip>
-            <Tip label="Left" side="left"><ArrowLeft size={16} aria-hidden /></Tip>
+            <Tip label="Top" side="top"><ArrowUp aria-hidden /></Tip>
+            <Tip label="Right" side="right"><ArrowRight aria-hidden /></Tip>
+            <Tip label="Bottom" side="bottom"><ArrowDown aria-hidden /></Tip>
+            <Tip label="Left" side="left"><ArrowLeft aria-hidden /></Tip>
           </div>
 
           <div style={lbl}>Rich content</div>
           <div style={{ ...row, marginBottom: 0 }}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="neutral" size="sm"><Info size={14} aria-hidden />Details</Button>
+                <Button variant="neutral" size="sm">
+                  <Info data-icon="inline-start" aria-hidden />
+                  Details
+                </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom">
                 <div style={{ display: "grid", gap: 4, maxWidth: 220 }}>

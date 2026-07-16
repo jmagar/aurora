@@ -64,7 +64,7 @@ pnpm audit:composition    # Check registry composition rules
 
 ## Architecture Overview
 
-Aurora is a **shadcn-compatible component registry** (128 items) served as a
+Aurora is a **shadcn-compatible component registry** (175 items) served as a
 Next.js 16 / React 19 / Tailwind v4 app at `aurora.tootie.tv`. The site is a
 landing page (`/`) + a component gallery + a themes hub (`/themes`), and doubles
 as a live registry endpoint — `/` content-negotiates between browser (landing)
@@ -75,7 +75,7 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
 - `app/gallery/` — the component gallery
 - `app/dinglebear/` — serves the co-hosted dinglebear.ai tenant (see below)
 - `registry/aurora/styles/` — Aurora token layer (`aurora.css`, CSS custom properties)
-- `registry/aurora/ui/` — 64 shadcn UI primitives recolored to Aurora tokens
+- `registry/aurora/ui/` — 79 published UI primitives plus 2 internal support primitives
 - `registry/aurora/blocks/{ai,auth,feedback,files,navigation,workspace}` — composed product blocks
 - `lib/themes.ts` — catalog powering the `/themes` site (single source of truth for the web)
 - `components/site/` — shared marketing chrome (header/footer shell, theme cards, style helpers)

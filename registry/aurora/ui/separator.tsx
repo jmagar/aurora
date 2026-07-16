@@ -11,8 +11,13 @@ function Separator({ ref, className, orientation = "horizontal", decorative = tr
     <div
       ref={ref}
       role={decorative ? "none" : "separator"}
+      aria-hidden={decorative ? true : undefined}
       aria-orientation={decorative ? undefined : orientation}
-      className={cn(orientation === "vertical" ? "h-full min-h-5 w-px" : "h-px w-full", className)}
+      data-orientation={orientation}
+      className={cn(
+        orientation === "vertical" ? "w-px shrink-0 self-stretch" : "h-px w-full shrink-0",
+        className,
+      )}
       style={{
         background: "var(--aurora-border-default)",
         ...style,

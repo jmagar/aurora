@@ -42,6 +42,14 @@ export default function ProgressRingDemo() {
           <ProgressRing value={92} color="var(--aurora-success)" size={120} thickness={8} />
           <div style={labelStyle}>Healthy</div>
         </div>
+        <div>
+          <ProgressRing value={41} size={120} thickness={8} hideLabel aria-label="Queue Completion">
+            <span style={{ fontFamily: "var(--aurora-font-sans)", fontSize: 13, color: "var(--aurora-text-muted)" }}>
+              41 Jobs
+            </span>
+          </ProgressRing>
+          <div style={labelStyle}>Queued</div>
+        </div>
       </div>
     </div>
   );

@@ -71,7 +71,7 @@ export default function SheetDemo() {
                   margin: "8px 0 0",
                   fontSize: 13,
                   lineHeight: 1.55,
-                  fontFamily: "var(--font-mono)",
+                  fontFamily: "var(--aurora-font-sans)",
                   color: "var(--aurora-text-muted)",
                 }}
               >
@@ -109,7 +109,7 @@ export default function SheetDemo() {
                 margin: "8px 0 0",
                 fontSize: 13,
                 lineHeight: 1.55,
-                fontFamily: "var(--font-mono)",
+                fontFamily: "var(--aurora-font-sans)",
                 color: "var(--aurora-text-muted)",
               }}
             >

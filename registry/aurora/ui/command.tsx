@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface CommandItem {
@@ -62,6 +63,7 @@ function Command(
   const [filter, setFilter] = React.useState<string>(ALL)
   const [active, setActive] = React.useState(0)
   const listRef = React.useRef<HTMLDivElement>(null)
+  const listId = React.useId()
 
   const groups = React.useMemo(() => {
     const seen: string[] = []
@@ -93,6 +95,9 @@ function Command(
   }, [filtered, groups])
 
   const activeItem = filtered[activeIndex]
+  const activeDescendantId = activeItem
+    ? `${listId}-${activeItem.group}-${activeItem.label}`.toLowerCase().replace(/[^a-z0-9-]+/g, "-")
+    : undefined
 
   function commit(item: CommandItem | undefined) {
     if (!item) return
@@ -127,6 +132,8 @@ function Command(
         <button
           type="button"
           onClick={() => setOpen(true)}
+          aria-expanded={open}
+          aria-controls={listId}
           className="flex items-center gap-2 border px-4 transition-[border-color,box-shadow] duration-150 focus-visible:outline-none"
           style={{
             height: "2.75rem",
@@ -139,7 +146,7 @@ function Command(
             fontWeight: "var(--aurora-weight-label)",
           }}
         >
-          <SearchIcon />
+          <Search aria-hidden />
           <span>{placeholder}</span>
           <Kbd className="ml-2">⌘K</Kbd>
         </button>
@@ -172,7 +179,7 @@ function Command(
         style={{ height: "4rem", borderBottom: "1px solid var(--aurora-border-strong)" }}
       >
         <span style={{ color: "var(--aurora-text-muted)" }}>
-          <SearchIcon size={20} />
+          <Search size={20} aria-hidden />
         </span>
         <input
           autoFocus
@@ -180,6 +187,8 @@ function Command(
           onChange={(event) => setQuery(event.target.value)}
           placeholder={placeholder}
           aria-label={placeholder}
+          aria-activedescendant={activeDescendantId}
+          aria-controls={listId}
           className="min-w-0 flex-1 border-0 bg-transparent outline-none"
           style={{
             color: "var(--aurora-text-primary)",
@@ -230,6 +239,7 @@ function Command(
       {/* Results */}
       <div
         ref={listRef}
+        id={listId}
         role="listbox"
         aria-label="Commands"
         className="min-h-0 flex-1 overflow-y-auto"
@@ -260,11 +270,13 @@ function Command(
                 return (
                   <button
                     key={`${item.group}-${item.label}`}
+                    id={`${listId}-${item.group}-${item.label}`.toLowerCase().replace(/[^a-z0-9-]+/g, "-")}
                     type="button"
                     role="option"
                     aria-selected={isActive}
                     data-active={isActive}
                     onMouseMove={() => setActive(index)}
+                    onMouseDown={(event) => event.preventDefault()}
                     onClick={() => commit(item)}
                     className="relative flex w-full items-center gap-4 text-left transition-colors duration-150 focus-visible:outline-none"
                     style={{
@@ -387,25 +399,6 @@ function Command(
         </div>
       </div>
     </div>
-  )
-}
-
-function SearchIcon({ size = 22 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
   )
 }
 
