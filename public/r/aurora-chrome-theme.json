@@ -18,7 +18,7 @@
     "tool": "chrome",
     "targetScope": "project-root"
   },
-  "docs": "Installs project-local Chrome theme notes. Download the actual zips from `https://aurora.tootie.tv/chrome/aurora.zip` and `https://aurora.tootie.tv/chrome/aurora-light.zip`.",
+  "docs": "Installs project-local Chrome theme notes. Download the actual zips from `https://aurora.tootie.tv/chrome/aurora.zip` and `https://aurora.tootie.tv/chrome/aurora-light.zip`.\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "theme",

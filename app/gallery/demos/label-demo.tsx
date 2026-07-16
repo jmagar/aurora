@@ -29,19 +29,21 @@ export default function LabelDemo() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Switch defaultChecked />
-          <Label>Color-Code by Operation</Label>
+          <Switch id="label-demo-color-code" defaultChecked />
+          <Label htmlFor="label-demo-color-code">Color-Code by Operation</Label>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Checkbox />
-          <Label>Stream Tokens</Label>
+          <Checkbox id="label-demo-stream" />
+          <Label htmlFor="label-demo-stream">Stream Tokens</Label>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <Label required>API Token</Label>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Checkbox disabled />
-          <Label disabled>Read-Only Setting</Label>
+          <Checkbox id="label-demo-read-only" disabled />
+          <Label htmlFor="label-demo-read-only" disabled>
+            Read-Only Setting
+          </Label>
         </div>
       </section>
     </div>

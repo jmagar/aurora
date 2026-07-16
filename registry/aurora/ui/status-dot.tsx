@@ -65,14 +65,26 @@ export interface StatusDotProps
 }
 
 function StatusDot(
-  { ref, status = "neutral", pulse = false, label, className, style, ...props }: StatusDotProps & { ref?: React.Ref<HTMLSpanElement> }
+  {
+    ref,
+    status = "neutral",
+    pulse = false,
+    label,
+    className,
+    style,
+    "aria-label": ariaLabel,
+    ...props
+  }: StatusDotProps & { ref?: React.Ref<HTMLSpanElement> }
 ) {
   const color = STATUS_COLOR[status] ?? STATUS_COLOR.neutral;
   const roleLabel = STATUS_ROLE_LABEL[status] ?? STATUS_ROLE_LABEL.neutral;
+  const accessibleLabel = ariaLabel ?? (label == null ? roleLabel : undefined)
 
   return (
     <span
       ref={ref}
+      role={accessibleLabel ? "img" : undefined}
+      aria-label={accessibleLabel}
       className={cn(
         "inline-flex items-center gap-[10px] font-[var(--font-sans)] text-[13px] leading-none text-[var(--aurora-text-primary)]",
         className

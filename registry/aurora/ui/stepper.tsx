@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -42,41 +43,50 @@ function statusFor(index: number, current: number): StepperStatus {
   return "upcoming";
 }
 
-const CheckIcon = () => (
-  <svg
-    className="aurora-stepper__check"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={3}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M20 6 9 17l-5-5" />
-  </svg>
-);
-
 export function Stepper({ ref, steps, current = 0, className, ...props }: StepperProps & { ref?: React.Ref<HTMLOListElement> }) {
+  const baseId = React.useId();
+  const clampedCurrent =
+    steps.length === 0
+      ? 0
+      : Math.min(Math.max(current, 0), steps.length - 1);
+
   return (
     <ol
       ref={ref}
       className={cn("aurora-stepper", className)}
+      aria-label={props["aria-label"] ?? "Progress"}
       {...props}
     >
       {steps.map((step, i) => {
         // `current` is 0-based (CD semantics); compare against the 0-based index.
-        const status = statusFor(i, current);
+        const status = statusFor(i, clampedCurrent);
+        const descriptionId = step.description
+          ? `${baseId}-step-${i}-description`
+          : undefined;
+        const statusLabel =
+          status === "complete"
+            ? "Complete"
+            : status === "active"
+              ? "Current step"
+              : "Upcoming step";
+
         return (
           <li
             key={`${step.label}-${i}`}
             className="aurora-stepper__step"
             data-status={status}
             aria-current={status === "active" ? "step" : undefined}
+            aria-describedby={descriptionId}
+            aria-label={`${step.label}: ${statusLabel}`}
           >
             <span className="aurora-stepper__node">
               {status === "complete" ? (
-                <CheckIcon />
+                <Check
+                  className="aurora-stepper__check"
+                  size={20}
+                  strokeWidth={2.8}
+                  aria-hidden="true"
+                />
               ) : (
                 <span aria-hidden="true">{i + 1}</span>
               )}
@@ -85,7 +95,7 @@ export function Stepper({ ref, steps, current = 0, className, ...props }: Steppe
               <span className="aurora-stepper__label">{step.label}</span>
               {step.description ? (
                 <span className="aurora-stepper__description">
-                  {step.description}
+                  <span id={descriptionId}>{step.description}</span>
                 </span>
               ) : null}
             </span>

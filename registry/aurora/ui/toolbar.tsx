@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Separator } from "./separator"
 import { cn } from "@/lib/utils"
 
 type ToolbarOrientation = "horizontal" | "vertical"
@@ -53,6 +54,7 @@ function ToolbarGroup({
   return (
     <div
       ref={ref}
+      role="group"
       className={cn(
         "flex items-center gap-1.5",
         orientation === "vertical" && "flex-col",
@@ -74,15 +76,15 @@ function ToolbarSeparator({
   const orientation = React.useContext(ToolbarContext)
   const perpendicularVertical = orientation === "horizontal"
   return (
-    <div
+    <Separator
       ref={ref}
-      role="separator"
-      aria-orientation={perpendicularVertical ? "vertical" : "horizontal"}
+      decorative
+      orientation={perpendicularVertical ? "vertical" : "horizontal"}
       className={cn(
-        perpendicularVertical ? "mx-1 h-5 w-px" : "my-1 h-px w-5",
+        perpendicularVertical ? "mx-1 h-5" : "my-1 w-5",
         className
       )}
-      style={{ background: "var(--aurora-border-default)", ...style }}
+      style={style}
       {...props}
     />
   )

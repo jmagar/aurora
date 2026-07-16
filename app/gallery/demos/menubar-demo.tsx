@@ -4,6 +4,7 @@ import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import {
   Menubar,
+  MenubarGroup,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
@@ -51,62 +52,70 @@ export default function MenubarDemo() {
       <Menubar>
         <span style={brand}>
           <span style={brandDot} />
-          labby
+          Labby
         </span>
         <span style={divider} />
 
         <MenubarMenu>
           <MenubarTrigger>File</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>
-              New Session
-              <MenubarShortcut>⌘N</MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem>
-              Open…
-              <MenubarShortcut>⌘O</MenubarShortcut>
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>
-              Quit
-              <MenubarShortcut>⌘Q</MenubarShortcut>
-            </MenubarItem>
+            <MenubarGroup>
+              <MenubarItem>
+                New Session
+                <MenubarShortcut>⌘N</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>
+                Open…
+                <MenubarShortcut>⌘O</MenubarShortcut>
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>
+                Quit
+                <MenubarShortcut>⌘Q</MenubarShortcut>
+              </MenubarItem>
+            </MenubarGroup>
           </MenubarContent>
         </MenubarMenu>
 
         <MenubarMenu>
           <MenubarTrigger>Edit</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>
-              Undo
-              <MenubarShortcut>⌘Z</MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem>
-              Redo
-              <MenubarShortcut>⇧⌘Z</MenubarShortcut>
-            </MenubarItem>
+            <MenubarGroup>
+              <MenubarItem>
+                Undo
+                <MenubarShortcut>⌘Z</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>
+                Redo
+                <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+              </MenubarItem>
+            </MenubarGroup>
           </MenubarContent>
         </MenubarMenu>
 
         <MenubarMenu>
           <MenubarTrigger>View</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>
-              Terminal
-              <MenubarShortcut>⌘`</MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem>Logs</MenubarItem>
+            <MenubarGroup>
+              <MenubarItem>
+                Terminal
+                <MenubarShortcut>⌘`</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>Logs</MenubarItem>
+            </MenubarGroup>
           </MenubarContent>
         </MenubarMenu>
 
         <MenubarMenu>
           <MenubarTrigger>Help</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>Docs</MenubarItem>
-            <MenubarItem>
-              Keyboard Shortcuts
-              <MenubarShortcut>?</MenubarShortcut>
-            </MenubarItem>
+            <MenubarGroup>
+              <MenubarItem>Docs</MenubarItem>
+              <MenubarItem>
+                Keyboard Shortcuts
+                <MenubarShortcut>?</MenubarShortcut>
+              </MenubarItem>
+            </MenubarGroup>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>

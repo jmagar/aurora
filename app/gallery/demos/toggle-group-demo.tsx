@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/registry/aurora/ui/button"
-import { ToggleGroup } from "@/registry/aurora/ui/toggle-group";
+import { Bold, Italic, Underline, Rows3, Columns3 } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/registry/aurora/ui/toggle-group";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
 // Demo chrome ported 1:1 from the Claude Design `ToggleGroup.dsCard` source.
@@ -24,58 +24,9 @@ const panel: React.CSSProperties = {
   justifyContent: "center",
 };
 
-// `.tg` button — exact values from the CD dsCard injected CSS.
-const tgBase: React.CSSProperties = {
-  height: 30,
-  padding: "0 14px",
-  border: "none",
-  borderRadius: 8,
-  background: "none",
-  color: "var(--aurora-text-muted)",
-  font: "560 13px var(--font-sans)",
-  cursor: "pointer",
-};
-
-const tgPressed: React.CSSProperties = {
-  color: "var(--aurora-accent-strong)",
-  background:
-    "color-mix(in srgb, var(--aurora-accent-primary) 16%, var(--aurora-control-surface))",
-  boxShadow:
-    "0 0 0 1px color-mix(in srgb, var(--aurora-accent-primary) 28%, transparent)",
-};
-
-type Key = "bold" | "italic" | "under";
-
-function ToggleButton({
-  k,
-  pressed,
-  onToggle,
-  children,
-}: {
-  k: Key;
-  pressed: boolean;
-  onToggle: (k: Key) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <Button variant="plain" size="unstyled"
-      type="button"
-      aria-pressed={pressed}
-      onClick={() => onToggle(k)}
-      style={pressed ? { ...tgBase, ...tgPressed } : tgBase}
-    >
-      {children}
-    </Button>
-  );
-}
-
 export default function ToggleGroupDemo() {
-  const [on, setOn] = React.useState<Record<Key, boolean>>({
-    bold: true,
-    italic: false,
-    under: false,
-  });
-  const toggle = (k: Key) => setOn((s) => ({ ...s, [k]: !s[k] }));
+  const [layout, setLayout] = React.useState("rows")
+  const [formatting, setFormatting] = React.useState<string[]>(["bold"])
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
@@ -86,18 +37,37 @@ export default function ToggleGroupDemo() {
       />
 
       <div>
-        <div style={label}>Text formatting</div>
+        <div style={label}>Single Selection</div>
         <div style={panel}>
-          <ToggleGroup>
-            <ToggleButton k="bold" pressed={on.bold} onToggle={toggle}>
-              <b>B</b>
-            </ToggleButton>
-            <ToggleButton k="italic" pressed={on.italic} onToggle={toggle}>
-              <i>I</i>
-            </ToggleButton>
-            <ToggleButton k="under" pressed={on.under} onToggle={toggle}>
-              <u>U</u>
-            </ToggleButton>
+          <ToggleGroup type="single" value={layout} onValueChange={(next) => setLayout(String(next || "rows"))}>
+            <ToggleGroupItem value="rows" aria-label="Rows">
+              <Rows3 size={16} aria-hidden />
+              Rows
+            </ToggleGroupItem>
+            <ToggleGroupItem value="columns" aria-label="Columns">
+              <Columns3 size={16} aria-hidden />
+              Columns
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      </div>
+
+      <div>
+        <div style={label}>Multiple Selection</div>
+        <div style={panel}>
+          <ToggleGroup type="multiple" value={formatting} onValueChange={(next) => setFormatting(Array.isArray(next) ? next : [String(next)].filter(Boolean))}>
+            <ToggleGroupItem value="bold" aria-label="Bold">
+              <Bold size={16} aria-hidden />
+              Bold
+            </ToggleGroupItem>
+            <ToggleGroupItem value="italic" aria-label="Italic">
+              <Italic size={16} aria-hidden />
+              Italic
+            </ToggleGroupItem>
+            <ToggleGroupItem value="underline" aria-label="Underline">
+              <Underline size={16} aria-hidden />
+              Underline
+            </ToggleGroupItem>
           </ToggleGroup>
         </div>
       </div>

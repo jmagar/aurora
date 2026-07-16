@@ -25,7 +25,7 @@
       "https://aurora.tootie.tv/fonts/aurora/jetbrains-mono-var.woff2"
     ]
   },
-  "docs": "Install after aurora-tokens when the consuming app should use Aurora-hosted webfonts instead of system fallbacks.\n\nImport this stylesheet before aurora-tokens or alongside it at the app root.",
+  "docs": "Install after aurora-tokens when the consuming app should use Aurora-hosted webfonts instead of system fallbacks.\n\nImport this stylesheet before aurora-tokens or alongside it at the app root.\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "style",

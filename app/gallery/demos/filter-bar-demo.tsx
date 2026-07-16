@@ -10,7 +10,19 @@ import {
 } from "@/registry/aurora/ui/filter-bar"
 
 export default function FilterBarDemo() {
-  const [q, setQ] = React.useState("serde")
+  const [query, setQuery] = React.useState("serde")
+  const [showScope, setShowScope] = React.useState(true)
+  const [showStatus, setShowStatus] = React.useState(true)
+  const [showSource, setShowSource] = React.useState(true)
+
+  const selectedCount = [showScope, showStatus, showSource].filter(Boolean).length
+
+  function clearAll() {
+    setQuery("")
+    setShowScope(false)
+    setShowStatus(false)
+    setShowSource(false)
+  }
 
   return (
     <div className="grid gap-6">
@@ -21,6 +33,7 @@ export default function FilterBarDemo() {
       />
 
       <section
+        className="grid gap-4"
         style={{
           padding: "40px 30px",
           borderRadius: "var(--aurora-radius-2)",
@@ -29,16 +42,38 @@ export default function FilterBarDemo() {
           boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
         }}
       >
-        <FilterBar showClearAll onClearAll={() => setQ("")}>
+        <FilterBar
+          showClearAll={Boolean(query || selectedCount)}
+          onClearAll={clearAll}
+        >
           <FilterSearch
             placeholder="Filter results…"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onClear={() => setQ("")}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onClear={() => setQuery("")}
           />
-          <FilterTag onRemove={() => {}}>status: 200</FilterTag>
-          <FilterTagRose onRemove={() => {}}>type: AI</FilterTagRose>
+          {showScope ? (
+            <FilterTag onRemove={() => setShowScope(false)}>
+              Scope: Registry
+            </FilterTag>
+          ) : null}
+          {showStatus ? (
+            <FilterTagRose onRemove={() => setShowStatus(false)}>
+              Status: Indexed
+            </FilterTagRose>
+          ) : null}
+          {showSource ? (
+            <FilterTagRose onRemove={() => setShowSource(false)}>
+              Source: Docs.rs
+            </FilterTagRose>
+          ) : null}
         </FilterBar>
+
+        <p className="aurora-text-body-sm" style={{ color: "var(--aurora-text-muted)", margin: 0 }}>
+          {selectedCount > 0
+            ? `${selectedCount} filters active${query ? " with a query applied." : "."}`
+            : "No filters selected."}
+        </p>
       </section>
     </div>
   )

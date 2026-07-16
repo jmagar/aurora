@@ -10,12 +10,31 @@ type BannerItem = {
   tone: BannerStatus;
   title: string;
   body: string;
+  action?: React.ReactNode;
 };
 
 const INITIAL: BannerItem[] = [
-  { id: 1, tone: "success", title: "Plex authorized", body: "Token stored. Library sync started." },
-  { id: 2, tone: "warn", title: "Couldn’t reach gateway", body: "Retrying in 4 seconds." },
-  { id: 3, tone: "error", title: "Backend unavailable", body: "502 from edge-3. Check the upstream." },
+  {
+    id: 1,
+    tone: "success",
+    title: "Plex authorized",
+    body: "Token stored. Library sync started.",
+    action: <Button variant="neutral" size="sm">Inspect Run</Button>,
+  },
+  {
+    id: 2,
+    tone: "warn",
+    title: "Couldn’t reach gateway",
+    body: "Retrying in 4 seconds.",
+    action: <Button variant="warn" size="sm">Retry Now</Button>,
+  },
+  {
+    id: 3,
+    tone: "error",
+    title: "Backend unavailable",
+    body: "502 from edge-3. Check the upstream.",
+    action: <Button variant="destructive" size="sm">View Logs</Button>,
+  },
 ];
 
 export default function BannersDemo() {
@@ -38,7 +57,7 @@ export default function BannersDemo() {
         description="Inline status notices. Each banner surfaces a system-level event with a tone-tinted surface, leading status icon, and a dismiss affordance."
       />
 
-      <div className="stack" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {list.map((b) => (
           <div
             key={b.id}
@@ -52,33 +71,28 @@ export default function BannersDemo() {
               tone={b.tone}
               title={b.title}
               description={b.body}
+              action={b.action}
               onClose={() => dismiss(b.id)}
             />
           </div>
         ))}
         {list.length === 0 && (
           <Button
-            variant="plain"
-            size="unstyled"
+            variant="neutral"
+            size="sm"
             type="button"
             onClick={() => setList(INITIAL)}
-            style={{
-              alignSelf: "flex-start",
-              height: 30,
-              padding: "0 13px",
-              borderRadius: 9,
-              border: "1px solid var(--aurora-border-strong)",
-              background: "var(--aurora-control-surface)",
-              color: "var(--aurora-text-primary)",
-              fontFamily: "var(--aurora-font-sans)",
-              fontSize: 13,
-              fontWeight: 560,
-              cursor: "pointer",
-            }}
+            style={{ alignSelf: "flex-start" }}
           >
             Replay
           </Button>
         )}
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Banner kind="tag" tone="info" title="Index ready." description=" 38 sources are searchable." />
+        <Banner kind="tag" tone="warn" title="Permission changed." description=" Review gateway access before the next run." />
+        <Banner kind="tag" tone="success" title="Deploy completed." description=" All workers are on the latest registry build." />
       </div>
     </div>
   );

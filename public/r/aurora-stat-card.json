@@ -6,10 +6,7 @@
   "description": "Metric stat card with label, large value, trend indicator, and Aurora panel styling.",
   "dependencies": [],
   "registryDependencies": [
-    "@aurora/aurora-tokens",
-    "@aurora/aurora-button",
-    "@aurora/aurora-input",
-    "@aurora/aurora-select"
+    "@aurora/aurora-tokens"
   ],
   "files": [
     {
@@ -27,7 +24,7 @@
     "sourcePath": "registry/aurora/ui/stat-card.tsx",
     "installTarget": "@ui/aurora/stat-card.tsx"
   },
-  "docs": "Aurora component that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@ui/aurora/stat-card.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-input`, `aurora-radio-group`, `aurora-select`.",
+  "docs": "Aurora Stat Card installs with its declared Aurora registry dependencies.\n\nInstall `aurora-tokens` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/stat-card.tsx`.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "ui",

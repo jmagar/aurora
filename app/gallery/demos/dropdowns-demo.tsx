@@ -1,19 +1,21 @@
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
+import { ChevronDown, Download, Trash2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
   DropdownMenuCheckboxItem,
-} from "@/registry/aurora/ui/dropdown-menu";
-import { Button } from "@/registry/aurora/ui/button";
+} from "@/registry/aurora/ui/dropdown-menu"
+import { Button } from "@/registry/aurora/ui/button"
 
 export default function DropdownsDemo() {
-  const [viewDetailsChecked, setViewDetailsChecked] = React.useState(true);
+  const [viewDetailsChecked, setViewDetailsChecked] = React.useState(true)
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -34,74 +36,37 @@ export default function DropdownsDemo() {
           <DropdownMenuTrigger asChild>
             <Button variant="neutral" size="sm">
               production-edge
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
-              >
-                <path d="M2 4l4 4 4-4" />
-              </svg>
+              <ChevronDown data-icon="inline-end" aria-hidden />
             </Button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="start" style={{ minWidth: "13rem" }}>
             <DropdownMenuLabel>Gateway Options</DropdownMenuLabel>
-
-            <DropdownMenuCheckboxItem
-              checked={viewDetailsChecked}
-              onCheckedChange={setViewDetailsChecked}
-            >
-              View Details
-            </DropdownMenuCheckboxItem>
-
-            <DropdownMenuItem>Edit Configuration</DropdownMenuItem>
-            <DropdownMenuItem>Duplicate</DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem>
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 13 13"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
+            <DropdownMenuGroup>
+              <DropdownMenuCheckboxItem
+                checked={viewDetailsChecked}
+                onCheckedChange={setViewDetailsChecked}
               >
-                <path d="M6.5 1v7M3 5l3.5 3.5L10 5" />
-                <path d="M1 10h11v2H1z" />
-              </svg>
-              Download Logs
-            </DropdownMenuItem>
+                View Details
+              </DropdownMenuCheckboxItem>
 
-            <DropdownMenuSeparator />
+              <DropdownMenuItem>Edit Configuration</DropdownMenuItem>
+              <DropdownMenuItem>Duplicate</DropdownMenuItem>
 
-            <DropdownMenuItem danger>
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 13 13"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden
-              >
-                <path d="M2 3h9M5 3V2h3v1M3 3l.7 8h5.6L10 3" />
-                <path d="M5.5 5.5v3M7.5 5.5v3" />
-              </svg>
-              Delete Gateway
-            </DropdownMenuItem>
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem>
+                <Download aria-hidden />
+                Download Logs
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem danger>
+                <Trash2 aria-hidden />
+                Delete Gateway
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -117,5 +82,5 @@ export default function DropdownsDemo() {
         </p>
       </div>
     </div>
-  );
+  )
 }

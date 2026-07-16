@@ -23,7 +23,7 @@
     "family": "page",
     "starter": "login"
   },
-  "docs": "Starter page for an Aurora login workspace. Installs to `app/aurora/login/page.tsx` and depends on `aurora-base`.",
+  "docs": "Starter page for an Aurora login workspace. Installs to `app/aurora/login/page.tsx` and depends on `aurora-base`.\n\nRegistry dependencies: `aurora-base`, `aurora-login-block`.",
   "categories": [
     "aurora",
     "page",

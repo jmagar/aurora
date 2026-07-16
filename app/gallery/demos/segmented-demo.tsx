@@ -19,6 +19,8 @@ const panel: React.CSSProperties = {
 };
 
 export default function SegmentedDemo() {
+  const [surface, setSurface] = React.useState("chat")
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
       <GalleryPageIntro
@@ -29,7 +31,8 @@ export default function SegmentedDemo() {
 
       <div style={panel}>
         <Segmented
-          defaultValue="chat"
+          value={surface}
+          onValueChange={setSurface}
           options={[
             { value: "chat", label: "Chat" },
             { value: "editor", label: "Editor" },
@@ -41,7 +44,7 @@ export default function SegmentedDemo() {
           defaultValue="day"
           options={[
             { value: "day", label: "Day" },
-            { value: "week", label: "Week" },
+            { value: "week", label: "Week", disabled: true },
             { value: "month", label: "Month" },
           ]}
         />

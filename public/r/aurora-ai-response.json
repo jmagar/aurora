@@ -29,7 +29,7 @@
     "sourcePath": "registry/aurora/blocks/ai/elements/response.tsx",
     "installTarget": "@components/aurora/ai/response.tsx"
   },
-  "docs": "Aurora block that installs Aurora AI Response.\n\nInstall `aurora-tokens`, `aurora-components`, and `aurora-button` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/response.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`, `aurora-button`.",
+  "docs": "Aurora block that installs Aurora AI Response.\n\nInstall `aurora-tokens`, `aurora-components`, `aurora-button`, and `aurora-clipboard` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/response.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`, `aurora-button`, `aurora-clipboard`.",
   "categories": [
     "aurora",
     "block",

@@ -24,7 +24,7 @@
     "family": "page",
     "starter": "log-viewer"
   },
-  "docs": "Starter page for an Aurora log viewer workspace. Installs to `app/aurora/log-viewer/page.tsx` and depends on `aurora-base`.",
+  "docs": "Starter page for an Aurora log viewer workspace. Installs to `app/aurora/log-viewer/page.tsx` and depends on `aurora-base`.\n\nRegistry dependencies: `aurora-base`, `aurora-code-block`, `aurora-badge`.",
   "categories": [
     "aurora",
     "page",

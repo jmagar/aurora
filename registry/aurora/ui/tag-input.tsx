@@ -219,7 +219,6 @@ function TagChip({ ref, label, disabled, onRemove }: TagChipProps & { ref?: Reac
       <button
         type="button"
         aria-label={`Remove ${label}`}
-        tabIndex={-1}
         disabled={disabled}
         className={cn(
           "flex h-4 w-4 items-center justify-center rounded-full",

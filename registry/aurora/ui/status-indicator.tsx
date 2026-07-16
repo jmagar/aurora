@@ -26,6 +26,16 @@ const dimTones = new Set<StatusTone>(["queued", "offline"])
 
 const pulseTones = new Set<StatusTone>(["syncing", "automating"])
 
+const DEFAULT_LABEL: Record<StatusTone, string> = {
+  online: "Online",
+  syncing: "Syncing",
+  queued: "Queued",
+  degraded: "Degraded",
+  offline: "Offline",
+  error: "Error",
+  automating: "Automating",
+}
+
 export interface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: StatusTone
   label?: React.ReactNode
@@ -49,24 +59,40 @@ function StatusIndicator({
   dotClassName,
   dotStyle,
   style,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   ...props
 }: StatusIndicatorProps) {
   const safeTone = Object.hasOwn(toneColor, tone) ? tone : "online"
   if (tone !== safeTone) {
     devWarn(`[Aurora StatusIndicator] Unknown tone "${tone}". Valid values: ${Object.keys(toneColor).join(", ")}. Falling back to "online".`)
   }
-
   const resolvedPulse = pulse ?? pulseTones.has(safeTone)
   const { color, shadow } = toneColor[safeTone]
   const labelColor = dimTones.has(safeTone)
     ? "var(--aurora-neutral-foreground)"
     : "var(--aurora-text-primary)"
+  const resolvedLabel = label ?? DEFAULT_LABEL[safeTone]
+  const iconOnlyLabel =
+    !showLabel && typeof resolvedLabel === "string" ? resolvedLabel : ariaLabel
+
+  if (
+    process.env.NODE_ENV !== "production" &&
+    !showLabel &&
+    !iconOnlyLabel &&
+    !ariaLabelledBy
+  ) {
+    devWarn("[Aurora StatusIndicator] Icon-only indicators need a string `label`, `aria-label`, or `aria-labelledby`.")
+  }
 
   return (
     <span
       className={cn("inline-flex items-center gap-2", className)}
+      aria-label={iconOnlyLabel}
+      aria-labelledby={ariaLabelledBy}
       style={{
         color: labelColor,
+        fontFamily: "var(--aurora-font-sans)",
         fontSize: "var(--aurora-type-body-sm)",
         fontWeight: "var(--aurora-weight-ui)",
         lineHeight: "var(--aurora-line-ui)",
@@ -76,10 +102,10 @@ function StatusIndicator({
     >
       <span
         aria-hidden="true"
-        className={cn("size-2 rounded-full", resolvedPulse && "animate-pulse", dotClassName)}
+        className={cn("size-2 rounded-full", resolvedPulse && "motion-safe:animate-pulse", dotClassName)}
         style={{ background: color, boxShadow: shadow, ...dotStyle }}
       />
-      {showLabel ? label ?? safeTone : null}
+      {showLabel ? resolvedLabel : null}
     </span>
   )
 }

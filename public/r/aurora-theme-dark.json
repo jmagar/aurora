@@ -33,7 +33,7 @@
     "family": "theme",
     "mode": "dark"
   },
-  "docs": "Aurora dark web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then keep `<html className=\"dark\">` as the default mode.",
+  "docs": "Aurora dark web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then keep `<html className=\"dark\">` as the default mode.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "theme",

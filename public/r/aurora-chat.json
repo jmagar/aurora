@@ -24,7 +24,7 @@
     "family": "page",
     "starter": "chat"
   },
-  "docs": "Starter page for an Aurora chat workspace. Installs to `app/aurora/chat/page.tsx` and depends on `aurora-base`.",
+  "docs": "Starter page for an Aurora chat workspace. Installs to `app/aurora/chat/page.tsx` and depends on `aurora-base`.\n\nRegistry dependencies: `aurora-base`, `aurora-ai-message`, `aurora-prompt-input`.",
   "categories": [
     "aurora",
     "page",

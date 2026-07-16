@@ -15,11 +15,14 @@ const rowStyle: React.CSSProperties = {
   border: "1px solid var(--aurora-border-default)",
   borderRadius: 10,
   background: "var(--aurora-panel-medium)",
-  font: "13px var(--font-sans)",
+  font: "13px var(--aurora-font-sans)",
 }
 
 const tagStyle: React.CSSProperties = {
-  font: "10px var(--font-mono)",
+  font: "11px var(--aurora-font-sans)",
+  fontWeight: 650,
+  letterSpacing: "var(--aurora-letter-eyebrow)",
+  textTransform: "uppercase",
   color: "var(--aurora-text-muted)",
 }
 

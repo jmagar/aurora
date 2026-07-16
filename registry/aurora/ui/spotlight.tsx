@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface SpotlightItem {
@@ -99,6 +100,9 @@ const Spotlight = function Spotlight(
 
   const open = openOnFocus ? focused : focused || query.trim() !== ""
   const activeItem = filtered[activeIndex]
+  const activeDescendantId = activeItem
+    ? `${listId}-${activeItem.group}-${activeItem.label}`.toLowerCase().replace(/[^a-z0-9-]+/g, "-")
+    : undefined
 
   function commit(item: SpotlightItem | undefined) {
     if (!item) return
@@ -153,7 +157,7 @@ const Spotlight = function Spotlight(
         }}
       >
         <span aria-hidden style={{ color: "var(--aurora-accent-primary)", display: "inline-flex" }}>
-          <SearchIcon size={s.icon} />
+          <Search size={s.icon} aria-hidden />
         </span>
         <input
           autoFocus={autoFocus}
@@ -165,6 +169,7 @@ const Spotlight = function Spotlight(
           placeholder={placeholder}
           aria-label={placeholder}
           aria-expanded={open}
+          aria-activedescendant={activeDescendantId}
           aria-controls={open ? listId : undefined}
           role="combobox"
           aria-autocomplete="list"
@@ -228,6 +233,7 @@ const Spotlight = function Spotlight(
                   return (
                     <button
                       key={`${item.group}-${item.label}`}
+                      id={`${listId}-${item.group}-${item.label}`.toLowerCase().replace(/[^a-z0-9-]+/g, "-")}
                       type="button"
                       role="option"
                       aria-selected={isActive}
@@ -347,25 +353,6 @@ function Kbd({ children }: { children: React.ReactNode }) {
     >
       {children}
     </kbd>
-  )
-}
-
-function SearchIcon({ size = 22 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
   )
 }
 

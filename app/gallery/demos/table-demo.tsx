@@ -12,8 +12,6 @@ import {
   TableRow,
 } from "@/registry/aurora/ui/table"
 
-const mono: React.CSSProperties = { fontFamily: "var(--aurora-font-mono)" }
-
 type Row = { gw: string; code: "200" | "429" | "502"; p99: string }
 
 const rows: Row[] = [
@@ -46,13 +44,13 @@ export default function TableDemo() {
         <TableBody>
           {rows.map((r) => (
             <TableRow key={r.gw} style={{ cursor: "pointer" }} tabIndex={0}>
-              <TableCell style={mono}>{r.gw}</TableCell>
+              <TableCell>{r.gw}</TableCell>
               <TableCell style={{ textAlign: "center" }}>
                 <Badge tone={codeTone(r.code)} dot>
                   {r.code}
                 </Badge>
               </TableCell>
-              <TableCell style={{ ...mono, textAlign: "right" }}>{r.p99}</TableCell>
+              <TableCell style={{ textAlign: "right" }}>{r.p99}</TableCell>
             </TableRow>
           ))}
         </TableBody>
