@@ -16,6 +16,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
@@ -89,38 +90,18 @@ function CopyButton(
     ...props
   }: CopyButtonProps & { ref?: React.Ref<HTMLButtonElement> }
 ) {
-    const [copied, setCopied] = React.useState(false)
-    const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
-
-    React.useEffect(
-      () => () => {
-        if (timer.current) clearTimeout(timer.current)
-      },
-      []
-    )
+    const { state, copied, copy } = useClipboard(timeout)
 
     const handleClick = React.useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event)
         if (event.defaultPrevented) return
 
-        const finish = () => {
-          setCopied(true)
-          onCopy?.(value)
-          if (timer.current) clearTimeout(timer.current)
-          timer.current = setTimeout(() => setCopied(false), timeout)
-        }
-
-        if (
-          typeof navigator !== "undefined" &&
-          navigator.clipboard?.writeText
-        ) {
-          navigator.clipboard.writeText(value).then(finish, () => {})
-        } else {
-          finish()
-        }
+        void copy(value).then((didCopy) => {
+          if (didCopy) onCopy?.(value)
+        })
       },
-      [onClick, onCopy, value, timeout]
+      [onClick, onCopy, value, copy]
     )
 
     const isIconOnly = label === undefined || label === null || label === ""
@@ -135,6 +116,7 @@ function CopyButton(
           "aurora-copy-btn",
           isIconOnly && "aurora-copy-btn--icon",
           copied && "aurora-copy-btn--copied",
+          state === "error" && "aurora-copy-btn--error",
           className
         )}
         onClick={handleClick}
@@ -160,7 +142,7 @@ function CopyButton(
             border: 0,
           }}
         >
-          {copied ? "Copied to clipboard" : ""}
+          {copied ? "Copied to clipboard" : state === "error" ? "Unable to copy to clipboard" : ""}
         </span>
       </button>
     )

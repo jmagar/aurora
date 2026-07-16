@@ -121,9 +121,8 @@ const cardStyle: React.CSSProperties = {
   boxShadow: "var(--aurora-shadow-medium), var(--aurora-highlight-medium)",
 }
 
-const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
-  (
-    {
+const AudioPlayer = (
+    { ref,
       title = "Voice Response",
       duration = "00:42",
       progress = 0,
@@ -135,8 +134,7 @@ const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: AudioPlayerProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const totalSeconds = parseSeconds(duration)
     const current = formatSeconds(totalSeconds * Math.min(1, Math.max(0, progress)))
@@ -284,7 +282,6 @@ const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
       </div>
     )
   }
-)
 AudioPlayer.displayName = "AudioPlayer"
 
 export { AudioPlayer }

@@ -45,8 +45,8 @@ const SIZES = {
   lg: { height: "3rem", radius: "var(--aurora-radius-3)", icon: 18, type: "1.05rem", pad: "0 1.05rem", gap: "0.7rem" },
 } as const
 
-const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spotlight(
-  {
+const Spotlight = function Spotlight(
+  { ref,
     items,
     placeholder = "Search…",
     size = "md",
@@ -58,8 +58,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
     defaultQuery = "",
     className,
     ...props
-  },
-  ref,
+  }: SpotlightProps & { ref?: React.Ref<HTMLDivElement> },
 ) {
   const s = SIZES[size]
   const [query, setQuery] = React.useState(defaultQuery)
@@ -324,7 +323,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
       ) : null}
     </div>
   )
-})
+}
 
 Spotlight.displayName = "Spotlight"
 

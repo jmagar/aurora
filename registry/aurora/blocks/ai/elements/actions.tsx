@@ -22,8 +22,7 @@ export type { ActionProps } from "./action"
 
 export type ActionsProps = React.HTMLAttributes<HTMLDivElement>
 
-const Actions = React.forwardRef<HTMLDivElement, ActionsProps>(
-  ({ className, children, ...props }, ref) => (
+const Actions = ({ ref, className, children, ...props }: ActionsProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       role="group"
@@ -33,7 +32,6 @@ const Actions = React.forwardRef<HTMLDivElement, ActionsProps>(
       {children}
     </div>
   )
-)
 Actions.displayName = "Actions"
 
 const MemoActions = React.memo(Actions)

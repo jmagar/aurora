@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [
     "@aurora/aurora-tokens",
-    "@aurora/aurora-input"
+    "@aurora/aurora-input",
+    "@aurora/aurora-button"
   ],
   "files": [
     {

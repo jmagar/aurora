@@ -91,8 +91,7 @@ function edgePath(a: NodeBox, b: NodeBox): string {
   return `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`
 }
 
-const Node = React.forwardRef<HTMLDivElement, NodeProps>(
-  ({ title, description, className, style, ...props }, ref) => (
+const Node = ({ ref, title, description, className, style, ...props }: NodeProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       className={cn("group/node", className)}
@@ -181,11 +180,9 @@ const Node = React.forwardRef<HTMLDivElement, NodeProps>(
       />
     </div>
   )
-)
 Node.displayName = "Node"
 
-const Canvas = React.forwardRef<HTMLDivElement, CanvasProps>(
-  ({ title, status = "idle", edges = [], className, style, children, ...props }, ref) => {
+const Canvas = ({ ref, title, status = "idle", edges = [], className, style, children, ...props }: CanvasProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const nodes = React.Children.toArray(children).filter(
       (c): c is React.ReactElement<NodeProps> => React.isValidElement(c)
     )
@@ -333,7 +330,6 @@ const Canvas = React.forwardRef<HTMLDivElement, CanvasProps>(
       </div>
     )
   }
-)
 Canvas.displayName = "Canvas"
 
 export { Canvas, Node }

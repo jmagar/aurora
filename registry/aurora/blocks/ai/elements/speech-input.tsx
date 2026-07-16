@@ -33,8 +33,7 @@ export interface SpeechInputProps extends React.TextareaHTMLAttributes<HTMLTextA
   defaultRecording?: boolean
 }
 
-const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
-  function SpeechInput({ className, style, defaultRecording = false, ...props }, ref) {
+const SpeechInput = function SpeechInput({ ref, className, style, defaultRecording = false, ...props }: SpeechInputProps & { ref?: React.Ref<HTMLTextAreaElement> }) {
     const [recording, setRecording] = React.useState(defaultRecording)
 
     return (
@@ -155,8 +154,7 @@ const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
         />
       </div>
     )
-  },
-)
+  }
 
 SpeechInput.displayName = "SpeechInput"
 

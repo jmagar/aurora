@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Check, GitBranch, GitCommitHorizontal } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 export type CommitVariant = "default" | "compact"
 
@@ -64,27 +65,14 @@ function CommitAvatar({ seed, size }: { seed: string; size: number }) {
 }
 
 function HashChip({ hash }: { hash: string }) {
-  const [copied, setCopied] = React.useState(false)
-  const timer = React.useRef<number | undefined>(undefined)
-
-  React.useEffect(() => () => window.clearTimeout(timer.current), [])
-
-  const handleCopy = React.useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(hash)
-      setCopied(true)
-      window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => setCopied(false), 1200)
-    } catch {
-      /* clipboard unavailable */
-    }
-  }, [hash])
+  const { copied, error, copy } = useClipboard(1200)
+  const handleCopy = React.useCallback(() => void copy(hash), [copy, hash])
 
   return (
     <button
       type="button"
       onClick={handleCopy}
-      aria-label={copied ? `Copied ${hash}` : `Copy commit ${hash}`}
+      aria-label={copied ? `Copied ${hash}` : error ? `Unable to copy ${hash}` : `Copy commit ${hash}`}
       className="inline-flex shrink-0 items-center gap-1.5 rounded-[8px] px-2.5 py-1 transition-colors"
       style={{
         border: "1px solid var(--aurora-border-default)",
@@ -101,15 +89,15 @@ function HashChip({ hash }: { hash: string }) {
         {hash}
       </span>
       <span className="sr-only" aria-live="polite" aria-atomic="true">
-        {copied ? "Copied" : ""}
+        {copied ? "Copied" : error ? "Unable to copy" : ""}
       </span>
     </button>
   )
 }
 
 const Commit = React.memo(
-  React.forwardRef<HTMLDivElement, CommitProps>(function Commit(
-    {
+  function Commit(
+    { ref,
       hash,
       message,
       author,
@@ -123,8 +111,7 @@ const Commit = React.memo(
       className,
       style,
       ...props
-    },
-    ref,
+    }: CommitProps & { ref?: React.Ref<HTMLDivElement> },
   ) {
     const seed = author ?? message
     const hasDiffstat =
@@ -267,7 +254,7 @@ const Commit = React.memo(
         ) : null}
       </div>
     )
-  }),
+  },
 )
 Commit.displayName = "Commit"
 

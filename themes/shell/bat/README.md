@@ -26,7 +26,7 @@ There, custom themes can't be registered, so set:
 ```
 
 bat then paints with the **terminal's 16 ANSI colors** — which are Aurora if your
-terminal uses the Aurora palette (see [`themes/editors/warp`](../../themes/editors/warp)). This
+terminal uses the Aurora palette (see [`themes/editors/warp`](../../editors/warp)). This
 is the active setup on the primary host.
 
 This theme also colors `bat -l man` (your `MANPAGER`) and fzf `bat` previews.

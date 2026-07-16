@@ -60,9 +60,8 @@ const SEGMENT_COLORS = [
 const HATCH_FILL =
   "repeating-linear-gradient(45deg, color-mix(in srgb, var(--aurora-text-muted) 22%, transparent) 0 4px, transparent 4px 8px)"
 
-const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
-  (
-    {
+const ContextPanel = (
+    { ref,
       label = "Context",
       limit = 128000,
       used,
@@ -75,8 +74,7 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: ContextPanelProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const segmentTotal = segments?.reduce((sum, s) => sum + s.value, 0) ?? 0
     const usedTokens = segments ? segmentTotal : used ?? 42100
@@ -325,7 +323,6 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
       </div>
     )
   }
-)
 ContextPanel.displayName = "ContextPanel"
 
 /** Alias kept for registry/back-compat parity with the shared barrel. */

@@ -14,12 +14,12 @@ import { cn } from "@/lib/utils"
  *
  * Architecture (forwardRef, displayName, compound parts, HTMLAttributes
  * passthrough, full a11y on the button) is kept from the Aurora registry.
- * Prefer Lucide icon components for `icon`; legacy path strings are accepted
- * only for existing registry consumers.
+ * Prefer Lucide icon components for `icon`; raw SVG strings are intentionally
+ * rejected so untrusted markup can never reach the DOM.
  * ------------------------------------------------------------------ */
 
 type ControlsOrientation = "horizontal" | "vertical"
-type ControlIcon = LucideIcon | React.ReactElement<React.SVGProps<SVGSVGElement>> | string
+type ControlIcon = LucideIcon | React.ReactElement<React.SVGProps<SVGSVGElement>>
 
 const OrientationContext = React.createContext<ControlsOrientation>("horizontal")
 
@@ -29,8 +29,7 @@ export interface ControlsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export interface ControlButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
-   * Lucide icon component or element. Legacy inner SVG path markup is still
-   * accepted for compatibility. Mutually optional with `children`
+   * Lucide icon component or trusted SVG element. Mutually optional with `children`
    * (text-labelled buttons like "Fit").
    */
   icon?: ControlIcon
@@ -38,8 +37,7 @@ export interface ControlButtonProps extends React.ButtonHTMLAttributes<HTMLButto
   active?: boolean
 }
 
-const Controls = React.forwardRef<HTMLDivElement, ControlsProps>(
-  ({ orientation = "horizontal", className, style, children, ...props }, ref) => {
+const Controls = ({ ref, orientation = "horizontal", className, style, children, ...props }: ControlsProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const vertical = orientation === "vertical"
     return (
       <OrientationContext.Provider value={orientation}>
@@ -67,11 +65,9 @@ const Controls = React.forwardRef<HTMLDivElement, ControlsProps>(
       </OrientationContext.Provider>
     )
   }
-)
 Controls.displayName = "Controls"
 
-const ControlButton = React.forwardRef<HTMLButtonElement, ControlButtonProps>(
-  ({ icon, active = false, className, style, children, type, ...props }, ref) => {
+const ControlButton = ({ ref, icon, active = false, className, style, children, type, ...props }: ControlButtonProps & { ref?: React.Ref<HTMLButtonElement> }) => {
     const hasText = children != null && children !== false
     return (
       <button
@@ -115,11 +111,9 @@ const ControlButton = React.forwardRef<HTMLButtonElement, ControlButtonProps>(
       </button>
     )
   }
-)
 ControlButton.displayName = "ControlButton"
 
-const ControlsDivider = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, style, ...props }, ref) => {
+const ControlsDivider = ({ ref, className, style, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) => {
     const orientation = React.useContext(OrientationContext)
     const vertical = orientation === "vertical"
     return (
@@ -137,29 +131,10 @@ const ControlsDivider = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HT
       />
     )
   }
-)
 ControlsDivider.displayName = "ControlsDivider"
 
 function renderControlIcon(icon: ControlIcon | undefined): React.ReactNode {
   if (!icon) return null
-
-  if (typeof icon === "string") {
-    return (
-      <svg
-        aria-hidden
-        width={18}
-        height={18}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.65}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        style={{ flexShrink: 0 }}
-        dangerouslySetInnerHTML={{ __html: icon }}
-      />
-    )
-  }
 
   if (React.isValidElement<React.SVGProps<SVGSVGElement>>(icon)) {
     return React.cloneElement(icon, {

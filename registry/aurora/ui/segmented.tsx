@@ -29,9 +29,8 @@ const SIZES = {
   sm: { containerPad: 3, height: 28, optionPad: "0 13px", font: 12, radius: 9, optionRadius: 6 },
 } as const;
 
-const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
-  (
-    {
+const Segmented = (
+    { ref,
       className,
       style,
       options,
@@ -41,8 +40,7 @@ const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
       size = "md",
       disabled = false,
       ...props
-    },
-    ref,
+    }: SegmentedProps & { ref?: React.Ref<HTMLDivElement> },
   ) => {
     const isControlled = controlledValue !== undefined;
     const [internalValue, setInternalValue] = React.useState<string>(
@@ -142,8 +140,7 @@ const Segmented = React.forwardRef<HTMLDivElement, SegmentedProps>(
         })}
       </div>
     );
-  },
-);
+  };
 Segmented.displayName = "Segmented";
 
 export { Segmented };

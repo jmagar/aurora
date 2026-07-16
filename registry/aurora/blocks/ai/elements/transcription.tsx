@@ -71,8 +71,7 @@ function LiveBadge({ className }: { className?: string }) {
   )
 }
 
-const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
-  ({ segments, className, style, ...props }, ref) => (
+const Transcription = ({ ref, segments, className, style, ...props }: TranscriptionProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       className={cn("grid gap-3 rounded-[var(--aurora-radius-1)] border p-4", className)}
@@ -158,7 +157,6 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
       </div>
     </div>
   )
-)
 Transcription.displayName = "Transcription"
 
 export { Transcription }

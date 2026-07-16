@@ -1,6 +1,6 @@
 import * as React from "react"
 import { notFound, redirect } from "next/navigation"
-import { DEMOS, NON_REGISTRY_DEMOS } from "@/app/gallery/demo-map"
+import galleryManifest from "@/lib/gallery-manifest.json"
 import { formatSectionTitle, getRegistryMeta, SECTION_REDIRECTS } from "@/lib/registry-meta"
 import { ComponentInstall } from "@/components/component-install"
 
@@ -13,9 +13,9 @@ export function generateStaticParams() {
   // Redirect keys (SECTION_REDIRECTS) are intentional aliases that never render
   // a full page — they are exempt. All other keys must be in the registry.
   const unmapped: string[] = []
-  for (const slug of Object.keys(DEMOS)) {
+  for (const slug of Object.keys(galleryManifest)) {
     if (slug in SECTION_REDIRECTS) continue
-    if (NON_REGISTRY_DEMOS.has(slug)) continue
+    if (slug === "new-components") continue
     if (getRegistryMeta(slug) === null) unmapped.push(slug)
   }
   if (unmapped.length > 0) {
@@ -32,7 +32,7 @@ export function generateStaticParams() {
     }
   }
 
-  return Object.keys(DEMOS).map((section) => ({ section }))
+  return Object.keys(galleryManifest).map((section) => ({ section }))
 }
 
 export default async function SectionPage({ params }: { params: Promise<{ section: string }> }) {
@@ -40,8 +40,8 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
   const redirectTarget = SECTION_REDIRECTS[section]
   if (redirectTarget) redirect(`/gallery/${redirectTarget}`)
 
-  const Demo = DEMOS[section]
-  if (!Demo) notFound()
+  if (!(section in galleryManifest)) notFound()
+  const { default: Demo } = await import(`../entries/${section}`)
 
   const meta = getRegistryMeta(section)
   const title = formatSectionTitle(section)

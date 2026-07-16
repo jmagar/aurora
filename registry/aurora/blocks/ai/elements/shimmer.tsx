@@ -54,8 +54,7 @@ function ShimmerBar({
   )
 }
 
-const Shimmer = React.forwardRef<HTMLDivElement, ShimmerProps>(
-  ({ className, style, variant = "line", lines = 3, role, ...props }, ref) => {
+const Shimmer = ({ ref, className, style, variant = "line", lines = 3, role, ...props }: ShimmerProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const a11y = {
       role: role ?? "status",
       "aria-busy": true as const,
@@ -122,7 +121,6 @@ const Shimmer = React.forwardRef<HTMLDivElement, ShimmerProps>(
       />
     )
   }
-)
 Shimmer.displayName = "Shimmer"
 
 export { Shimmer, shimmerVariants }

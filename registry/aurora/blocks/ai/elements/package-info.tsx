@@ -47,9 +47,8 @@ export interface PackageInfoProps extends React.HTMLAttributes<HTMLDivElement> {
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
-const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
-  (
-    {
+const PackageInfo = (
+    { ref,
       name,
       version,
       description,
@@ -62,8 +61,7 @@ const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
       onInstall,
       className,
       ...props
-    },
-    ref
+    }: PackageInfoProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const isCompact = variant === "compact"
     const hasFooter =
@@ -138,7 +136,6 @@ const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
       </div>
     )
   }
-)
 PackageInfo.displayName = "PackageInfo"
 
 const MemoPackageInfo = React.memo(PackageInfo)

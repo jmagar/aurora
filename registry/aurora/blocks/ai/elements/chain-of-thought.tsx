@@ -174,9 +174,8 @@ function StatusNode({ status }: { status: CotStepStatus }) {
 // Main component
 // ---------------------------------------------------------------------------
 
-export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtProps>(
-  function ChainOfThought(
-    {
+export const ChainOfThought = function ChainOfThought(
+    { ref,
       steps = [],
       summary,
       badge,
@@ -185,8 +184,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
       title = "Chain of Thought",
       style,
       ...rest
-    },
-    ref,
+    }: ChainOfThoughtProps & { ref?: React.Ref<HTMLDivElement> },
   ) {
     const [open, setOpen] = React.useState(defaultOpen)
     const lastStreamingIndex = isStreaming ? steps.length - 1 : -1
@@ -382,8 +380,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
         )}
       </div>
     )
-  },
-)
+  }
 
 ChainOfThought.displayName = "ChainOfThought"
 

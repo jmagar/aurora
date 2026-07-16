@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Shield } from "lucide-react"
 import { Avatar, AvatarGroup } from "@/registry/aurora/ui/avatar"
 
 // ─── CD dsCard chrome (ported as inline styles) ──────────────────────────────
@@ -29,9 +30,6 @@ const tones = [
   "var(--aurora-warn)",
 ]
 
-// CD shield icon path.
-const SHIELD_ICON = '<path d="M12 2 5 7v5c0 4 3 6.5 7 8 4-1.5 7-4 7-8V7Z"/>'
-
 export default function AvatarDemo() {
   return (
     <div
@@ -51,7 +49,7 @@ export default function AvatarDemo() {
         <Avatar initials="JM" tone={tones[0]} status="online" />
         <Avatar initials="AX" tone={tones[1]} status="busy" ring />
         <Avatar initials="LB" tone={tones[2]} status="away" />
-        <Avatar icon={SHIELD_ICON} tone={tones[0]} />
+        <Avatar icon={<Shield aria-hidden />} tone={tones[0]} />
         <Avatar initials="SQ" tone={tones[1]} shape="square" />
       </div>
 

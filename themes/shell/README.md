@@ -7,7 +7,7 @@ themes the tools that run *inside* any terminal.
 
 Everything here is derived from the Aurora design system
 (`registry/aurora/styles/aurora.css`, `aurora.tootie.tv`) and the Claude Code
-Aurora theme ([`themes/editors/claude-code/aurora.json`](../themes/editors/claude-code)).
+Aurora theme ([`themes/editors/claude-code/aurora.json`](../editors/claude-code/aurora.json)).
 
 ## The palette
 
@@ -50,7 +50,7 @@ Two of these tools can't take hex and instead inherit the terminal emulator's
   also resolve through the terminal palette.
 
 So the single highest-leverage surface is the **terminal emulator's ANSI
-palette**, which Aurora defines in [`themes/editors/warp/themes/aurora.yaml`](../themes/editors/warp)
+palette**, which Aurora defines in [`themes/editors/warp/themes/aurora.yaml`](../editors/warp/themes/aurora.yaml)
 (`terminal_colors`). Get that right and the named/ansi tools come along for free.
 
 ## Install
@@ -59,9 +59,10 @@ These are **copies** kept in sync with this repo (same model as `editors/` —
 not symlinks, so a `git checkout` of this repo never breaks your live shell).
 
 ```sh
-AUR=~/workspace/aurora/shell
+AUR=~/workspace/aurora/themes/shell
 
 # Prompt + statusline
+mkdir -p ~/.claude ~/.config/bat/themes ~/.local/share/mc/skins
 cp  $AUR/p10k/aurora-p10k.zsh        ~/.p10k.zsh
 cp  $AUR/statusline/statusline-aurora.sh ~/.claude/statusline-aurora.sh
 

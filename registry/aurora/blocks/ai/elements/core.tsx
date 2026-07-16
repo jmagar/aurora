@@ -33,6 +33,7 @@ import {
 import { Avatar as AuroraAvatar } from "@/registry/aurora/ui/avatar"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 import { Separator } from "@/registry/aurora/ui/separator"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/registry/aurora/ui/select"
 import { Spinner } from "@/registry/aurora/ui/spinner"
@@ -378,13 +379,8 @@ function renderJsonValue(value: unknown, depth = 0): React.ReactNode {
 }
 
 function CopyButton({ value, label = "Copy" }: { value: string; label?: string }) {
-  const [copied, setCopied] = React.useState(false)
-
-  const handleCopy = React.useCallback(async () => {
-    await navigator.clipboard.writeText(value)
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1200)
-  }, [value])
+  const { copied, error, copy } = useClipboard(1200)
+  const handleCopy = React.useCallback(() => void copy(value), [copy, value])
 
   return (
     <Button
@@ -392,14 +388,14 @@ function CopyButton({ value, label = "Copy" }: { value: string; label?: string }
       variant="ghost"
       size="sm"
       onClick={handleCopy}
-      aria-label={copied ? "Copied to clipboard" : label}
+      aria-label={copied ? "Copied to clipboard" : error ? "Unable to copy" : label}
     >
       {copied ? (
         <Check className="size-3.5" data-icon="inline-start" aria-hidden />
       ) : (
         <Copy className="size-3.5" data-icon="inline-start" aria-hidden />
       )}
-      <span aria-live="polite" aria-atomic="true">{copied ? "Copied" : label}</span>
+      <span aria-live="polite" aria-atomic="true">{copied ? "Copied" : error ? "Unable to copy" : label}</span>
     </Button>
   )
 }
@@ -487,7 +483,7 @@ function SelectorCard({
   )
 }
 
-const Message = React.forwardRef<HTMLElement, MessageProps>(({ className, role = "assistant", style, ...props }, ref) => (
+const Message = ({ ref, className, role = "assistant", style, ...props }: MessageProps & { ref?: React.Ref<HTMLElement> }) => (
   <article
     ref={ref}
     className={cn(
@@ -502,11 +498,10 @@ const Message = React.forwardRef<HTMLElement, MessageProps>(({ className, role =
     }}
     {...props}
   />
-))
+)
 Message.displayName = "Message"
 
-const MessageAvatar = React.forwardRef<React.ElementRef<typeof AuroraAvatar>, MessageAvatarProps>(
-  ({ className, label, tone = "orange", style, ...props }, ref) => {
+const MessageAvatar = ({ ref, className, label, tone = "orange", style, ...props }: MessageAvatarProps & { ref?: React.Ref<React.ElementRef<typeof AuroraAvatar>> }) => {
     const color =
       tone === "rose"
         ? "var(--aurora-accent-pink)"
@@ -538,7 +533,6 @@ const MessageAvatar = React.forwardRef<React.ElementRef<typeof AuroraAvatar>, Me
       />
     )
   }
-)
 MessageAvatar.displayName = "MessageAvatar"
 
 const bubbleTone = {
@@ -559,8 +553,7 @@ const bubbleTone = {
   },
 } as const
 
-const MessageContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { tone?: MessageProps["role"] }>(
-  ({ className, style, tone = "assistant", ...props }, ref) => (
+const MessageContent = ({ ref, className, style, tone = "assistant", ...props }: React.HTMLAttributes<HTMLDivElement> & { tone?: MessageProps["role"] } & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       className={cn(
@@ -578,11 +571,9 @@ const MessageContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
       {...props}
     />
   )
-)
 MessageContent.displayName = "MessageContent"
 
-const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
-  ({ className, index, style, children, ...props }, ref) => (
+const InlineCitation = ({ ref, className, index, style, children, ...props }: InlineCitationProps & { ref?: React.Ref<HTMLAnchorElement> }) => (
     <a
       ref={ref}
       className={cn(
@@ -606,10 +597,9 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
       {children ?? index}
     </a>
   )
-)
 InlineCitation.displayName = "InlineCitation"
 
-const Sources = React.forwardRef<HTMLDivElement, SourcesProps>(({ className, title = "Sources", style, children, ...props }, ref) => (
+const Sources = ({ ref, className, title = "Sources", style, children, ...props }: SourcesProps & { ref?: React.Ref<HTMLDivElement> }) => (
   <div ref={ref} className={cn("grid gap-2 border p-3", className)} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
       <FileText className="size-3.5" aria-hidden />
@@ -617,10 +607,10 @@ const Sources = React.forwardRef<HTMLDivElement, SourcesProps>(({ className, tit
     </div>
     <div className="grid gap-2">{children}</div>
   </div>
-))
+)
 Sources.displayName = "Sources"
 
-const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(({ className, source, style, ...props }, ref) => (
+const Source = ({ ref, className, source, style, ...props }: SourceProps & { ref?: React.Ref<HTMLAnchorElement> }) => (
   <a
     ref={ref}
     href={source.href ?? "#"}
@@ -643,10 +633,10 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(({ className, so
     </span>
     {source.description ? <span className="aurora-text-meta">{source.description}</span> : null}
   </a>
-))
+)
 Source.displayName = "Source"
 
-const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(({ className, tasks, style, ...props }, ref) => (
+const TaskList = ({ ref, className, tasks, style, ...props }: TaskListProps & { ref?: React.Ref<HTMLDivElement> }) => (
   <div ref={ref} className={cn("grid gap-2 border p-3", className)} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
       <ListChecks className="size-3.5" aria-hidden />
@@ -679,10 +669,10 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(({ className, t
       })}
     </div>
   </div>
-))
+)
 TaskList.displayName = "TaskList"
 
-const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ className, results, style, ...props }, ref) => (
+const TestResults = ({ ref, className, results, style, ...props }: TestResultsProps & { ref?: React.Ref<HTMLDivElement> }) => (
   <div ref={ref} className={cn("grid gap-2 border p-3", className)} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
       <FlaskConical className="size-3.5" aria-hidden />
@@ -711,10 +701,10 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(({ classN
       ))}
     </div>
   </div>
-))
+)
 TestResults.displayName = "TestResults"
 
-const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(({ className, title = "Stack Trace", frames, style, ...props }, ref) => (
+const StackTrace = ({ ref, className, title = "Stack Trace", frames, style, ...props }: StackTraceProps & { ref?: React.Ref<HTMLDivElement> }) => (
   <div ref={ref} className={cn("grid gap-2 border p-3", className)} style={panelStyle(style)} {...props}>
     <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-error)" }}>
       <CircleAlert className="size-3.5" aria-hidden />
@@ -734,11 +724,10 @@ const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(({ classNam
       ))}
     </div>
   </div>
-))
+)
 StackTrace.displayName = "StackTrace"
 
-const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariablesProps>(
-  ({ className, variables, style, ...props }, ref) => (
+const EnvironmentVariables = ({ ref, className, variables, style, ...props }: EnvironmentVariablesProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid gap-2 rounded-[8px] border p-3", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
         <KeyRound className="size-3.5" aria-hidden />
@@ -761,11 +750,9 @@ const EnvironmentVariables = React.forwardRef<HTMLDivElement, EnvironmentVariabl
       </div>
     </div>
   )
-)
 EnvironmentVariables.displayName = "EnvironmentVariables"
 
-const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
-  ({ label, description, className, style, ...props }, ref) => (
+const Checkpoint = ({ ref, label, description, className, style, ...props }: CheckpointProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <Save className="mt-0.5 size-4" aria-hidden style={{ color: "var(--axon-orange)" }} />
       <div className="min-w-0">
@@ -774,11 +761,9 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
       </div>
     </div>
   )
-)
 Checkpoint.displayName = "Checkpoint"
 
-const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
-  ({ title, description, confirmLabel = "Approve", cancelLabel = "Cancel", className, style, ...props }, ref) => (
+const Confirmation = ({ ref, title, description, confirmLabel = "Approve", cancelLabel = "Cancel", className, style, ...props }: ConfirmationProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid gap-3 border p-4", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-section" style={{ color: "var(--aurora-text-primary)" }}>
         <CircleAlert className="size-4" aria-hidden style={{ color: "var(--aurora-warn)" }} />
@@ -797,11 +782,9 @@ const Confirmation = React.forwardRef<HTMLDivElement, ConfirmationProps>(
       </div>
     </div>
   )
-)
 Confirmation.displayName = "Confirmation"
 
-const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
-  ({ used = 42100, limit = 128000, label = "Context", className, style, ...props }, ref) => {
+const ContextPanel = ({ ref, used = 42100, limit = 128000, label = "Context", className, style, ...props }: ContextPanelProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const percent = limit > 0 ? Math.min(Math.max((used / limit) * 100, 0), 100) : 0
 
     return (
@@ -868,11 +851,9 @@ const ContextPanel = React.forwardRef<HTMLDivElement, ContextPanelProps>(
       </div>
     )
   }
-)
 ContextPanel.displayName = "ContextPanel"
 
-const Conversation = React.forwardRef<HTMLDivElement, ConversationProps>(
-  ({ className, style, ...props }, ref) => (
+const Conversation = ({ ref, className, style, ...props }: ConversationProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       role="log"
@@ -891,11 +872,9 @@ const Conversation = React.forwardRef<HTMLDivElement, ConversationProps>(
       {...props}
     />
   )
-)
 Conversation.displayName = "Conversation"
 
-const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
-  ({ models, value, defaultValue, onValueChange, label = "Model", name, disabled, required, triggerId, triggerLabel, className, style, ...props }, ref) => (
+const ModelSelector = ({ ref, models, value, defaultValue, onValueChange, label = "Model", name, disabled, required, triggerId, triggerLabel, className, style, ...props }: ModelSelectorProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={className} style={style} {...props}>
       <SelectorCard
         icon={<Sparkles className="size-3.5" aria-hidden style={{ color: "var(--axon-orange)" }} />}
@@ -913,16 +892,12 @@ const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
       />
     </div>
   )
-)
 ModelSelector.displayName = "ModelSelector"
 
-const Queue = React.forwardRef<HTMLDivElement, QueueProps>(
-  ({ tasks, ...props }, ref) => <TaskList ref={ref} tasks={tasks} {...props} />
-)
+const Queue = ({ ref, tasks, ...props }: QueueProps & { ref?: React.Ref<HTMLDivElement> }) => <TaskList ref={ref} tasks={tasks} {...props} />
 Queue.displayName = "Queue"
 
-const Shimmer = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, style, ...props }, ref) => (
+const Shimmer = ({ ref, className, style, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       className={cn("h-3 overflow-hidden rounded-full", className)}
@@ -935,11 +910,9 @@ const Shimmer = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
       {...props}
     />
   )
-)
 Shimmer.displayName = "Shimmer"
 
-const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
-  ({ className, style, options, children, onClick, disabled, ...props }, ref) => (
+const Suggestion = ({ ref, className, style, options, children, onClick, disabled, ...props }: SuggestionProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid gap-2", className)} style={{ width: "100%", minWidth: 0, ...style }} {...props}>
       {(options ?? [{ id: "default", title: typeof children === "string" ? children : "Suggested next step" }]).map((option) => (
         <Button
@@ -965,11 +938,9 @@ const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
       ))}
     </div>
   )
-)
 Suggestion.displayName = "Suggestion"
 
-const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
-  ({ name, role, status = "idle", className, style, ...props }, ref) => (
+const Agent = ({ ref, name, role, status = "idle", className, style, ...props }: AgentProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <Bot className="size-[18px]" aria-hidden style={{ color: "var(--axon-orange)" }} />
       <span className="min-w-0">
@@ -981,11 +952,9 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
       </Badge>
     </div>
   )
-)
 Agent.displayName = "Agent"
 
-const Commit = React.forwardRef<HTMLDivElement, CommitProps>(
-  ({ hash, message, author, className, style, ...props }, ref) => (
+const Commit = ({ ref, hash, message, author, className, style, ...props }: CommitProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <GitCommitHorizontal className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
       <span className="min-w-0">
@@ -994,22 +963,18 @@ const Commit = React.forwardRef<HTMLDivElement, CommitProps>(
       </span>
     </div>
   )
-)
 Commit.displayName = "Commit"
 
-const JsxPreview = React.forwardRef<HTMLDivElement, JsxPreviewProps>(
-  ({ code, className, style, ...props }, ref) => (
+const JsxPreview = ({ ref, code, className, style, ...props }: JsxPreviewProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={className} style={style} {...props}>
       <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="JSX Preview" value={code}>
         <pre className="overflow-auto rounded-[7px] border p-3 aurora-text-code" style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-panel-strong)" }}>{code}</pre>
       </CodeSurface>
     </div>
   )
-)
 JsxPreview.displayName = "JsxPreview"
 
-const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
-  ({ name, version, description, className, style, ...props }, ref) => (
+const PackageInfo = ({ ref, name, version, description, className, style, ...props }: PackageInfoProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-3 rounded-[8px] border p-3", className)} style={panelStyle(style)} {...props}>
       <Package className="size-5" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
       <span className="min-w-0">
@@ -1019,11 +984,9 @@ const PackageInfo = React.forwardRef<HTMLDivElement, PackageInfoProps>(
       </span>
     </div>
   )
-)
 PackageInfo.displayName = "PackageInfo"
 
-const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
-  ({ title = "Sandbox", command = "pnpm dev", status = "running", runtime = "Node 20", paths = ["/workdir/app", "/workdir/.next"], envCount = 8, className, style, children, ...props }, ref) => (
+const Sandbox = ({ ref, title = "Sandbox", command = "pnpm dev", status = "running", runtime = "Node 20", paths = ["/workdir/app", "/workdir/.next"], envCount = 8, className, style, children, ...props }: SandboxProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Boxes className="size-3.5" aria-hidden />{title}</span>
@@ -1053,11 +1016,9 @@ const Sandbox = React.forwardRef<HTMLDivElement, SandboxProps>(
       {children}
     </div>
   )
-)
 Sandbox.displayName = "Sandbox"
 
-const SchemaDisplay = React.forwardRef<HTMLPreElement, SchemaDisplayProps>(
-  ({ schema, className, style, ...props }, ref) => (
+const SchemaDisplay = ({ ref, schema, className, style, ...props }: SchemaDisplayProps & { ref?: React.Ref<HTMLPreElement> }) => (
     <div className={className} style={style}>
       <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="Schema Display" value={stringifyWithOrder(schema)}>
         <pre
@@ -1071,11 +1032,9 @@ const SchemaDisplay = React.forwardRef<HTMLPreElement, SchemaDisplayProps>(
       </CodeSurface>
     </div>
   )
-)
 SchemaDisplay.displayName = "SchemaDisplay"
 
-const Snippet = React.forwardRef<HTMLPreElement, SnippetProps>(
-  ({ code, language = "tsx", className, style, ...props }, ref) => (
+const Snippet = ({ ref, code, language = "tsx", className, style, ...props }: SnippetProps & { ref?: React.Ref<HTMLPreElement> }) => (
     <div className={className} style={style}>
       <CodeSurface icon={<FileCode className="size-3.5" aria-hidden />} title="Snippet" value={code}>
         <pre
@@ -1091,31 +1050,25 @@ const Snippet = React.forwardRef<HTMLPreElement, SnippetProps>(
       </CodeSurface>
     </div>
   )
-)
 Snippet.displayName = "Snippet"
 
-const Image = React.forwardRef<HTMLImageElement, AuroraImageProps>(
-  ({ caption, className, style, alt = "", ...props }, ref) => (
+const Image = ({ ref, caption, className, style, alt = "", ...props }: AuroraImageProps & { ref?: React.Ref<HTMLImageElement> }) => (
     <figure className={cn("grid gap-2", className)} style={{ margin: 0 }}>
       <img ref={ref} alt={alt} className="w-full rounded-[8px] border object-cover" style={{ borderColor: "var(--aurora-border-default)", ...style }} {...props} />
       {caption ? <figcaption className="aurora-text-meta">{caption}</figcaption> : null}
     </figure>
   )
-)
 Image.displayName = "Image"
 
-const OpenInChat = React.forwardRef<HTMLButtonElement, OpenInChatProps>(
-  ({ children = "Open in Chat", ...props }, ref) => (
+const OpenInChat = ({ ref, children = "Open in Chat", ...props }: OpenInChatProps & { ref?: React.Ref<HTMLButtonElement> }) => (
     <Button ref={ref} type="button" variant="neutral" size="sm" {...props}>
       <Send className="size-3.5" data-icon="inline-start" aria-hidden />
       {children}
     </Button>
   )
-)
 OpenInChat.displayName = "OpenInChat"
 
-const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
-  ({ title = "Voice Response", duration = "00:42", className, style, ...props }, ref) => (
+const AudioPlayer = ({ ref, title = "Voice Response", duration = "00:42", className, style, ...props }: AudioPlayerProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <Button type="button" size="icon" variant="neutral" aria-label={`Play ${title}`}>
         <Play className="size-4" data-icon="inline-start" aria-hidden />
@@ -1127,11 +1080,9 @@ const AudioPlayer = React.forwardRef<HTMLDivElement, AudioPlayerProps>(
       <span className="aurora-text-meta">{duration}</span>
     </div>
   )
-)
 AudioPlayer.displayName = "AudioPlayer"
 
-const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
-  ({ devices, value, defaultValue, onValueChange, name, disabled, required, triggerId, triggerLabel, ...props }, ref) => (
+const MicSelector = ({ ref, devices, value, defaultValue, onValueChange, name, disabled, required, triggerId, triggerLabel, ...props }: MicSelectorProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} {...props}>
       <SelectorCard
         icon={<Mic className="size-3.5" aria-hidden />}
@@ -1149,11 +1100,9 @@ const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
       />
     </div>
   )
-)
 MicSelector.displayName = "MicSelector"
 
-const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
-  ({ name, description, className, style, ...props }, ref) => (
+const Persona = ({ ref, name, description, className, style, ...props }: PersonaProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid grid-cols-[auto_minmax(0,1fr)] gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       <UserRound className="size-5" aria-hidden style={{ color: "var(--aurora-accent-pink)" }} />
       <span className="min-w-0">
@@ -1162,21 +1111,17 @@ const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
       </span>
     </div>
   )
-)
 Persona.displayName = "Persona"
 
-const SpeechInput = React.forwardRef<HTMLTextAreaElement, SpeechInputProps>(
-  ({ className, style, ...props }, ref) => (
+const SpeechInput = ({ ref, className, style, ...props }: SpeechInputProps & { ref?: React.Ref<HTMLTextAreaElement> }) => (
     <div className="grid gap-2 border p-3" style={panelStyle()}>
       <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Mic className="size-3.5" aria-hidden />Speech Input</div>
       <Textarea ref={ref} className={cn("min-h-20 resize-none rounded-[8px] p-3 aurora-text-body", className)} style={{ ...style }} {...props} />
     </div>
   )
-)
 SpeechInput.displayName = "SpeechInput"
 
-const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
-  ({ segments, className, style, ...props }, ref) => (
+const Transcription = ({ ref, segments, className, style, ...props }: TranscriptionProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("grid gap-2 rounded-[8px] border p-3", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}>
         <Mic className="size-3.5" aria-hidden />
@@ -1200,11 +1145,9 @@ const Transcription = React.forwardRef<HTMLDivElement, TranscriptionProps>(
       </div>
     </div>
   )
-)
 Transcription.displayName = "Transcription"
 
-const VoiceSelector = React.forwardRef<HTMLDivElement, VoiceSelectorProps>(
-  ({ voices, value, defaultValue, onValueChange, name, disabled, required, triggerId, triggerLabel, ...props }, ref) => (
+const VoiceSelector = ({ ref, voices, value, defaultValue, onValueChange, name, disabled, required, triggerId, triggerLabel, ...props }: VoiceSelectorProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} {...props}>
       <SelectorCard
         icon={<Sparkles className="size-3.5" aria-hidden style={{ color: "var(--axon-orange)" }} />}
@@ -1222,61 +1165,48 @@ const VoiceSelector = React.forwardRef<HTMLDivElement, VoiceSelectorProps>(
       />
     </div>
   )
-)
 VoiceSelector.displayName = "VoiceSelector"
 
-const Canvas = React.forwardRef<HTMLDivElement, CanvasProps>(
-  ({ className, style, ...props }, ref) => (
+const Canvas = ({ ref, className, style, ...props }: CanvasProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("relative min-h-64 border p-4", className)} style={{ ...panelStyle(style), backgroundImage: "linear-gradient(var(--aurora-border-default) 1px, transparent 1px), linear-gradient(90deg, var(--aurora-border-default) 1px, transparent 1px)", backgroundSize: "24px 24px" }} {...props} />
   )
-)
 Canvas.displayName = "Canvas"
 
-const Connection = React.forwardRef<HTMLDivElement, ConnectionProps>(
-  ({ from, to, className, style, ...props }, ref) => (
+const Connection = ({ ref, from, to, className, style, ...props }: ConnectionProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("flex items-center gap-2 aurora-text-control", className)} style={{ color: "var(--aurora-text-primary)", ...style }} {...props}>
       <Network className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />{from}<Route className="size-4" aria-hidden />{to}
     </div>
   )
-)
 Connection.displayName = "Connection"
 
-const Controls = React.forwardRef<HTMLDivElement, ControlsProps>(
-  ({ className, style, ...props }, ref) => (
+const Controls = ({ ref, className, style, ...props }: ControlsProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("flex items-center gap-2 border p-2", className)} style={panelStyle(style)} {...props} />
   )
-)
 Controls.displayName = "Controls"
 
-const Edge = React.forwardRef<HTMLDivElement, EdgeProps>(
-  ({ label = "Edge", className, style, ...props }, ref) => (
+const Edge = ({ ref, label = "Edge", className, style, ...props }: EdgeProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("flex items-center gap-2 aurora-text-meta", className)} style={style} {...props}>
       <span className="h-px flex-1" style={{ background: "var(--aurora-accent-primary)" }} />
       {label}
       <span className="h-px flex-1" style={{ background: "var(--aurora-accent-primary)" }} />
     </div>
   )
-)
 Edge.displayName = "Edge"
 
-const Node = React.forwardRef<HTMLDivElement, NodeProps>(
-  ({ title, description, className, style, ...props }, ref) => (
+const Node = ({ ref, title, description, className, style, ...props }: NodeProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div ref={ref} className={cn("w-56 border p-3", className)} style={panelStyle(style)} {...props}>
       <div className="flex items-center gap-2 aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}><Workflow className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />{title}</div>
       {description ? <div className="aurora-text-meta">{description}</div> : null}
     </div>
   )
-)
 Node.displayName = "Node"
 
-const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
-  ({ title, className, children, style, ...props }, ref) => (
+const Panel = ({ ref, title, className, children, style, ...props }: PanelProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <aside ref={ref} className={cn("grid gap-3 border p-3", className)} style={panelStyle(style)} {...props}>
       {title ? <div className="flex items-center gap-2 aurora-text-label" style={{ color: "var(--aurora-text-muted)" }}><Sparkles className="size-3.5 shrink-0" aria-hidden style={{ color: "var(--axon-orange)" }} />{title}</div> : null}
       {children}
     </aside>
   )
-)
 Panel.displayName = "Panel"
 
 export {

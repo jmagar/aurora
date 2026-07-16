@@ -30,8 +30,7 @@ export interface QueueProps extends React.HTMLAttributes<HTMLDivElement> {
   items: QueueItem[]
 }
 
-const Queue = React.forwardRef<HTMLDivElement, QueueProps>(
-  ({ title, items, className, style, ...props }, ref) => {
+const Queue = ({ ref, title, items, className, style, ...props }: QueueProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const runningCount = items.filter((i) => i.status === "running").length
     const queuedCount = items.filter((i) => i.status === "queued").length
 
@@ -108,7 +107,6 @@ const Queue = React.forwardRef<HTMLDivElement, QueueProps>(
       </div>
     )
   }
-)
 Queue.displayName = "Queue"
 
 function QueueRow({ item, position }: { item: QueueItem; position?: number }) {

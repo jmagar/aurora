@@ -46,13 +46,8 @@ const statusColor: Record<MessageAvatarStatus, string> = {
 // Circular initials/photo avatar with a tone-tinted ring and an optional glowing
 // presence dot. Visual spec ported 1:1 from the Claude Design source.
 
-const MessageAvatar = React.forwardRef<
-  React.ElementRef<typeof AuroraAvatar>,
-  MessageAvatarProps
->(
-  (
-    { className, label, src, tone = "axon", status, size = 34, style, ...props },
-    ref
+const MessageAvatar = (
+    { ref, className, label, src, tone = "axon", status, size = 34, style, ...props }: MessageAvatarProps & { ref?: React.Ref<React.ElementRef<typeof AuroraAvatar>> }
   ) => {
     const color = toneColor[tone]
     // Dot sits at the bottom-right corner, overlapping the avatar ring.
@@ -110,7 +105,6 @@ const MessageAvatar = React.forwardRef<
       </span>
     )
   }
-)
 MessageAvatar.displayName = "MessageAvatar"
 
 export { MessageAvatar }

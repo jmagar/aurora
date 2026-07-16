@@ -7,6 +7,7 @@
   "dependencies": [],
   "registryDependencies": [
     "@aurora/aurora-tokens",
+    "@aurora/aurora-button",
     "@aurora/aurora-components"
   ],
   "files": [

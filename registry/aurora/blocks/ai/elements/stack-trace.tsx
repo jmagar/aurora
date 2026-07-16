@@ -55,8 +55,7 @@ function formatOrigin(frame: StackFrame): string {
   return `${frame.file}${line}${column}`
 }
 
-const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
-  ({ className, title = "Stack Trace", error, frames, style, ...props }, ref) => (
+const StackTrace = ({ ref, className, title = "Stack Trace", error, frames, style, ...props }: StackTraceProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       className={cn("grid gap-3.5 p-4", className)}
@@ -183,7 +182,6 @@ const StackTrace = React.forwardRef<HTMLDivElement, StackTraceProps>(
       </div>
     </div>
   )
-)
 StackTrace.displayName = "StackTrace"
 
 export { StackTrace }

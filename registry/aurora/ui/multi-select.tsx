@@ -88,8 +88,7 @@ interface MultiSelectChipProps {
   disabled?: boolean
 }
 
-const MultiSelectChip = React.forwardRef<HTMLSpanElement, MultiSelectChipProps>(
-  ({ label, onRemove, disabled }, ref) => (
+const MultiSelectChip = ({ ref, label, onRemove, disabled }: MultiSelectChipProps & { ref?: React.Ref<HTMLSpanElement> }) => (
     <span
       ref={ref}
       className={cn(
@@ -130,7 +129,6 @@ const MultiSelectChip = React.forwardRef<HTMLSpanElement, MultiSelectChipProps>(
       </button>
     </span>
   )
-)
 MultiSelectChip.displayName = "MultiSelectChip"
 
 // ─── Option row (checkbox item) ───────────────────────────────────────────────
@@ -141,8 +139,7 @@ interface MultiSelectItemProps {
   onToggle: () => void
 }
 
-const MultiSelectItem = React.forwardRef<HTMLDivElement, MultiSelectItemProps>(
-  ({ option, selected, onToggle }, ref) => (
+const MultiSelectItem = ({ ref, option, selected, onToggle }: MultiSelectItemProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       role="option"
@@ -190,14 +187,12 @@ const MultiSelectItem = React.forwardRef<HTMLDivElement, MultiSelectItemProps>(
       <span className="truncate">{option.label}</span>
     </div>
   )
-)
 MultiSelectItem.displayName = "MultiSelectItem"
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
-const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
-  (
-    {
+const MultiSelect = (
+    { ref,
       className,
       options,
       value: valueProp,
@@ -209,8 +204,7 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
       placeholder = "Select…",
       disabled,
       ...props
-    },
-    ref
+    }: MultiSelectProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const listboxId = React.useId()
     const [valueState, setValueState] = React.useState<string[]>(
@@ -375,7 +369,6 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
       </div>
     )
   }
-)
 MultiSelect.displayName = "MultiSelect"
 
 // ─── Exports ──────────────────────────────────────────────────────────────────

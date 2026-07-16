@@ -140,9 +140,8 @@ function StepNode({ status }: { status: PlanStepStatus }) {
 // Plan
 // ---------------------------------------------------------------------------
 
-export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
-  { title = "Plan", steps = [], isStreaming, style, ...rest },
-  ref
+export const Plan = function Plan(
+  { ref, title = "Plan", steps = [], isStreaming, style, ...rest }: PlanProps & { ref?: React.Ref<HTMLDivElement> }
 ) {
   const total = steps.length
   const doneCount = steps.filter((s) => s.status === "done").length
@@ -305,7 +304,7 @@ export const Plan = React.forwardRef<HTMLDivElement, PlanProps>(function Plan(
         </ol>
     </div>
   )
-})
+}
 
 Plan.displayName = "Plan"
 

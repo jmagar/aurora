@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Check, Copy } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -235,14 +236,8 @@ function highlightLine(line: string, rules: Rule[]): React.ReactNode {
 // ---------------------------------------------------------------------------
 
 function CopyButton({ code }: { code: string }) {
-  const [copied, setCopied] = React.useState(false)
-
-  function handleCopy() {
-    navigator.clipboard.writeText(code).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
+  const { copied, error, copy } = useClipboard(2000)
+  const handleCopy = React.useCallback(() => void copy(code), [code, copy])
 
   return (
     <Button
@@ -250,8 +245,8 @@ function CopyButton({ code }: { code: string }) {
       variant="plain"
       size="sm"
       onClick={handleCopy}
-      aria-label={copied ? "Copied" : "Copy code"}
-      title={copied ? "Copied" : "Copy to clipboard"}
+      aria-label={copied ? "Copied" : error ? "Unable to copy" : "Copy code"}
+      title={copied ? "Copied" : error ? "Unable to copy" : "Copy to clipboard"}
       style={{
         gap: "6px",
         fontSize: "13px",

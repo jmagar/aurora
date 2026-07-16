@@ -112,9 +112,8 @@ function AgentAvatar({ status, size }: AvatarProps) {
   )
 }
 
-const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
-  (
-    {
+const Agent = (
+    { ref,
       name,
       role,
       status = "idle",
@@ -128,8 +127,7 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: AgentProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const tone = statusTone[status]
     const hasProgress = typeof progress === "number"
@@ -330,7 +328,6 @@ const Agent = React.forwardRef<HTMLDivElement, AgentProps>(
       </div>
     )
   }
-)
 Agent.displayName = "Agent"
 
 export { Agent }

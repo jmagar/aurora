@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { isNavigationKey, nextEnabledIndex } from "@/registry/aurora/lib/widget-interactions"
 
 // ---------------------------------------------------------------------------
 // Context
@@ -12,6 +13,7 @@ interface RadioGroupContextValue {
   onValueChange: (v: string) => void
   disabled?: boolean
   name?: string
+  firstFocusableValue?: string
 }
 
 const RadioGroupContext = React.createContext<RadioGroupContextValue>({
@@ -32,6 +34,8 @@ export interface RadioGroupProps {
   children?: React.ReactNode
   className?: string
   style?: React.CSSProperties
+  "aria-label"?: string
+  "aria-labelledby"?: string
 }
 
 function RadioGroup({
@@ -43,10 +47,18 @@ function RadioGroup({
   children,
   className,
   style,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
 }: RadioGroupProps) {
   const isControlled = controlledValue !== undefined
   const [internalValue, setInternalValue] = React.useState(defaultValue)
   const value = isControlled ? controlledValue : internalValue
+  const firstFocusableValue = React.Children.toArray(children).find((child) =>
+    React.isValidElement<RadioGroupItemProps>(child) && !child.props.disabled
+  )
+  const firstValue = React.isValidElement<RadioGroupItemProps>(firstFocusableValue)
+    ? firstFocusableValue.props.value
+    : undefined
 
   function handleValueChange(v: string) {
     if (!isControlled) setInternalValue(v)
@@ -54,9 +66,11 @@ function RadioGroup({
   }
 
   return (
-    <RadioGroupContext.Provider value={{ value, onValueChange: handleValueChange, disabled, name }}>
+    <RadioGroupContext.Provider value={{ value, onValueChange: handleValueChange, disabled, name, firstFocusableValue: firstValue }}>
       <div
         role="radiogroup"
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledby}
         className={className}
         style={{ display: "flex", flexDirection: "column", gap: 11, ...style }}
       >
@@ -99,18 +113,35 @@ function RadioGroupItem({
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault()
       select()
+      return
+    }
+    if (isNavigationKey(e.key)) {
+      e.preventDefault()
+      const group = e.currentTarget.closest('[role="radiogroup"]')
+      const radios = Array.from(group?.querySelectorAll<HTMLButtonElement>('[role="radio"]') ?? [])
+      const current = radios.indexOf(e.currentTarget)
+      const disabledItems = radios.map((radio) => radio.disabled)
+      const direction = getComputedStyle(e.currentTarget).direction === "rtl" ? "rtl" : "ltr"
+      const index = nextEnabledIndex(current, e.key, disabledItems, direction)
+      const next = radios[index]
+      if (next) {
+        next.focus()
+        next.click()
+      }
     }
   }
 
+  const controlId = React.useId()
+  const resolvedId = id ?? controlId
   const dot = (
     <button
       ref={ref}
-      id={children ? undefined : id}
+      id={resolvedId}
       type="button"
       role="radio"
       aria-checked={checked}
       disabled={disabled}
-      tabIndex={disabled ? -1 : 0}
+      tabIndex={disabled ? -1 : checked || (ctx.value === undefined && ctx.firstFocusableValue === value) ? 0 : -1}
       onClick={select}
       onKeyDown={handleKeyDown}
       onFocus={() => setFocused(true)}
@@ -158,7 +189,7 @@ function RadioGroupItem({
 
   return (
     <label
-      htmlFor={id}
+      htmlFor={resolvedId}
       className={cn(
         "inline-flex items-center gap-[9px]",
         disabled ? "cursor-not-allowed" : "cursor-pointer",

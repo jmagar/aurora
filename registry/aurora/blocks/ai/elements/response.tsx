@@ -4,6 +4,7 @@ import * as React from "react"
 import { Check, CodeXml, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/registry/aurora/ui/button"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 export interface ResponseSource {
   /** Source title shown in the citation hover/focus preview. */
@@ -96,16 +97,8 @@ function highlight(code: string): React.ReactNode[] {
 }
 
 function CodeCopyButton({ value }: { value: string }) {
-  const [copied, setCopied] = React.useState(false)
-  const handleCopy = React.useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(value)
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 1200)
-    } catch {
-      /* clipboard unavailable — no-op */
-    }
-  }, [value])
+  const { copied, error, copy } = useClipboard(1200)
+  const handleCopy = React.useCallback(() => void copy(value), [copy, value])
 
   return (
     <Button
@@ -113,7 +106,7 @@ function CodeCopyButton({ value }: { value: string }) {
       variant="ghost"
       size="icon"
       onClick={handleCopy}
-      aria-label={copied ? "Copied to clipboard" : "Copy code"}
+      aria-label={copied ? "Copied to clipboard" : error ? "Unable to copy code" : "Copy code"}
       iconLeft={
         copied ? (
           <Check size={14} strokeWidth={1.75} aria-hidden data-icon="inline-start" />
@@ -123,7 +116,7 @@ function CodeCopyButton({ value }: { value: string }) {
       }
     >
       <span className="sr-only" aria-live="polite" aria-atomic="true">
-        {copied ? "Copied" : "Copy code"}
+        {copied ? "Copied" : error ? "Unable to copy" : "Copy code"}
       </span>
     </Button>
   )
@@ -470,10 +463,8 @@ function parseBlocks(markdown: string): Block[] {
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
-const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
-  (
-    { markdown, sources, onCitationClick, streaming = false, className, style, ...props },
-    ref
+const Response = (
+    { ref, markdown, sources, onCitationClick, streaming = false, className, style, ...props }: ResponseProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const blocks = React.useMemo(() => parseBlocks(markdown), [markdown])
     const lastIndex = blocks.length - 1
@@ -579,7 +570,6 @@ const Response = React.forwardRef<HTMLDivElement, ResponseProps>(
       </div>
     )
   }
-)
 Response.displayName = "Response"
 
 export { Response }

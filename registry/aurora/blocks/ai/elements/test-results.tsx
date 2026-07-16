@@ -53,8 +53,7 @@ function panelStyle(style?: React.CSSProperties): React.CSSProperties {
   }
 }
 
-const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
-  ({ className, results, style, ...props }, ref) => {
+const TestResults = ({ ref, className, results, style, ...props }: TestResultsProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const total = results.length
     const passed = results.filter((r) => r.status === "passed").length
     const failed = results.filter((r) => r.status === "failed").length
@@ -203,8 +202,7 @@ const TestResults = React.forwardRef<HTMLDivElement, TestResultsProps>(
         </div>
       </div>
     )
-  },
-)
+  }
 TestResults.displayName = "TestResults"
 
 export { TestResults }

@@ -19,6 +19,8 @@ logs
 .broadcastr
 # testing
 /coverage
+/android/aurora/src/test/snapshots/images/*_actual.png
+/android/aurora/src/test/snapshots/images/*_compare.png
 
 # next.js
 /.next/
@@ -26,6 +28,8 @@ logs
 
 # production
 /build
+/ops/compose/production.env
+/ops/rendered-swag/
 
 # misc
 .DS_Store

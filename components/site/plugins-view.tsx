@@ -122,6 +122,7 @@ export function PluginsView() {
         <Marketplace
           sources={SOURCES}
           items={ITEMS}
+          initialItemLimit={18}
           readOnlyPreview
           eyebrow="dendrite"
           heading="Plugin Catalog"

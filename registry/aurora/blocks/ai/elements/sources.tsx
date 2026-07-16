@@ -75,9 +75,8 @@ function CountBadge({ count }: { count: number }) {
 // Sources — bordered panel with file icon, title, count badge, collapsible body
 // ---------------------------------------------------------------------------
 
-const Sources = React.forwardRef<HTMLDivElement, SourcesProps>(
-  (
-    {
+const Sources = (
+    { ref,
       className,
       title = "Sources",
       collapsible = false,
@@ -87,8 +86,7 @@ const Sources = React.forwardRef<HTMLDivElement, SourcesProps>(
       style,
       children,
       ...props
-    },
-    ref
+    }: SourcesProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const isControlled = openProp !== undefined
     const [openState, setOpenState] = React.useState(defaultOpen)
@@ -151,15 +149,13 @@ const Sources = React.forwardRef<HTMLDivElement, SourcesProps>(
       </div>
     )
   }
-)
 Sources.displayName = "Sources"
 
 // ---------------------------------------------------------------------------
 // Source — numbered row card with title, optional DOCS chip, host, arrow
 // ---------------------------------------------------------------------------
 
-const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(
-  ({ className, source, index, style, target, rel, tabIndex, ...props }, ref) => {
+const Source = ({ ref, className, source, index, style, target, rel, tabIndex, ...props }: SourceProps & { ref?: React.Ref<HTMLAnchorElement> }) => {
     const host = hostname(source.href)
     const isLinked = Boolean(source.href)
     return (
@@ -248,7 +244,6 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(
       </a>
     )
   }
-)
 Source.displayName = "Source"
 
 export { Source, Sources }

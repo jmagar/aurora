@@ -31,8 +31,7 @@ export interface MessageContentProps extends React.HTMLAttributes<HTMLDivElement
 // ─── Message ─────────────────────────────────────────────────────────────────
 // Turn row: avatar + bubble, with a timestamp/actions meta row revealed on hover.
 
-const Message = React.forwardRef<HTMLElement, MessageProps>(
-  ({ className, role = "assistant", time, actions, style, children, ...props }, ref) => {
+const Message = ({ ref, className, role = "assistant", time, actions, style, children, ...props }: MessageProps & { ref?: React.Ref<HTMLElement> }) => {
     const isUser = role === "user"
     const hasMeta = time != null || actions != null
 
@@ -71,16 +70,12 @@ const Message = React.forwardRef<HTMLElement, MessageProps>(
       </article>
     )
   }
-)
 Message.displayName = "Message"
 
 // ─── MessageActionButton ──────────────────────────────────────────────────────
 // 24×24 ghost icon button used inside the meta row.
 
-const MessageActionButton = React.forwardRef<
-  HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, type = "button", ...props }, ref) => (
+const MessageActionButton = ({ ref, className, type = "button", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { ref?: React.Ref<HTMLButtonElement> }) => (
   <Button
     ref={ref}
     type={type}
@@ -89,15 +84,12 @@ const MessageActionButton = React.forwardRef<
     className={["size-6 rounded-[6px] p-0", className].filter(Boolean).join(" ")}
     {...props}
   />
-))
+)
 MessageActionButton.displayName = "MessageActionButton"
 
 // ─── MessageAvatar ────────────────────────────────────────────────────────────
 
-const MessageAvatar = React.forwardRef<
-  React.ElementRef<typeof AuroraAvatar>,
-  MessageAvatarProps
->(({ className, label, tone = "axon", status = "online", style, ...props }, ref) => {
+const MessageAvatar = ({ ref, className, label, tone = "axon", status = "online", style, ...props }: MessageAvatarProps & { ref?: React.Ref<React.ElementRef<typeof AuroraAvatar>> }) => {
   const color =
     tone === "axon"
       ? "var(--axon-orange)"
@@ -130,7 +122,7 @@ const MessageAvatar = React.forwardRef<
       {...props}
     />
   )
-})
+}
 MessageAvatar.displayName = "MessageAvatar"
 
 // ─── MessageContent ────────────────────────────────────────────────────────────
@@ -158,8 +150,7 @@ const bubbleTone = {
   },
 } as const
 
-const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
-  ({ className, style, tone = "assistant", streaming = false, children, ...props }, ref) => {
+const MessageContent = ({ ref, className, style, tone = "assistant", streaming = false, children, ...props }: MessageContentProps & { ref?: React.Ref<HTMLDivElement> }) => {
     return (
       <div
         ref={ref}
@@ -198,7 +189,6 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
       </div>
     )
   }
-)
 MessageContent.displayName = "MessageContent"
 
 export { Message, MessageActionButton, MessageAvatar, MessageContent }

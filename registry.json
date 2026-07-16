@@ -1219,7 +1219,8 @@
         "lucide-react@^0.487.0"
       ],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-badge"
       ],
       "files": [
         {
@@ -1424,7 +1425,8 @@
       "description": "Full-width status banners with info, success, warn, and error Aurora tint variants.",
       "dependencies": [],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -1457,6 +1459,7 @@
       "dependencies": [],
       "registryDependencies": [
         "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
         "@aurora/aurora-components"
       ],
       "files": [
@@ -1563,7 +1566,6 @@
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
         "@aurora/aurora-input",
-        "@aurora/aurora-radio-group",
         "@aurora/aurora-select"
       ],
       "files": [
@@ -1780,7 +1782,8 @@
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
-        "@aurora/aurora-textarea"
+        "@aurora/aurora-textarea",
+        "@aurora/aurora-clipboard"
       ],
       "files": [
         {
@@ -1929,7 +1932,8 @@
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-clipboard"
       ],
       "files": [
         {
@@ -2121,6 +2125,11 @@
           "path": "registry/aurora/blocks/files/code-editor/code-editor.tsx",
           "type": "registry:component",
           "target": "@components/aurora/code-editor.tsx"
+        },
+        {
+          "path": "registry/aurora/blocks/files/code-editor/tokenizer.ts",
+          "type": "registry:lib",
+          "target": "@components/aurora/tokenizer.ts"
         }
       ],
       "author": "jmagar <https://github.com/jmagar>",
@@ -2413,7 +2422,8 @@
         "@aurora/aurora-input",
         "@aurora/aurora-radio-group",
         "@aurora/aurora-select",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-clipboard"
       ],
       "files": [
         {
@@ -2516,14 +2526,18 @@
       "description": "Single-choice radio group extracted as an independently installable Aurora primitive.",
       "dependencies": [],
       "registryDependencies": [
-        "@aurora/aurora-tokens",
-        "@aurora/aurora-checkbox"
+        "@aurora/aurora-tokens"
       ],
       "files": [
         {
           "path": "registry/aurora/ui/radio-group.tsx",
           "type": "registry:ui",
           "target": "@ui/aurora/radio-group.tsx"
+        },
+        {
+          "path": "registry/aurora/lib/widget-interactions.ts",
+          "type": "registry:lib",
+          "target": "@lib/aurora/widget-interactions.ts"
         }
       ],
       "author": "jmagar <https://github.com/jmagar>",
@@ -2630,6 +2644,11 @@
           "path": "registry/aurora/ui/combobox.tsx",
           "type": "registry:ui",
           "target": "@ui/aurora/combobox.tsx"
+        },
+        {
+          "path": "registry/aurora/lib/widget-interactions.ts",
+          "type": "registry:lib",
+          "target": "@lib/aurora/widget-interactions.ts"
         }
       ],
       "author": "jmagar <https://github.com/jmagar>",
@@ -2655,13 +2674,19 @@
       "description": "Lightweight anchored disclosure surface for inline details, previews, and quick editors.",
       "dependencies": [],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
           "path": "registry/aurora/ui/popover.tsx",
           "type": "registry:ui",
           "target": "@ui/aurora/popover.tsx"
+        },
+        {
+          "path": "registry/aurora/lib/widget-interactions.ts",
+          "type": "registry:lib",
+          "target": "@lib/aurora/widget-interactions.ts"
         }
       ],
       "author": "jmagar <https://github.com/jmagar>",
@@ -3152,7 +3177,8 @@
         "@aurora/aurora-select",
         "@aurora/aurora-separator",
         "@aurora/aurora-spinner",
-        "@aurora/aurora-textarea"
+        "@aurora/aurora-textarea",
+        "@aurora/aurora-clipboard"
       ],
       "files": [
         {
@@ -3498,7 +3524,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-input"
+        "@aurora/aurora-input",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -3723,7 +3750,9 @@
       "description": "Horizontal application menu bar with compact Aurora menu items.",
       "dependencies": [],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-dropdown-menu",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -3851,7 +3880,8 @@
       "description": "Pressed-state toggle button for compact workbench controls.",
       "dependencies": [],
       "registryDependencies": [
-        "@aurora/aurora-tokens"
+        "@aurora/aurora-tokens",
+        "@aurora/aurora-button"
       ],
       "files": [
         {
@@ -5563,7 +5593,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-clipboard"
       ],
       "files": [
         {
@@ -6048,6 +6079,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
+        "@aurora/aurora-badge",
+        "@aurora/aurora-button",
         "@aurora/aurora-components"
       ],
       "files": [
@@ -6153,6 +6186,7 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
+        "@aurora/aurora-button",
         "@aurora/aurora-components"
       ],
       "files": [
@@ -6189,7 +6223,8 @@
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-components",
-        "@aurora/aurora-button"
+        "@aurora/aurora-button",
+        "@aurora/aurora-clipboard"
       ],
       "files": [
         {
@@ -6248,6 +6283,34 @@
         "installTarget": "@components/aurora/ai/source.tsx"
       },
       "docs": "Aurora block that installs Aurora AI Source.\n\nInstall `aurora-tokens` and `aurora-badge` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/source.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`."
+    },
+    {
+      "name": "aurora-clipboard",
+      "type": "registry:lib",
+      "title": "Aurora Clipboard Hook",
+      "description": "Shared clipboard state with a secure fallback, explicit failure state, and unmount-safe feedback timer.",
+      "files": [
+        {
+          "path": "registry/aurora/lib/use-clipboard.ts",
+          "type": "registry:lib",
+          "target": "@lib/aurora/use-clipboard.ts"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [],
+      "categories": [
+        "aurora",
+        "lib"
+      ],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "lib",
+        "requiresTokens": false,
+        "sourcePath": "registry/aurora/lib/use-clipboard.ts"
+      },
+      "docs": "Use useClipboard for verified copy feedback, explicit errors, fallback support, and timer cleanup."
     },
     {
       "name": "aurora-portal-container",

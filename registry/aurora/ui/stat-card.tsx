@@ -26,11 +26,8 @@ export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   sub?: React.ReactNode;
   /** Caption under the value. */
   description?: React.ReactNode;
-  /**
-   * Inline SVG path markup rendered inside the leading icon chip
-   * (the inner content of a `0 0 24 24` viewBox stroke icon).
-   */
-  icon?: string;
+  /** Trusted React icon rendered inside the leading icon chip. */
+  icon?: React.ReactNode;
   /** Compact tier: no icon chip, tighter padding, smaller value. */
   compact?: boolean;
   /** Optional left accent rail tone (legacy). */
@@ -158,17 +155,7 @@ export function StatCard(
               color: "var(--aurora-accent-strong)",
             }}
           >
-            <svg
-              width={16}
-              height={16}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              dangerouslySetInnerHTML={{ __html: icon }}
-            />
+            {icon}
           </span>
         )}
         <span

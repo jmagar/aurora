@@ -6,10 +6,31 @@ Aurora's Android surface is the **`tv.tootie.aurora:aurora`** library, sourced a
 the Compose equivalent of the web shadcn registry. Read it before claiming an Android
 token/shape exists.
 
-Consuming apps (e.g. axon at `~/workspace/axon/apps/android`) pull it in as a Gradle
-dependency — `implementation("tv.tootie.aurora:aurora")` — wired through a **local
-composite build**: the app's `settings.gradle.kts` includes `../../../aurora/android`
-when present, so changes to the library are picked up without publishing.
+Aurora is not published to Maven. Consumers use a normal dependency coordinate
+with an explicit local composite substitution. Use a configurable absolute path;
+do not hard-code the retired `aurora-design-system` checkout name or silently
+fall back to a nonexistent Maven artifact:
+
+```kotlin
+// settings.gradle.kts
+val auroraAndroidPath = providers.gradleProperty("auroraAndroidPath")
+    .orElse(providers.environmentVariable("AURORA_ANDROID_PATH"))
+    .orNull
+    ?: error("Set -PauroraAndroidPath=/path/to/aurora/android or AURORA_ANDROID_PATH")
+
+includeBuild(file(auroraAndroidPath)) {
+    dependencySubstitution {
+        substitute(module("tv.tootie.aurora:aurora")).using(project(":aurora"))
+    }
+}
+```
+
+```kotlin
+// app/build.gradle.kts — the version is a placeholder consumed by substitution.
+dependencies {
+    implementation("tv.tootie.aurora:aurora:0.0.0-local")
+}
+```
 
 ## The contract is the same — expressed in Compose
 
@@ -51,8 +72,10 @@ These are the Compose forms of "primitives bypassed". If you see them, consolida
 
 ## Verifying Android changes
 
-- **Build:** `./gradlew :app:assembleDebug` (run with the aurora composite build available —
-  set `AXON_AURORA_ANDROID_PATH` / `-PaxonAuroraAndroidPath` if the relative path isn't found).
+- **Build:** `AURORA_ANDROID_PATH=/path/to/aurora/android ./gradlew :app:assembleDebug`.
+- **Contract smoke:** Aurora CI runs `ops/smoke-android-composite.sh`, which
+  creates an external temporary Android consumer, resolves the dependency
+  coordinate through substitution, imports `AuroraTheme`, and compiles it.
 - **Tests:** `./gradlew test` (theme tests live under `ui/theme/`, e.g. `AxonThemeTest`).
 - **Visual parity:** screenshot before/after on an emulator (use the `claude-in-mobile` /
   `android-app-testing` skills). When consolidating tokens, hold appearance constant — a

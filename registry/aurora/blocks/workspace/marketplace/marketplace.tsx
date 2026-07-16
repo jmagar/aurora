@@ -71,6 +71,8 @@ export interface MarketplaceProps {
   sources?: MarketplaceSource[]
   items?: MarketplaceCatalogItem[]
   readOnlyPreview?: boolean
+  /** Render this many results initially, then progressively reveal more. */
+  initialItemLimit?: number
   /** Header eyebrow. Defaults to "Operator catalog". */
   eyebrow?: string
   /** Header title. Defaults to "Marketplace". */
@@ -416,6 +418,7 @@ export function Marketplace({
   sources = DEMO_SOURCES,
   items = DEMO_ITEMS,
   readOnlyPreview = false,
+  initialItemLimit,
   eyebrow = "Operator catalog",
   heading = "Marketplace",
   intro = "Browse Claude and Codex plugins, MCP Registry servers, ACP agents, and installable components through one Labby catalog.",
@@ -431,6 +434,8 @@ export function Marketplace({
   const [sourceId, setSourceId] = React.useState<string | "all">("all")
   const [view, setView] = React.useState<MarketplaceViewMode>("cards")
   const [selected, setSelected] = React.useState<MarketplaceCatalogItem | null>(null)
+  const initialVisibleCount = initialItemLimit ?? Number.POSITIVE_INFINITY
+  const [visibility, setVisibility] = React.useState({ key: "", count: initialVisibleCount })
 
   const sourceItems = React.useMemo<MarketplaceCatalogItem[]>(
     () =>
@@ -466,6 +471,9 @@ export function Marketplace({
       return matchesLens && matchesType && matchesSource && (!needle || text.includes(needle))
     })
   }, [catalogItems, lens, query, sourceId, sourceItems, type])
+  const visibilityKey = `${lens}\0${query}\0${sourceId}\0${type}\0${view}\0${initialVisibleCount}`
+  const visibleCount = visibility.key === visibilityKey ? visibility.count : initialVisibleCount
+  const visibleItems = filteredItems.slice(0, visibleCount)
 
   const summary = React.useMemo(() => {
     return {
@@ -681,7 +689,7 @@ export function Marketplace({
             />
           ) : view === "cards" ? (
             <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-3">
-              {filteredItems.map((item) => <CatalogCard key={item.id} item={item} readOnlyPreview={readOnlyPreview} labelFor={actionLabel} onAction={handleAction} />)}
+              {visibleItems.map((item) => <CatalogCard key={item.id} item={item} readOnlyPreview={readOnlyPreview} labelFor={actionLabel} onAction={handleAction} />)}
             </div>
           ) : (
             <div className="overflow-hidden rounded-[8px] border" style={{ background: "var(--aurora-panel-medium)", borderColor: "var(--aurora-border-strong)" }}>
@@ -697,7 +705,7 @@ export function Marketplace({
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredItems.map((item) => (
+                    {visibleItems.map((item) => (
                       <tr key={item.id} className="transition-colors hover:bg-[color-mix(in_srgb,var(--aurora-accent-primary)_4%,transparent)]">
                         <td className="px-4 py-3" style={{ borderBottom: "1px solid var(--aurora-border-default)" }}>
                           <div className="flex items-center gap-3">
@@ -724,6 +732,17 @@ export function Marketplace({
               </div>
             </div>
           )}
+          {visibleItems.length < filteredItems.length ? (
+            <div className="mt-5 flex justify-center">
+              <Button
+                variant="neutral"
+                type="button"
+                onClick={() => setVisibility({ key: visibilityKey, count: visibleCount + (initialItemLimit ?? 24) })}
+              >
+                Load More ({filteredItems.length - visibleItems.length} remaining)
+              </Button>
+            </div>
+          ) : null}
         </main>
       </div>
 

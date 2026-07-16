@@ -55,11 +55,8 @@ export interface AvatarProps
    * and the soft tone ring.
    */
   tone?: string
-  /**
-   * SVG inner-path markup rendered as a tone-colored glyph instead of initials
-   * (e.g. `<path d="…"/>`). Drawn on a 24×24 viewBox with `currentColor`.
-   */
-  icon?: string
+  /** Trusted React icon rendered instead of initials. */
+  icon?: React.ReactNode
   /** Circle (default) or rounded square. */
   shape?: AvatarShape
   /** Adds an outer focus-style ring in the avatar's tone. */
@@ -224,18 +221,13 @@ function Avatar({
           delayMs={300}
         >
           {icon ? (
-            <svg
-              viewBox="0 0 24 24"
-              width={Math.round(dims.wh * 0.52)}
-              height={Math.round(dims.wh * 0.52)}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.75}
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <span
               aria-hidden="true"
-              dangerouslySetInnerHTML={{ __html: icon }}
-            />
+              className="inline-flex items-center justify-center [&_svg]:size-full"
+              style={{ width: Math.round(dims.wh * 0.52), height: Math.round(dims.wh * 0.52) }}
+            >
+              {icon}
+            </span>
           ) : (
             label
           )}

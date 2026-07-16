@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 
 function Table({ ref, className, ...props }: React.TableHTMLAttributes<HTMLTableElement> & { ref?: React.Ref<HTMLTableElement> }) {

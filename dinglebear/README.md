@@ -2,8 +2,9 @@
 
 `dinglebear.ai` is the umbrella home co-hosted inside this Aurora Next.js
 app: the MCP server fleet at the root plus the full Aurora design system
-(registry, components, themes) on the same domain. It is the home domain of
-the Aurora deployment (`aurora.dinglebear.ai`).
+(registry, components, themes) on the same domain. The canonical tenant hosts
+are `dinglebear.ai` and `www.dinglebear.ai`; `aurora.tootie.tv` remains the
+design-system hostname. `aurora.dinglebear.ai` is not part of the serving contract.
 
 ## How it is served
 
@@ -24,6 +25,9 @@ the Aurora deployment (`aurora.dinglebear.ai`).
 
 `aurora.tootie.tv` is unaffected; `https://dinglebear.ai/r/{name}.json`
 works as a registry endpoint alongside it.
+
+Both tenant hosts use the same digest-pinned production container and SWAG
+upstream documented in `docs/deployment.md`.
 
 ## Files
 

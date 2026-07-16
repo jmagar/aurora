@@ -33,9 +33,8 @@ const statusColor: Record<NodeStatus, string> = {
   error: "var(--aurora-error)",
 }
 
-const Node = React.forwardRef<HTMLDivElement, NodeProps>(
-  (
-    {
+const Node = (
+    { ref,
       title,
       description,
       status = "idle",
@@ -45,8 +44,7 @@ const Node = React.forwardRef<HTMLDivElement, NodeProps>(
       style,
       onClick,
       ...props
-    },
-    ref
+    }: NodeProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const interactive = typeof onClick === "function"
     const accent = statusColor[status]
@@ -159,7 +157,6 @@ const Node = React.forwardRef<HTMLDivElement, NodeProps>(
       </div>
     )
   }
-)
 Node.displayName = "Node"
 
 function handleStyle(side: "left" | "right", selected: boolean): React.CSSProperties {
