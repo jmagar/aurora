@@ -1,14 +1,19 @@
 #!/usr/bin/env node
-import { spawnSync } from "node:child_process"
-import { readFileSync, writeFileSync } from "node:fs"
+import { readFileSync, readdirSync, writeFileSync } from "node:fs"
 import ts from "typescript"
 
 const checkOnly = process.argv.includes("--check")
-const search = spawnSync("rg", ["-l", "React\\.forwardRef", "registry/aurora", "--glob", "*.tsx"], {
-  encoding: "utf8",
-})
-if (search.status !== 0 && search.status !== 1) throw new Error(search.stderr || "rg failed")
-const files = search.stdout.trim().split("\n").filter(Boolean)
+function sourceFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = `${directory}/${entry.name}`
+    if (entry.isDirectory()) return sourceFiles(path)
+    return entry.isFile() && entry.name.endsWith(".tsx") ? [path] : []
+  })
+}
+
+const files = sourceFiles("registry/aurora")
+  .filter((file) => readFileSync(file, "utf8").includes("React.forwardRef"))
+  .sort()
 
 if (checkOnly) {
   if (files.length) {
