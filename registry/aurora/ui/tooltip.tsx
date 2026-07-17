@@ -8,6 +8,7 @@
 import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/registry/aurora/lib/portal-container"
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
@@ -24,8 +25,9 @@ const TooltipTrigger = TooltipPrimitive.Trigger
 // ─── Content ─────────────────────────────────────────────────────────────────
 
 function TooltipContent({ ref, className, sideOffset = 6, style, ...props }: React.ComponentProps<typeof TooltipPrimitive.Content> & { ref?: React.Ref<React.ComponentRef<typeof TooltipPrimitive.Content>> }) {
+  const portalContainer = usePortalContainer()
   return (
-    <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Portal container={portalContainer ?? undefined}>
       <TooltipPrimitive.Content
         ref={ref}
         sideOffset={sideOffset}

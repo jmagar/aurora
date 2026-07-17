@@ -38,9 +38,8 @@ export interface ConnectionProps extends React.HTMLAttributes<HTMLDivElement> {
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
-const Connection = React.forwardRef<HTMLDivElement, ConnectionProps>(
-  (
-    {
+const Connection = (
+    { ref,
       from,
       to,
       label,
@@ -48,8 +47,7 @@ const Connection = React.forwardRef<HTMLDivElement, ConnectionProps>(
       bidirectional = false,
       className,
       ...props
-    },
-    ref
+    }: ConnectionProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const dashed = status === "active" || status === "pending"
     const flowing = status === "active"
@@ -97,7 +95,6 @@ const Connection = React.forwardRef<HTMLDivElement, ConnectionProps>(
       </div>
     )
   }
-)
 Connection.displayName = "Connection"
 
 const MemoConnection = React.memo(Connection)

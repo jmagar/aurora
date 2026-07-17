@@ -64,7 +64,7 @@ pnpm audit:composition    # Check registry composition rules
 
 ## Architecture Overview
 
-Aurora is a **shadcn-compatible component registry** (128 items) served as a
+Aurora is a **shadcn-compatible component registry** (175 items) served as a
 Next.js 16 / React 19 / Tailwind v4 app at `aurora.tootie.tv`. The site is a
 landing page (`/`) + a component gallery + a themes hub (`/themes`), and doubles
 as a live registry endpoint — `/` content-negotiates between browser (landing)
@@ -75,7 +75,7 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
 - `app/gallery/` — the component gallery
 - `app/dinglebear/` — serves the co-hosted dinglebear.ai tenant (see below)
 - `registry/aurora/styles/` — Aurora token layer (`aurora.css`, CSS custom properties)
-- `registry/aurora/ui/` — 64 shadcn UI primitives recolored to Aurora tokens
+- `registry/aurora/ui/` — 79 published UI primitives plus 2 internal support primitives
 - `registry/aurora/blocks/{ai,auth,feedback,files,navigation,workspace}` — composed product blocks
 - `lib/themes.ts` — catalog powering the `/themes` site (single source of truth for the web)
 - `components/site/` — shared marketing chrome (header/footer shell, theme cards, style helpers)
@@ -117,10 +117,10 @@ and shadcn CLI (registry JSON from `public/r/*.json`).
 - **Non-interactive shell.** Use `cp -f`, `mv -f`, `rm -f`, `rm -rf` — see `AGENTS.md`.
 - **See also:** `AGENTS.md` (agent shell rules), `SKILL.md` (Aurora usage skill),
   `docs/component-kotlin-map.md` (Kotlin/Compose parity matrix).
-- **SWAG upstream contract:** `aurora.tootie.tv` is reverse-proxied by SWAG on `squirts`
-  (`/mnt/appdata/swag/nginx/proxy-confs/aurora-design.subdomain.conf`) → upstream is the
-  `aurora` container on **dookie**, port `50000→3000` (this repo's
-  `docker-compose.yaml` `aurora` dev service, bind-mounting the primary
-  checkout — merges to `main` go live without a deploy step; an `aurora-prod`
-  standalone-build service exists as the production alternative). Scheme HTTP, no Authelia.
-  Changes to port/host must be mirrored in that proxy config.
+- **SWAG upstream contract:** `aurora.tootie.tv`, `dinglebear.ai`, and
+  `www.dinglebear.ai` are reverse-proxied by SWAG on `squirts` to the immutable
+  `aurora` production container on **dookie**, host port `50000→3000`. The
+  canonical digest-only Compose overlay and SWAG templates are tracked under
+  `ops/`; `docs/deployment.md` is the runbook. The `aurora-dev` source bind mount
+  is isolated on port 3000 and must never receive public traffic. Scheme HTTP,
+  no Authelia. Validate topology before changing either side.

@@ -1,5 +1,3 @@
-"use client"
-
 /**
  * Aurora Card — the canonical panel. Two tiers (strong / medium), optional
  * accent edge, optional interactive hover-lift + glow.
@@ -89,6 +87,16 @@ function CardDescription({ className, style, ref, ...props }: React.HTMLAttribut
   )
 }
 
+function CardAction({ className, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
+    <div
+      ref={ref}
+      className={cn("ml-auto flex items-center gap-2", className)}
+      {...props}
+    />
+  )
+}
+
 /* ─── CardContent ─────────────────────────────────────────────────────────── */
 
 function CardContent({ className, ref, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
@@ -108,5 +116,5 @@ function CardFooter({ className, style, ref, ...props }: React.HTMLAttributes<HT
   )
 }
 
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
+export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 export default Card

@@ -18,7 +18,7 @@
     "targetScope": "project-root",
     "manualCommand": "bash .config/aurora/agent/install-aurora-plugin.sh"
   },
-  "docs": "Installs a project-local helper script. Run the generated script manually with `bash .config/aurora/agent/install-aurora-plugin.sh` to clone/update the Aurora repo and call `claude plugin install ./plugin`.",
+  "docs": "Installs a project-local helper script. Run the generated script manually with `bash .config/aurora/agent/install-aurora-plugin.sh` to clone/update the Aurora repo and call `claude plugin install ./plugin`.\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "agent",

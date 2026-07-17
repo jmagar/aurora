@@ -4,6 +4,7 @@ import * as React from "react"
 import { Check, CodeXml, Copy } from "lucide-react"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 export interface SnippetProps extends React.HTMLAttributes<HTMLPreElement> {
   code: string
@@ -109,21 +110,8 @@ function highlight(code: string): React.ReactNode[] {
 }
 
 function CopyIconButton({ value }: { value: string }) {
-  const [copied, setCopied] = React.useState(false)
-  const timer = React.useRef<number | undefined>(undefined)
-
-  React.useEffect(() => () => window.clearTimeout(timer.current), [])
-
-  const handleCopy = React.useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(value)
-      setCopied(true)
-      window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => setCopied(false), 1200)
-    } catch {
-      /* clipboard unavailable */
-    }
-  }, [value])
+  const { copied, error, copy } = useClipboard(1200)
+  const handleCopy = React.useCallback(() => void copy(value), [copy, value])
 
   return (
     <Button
@@ -131,11 +119,11 @@ function CopyIconButton({ value }: { value: string }) {
       variant="ghost"
       size="icon"
       onClick={handleCopy}
-      aria-label={copied ? "Copied to clipboard" : "Copy code"}
+      aria-label={copied ? "Copied to clipboard" : error ? "Unable to copy code" : "Copy code"}
     >
       {copied ? <Check className="size-3.5" aria-hidden /> : <Copy className="size-3.5" aria-hidden />}
       <span className="sr-only" aria-live="polite" aria-atomic="true">
-        {copied ? "Copied" : "Copy code"}
+        {copied ? "Copied" : error ? "Unable to copy" : "Copy code"}
       </span>
     </Button>
   )
@@ -147,8 +135,7 @@ function CopyIconButton({ value }: { value: string }) {
  * architecture: `forwardRef` to the underlying `<pre>`, `displayName`, full
  * prop spread, and an accessible copy affordance.
  */
-const Snippet = React.forwardRef<HTMLPreElement, SnippetProps>(
-  ({ code, language = "tsx", className, style, ...props }, ref) => (
+const Snippet = ({ ref, code, language = "tsx", className, style, ...props }: SnippetProps & { ref?: React.Ref<HTMLPreElement> }) => (
     <div
       className={className}
       style={{
@@ -194,7 +181,6 @@ const Snippet = React.forwardRef<HTMLPreElement, SnippetProps>(
       </pre>
     </div>
   )
-)
 Snippet.displayName = "Snippet"
 
 export { Snippet }

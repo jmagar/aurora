@@ -78,9 +78,8 @@ function chipStyle(tone: "neutral" | "ai" = "neutral"): React.CSSProperties {
 // Component
 // ---------------------------------------------------------------------------
 
-const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
-  (
-    {
+const AiImageGrid = (
+    { ref,
       images,
       caption,
       model,
@@ -92,8 +91,7 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: AiImageGridProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const isControlled = value !== undefined
     const [internal, setInternal] = React.useState(defaultValue)
@@ -284,7 +282,6 @@ const AiImageGrid = React.forwardRef<HTMLDivElement, AiImageGridProps>(
       </div>
     )
   }
-)
 AiImageGrid.displayName = "AiImageGrid"
 
 export { AiImageGrid }

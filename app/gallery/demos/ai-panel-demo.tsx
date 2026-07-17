@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Plus, RefreshCw } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { Panel } from "@/registry/aurora/blocks/ai/elements/panel"
@@ -32,22 +33,10 @@ export default function AiPanelDemo() {
           eyebrow="Inspector"
           title="Request"
           tone="cyan"
-          icon={'<path d="M4 12h16M12 4v16"/>'}
+          icon={Plus}
           actions={
             <Button variant="plain" size="unstyled" className="aurora-ael__btn icon sm" type="button" aria-label="Refresh" title="Refresh">
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.6}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5" />
-              </svg>
+              <RefreshCw size={13} strokeWidth={1.6} aria-hidden />
             </Button>
           }
           footer="Last updated 12s ago"

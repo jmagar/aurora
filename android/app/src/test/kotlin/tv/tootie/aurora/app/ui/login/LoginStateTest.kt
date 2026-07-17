@@ -173,8 +173,8 @@ class LoginStateTest {
         // Simulate the null guard failing — neither field should produce a transition
         val nullUrl: String? = null
         val nullCode: String? = null
-        assertFalse(nullUrl != null && code != null)
-        assertFalse(url != null && nullCode != null)
+        assertFalse(listOf(nullUrl, code).all { it != null })
+        assertFalse(listOf(url, nullCode).all { it != null })
     }
 
     // -------------------------------------------------------------------------

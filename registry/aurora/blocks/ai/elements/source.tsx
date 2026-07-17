@@ -44,8 +44,7 @@ function hostname(href?: string): string | null {
 // external-link arrow). Hover lifts the surface and border.
 // ---------------------------------------------------------------------------
 
-const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(
-  ({ className, source, index, style, target, rel, tabIndex, ...props }, ref) => {
+const Source = ({ ref, className, source, index, style, target, rel, tabIndex, ...props }: SourceProps & { ref?: React.Ref<HTMLAnchorElement> }) => {
     const host = hostname(source.href)
     const isLinked = Boolean(source.href)
 
@@ -136,7 +135,6 @@ const Source = React.forwardRef<HTMLAnchorElement, SourceProps>(
       </a>
     )
   }
-)
 Source.displayName = "Source"
 
 export { Source }

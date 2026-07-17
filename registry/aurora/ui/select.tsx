@@ -2,69 +2,15 @@
 
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/registry/aurora/lib/portal-container"
 
 // ─── Root ───────────────────────────────────────────────────────────────────
 
 const Select = SelectPrimitive.Root
 const SelectGroup = SelectPrimitive.Group
 const SelectValue = SelectPrimitive.Value
-
-// ─── Chevron icon ────────────────────────────────────────────────────────────
-
-function ChevronDown({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.75}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={cn("h-4 w-4", className)}
-      aria-hidden="true"
-    >
-      <path d="M4 6l4 4 4-4" />
-    </svg>
-  )
-}
-
-function ChevronUp({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.75}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={cn("h-4 w-4", className)}
-      aria-hidden="true"
-    >
-      <path d="M4 10l4-4 4 4" />
-    </svg>
-  )
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={cn("h-3.5 w-3.5", className)}
-      aria-hidden="true"
-    >
-      <path d="M3 8l3.5 3.5L13 4" />
-    </svg>
-  )
-}
 
 // ─── Trigger ─────────────────────────────────────────────────────────────────
 
@@ -104,10 +50,10 @@ function SelectTrigger({ ref, className, children, ...props }: React.ComponentPr
         props.onBlur?.(e)
       }}
       {...props}
-    >
+      >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="shrink-0 text-[var(--aurora-text-muted)]" />
+        <ChevronDownIcon className="h-4 w-4 shrink-0 text-[var(--aurora-text-muted)]" aria-hidden="true" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
@@ -122,7 +68,7 @@ function SelectScrollUpButton({ ref, className, ...props }: React.ComponentProps
       className={cn("flex cursor-default items-center justify-center py-1", className)}
       {...props}
     >
-      <ChevronUp className="text-[var(--aurora-text-muted)]" />
+      <ChevronUpIcon className="h-4 w-4 text-[var(--aurora-text-muted)]" aria-hidden="true" />
     </SelectPrimitive.ScrollUpButton>
   )
 }
@@ -134,7 +80,7 @@ function SelectScrollDownButton({ ref, className, ...props }: React.ComponentPro
       className={cn("flex cursor-default items-center justify-center py-1", className)}
       {...props}
     >
-      <ChevronDown className="text-[var(--aurora-text-muted)]" />
+      <ChevronDownIcon className="h-4 w-4 text-[var(--aurora-text-muted)]" aria-hidden="true" />
     </SelectPrimitive.ScrollDownButton>
   )
 }
@@ -142,8 +88,9 @@ function SelectScrollDownButton({ ref, className, ...props }: React.ComponentPro
 // ─── Content (dropdown panel) ─────────────────────────────────────────────────
 
 function SelectContent({ ref, className, children, position = "popper", ...props }: React.ComponentProps<typeof SelectPrimitive.Content> & { ref?: React.Ref<React.ComponentRef<typeof SelectPrimitive.Content>> }) {
+  const portalContainer = usePortalContainer()
   return (
-    <SelectPrimitive.Portal>
+    <SelectPrimitive.Portal container={portalContainer ?? undefined}>
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
@@ -236,7 +183,7 @@ function SelectItem({ ref, className, children, ...props }: React.ComponentProps
     >
       <span className="absolute right-2.5 flex h-3.5 w-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <CheckIcon className="text-[var(--aurora-accent-primary)]" />
+          <CheckIcon className="h-3.5 w-3.5 text-[var(--aurora-accent-primary)]" aria-hidden="true" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

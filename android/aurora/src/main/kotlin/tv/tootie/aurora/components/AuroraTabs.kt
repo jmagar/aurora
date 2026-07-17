@@ -1,8 +1,8 @@
 package tv.tootie.aurora.components
 
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,14 +28,14 @@ public fun AuroraTabs(
     compact: Boolean = false,
 ) {
     if (scrollable) {
-        ScrollableTabRow(
+        PrimaryScrollableTabRow(
             selectedTabIndex = selectedIndex,
             modifier = modifier,
         ) {
             AuroraTabItems(tabs, selectedIndex, onTabSelected, compact)
         }
     } else {
-        TabRow(
+        PrimaryTabRow(
             selectedTabIndex = selectedIndex,
             modifier = modifier,
         ) {

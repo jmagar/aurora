@@ -7,11 +7,12 @@ values are recorded here.
 
 ## Web app / registry site
 
-The Aurora site is a **static shadcn-compatible registry and gallery**. It
-serves component JSON payloads and documentation. There is **no server-side
-authentication and no user data** — it stores no credentials, sessions, or
-personally identifiable information. The same applies to the co-hosted
-registry/marketplace pages.
+The Aurora site is a **public shadcn-compatible registry and gallery**. Its
+content is generated from repository sources, but HTML is request-rendered to
+support CSP nonces. It serves component JSON payloads and documentation. There
+is **no server-side authentication and no user data** — it stores no credentials,
+sessions, or personally identifiable information. The same applies to the
+co-hosted registry/marketplace pages.
 
 ### HTTP security headers
 
@@ -24,7 +25,8 @@ routes** (`source: "/(.*)"`):
 | `X-Frame-Options` | `SAMEORIGIN` |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` |
 | `Strict-Transport-Security` | `max-age=63072000; includeSubDomains` |
-| `Content-Security-Policy` | see below |
+| `Content-Security-Policy` | per-request nonce policy; see below |
+| `X-Aurora-Revision` | full CI-tested source SHA in published images |
 
 The Content-Security-Policy is:
 
@@ -33,23 +35,26 @@ default-src 'self';
 img-src 'self' data: https:;
 style-src 'self' 'unsafe-inline';
 font-src 'self' data:;
-script-src 'self' 'unsafe-inline';
+script-src 'self' 'nonce-<per-request-value>' 'strict-dynamic';
 connect-src 'self';
 frame-ancestors 'self';
 base-uri 'self';
 object-src 'none'
 ```
 
-**Known relaxations / future work:**
+`proxy.ts` generates a cryptographically random nonce for every request, passes
+the CSP and `x-nonce` to Next.js so framework hydration scripts receive it, and
+sets the same policy on the response. Production tests reject
+`script-src 'unsafe-inline'`; development alone adds `unsafe-eval` for the Next
+debug runtime. `app/layout.tsx` forces request rendering because a build-time
+static page cannot receive a request nonce. The production smoke checks every
+script tag against the response nonce and opens the page in headless Chrome to
+reject CSP execution or hydration failures.
+
+**Known relaxation:**
 
 - `style-src 'unsafe-inline'` is required because Aurora uses inline
   `style={}` attributes extensively across components.
-- `script-src 'unsafe-inline'` is a deliberate relaxation: Next.js injects
-  inline bootstrap/hydration scripts, and a strict policy without
-  `'unsafe-inline'` (or a per-request nonce) breaks hydration. Tightening this
-  to a **nonce-based CSP** is tracked as future work and was out of scope for
-  the baseline-headers pass.
-
 The existing root-route `Vary: Accept, User-Agent` header (used by the shadcn
 content-negotiation rewrite) is preserved alongside these headers.
 
@@ -58,8 +63,10 @@ content-negotiation rewrite) is preserved alongside these headers.
 The Android client encrypts its secrets **at rest** (`app/data/AppSettings.kt`).
 The secret values — the bearer auth token, the API key, the ChatGPT access
 token, and the ChatGPT account id — are encrypted with **AES-256/GCM** using a
-key held in the **AndroidKeyStore**. That key is non-exportable (it never leaves
-secure hardware), and only the resulting ciphertext (`Base64(IV ‖ ciphertext +
+key held in the **AndroidKeyStore**. The application receives only a key handle
+and does not export key material. The implementation does **not** require or
+attest StrongBox/TEE hardware backing, so devices may provide software-backed
+KeyStore storage. Only the resulting ciphertext (`Base64(IV ‖ ciphertext +
 GCM tag)`) is written to the plaintext DataStore file. A failed encrypt refuses
 to persist the credential (the setter throws rather than silently storing
 plaintext).
@@ -100,6 +107,15 @@ the user.
 
 There is also currently **no certificate pinning** on that connection — this is
 a known limitation.
+
+## Delivery and dependency controls
+
+All third-party Actions are pinned to reviewed commits (container actions to an
+image digest) and CI enforces that rule. OSV scans the pnpm lockfile. Published
+images include provenance and SBOM attestations, receive an additional SPDX
+SBOM, are scanned before promotion, and are keyless-signed. Production deploys
+must use a digest and verify the GitHub Actions certificate identity before
+starting the container. See `docs/deployment.md` for the exact contract.
 
 ## Reporting
 

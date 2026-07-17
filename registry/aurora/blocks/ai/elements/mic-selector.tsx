@@ -55,9 +55,8 @@ const BAR_WEIGHTS = [1, 1.2, 1.6, 1.4, 2, 1.5, 1.4, 1.8, "peak", 1.9, 1.5, 1.3, 
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
-  (
-    {
+const MicSelector = (
+    { ref,
       devices,
       value,
       defaultValue,
@@ -72,8 +71,7 @@ const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
       onMutedChange,
       className,
       ...props
-    },
-    ref
+    }: MicSelectorProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const isMuteControlled = muted !== undefined
     const [internalMuted, setInternalMuted] = React.useState(defaultMuted ?? false)
@@ -159,7 +157,6 @@ const MicSelector = React.forwardRef<HTMLDivElement, MicSelectorProps>(
       </div>
     )
   }
-)
 MicSelector.displayName = "MicSelector"
 
 const MemoMicSelector = React.memo(MicSelector)

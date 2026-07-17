@@ -51,6 +51,7 @@ import {
   type OperationName,
 } from "@/registry/aurora/ui/operation-icon"
 import { fuzzy } from "@/lib/fuzzy"
+import { useClipboard } from "@/lib/use-clipboard"
 
 /**
  * IconsView — ported from the CD `aurora-site` icons page. Lucide is canonical
@@ -122,12 +123,13 @@ const OP_SET: OperationName[] = [
 
 function useCopy(): [string | null, (text: string, key: string) => void] {
   const [copied, setCopied] = React.useState<string | null>(null)
+  const clipboard = useClipboard(1100)
   const copy = (text: string, key: string) => {
-    navigator.clipboard?.writeText(text)
-    setCopied(key)
-    setTimeout(() => setCopied(null), 1100)
+    void clipboard.copy(text).then((didCopy) => {
+      if (didCopy) setCopied(key)
+    })
   }
-  return [copied, copy]
+  return [clipboard.copied ? copied : null, copy]
 }
 
 function Cell({

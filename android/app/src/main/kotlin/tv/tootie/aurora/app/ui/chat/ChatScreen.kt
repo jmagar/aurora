@@ -86,7 +86,6 @@ import tv.tootie.aurora.components.AuroraEmptyState
 import tv.tootie.aurora.components.AuroraMessage
 import tv.tootie.aurora.components.AuroraMessageData
 import tv.tootie.aurora.components.AuroraMessageRole
-import tv.tootie.aurora.components.AuroraPermissionPrompt
 import tv.tootie.aurora.components.AuroraPromptInput
 import tv.tootie.aurora.components.AuroraThinking
 import androidx.compose.material.icons.filled.FolderOpen
@@ -643,10 +642,10 @@ fun ChatScreen(
 
     // Approval intercept overlay — shown as a non-dismissible dialog, FIFO queue
     s.pendingApprovals.firstOrNull()?.let { approval ->
-        val allowDecision = approval.availableDecisions.getOrElse(0) { "accept" }
-        val denyDecision = approval.availableDecisions.getOrElse(1) { "decline" }
-        val allowLabel = allowDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
-        val denyLabel = denyDecision.sanitizeForDisplay().take(32).replaceFirstChar { it.uppercase() }
+        val decisions = classifyApprovalDecisions(
+            approval.availableDecisions,
+            elicitation = approval is ToolApproval.Elicitation,
+        )
         val (title, fallback) = when (approval) {
             is ToolApproval.Command     -> "Allow command?" to "A command is requesting approval."
             is ToolApproval.FileChange  -> "Allow file changes?" to "File changes are requesting approval."
@@ -660,14 +659,11 @@ fun ChatScreen(
             is ToolApproval.Elicitation -> listOfNotNull(approval.reason)
         }
         val description = descParts.joinToString("\n\n").ifBlank { fallback }
-        AuroraPermissionPrompt(
-            onDismissRequest = { },
+        ApprovalDecisionDialog(
             title = title,
             description = description,
-            onAllow = { vm.approveToolCall(allowDecision) },
-            allowLabel = allowLabel,
-            onDeny = { vm.approveToolCall(denyDecision) },
-            denyLabel = denyLabel,
+            decisions = decisions,
+            onDecision = { vm.approveToolCall(approval, it.wireValue) },
         )
     }
 
@@ -733,6 +729,50 @@ fun ChatScreen(
         }
     }
 
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+internal fun ApprovalDecisionDialog(
+    title: String,
+    description: String,
+    decisions: List<ClassifiedApprovalDecision>,
+    onDecision: (ClassifiedApprovalDecision) -> Unit,
+) {
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
+    ) {
+        Surface(
+            shape = MaterialTheme.shapes.extraLarge,
+            tonalElevation = 6.dp,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Text(title, style = MaterialTheme.typography.headlineSmall)
+                Text(description, style = MaterialTheme.typography.bodyMedium)
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    decisions.forEach { decision ->
+                        TextButton(
+                            onClick = { onDecision(decision) },
+                            modifier = Modifier.semantics {
+                                contentDescription = "${decision.semantics.name} approval: ${decision.label}"
+                            },
+                        ) {
+                            Text(decision.label)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**

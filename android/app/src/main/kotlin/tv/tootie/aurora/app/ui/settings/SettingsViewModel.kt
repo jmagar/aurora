@@ -191,8 +191,9 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             try {
                 withTimeout(8_000L) {
-                    repo.readConfig(includeLayers = false)
-                    val result = repo.configFlow.first()
+                    val requestId = repo.readConfig(includeLayers = false)
+                    check(requestId != "-1") { "Not connected" }
+                    val result = repo.configFlow.first { it.requestId == requestId }
                     if (result.error != null) {
                         _state.update {
                             it.copy(
@@ -236,8 +237,9 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             try {
                 withTimeout(8_000L) {
-                    repo.batchWriteConfig(edits, reloadUserConfig = reloadUserConfig)
-                    val ack = repo.configWriteFlow.first()
+                    val requestId = repo.batchWriteConfig(edits, reloadUserConfig = reloadUserConfig)
+                    check(requestId != "-1") { "Not connected" }
+                    val ack = repo.configWriteFlow.first { it.requestId == requestId }
                     if (ack.success) {
                         _state.update {
                             it.copy(

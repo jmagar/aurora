@@ -124,9 +124,8 @@ function AttachmentChip({ attachment }: { attachment: MessageAttachment }) {
 // Self-contained chat bubble: sender/time meta, attachment chips, streaming caret,
 // delivery ticks (user) and a retry affordance (error).
 
-const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
-  (
-    {
+const MessageContent = (
+    { ref,
       className,
       style,
       tone = "assistant",
@@ -139,8 +138,7 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
       onRetry,
       children,
       ...props
-    },
-    ref
+    }: MessageContentProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const isUser = tone === "user"
     const palette = bubbleTone[tone]
@@ -289,7 +287,6 @@ const MessageContent = React.forwardRef<HTMLDivElement, MessageContentProps>(
       </div>
     )
   }
-)
 MessageContent.displayName = "MessageContent"
 
 export { MessageContent }

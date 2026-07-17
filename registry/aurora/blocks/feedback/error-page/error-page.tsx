@@ -418,8 +418,8 @@ function Page500({ incidentId, onRetry, countdown: initialCountdown = 30 }: Erro
 // Main ErrorPage component
 // ---------------------------------------------------------------------------
 
-export const ErrorPage = React.forwardRef<HTMLDivElement, ErrorPageProps>(
-  function ErrorPage(props, ref) {
+export const ErrorPage = function ErrorPage(props: ErrorPageProps & { ref?: React.Ref<HTMLDivElement> }) {
+    const { ref } = props
     const { code, fullPage = true } = props
 
     const card = (
@@ -472,6 +472,5 @@ export const ErrorPage = React.forwardRef<HTMLDivElement, ErrorPageProps>(
       </div>
     )
   }
-)
 
 export default ErrorPage

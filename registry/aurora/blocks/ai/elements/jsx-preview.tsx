@@ -5,6 +5,7 @@ import { Check, Code, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 export interface JsxPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Source to render in the preview surface. */
@@ -98,8 +99,8 @@ function tintLine(line: string, keyPrefix: string): React.ReactNode[] {
 }
 
 const JsxPreview = React.memo(
-  React.forwardRef<HTMLDivElement, JsxPreviewProps>(function JsxPreview(
-    {
+  function JsxPreview(
+    { ref,
       code,
       filename,
       language = "JSX",
@@ -107,25 +108,12 @@ const JsxPreview = React.memo(
       className,
       style,
       ...props
-    },
-    ref,
+    }: JsxPreviewProps & { ref?: React.Ref<HTMLDivElement> },
   ) {
-    const [copied, setCopied] = React.useState(false)
-    const timer = React.useRef<number | undefined>(undefined)
+    const { copied, error, copy } = useClipboard(1200)
     const lines = React.useMemo(() => code.split("\n"), [code])
 
-    React.useEffect(() => () => window.clearTimeout(timer.current), [])
-
-    const handleCopy = React.useCallback(async () => {
-      try {
-        await navigator.clipboard.writeText(code)
-        setCopied(true)
-        window.clearTimeout(timer.current)
-        timer.current = window.setTimeout(() => setCopied(false), 1200)
-      } catch {
-        /* clipboard unavailable */
-      }
-    }, [code])
+    const handleCopy = React.useCallback(() => void copy(code), [code, copy])
 
     return (
       <div
@@ -157,7 +145,7 @@ const JsxPreview = React.memo(
             variant="neutral"
             size="icon"
             onClick={handleCopy}
-            aria-label={copied ? "Copied source" : "Copy source"}
+            aria-label={copied ? "Copied source" : error ? "Unable to copy source" : "Copy source"}
           >
             {copied ? (
               <Check className="size-4" aria-hidden style={{ color: "var(--aurora-accent-primary)" }} />
@@ -165,7 +153,7 @@ const JsxPreview = React.memo(
               <Copy className="size-4" aria-hidden />
             )}
             <span className="sr-only" aria-live="polite" aria-atomic="true">
-              {copied ? "Copied" : ""}
+              {copied ? "Copied" : error ? "Unable to copy" : ""}
             </span>
           </Button>
         </div>
@@ -207,7 +195,7 @@ const JsxPreview = React.memo(
         </pre>
       </div>
     )
-  }),
+  },
 )
 JsxPreview.displayName = "JsxPreview"
 

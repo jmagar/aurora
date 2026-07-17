@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface SpotlightItem {
@@ -45,8 +46,8 @@ const SIZES = {
   lg: { height: "3rem", radius: "var(--aurora-radius-3)", icon: 18, type: "1.05rem", pad: "0 1.05rem", gap: "0.7rem" },
 } as const
 
-const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spotlight(
-  {
+const Spotlight = function Spotlight(
+  { ref,
     items,
     placeholder = "Search…",
     size = "md",
@@ -58,8 +59,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
     defaultQuery = "",
     className,
     ...props
-  },
-  ref,
+  }: SpotlightProps & { ref?: React.Ref<HTMLDivElement> },
 ) {
   const s = SIZES[size]
   const [query, setQuery] = React.useState(defaultQuery)
@@ -100,6 +100,9 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
 
   const open = openOnFocus ? focused : focused || query.trim() !== ""
   const activeItem = filtered[activeIndex]
+  const activeDescendantId = activeItem
+    ? `${listId}-${activeItem.group}-${activeItem.label}`.toLowerCase().replace(/[^a-z0-9-]+/g, "-")
+    : undefined
 
   function commit(item: SpotlightItem | undefined) {
     if (!item) return
@@ -154,7 +157,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
         }}
       >
         <span aria-hidden style={{ color: "var(--aurora-accent-primary)", display: "inline-flex" }}>
-          <SearchIcon size={s.icon} />
+          <Search size={s.icon} aria-hidden />
         </span>
         <input
           autoFocus={autoFocus}
@@ -166,6 +169,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
           placeholder={placeholder}
           aria-label={placeholder}
           aria-expanded={open}
+          aria-activedescendant={activeDescendantId}
           aria-controls={open ? listId : undefined}
           role="combobox"
           aria-autocomplete="list"
@@ -229,6 +233,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
                   return (
                     <button
                       key={`${item.group}-${item.label}`}
+                      id={`${listId}-${item.group}-${item.label}`.toLowerCase().replace(/[^a-z0-9-]+/g, "-")}
                       type="button"
                       role="option"
                       aria-selected={isActive}
@@ -324,7 +329,7 @@ const Spotlight = React.forwardRef<HTMLDivElement, SpotlightProps>(function Spot
       ) : null}
     </div>
   )
-})
+}
 
 Spotlight.displayName = "Spotlight"
 
@@ -348,25 +353,6 @@ function Kbd({ children }: { children: React.ReactNode }) {
     >
       {children}
     </kbd>
-  )
-}
-
-function SearchIcon({ size = 22 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
   )
 }
 

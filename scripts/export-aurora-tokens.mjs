@@ -4,7 +4,7 @@
  *
  * Extracts Aurora design tokens from aurora.css and emits W3C DTCG JSON.
  *
- * Scope (v1): dark theme only (:root/.dark block).
+ * Scope: canonical dark (:root/.dark) and light (.light) themes.
  * Pipeline coverage: hex/rgba colors + px/em/number dimensions.
  * Excluded: gradients, shadows, font families, unresolvable expressions.
  *
@@ -285,37 +285,42 @@ console.log('Reading CSS:', CSS_SOURCE);
 const cssText = readFileSync(CSS_SOURCE, 'utf8');
 const ast = parse(cssText);
 
-rawVars = {};
+const rawVarsByTheme = { dark: {}, light: {} };
 
 walk(ast, function (node) {
   if (node.type !== 'Rule') return;
 
-  // We want only explicit dark theme selectors.
   const selectorText = generate(node.prelude).replace(/\s+/g, '');
-  const hasDarkSelector = selectorText.split(',').some((selector) => selector.includes('.dark'));
-  if (!hasDarkSelector) return;
+  const selectors = selectorText.split(',');
+  const themes = [];
+  if (selectors.some((selector) => selector === ':root' || selector.includes('.dark'))) themes.push('dark');
+  if (selectors.some((selector) => selector.includes('.light'))) themes.push('light');
+  if (themes.length === 0) return;
 
   // Collect all Aurora-owned declarations
   walk(node.block, function (decl) {
     if (decl.type !== 'Declaration') return;
     if (!decl.property.startsWith('--aurora-') && !decl.property.startsWith('--axon-')) return;
-    rawVars[decl.property] = generate(decl.value).trim();
+    const value = generate(decl.value).trim();
+    for (const theme of themes) rawVarsByTheme[theme][decl.property] = value;
   });
 });
 
-const count = Object.keys(rawVars).length;
-console.log(`Collected ${count} Aurora/Axon raw declarations from dark theme block`);
-if (count === 0) {
-  console.error('ERROR: No Aurora/Axon tokens found. Check the CSS selector matching.');
-  process.exit(1);
+for (const [theme, vars] of Object.entries(rawVarsByTheme)) {
+  const count = Object.keys(vars).length;
+  console.log(`Collected ${count} Aurora/Axon raw declarations from ${theme} theme block`);
+  if (count === 0) {
+    console.error(`ERROR: No Aurora/Axon ${theme} tokens found. Check the CSS selector matching.`);
+    process.exit(1);
+  }
 }
 
 // ─── Token processing ─────────────────────────────────────────────────────────
 
 /** @type {Record<string, { $value: string|number, $type: string, _source?: string }>} flat map before nesting */
-const emittedFlat = {};
+const emittedFlatByTheme = { dark: {}, light: {} };
 
-/** @type {Array<{ name: string, rawValue: string, reason: string }>} */
+/** @type {Array<{ theme: string, name: string, rawValue: string, reason: string }>} */
 const exclusions = [];
 
 function tokenSuffix(prop) {
@@ -324,26 +329,27 @@ function tokenSuffix(prop) {
   throw new Error(`Unsupported token prefix: ${prop}`);
 }
 
-for (const [prop, rawValue] of Object.entries(rawVars)) {
-  // Strip the source prefix, split by hyphens to get path segments
-  const suffix = tokenSuffix(prop);              // e.g. 'accent-primary' or 'axon-orange'
-  const segments = suffix.split('-');             // e.g. ['accent', 'primary']
+for (const [theme, themeVars] of Object.entries(rawVarsByTheme)) {
+  rawVars = themeVars;
+  const emittedFlat = emittedFlatByTheme[theme];
+  for (const [prop, rawValue] of Object.entries(rawVars)) {
+    const suffix = tokenSuffix(prop);
+    const segments = suffix.split('-');
+    const result = resolveToken(rawValue);
 
-  const result = resolveToken(rawValue);
-
-  if (result) {
-    emittedFlat[suffix] = { $value: result.resolved, $type: result.type, _segments: segments, _source: prop };
-  } else {
-    exclusions.push({
-      name: prop,
-      rawValue,
-      reason: exclusionReason(resolveVars(rawValue, rawVars)),
-    });
+    if (result) {
+      emittedFlat[suffix] = { $value: result.resolved, $type: result.type, _segments: segments, _source: prop };
+    } else {
+      exclusions.push({
+        theme,
+        name: prop,
+        rawValue,
+        reason: exclusionReason(resolveVars(rawValue, rawVars)),
+      });
+    }
   }
+  console.log(`${theme}: emitted ${Object.keys(emittedFlat).length}, excluded ${exclusions.filter(e => e.theme === theme).length}`);
 }
-
-console.log(`Emitted: ${Object.keys(emittedFlat).length} tokens`);
-console.log(`Excluded: ${exclusions.length} tokens`);
 
 // ─── Build nested DTCG structure ──────────────────────────────────────────────
 
@@ -391,14 +397,15 @@ function setNested(obj, segments, value) {
   }
 }
 
-const dark = {};
-
-for (const [, tokenData] of Object.entries(emittedFlat)) {
-  const { _segments, _source, ...dtcgToken } = tokenData;
-  setNested(dark, _segments, dtcgToken);
+const output = {};
+for (const [theme, emittedFlat] of Object.entries(emittedFlatByTheme)) {
+  const nested = {};
+  for (const [, tokenData] of Object.entries(emittedFlat)) {
+    const { _segments, _source, ...dtcgToken } = tokenData;
+    setNested(nested, _segments, dtcgToken);
+  }
+  output[theme] = nested;
 }
-
-const output = { dark };
 
 // ─── Output validation gate ───────────────────────────────────────────────────
 
@@ -406,11 +413,13 @@ const outputStr = JSON.stringify(output, null, 2);
 const FORBIDDEN_PATTERNS = ['var(', 'color-mix(', 'linear-gradient(', 'radial-gradient('];
 const violations = [];
 
-for (const [suffix, tokenData] of Object.entries(emittedFlat)) {
-  const val = String(tokenData.$value);
-  for (const pattern of FORBIDDEN_PATTERNS) {
-    if (val.includes(pattern)) {
-      violations.push({ token: tokenData._source ?? suffix, value: val, pattern });
+for (const [theme, emittedFlat] of Object.entries(emittedFlatByTheme)) {
+  for (const [suffix, tokenData] of Object.entries(emittedFlat)) {
+    const val = String(tokenData.$value);
+    for (const pattern of FORBIDDEN_PATTERNS) {
+      if (val.includes(pattern)) {
+        violations.push({ token: `${theme}:${tokenData._source ?? suffix}`, value: val, pattern });
+      }
     }
   }
 }
@@ -434,9 +443,9 @@ console.log(`\nWrote: ${TOKENS_PATH}`);
 
 const exclusionsOutput = {
   source: 'registry/aurora/styles/aurora.css',
-  theme: 'dark',
+  themes: ['dark', 'light'],
   note: 'These tokens cannot be represented as Color/Dp/number in Kotlin Compose. Handle manually in AuroraTheme.kt or AuroraBrushes.kt.',
-  excluded: exclusions.sort((a, b) => a.reason.localeCompare(b.reason) || a.name.localeCompare(b.name)),
+  excluded: exclusions.sort((a, b) => a.theme.localeCompare(b.theme) || a.reason.localeCompare(b.reason) || a.name.localeCompare(b.name)),
 };
 
 writeFileSync(EXCLUSIONS_PATH, JSON.stringify(exclusionsOutput, null, 2), 'utf8');
@@ -444,9 +453,10 @@ console.log(`Wrote: ${EXCLUSIONS_PATH}`);
 
 // ─── Summary ──────────────────────────────────────────────────────────────────
 
-const colorCount = Object.values(emittedFlat).filter(t => t.$type === 'color').length;
-const dimCount   = Object.values(emittedFlat).filter(t => t.$type === 'dimension').length;
-const numCount   = Object.values(emittedFlat).filter(t => t.$type === 'number').length;
+const allEmitted = Object.values(emittedFlatByTheme).flatMap(tokens => Object.values(tokens));
+const colorCount = allEmitted.filter(t => t.$type === 'color').length;
+const dimCount   = allEmitted.filter(t => t.$type === 'dimension').length;
+const numCount   = allEmitted.filter(t => t.$type === 'number').length;
 
 const byReason = {};
 for (const e of exclusions) {
@@ -457,7 +467,7 @@ console.log('\n── Token summary ──────────────�
 console.log(`  color      : ${colorCount}`);
 console.log(`  dimension  : ${dimCount}`);
 console.log(`  number     : ${numCount}`);
-console.log(`  total emitted: ${Object.keys(emittedFlat).length}`);
+console.log(`  total emitted: ${allEmitted.length}`);
 console.log('\n── Exclusion summary ────────────────────────────────────────');
 for (const [reason, n] of Object.entries(byReason).sort()) {
   console.log(`  ${reason.padEnd(28)}: ${n}`);

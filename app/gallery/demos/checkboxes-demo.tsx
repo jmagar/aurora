@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Checkbox } from "@/registry/aurora/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/radio-group";
-import { GalleryPageIntro } from "@/components/gallery-page-intro";
+import * as React from "react"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
+import { Checkbox } from "@/registry/aurora/ui/checkbox"
+import { RadioGroup, RadioGroupItem } from "@/registry/aurora/ui/radio-group"
 
 export default function CheckboxesDemo() {
   const [notifyDeploy, setNotifyDeploy] = React.useState(true);
@@ -26,10 +26,10 @@ export default function CheckboxesDemo() {
           Checkbox states
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <Checkbox defaultChecked>Checked (default)</Checkbox>
+          <Checkbox defaultChecked>Checked (Default)</Checkbox>
           <Checkbox>Unchecked</Checkbox>
-          <Checkbox disabled defaultChecked>Disabled — checked</Checkbox>
-          <Checkbox disabled>Disabled — unchecked</Checkbox>
+          <Checkbox disabled defaultChecked>Disabled — Checked</Checkbox>
+          <Checkbox disabled>Disabled — Unchecked</Checkbox>
         </div>
       </div>
 
@@ -103,5 +103,5 @@ export default function CheckboxesDemo() {
         </div>
       </div>
     </div>
-  );
+  )
 }

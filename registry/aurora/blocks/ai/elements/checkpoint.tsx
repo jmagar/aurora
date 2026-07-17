@@ -86,9 +86,8 @@ function AutomationTag() {
   )
 }
 
-const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
-  (
-    {
+const Checkpoint = (
+    { ref,
       label,
       description,
       status = "saved",
@@ -103,8 +102,7 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: CheckpointProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const compact = variant === "compact"
     const interactive = compact && typeof onClick === "function"
@@ -250,7 +248,6 @@ const Checkpoint = React.forwardRef<HTMLDivElement, CheckpointProps>(
       </div>
     )
   }
-)
 Checkpoint.displayName = "Checkpoint"
 
 export { Checkpoint }

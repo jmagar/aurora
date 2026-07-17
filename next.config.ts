@@ -7,7 +7,20 @@ import type { NextConfig } from "next";
 const DEV_ORIGIN = process.env.AURORA_DEV_ORIGIN ?? "10.1.0.6";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["aurora.tootie.tv", DEV_ORIGIN, "dinglebear.ai", "www.dinglebear.ai"],
+  poweredByHeader: false,
+  productionBrowserSourceMaps: false,
+  // SWAG's aurora conf matches `server_name aurora.*`, so every domain it
+  // serves answers on an `aurora.` subdomain — aurora.dinglebear.ai as much as
+  // aurora.tootie.tv. An origin missing here is not a visible error: Next
+  // refuses to serve /_next/ chunks, the page renders server-side and never
+  // hydrates, and components read as blank rather than broken.
+  allowedDevOrigins: [
+    "aurora.tootie.tv",
+    "aurora.dinglebear.ai",
+    DEV_ORIGIN,
+    "dinglebear.ai",
+    "www.dinglebear.ai",
+  ],
   output: "standalone",
   turbopack: {
     root: process.cwd(),
@@ -82,11 +95,6 @@ const nextConfig: NextConfig = {
     ];
   },
   async headers() {
-    // NOTE: `script-src 'unsafe-inline'` is a deliberate relaxation. Next.js
-    // injects inline bootstrap/hydration scripts, and a strict CSP without
-    // 'unsafe-inline' (or a per-request nonce) breaks hydration. Tightening
-    // this to a nonce-based policy is future work and out of scope for this
-    // baseline-headers pass.
     const securityHeaders = [
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "X-Frame-Options", value: "SAMEORIGIN" },
@@ -95,11 +103,7 @@ const nextConfig: NextConfig = {
         key: "Strict-Transport-Security",
         value: "max-age=63072000; includeSubDomains",
       },
-      {
-        key: "Content-Security-Policy",
-        value:
-          "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'",
-      },
+      { key: "X-Aurora-Revision", value: process.env.AURORA_BUILD_SHA ?? "development" },
     ];
 
     return [
@@ -112,6 +116,17 @@ const nextConfig: NextConfig = {
       {
         source: "/",
         headers: [{ key: "Vary", value: "Accept, User-Agent" }],
+      },
+      // Registry names are intentionally mutable discovery URLs. Production
+      // consumers pin the Git commit URL documented in docs/versioning.md.
+      {
+        source: "/r/:path*.json",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=300, s-maxage=300, stale-while-revalidate=86400, must-revalidate",
+          },
+        ],
       },
     ];
   },

@@ -18,7 +18,7 @@ import {
   CommandPalette,
   type CommandItem,
 } from "@/registry/aurora/blocks/workspace/command-palette/command-palette"
-import { NAV as GALLERY_NAV } from "@/app/gallery/nav-data"
+import catalog from "@/lib/client-catalog.json"
 import { AURORA_THEMES } from "@/lib/themes"
 import { fuzzy } from "@/lib/fuzzy"
 
@@ -77,16 +77,14 @@ export function SiteCommandPalette({
       })),
       // Components open in the /components drawer (deep-linked via ?c=…),
       // matching the CD behavior of showing the component in place.
-      ...GALLERY_NAV.flatMap((g) =>
-        g.items.map((it) => ({
+      ...catalog.items.map((it) => ({
           id: `comp-${it.slug}`,
           label: it.label,
-          description: g.group,
+          description: it.group,
           section: "components",
           icon: <Blocks size={15} strokeWidth={1.6} />,
           onSelect: go(`/components?c=${it.slug}`),
         })),
-      ),
       ...AURORA_THEMES.map((t) => ({
         id: `theme-${t.id}`,
         label: `${t.name} — ${t.tool}`,

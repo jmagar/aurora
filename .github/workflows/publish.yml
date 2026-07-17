@@ -1,53 +1,126 @@
 name: Publish image
 
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - "v*"
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+permissions: {}
 
 concurrency:
-  group: publish-${{ github.ref }}
-  cancel-in-progress: true
+  group: publish-tested-main
+  cancel-in-progress: false
 
 jobs:
   publish:
-    name: Build and push GHCR image
+    name: Publish tested SHA and promote its verified digest
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+      id-token: write
+    env:
+      IMAGE: ghcr.io/jmagar/aurora
+      TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
-      - uses: actions/checkout@v4
-
+      - name: Check out the exact tested revision
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - name: Prove checkout identity
+        run: test "$(git rev-parse HEAD)" = "$TESTED_SHA"
       - name: Log in to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Derive image metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/jmagar/aurora
-          tags: |
-            type=sha,format=long
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=ref,event=tag
-
       - name: Set up Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Build and push immutable SHA tag with provenance and SBOM attestations
+        id: build
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: .
           target: runner
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.IMAGE }}:sha-${{ env.TESTED_SHA }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ env.TESTED_SHA }}
+          build-args: AURORA_BUILD_SHA=${{ env.TESTED_SHA }}
+          provenance: mode=max
+          sbom: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Record tested image identity
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          test -n "$DIGEST"
+          printf '%s\n' "$IMAGE@$DIGEST" > image-ref.txt
+          printf '%s\n' "$TESTED_SHA" > source-sha.txt
+      - name: Generate downloadable SPDX SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          image: ${{ env.IMAGE }}@${{ steps.build.outputs.digest }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+      - name: Scan the exact digest before promotion
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE }}@${{ steps.build.outputs.digest }}
+          version: v0.72.0
+          format: table
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@f713795cb21599bc4e5c4b58cbad1da852d7eeb9 # v3
+      - name: Sign and verify the exact digest
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          cosign sign --yes "$IMAGE@$DIGEST"
+          cosign verify \
+            --certificate-identity-regexp '^https://github.com/jmagar/aurora/.github/workflows/publish.yml@refs/heads/main$' \
+            --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+            "$IMAGE@$DIGEST"
+      - name: Promote only the scanned and signed digest to latest
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: docker buildx imagetools create --tag "$IMAGE:latest" "$IMAGE@$DIGEST"
+      - name: Upload promotion evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: aurora-image-${{ env.TESTED_SHA }}
+          path: |
+            image-ref.txt
+            source-sha.txt
+            sbom.spdx.json
+          if-no-files-found: error
+          retention-days: 90
+
+  alert:
+    name: Alert on publication failure
+    if: ${{ always() && needs.publish.result == 'failure' }}
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send optional homelab alert
+        env:
+          ALERT_WEBHOOK_URL: ${{ secrets.AURORA_ALERT_WEBHOOK_URL }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          message="Aurora image publication failed: $RUN_URL"
+          echo "::error::$message"
+          if [[ -n "$ALERT_WEBHOOK_URL" ]]; then
+            jq -n --arg message "$message" '{message: $message, service: "aurora"}' \
+              | curl --fail --silent --show-error -H 'Content-Type: application/json' --data-binary @- "$ALERT_WEBHOOK_URL"
+          fi

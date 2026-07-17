@@ -53,9 +53,8 @@ function initials(name: string): string {
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
-const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
-  (
-    {
+const Persona = (
+    { ref,
       name,
       role,
       description,
@@ -71,8 +70,7 @@ const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
       onClick,
       onKeyDown,
       ...props
-    },
-    ref
+    }: PersonaProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const sub = role ?? description
     const dotColor = presence ? PRESENCE[presence] : null
@@ -190,7 +188,6 @@ const Persona = React.forwardRef<HTMLDivElement, PersonaProps>(
       </div>
     )
   }
-)
 Persona.displayName = "Persona"
 
 const MemoPersona = React.memo(Persona)

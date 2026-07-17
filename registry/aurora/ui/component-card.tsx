@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { ChevronDown, ChevronLeft, ChevronRight, Columns2, ExternalLink } from "lucide-react";
+import { Button } from "@/registry/aurora/ui/button";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -99,10 +101,10 @@ function Tags({ tags }: { tags?: ComponentCardTag[] }) {
           <span
             key={`${label}-${i}`}
             style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              fontWeight: 600,
-              lineHeight: 1,
+              fontFamily: "var(--aurora-font-sans)",
+              fontSize: "var(--aurora-type-caption)",
+              fontWeight: "var(--aurora-weight-ui)",
+              lineHeight: "var(--aurora-line-dense)",
               padding: "5px 9px",
               borderRadius: 999,
               border: accent
@@ -157,16 +159,8 @@ function TileCard({
   const atEnd = total != null ? (index ?? 0) >= total - 1 : false;
 
   const tileNavBtn: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
     width: 26,
     height: 26,
-    flexShrink: 0,
-    border: "1px solid var(--aurora-border-strong)",
-    background: "var(--aurora-control-surface)",
-    color: "var(--aurora-text-primary)",
-    cursor: "pointer",
     padding: 0,
     borderRadius: 7,
   };
@@ -211,7 +205,7 @@ function TileCard({
         >
           <span
             style={{
-              fontFamily: "var(--font-sans)",
+              fontFamily: "var(--aurora-font-sans)",
               fontSize: 17,
               fontWeight: 700,
               lineHeight: 1.2,
@@ -223,66 +217,44 @@ function TileCard({
           <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
             {hasPrevNext && (
               <>
-                <button
-                  type="button"
+                <Button
+                  variant="neutral"
+                  size="icon"
                   onClick={onPrev}
                   disabled={atStart}
                   aria-label="Previous"
-                  style={{ ...tileNavBtn, opacity: atStart ? 0.35 : 1, cursor: atStart ? "not-allowed" : "pointer" }}
+                  style={tileNavBtn}
                 >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M15 6 9 12l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
+                  <ChevronLeft aria-hidden />
+                </Button>
+                <Button
+                  variant="neutral"
+                  size="icon"
                   onClick={onNext}
                   disabled={atEnd}
                   aria-label="Next"
-                  style={{ ...tileNavBtn, opacity: atEnd ? 0.35 : 1, cursor: atEnd ? "not-allowed" : "pointer" }}
+                  style={tileNavBtn}
                 >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="m9 6 6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
+                  <ChevronRight aria-hidden />
+                </Button>
               </>
             )}
             {onOpen && (
-              <button
-                type="button"
+              <Button
+                variant="plain"
+                size="icon"
                 onClick={onOpen}
                 aria-label={`Open ${name}`}
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                   width: 26,
                   height: 26,
-                  flexShrink: 0,
-                  border: "none",
-                  background: "transparent",
                   color: "var(--aurora-accent-primary)",
-                  cursor: "pointer",
                   padding: 0,
                   borderRadius: 8,
                 }}
               >
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden
-                >
-                  <path
-                    d="M7 17 17 7M9 7h8v8"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
+                <ExternalLink aria-hidden />
+              </Button>
             )}
           </div>
         </div>
@@ -291,7 +263,7 @@ function TileCard({
           <p
             style={{
               margin: 0,
-              fontFamily: "var(--font-sans)",
+              fontFamily: "var(--aurora-font-sans)",
               fontSize: 13,
               lineHeight: 1.5,
               color: "var(--aurora-text-muted)",
@@ -342,17 +314,9 @@ function ViewerCard({
   const atEnd = index >= total - 1;
 
   const navBtn: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
     width: 38,
     height: 38,
-    flexShrink: 0,
     borderRadius: 10,
-    border: "1px solid var(--aurora-border-strong)",
-    background: "var(--aurora-control-surface)",
-    color: "var(--aurora-text-primary)",
-    cursor: "pointer",
     padding: 0,
   };
 
@@ -383,17 +347,16 @@ function ViewerCard({
           borderBottom: "1px solid var(--aurora-border-default)",
         }}
       >
-        <button
-          type="button"
+        <Button
+          variant="neutral"
+          size="icon"
           onClick={onPrev}
           disabled={atStart}
           aria-label="Previous component"
-          style={{ ...navBtn, opacity: atStart ? 0.4 : 1, cursor: atStart ? "not-allowed" : "pointer" }}
+          style={navBtn}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path d="M15 6 9 12l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+          <ChevronLeft aria-hidden />
+        </Button>
 
         {/* Jump dropdown */}
         <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
@@ -414,7 +377,7 @@ function ViewerCard({
               border: "1px solid var(--aurora-border-strong)",
               background: "var(--aurora-control-surface)",
               color: "var(--aurora-text-primary)",
-              fontFamily: "var(--font-sans)",
+              fontFamily: "var(--aurora-font-sans)",
               fontSize: 14,
               fontWeight: 500,
               cursor: "pointer",
@@ -430,11 +393,7 @@ function ViewerCard({
               <option value={name}>{name}</option>
             )}
           </select>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
+          <ChevronDown
             aria-hidden
             style={{
               position: "absolute",
@@ -444,15 +403,14 @@ function ViewerCard({
               pointerEvents: "none",
               color: "var(--aurora-text-muted)",
             }}
-          >
-            <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          />
         </div>
 
         {/* Compare toggle */}
         {comparePreview != null && (
-          <button
-            type="button"
+          <Button
+            variant="neutral"
+            size="icon"
             onClick={() => setComparing((c) => !c)}
             aria-label={compareName ? `Compare with ${compareName}` : "Toggle compare"}
             aria-pressed={comparing}
@@ -467,11 +425,8 @@ function ViewerCard({
                 : "var(--aurora-control-surface)",
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <rect x="4" y="5" width="6.5" height="14" rx="1.5" stroke="currentColor" strokeWidth="2" />
-              <rect x="13.5" y="5" width="6.5" height="14" rx="1.5" stroke="currentColor" strokeWidth="2" />
-            </svg>
-          </button>
+            <Columns2 aria-hidden />
+          </Button>
         )}
 
         {/* Counter */}
@@ -486,9 +441,9 @@ function ViewerCard({
             borderRadius: 10,
             border: "1px solid var(--aurora-border-strong)",
             background: "var(--aurora-control-surface)",
-            fontFamily: "var(--font-mono)",
-            fontSize: 12,
-            fontWeight: 600,
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "var(--aurora-type-caption)",
+            fontWeight: "var(--aurora-weight-ui)",
             color: "var(--aurora-text-muted)",
             whiteSpace: "nowrap",
           }}
@@ -496,17 +451,16 @@ function ViewerCard({
           {index + 1} / {total}
         </span>
 
-        <button
-          type="button"
+        <Button
+          variant="neutral"
+          size="icon"
           onClick={onNext}
           disabled={atEnd}
           aria-label="Next component"
-          style={{ ...navBtn, opacity: atEnd ? 0.4 : 1, cursor: atEnd ? "not-allowed" : "pointer" }}
+          style={navBtn}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path d="m9 6 6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+          <ChevronRight aria-hidden />
+        </Button>
       </div>
 
       {/* Stage(s) */}
@@ -544,10 +498,10 @@ function StageLabel({ children }: { children?: React.ReactNode }) {
       style={{
         display: "block",
         padding: "10px 14px 0",
-        fontFamily: "var(--font-mono)",
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: "0.13em",
+        fontFamily: "var(--aurora-font-sans)",
+        fontSize: "var(--aurora-type-caption)",
+        fontWeight: "var(--aurora-weight-label)",
+        letterSpacing: "var(--aurora-letter-eyebrow)",
         textTransform: "uppercase",
         color: "var(--aurora-text-muted)",
       }}

@@ -20,6 +20,7 @@ import tv.tootie.aurora.app.codex.CodexClient
 import tv.tootie.aurora.app.codex.LoginMethodType
 import tv.tootie.aurora.app.data.AppSettings
 import tv.tootie.aurora.app.data.SecretPersistException
+import java.net.URI
 
 // ---------------------------------------------------------------------------
 // State
@@ -119,8 +120,16 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
                                 ?.firstOrNull()?.jsonObject
                                 ?: result
                             val authUrl = data?.get("authUrl")?.jsonPrimitive?.content
-                            if (authUrl != null) {
+                            if (authUrl != null && isAllowedOAuthUrl(authUrl)) {
                                 _state.update { it.copy(pendingAuthUrl = authUrl) }
+                            } else if (authUrl != null) {
+                                _state.update {
+                                    it.copy(
+                                        step = LoginStep.Error,
+                                        pendingAuthUrl = null,
+                                        errorMessage = "The server returned an untrusted OAuth address.",
+                                    )
+                                }
                             }
                         }
                     }
@@ -254,6 +263,12 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
     fun launchPendingAuthUrl(context: android.content.Context) {
         val authUrl = _state.value.pendingAuthUrl ?: return
         _state.update { it.copy(pendingAuthUrl = null) }
+        if (!isAllowedOAuthUrl(authUrl)) {
+            _state.update {
+                it.copy(step = LoginStep.Error, errorMessage = "Blocked an untrusted OAuth address.")
+            }
+            return
+        }
         CustomTabsIntent.Builder().build()
             .launchUrl(context, Uri.parse(authUrl))
     }
@@ -296,3 +311,19 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
 
     override fun onCleared() { client?.disconnect(); super.onCleared() }
 }
+
+internal val TRUSTED_OAUTH_ORIGINS: Set<String> = setOf(
+    "https://auth.openai.com",
+    "https://auth0.openai.com",
+    "https://chatgpt.com",
+)
+
+internal fun isAllowedOAuthUrl(value: String, allowedOrigins: Set<String> = TRUSTED_OAUTH_ORIGINS): Boolean =
+    runCatching {
+        val uri = URI(value)
+        if (!uri.scheme.equals("https", ignoreCase = true)) return@runCatching false
+        if (uri.host.isNullOrBlank() || uri.userInfo != null) return@runCatching false
+        val port = if (uri.port == -1 || uri.port == 443) "" else ":${uri.port}"
+        val origin = "https://${uri.host.lowercase()}$port"
+        origin in allowedOrigins
+    }.getOrDefault(false)

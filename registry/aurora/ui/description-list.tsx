@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
@@ -25,7 +23,7 @@ function DescriptionItem({ ref, className, label, value, active = false, ...prop
   return (
     <div
       ref={ref}
-      className={cn("grid grid-cols-[150px_minmax(0,1fr)] gap-4 border-b px-7 py-[14px] last:border-b-0", className)}
+      className={cn("grid grid-cols-1 gap-3 border-b px-7 py-[14px] last:border-b-0 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-4", className)}
       style={{
         borderColor: "var(--aurora-border-default)",
         background: active ? "var(--aurora-selected-bg)" : undefined,
@@ -38,9 +36,8 @@ function DescriptionItem({ ref, className, label, value, active = false, ...prop
           color: "var(--aurora-text-muted)",
           fontSize: "var(--aurora-type-label)",
           fontWeight: "var(--aurora-weight-label)",
-          letterSpacing: "0.06em",
+          letterSpacing: "var(--aurora-letter-label)",
           lineHeight: "var(--aurora-line-dense)",
-          textTransform: "uppercase",
         }}
       >
         <span

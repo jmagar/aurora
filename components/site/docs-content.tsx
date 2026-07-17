@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Check, Copy } from "lucide-react"
+import { useClipboard } from "@/lib/use-clipboard"
 
 /**
  * Docs content — ported from the CD `aurora-site` docs pages. Six hand-authored
@@ -71,15 +72,12 @@ function Li({ children }: { children: React.ReactNode }) {
 
 /** Click-to-copy code line (CD `Code`). */
 function DocCode({ children }: { children: string }) {
-  const [done, setDone] = React.useState(false)
+  const { copied, error, copy } = useClipboard(1200)
   return (
     <button
       type="button"
-      onClick={() => {
-        navigator.clipboard?.writeText(children)
-        setDone(true)
-        setTimeout(() => setDone(false), 1200)
-      }}
+      onClick={() => void copy(children)}
+      aria-label={copied ? "Copied command" : error ? "Unable to copy command" : "Copy command"}
       className="mb-4 flex w-full items-center gap-2.5 rounded-[var(--aurora-radius-1)] px-3.5 py-3 text-left"
       style={{
         cursor: "pointer",
@@ -94,10 +92,10 @@ function DocCode({ children }: { children: string }) {
       >
         {children}
       </span>
-      {done ? (
+      {copied ? (
         <Check size={13} strokeWidth={2} style={{ color: "var(--aurora-success)", flexShrink: 0 }} />
       ) : (
-        <Copy size={13} strokeWidth={1.75} style={{ color: "var(--aurora-text-muted)", flexShrink: 0 }} />
+        <Copy size={13} strokeWidth={1.75} style={{ color: error ? "var(--aurora-error)" : "var(--aurora-text-muted)", flexShrink: 0 }} />
       )}
     </button>
   )

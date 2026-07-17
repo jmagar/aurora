@@ -19,9 +19,8 @@ export interface InlineCitationProps
  * When `title`/`url` are supplied it reveals a source preview on hover and
  * keyboard focus; otherwise it renders as a plain numbered chip.
  */
-const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
-  (
-    {
+const InlineCitation = (
+    { ref,
       className,
       index,
       title,
@@ -38,8 +37,7 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
       onFocus,
       onBlur,
       ...props
-    },
-    ref
+    }: InlineCitationProps & { ref?: React.Ref<HTMLAnchorElement> }
   ) => {
     const [open, setOpen] = React.useState(false)
     const resolvedHref = href ?? url
@@ -183,7 +181,6 @@ const InlineCitation = React.forwardRef<HTMLAnchorElement, InlineCitationProps>(
       </span>
     )
   }
-)
 InlineCitation.displayName = "InlineCitation"
 
 export { InlineCitation }

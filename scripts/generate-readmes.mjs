@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs"
 import { createHash } from "node:crypto"
 import { basename, dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -22,6 +22,7 @@ if (readmePaths.length === 0) {
 }
 
 const manifest = {}
+const generatedFiles = new Set()
 
 for (const readmePath of readmePaths) {
   const abs = resolve(root, readmePath)
@@ -40,8 +41,20 @@ for (const readmePath of readmePaths) {
   const fileName = `${slug}-${hash}-${basename(readmePath).toLowerCase()}`
 
   writeFileSync(join(outputDir, fileName), source)
+  generatedFiles.add(fileName)
   manifest[readmePath] = `/readmes/${fileName}`
 }
 
+// Delete only assets matching this generator's hashed naming contract. Other
+// hand-authored files in public/readmes are never touched.
+const ownedPattern = /^themes-[a-z0-9-]+-[a-f0-9]{10}-readme\.md$/
+for (const fileName of readdirSync(outputDir)) {
+  if (ownedPattern.test(fileName) && !generatedFiles.has(fileName)) unlinkSync(join(outputDir, fileName))
+}
+
 writeFileSync(join(outputDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`)
+for (const servedPath of Object.values(manifest)) {
+  const fileName = basename(servedPath)
+  if (!generatedFiles.has(fileName)) throw new Error(`README manifest points to an ungenerated file: ${servedPath}`)
+}
 console.log(`Generated ${readmePaths.length} README assets.`)

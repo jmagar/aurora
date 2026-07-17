@@ -23,10 +23,7 @@ const row: React.CSSProperties = {
   marginBottom: "18px",
 }
 
-// CD re-tints `warn` to its orange tertiary accent within the demo surface,
-// scoped here exactly as the dsCard does (`:root{--aurora-warn:#d97757}`).
 const demoSurface: React.CSSProperties = {
-  ["--aurora-warn" as string]: "#d97757",
   background: "var(--aurora-page-bg)",
   color: "var(--aurora-text-primary)",
   padding: "26px 30px",
@@ -130,7 +127,7 @@ export default function BadgesDemo() {
           <Badge tone="cyan" fill="outline">Outline</Badge>
         </div>
 
-        <div style={lbl}>Live · pulse</div>
+        <div style={lbl}>Live · Pulse</div>
         <div style={row}>
           <Badge tone="error" dot pulse fill="solid">Recording</Badge>
           <Badge tone="success" dot pulse>Connected</Badge>

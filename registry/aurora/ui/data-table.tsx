@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { Button } from "@/registry/aurora/ui/button";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -28,21 +30,10 @@ export interface DataTableProps<TRow extends Record<string, unknown> = Record<st
 // ---------------------------------------------------------------------------
 
 function SortIcon({ active, direction }: { active: boolean; direction: "asc" | "desc" | null }) {
-  const color = active
-    ? "var(--aurora-accent-primary)"
-    : "var(--aurora-text-muted)";
+  const color = active ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)";
+  const Icon = !active || direction === null ? ArrowUpDown : direction === "asc" ? ArrowUp : ArrowDown;
 
-  const glyph =
-    !active || direction === null ? "↕" : direction === "asc" ? "↑" : "↓";
-
-  return (
-    <span
-      aria-hidden
-      style={{ color, fontSize: "var(--aurora-type-caption)", lineHeight: 1, userSelect: "none" }}
-    >
-      {glyph}
-    </span>
-  );
+  return <Icon aria-hidden style={{ color, width: 14, height: 14, flexShrink: 0 }} />;
 }
 
 // ---------------------------------------------------------------------------
@@ -117,17 +108,8 @@ export function DataTable<TRow extends Record<string, unknown>>({
                     key={col.key}
                     scope="col"
                     aria-sort={ariaSort}
-                    onClick={() => handleSort(col)}
-                    onKeyDown={(e) => {
-                      if (col.sortable && (e.key === "Enter" || e.key === " ")) {
-                        e.preventDefault();
-                        handleSort(col);
-                      }
-                    }}
-                    tabIndex={col.sortable ? 0 : undefined}
                     className={cn(
                       "px-4 py-2.5 text-left",
-                      col.sortable && "cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--aurora-focus-ring)]",
                       col.numeric && "text-right tabular-nums",
                     )}
                     style={{
@@ -138,19 +120,31 @@ export function DataTable<TRow extends Record<string, unknown>>({
                       lineHeight: "var(--aurora-line-dense)",
                       color: isActive ? "var(--aurora-accent-primary)" : "var(--aurora-text-muted)",
                       borderBottom: `1px solid var(--aurora-border-default)`,
-                      whiteSpace: "nowrap",
-                      transition: "color 150ms",
                     }}
                   >
-                    <span className="inline-flex items-center gap-1.5">
-                      {col.label}
-                      {col.sortable && (
+                    {col.sortable ? (
+                      <Button
+                        variant="plain"
+                        size="unstyled"
+                        onClick={() => handleSort(col)}
+                        className={cn(
+                          "inline-flex w-full items-center gap-1.5 whitespace-nowrap rounded-[8px] px-1 py-0.5 transition-colors duration-150",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--aurora-focus-ring)]",
+                          col.numeric && "justify-end"
+                        )}
+                        style={{ color: "inherit" }}
+                      >
+                        {col.label}
                         <SortIcon
                           active={isActive}
                           direction={isActive ? sortState!.direction : null}
                         />
-                      )}
-                    </span>
+                      </Button>
+                    ) : (
+                      <span className={cn("inline-flex items-center whitespace-nowrap", col.numeric && "justify-end")}>
+                        {col.label}
+                      </span>
+                    )}
                   </th>
                 );
               })}
@@ -161,14 +155,7 @@ export function DataTable<TRow extends Record<string, unknown>>({
             {sorted.map((row, rowIdx) => (
               <tr
                 key={rowIdx}
-                className="group transition-colors"
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background =
-                    "color-mix(in srgb, var(--aurora-hover-bg) 60%, transparent)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "";
-                }}
+                className="transition-colors hover:bg-[color-mix(in_srgb,var(--aurora-hover-bg)_60%,transparent)]"
               >
                 {columns.map((col) => (
                   <td

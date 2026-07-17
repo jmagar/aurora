@@ -1,12 +1,10 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.roborazzi)
-}
-
-kotlin {
-    explicitApi()
 }
 
 // Token generation task — tracks the source files that produce tokens JSON before compileKotlin
@@ -29,15 +27,24 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
         }
     }
+}
+
+kotlin {
+    explicitApi()
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
+}
+
+roborazzi {
+    // Keep reviewable goldens in source control. Build-local defaults make
+    // verifyRoborazzi pass only on the machine that recorded them.
+    outputDir.set(file("src/test/snapshots/images"))
 }
 
 val generateAuroraTokens by tasks.registering(Exec::class) {
@@ -73,23 +80,27 @@ android.sourceSets["main"].kotlin.srcDir(generatedTokensDir)
 
 dependencies {
     val bom = platform(libs.compose.bom)
-    implementation(bom)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.tooling.preview)
+    // These types appear in Aurora's public Compose API (`@Composable`,
+    // `Modifier`, Material color/shape types, and preview annotations), so
+    // consumers must receive them on their compile classpath.
+    api(bom)
+    api(libs.compose.material3)
+    api(libs.compose.ui)
+    api(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.activity.compose)
-    implementation(libs.kotlinx.collections.immutable)
+    api(libs.kotlinx.collections.immutable)
     implementation(libs.coil.compose)
     implementation(libs.androidx.webkit)
     implementation(libs.compose.material.icons.extended)
     testImplementation(libs.junit)
     // Compose UI testing on JVM via Robolectric (no emulator needed).
-    // ui-test-manifest is debugImplementation so AGP merges its AndroidManifest
-    // with the test APK, enabling Robolectric to resolve Activity themes.
+    // Keep the test activity manifest on every unit-test variant. Restricting this
+    // to debug makes release Robolectric/Compose tests fail to resolve
+    // ComponentActivity.
     testImplementation(bom)
     testImplementation(libs.compose.ui.test.junit4)
-    debugImplementation(libs.compose.ui.test.manifest)
+    testImplementation(libs.compose.ui.test.manifest)
     testImplementation(libs.robolectric)
     testImplementation(libs.roborazzi)
     testImplementation(libs.roborazzi.compose)

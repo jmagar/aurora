@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import tv.tootie.aurora.theme.LocalAuroraColors
 
@@ -69,10 +70,16 @@ public fun rememberAuroraToastState(): AuroraToastState {
  * ```
  */
 @Composable
-public fun AuroraToastHost(toastState: AuroraToastState) {
+public fun AuroraToastHost(
+    toastState: AuroraToastState,
+    modifier: Modifier = Modifier,
+) {
     val auroraColors = LocalAuroraColors.current
 
-    SnackbarHost(hostState = toastState.snackbarHostState) { data ->
+    SnackbarHost(
+        hostState = toastState.snackbarHostState,
+        modifier = modifier,
+    ) { data ->
         val variant = (data.visuals as? AuroraSnackbarVisuals)?.variant
             ?: AuroraToastVariant.Default
         val userLabel = data.visuals.actionLabel

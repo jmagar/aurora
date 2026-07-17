@@ -31,6 +31,9 @@ export function EmptyState({
   as: Heading = "p",
   ...rest
 }: EmptyStateProps & { ref?: React.Ref<HTMLDivElement> }) {
+    const titleId = React.useId();
+    const descriptionId = React.useId();
+
     return (
       <div
         ref={ref}
@@ -42,6 +45,8 @@ export function EmptyState({
           border: `1.5px dashed var(--aurora-border-default)`,
           borderRadius: "var(--aurora-radius-2)",
         }}
+        aria-labelledby={titleId}
+        aria-describedby={description ? descriptionId : undefined}
         {...rest}
       >
         {/* Icon slot */}
@@ -66,6 +71,7 @@ export function EmptyState({
         <div className="flex flex-col items-center gap-2">
           {/* Title */}
           <Heading
+            id={titleId}
             className="aurora-text-section"
             style={{
               fontWeight: "var(--aurora-weight-heading)",
@@ -78,7 +84,8 @@ export function EmptyState({
 
           {/* Description */}
           {description && (
-            <p
+            <div
+              id={descriptionId}
               style={{
                 color: "var(--aurora-text-muted)",
                 fontFamily: "var(--aurora-font-sans)",
@@ -88,12 +95,12 @@ export function EmptyState({
               }}
             >
               {description}
-            </p>
+            </div>
           )}
         </div>
 
         {/* Action slot */}
-        {action && <div className="pt-1">{action}</div>}
+        {action && <div className="flex flex-wrap items-center justify-center gap-2 pt-1">{action}</div>}
       </div>
     );
 }

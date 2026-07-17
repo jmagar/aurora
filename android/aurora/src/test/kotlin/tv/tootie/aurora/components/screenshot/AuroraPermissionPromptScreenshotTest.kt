@@ -13,8 +13,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.junit4.v2.createComposeRule
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
+import androidx.compose.ui.test.isRoot
 import com.github.takahirom.roborazzi.captureRoboImage
 import tv.tootie.aurora.components.AuroraPermissionPrompt
 import tv.tootie.aurora.theme.AuroraTheme
@@ -40,7 +41,10 @@ import tv.tootie.aurora.theme.AuroraTheme
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [34], qualifiers = "w400dp-h800dp-xhdpi")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
+@OptIn(ExperimentalRoborazziApi::class)
 class AuroraPermissionPromptScreenshotTest {
+
+    private val screenshotOptions = RoborazziOptions()
 
     @get:Rule
     val composeRule = createComposeRule()
@@ -48,10 +52,20 @@ class AuroraPermissionPromptScreenshotTest {
     @get:Rule
     val roborazziRule = RoborazziRule(
         options = Options(
-            roborazziOptions = RoborazziOptions(),
-            captureType = RoborazziRule.CaptureType.LastImage(),
+            roborazziOptions = screenshotOptions,
+            // Each test captures its Compose root explicitly below. LastImage
+            // also requires a captureRoot on the rule and would attempt a
+            // second capture after the test, failing before golden comparison.
+            captureType = RoborazziRule.CaptureType.None,
         ),
     )
+
+    private fun captureDialog() {
+        // Compose Dialog creates a second semantics root. Capture the dialog
+        // root (last) rather than requiring the test harness and dialog to
+        // collapse into a single root.
+        composeRule.onAllNodes(isRoot())[1].captureRoboImage(roborazziOptions = screenshotOptions)
+    }
 
     @Test
     fun permissionPrompt_command_defaultState() {
@@ -69,7 +83,7 @@ class AuroraPermissionPromptScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        captureDialog()
     }
 
     @Test
@@ -88,7 +102,7 @@ class AuroraPermissionPromptScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        captureDialog()
     }
 
     @Test
@@ -111,7 +125,7 @@ class AuroraPermissionPromptScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        captureDialog()
     }
 
     @Test
@@ -130,7 +144,7 @@ class AuroraPermissionPromptScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        captureDialog()
     }
 
     @Test
@@ -150,6 +164,6 @@ class AuroraPermissionPromptScreenshotTest {
                 }
             }
         }
-        composeRule.onRoot().captureRoboImage()
+        captureDialog()
     }
 }

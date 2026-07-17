@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { Shield } from "lucide-react"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { Avatar, AvatarGroup } from "@/registry/aurora/ui/avatar"
-
-// ─── CD dsCard chrome (ported as inline styles) ──────────────────────────────
 
 const lbl: React.CSSProperties = {
   fontSize: "10px",
@@ -19,9 +19,9 @@ const rowStyle: React.CSSProperties = {
   gap: "12px",
   alignItems: "center",
   marginBottom: "18px",
+  flexWrap: "wrap",
 }
 
-// CD tone order: cyan, pink, teal/success, sand/warn.
 const tones = [
   "var(--aurora-accent-primary)",
   "var(--aurora-accent-pink)",
@@ -29,41 +29,55 @@ const tones = [
   "var(--aurora-warn)",
 ]
 
-// CD shield icon path.
-const SHIELD_ICON = '<path d="M12 2 5 7v5c0 4 3 6.5 7 8 4-1.5 7-4 7-8V7Z"/>'
-
 export default function AvatarDemo() {
   return (
-    <div
-      style={{
-        background: "var(--aurora-page-bg)",
-        color: "var(--aurora-text-primary)",
-        boxSizing: "border-box",
-        padding: "30px",
-        borderRadius: "var(--aurora-radius-2)",
-        border: "1px solid var(--aurora-border-default)",
-      }}
-    >
-      <div className="lbl" style={lbl}>
-        Status · ring · icon · square
-      </div>
-      <div style={rowStyle}>
-        <Avatar initials="JM" tone={tones[0]} status="online" />
-        <Avatar initials="AX" tone={tones[1]} status="busy" ring />
-        <Avatar initials="LB" tone={tones[2]} status="away" />
-        <Avatar icon={SHIELD_ICON} tone={tones[0]} />
-        <Avatar initials="SQ" tone={tones[1]} shape="square" />
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <GalleryPageIntro
+        eyebrow="Controls"
+        heading="Avatar"
+        description="Identity chips for people, agents, and service actors. Status dots, tone rings, square and bot variants, beacon presence, icon fallbacks, and grouped overflow."
+      />
 
-      <div className="lbl" style={lbl}>
-        Group · overflow
-      </div>
-      <div style={{ ...rowStyle, marginBottom: 0 }}>
-        <AvatarGroup max={4} size={34}>
-          {["JM", "AX", "LB", "OP", "RS", "ML"].map((x, i) => (
-            <Avatar key={i} initials={x} tone={tones[i % 4]} />
-          ))}
-        </AvatarGroup>
+      <div
+        style={{
+          background: "var(--aurora-page-bg)",
+          color: "var(--aurora-text-primary)",
+          boxSizing: "border-box",
+          padding: "30px",
+          borderRadius: "var(--aurora-radius-2)",
+          border: "1px solid var(--aurora-border-default)",
+        }}
+      >
+        <div className="lbl" style={lbl}>
+          Status · Ring · Bot · Beacon
+        </div>
+        <div style={rowStyle}>
+          <Avatar initials="JM" tone={tones[0]} status="online" />
+          <Avatar initials="AX" tone={tones[1]} status="busy" ring />
+          <Avatar initials="LB" tone={tones[2]} status="away" />
+          <Avatar initials="AI" variant="bot" tone={tones[0]} />
+          <Avatar initials="OP" variant="beacon" tone={tones[0]} />
+        </div>
+
+        <div className="lbl" style={lbl}>
+          Icon · Square
+        </div>
+        <div style={rowStyle}>
+          <Avatar icon={<Shield aria-hidden />} tone={tones[0]} />
+          <Avatar initials="SQ" tone={tones[1]} shape="square" />
+          <Avatar initials="ID" tone={tones[3]} shape="square" ring />
+        </div>
+
+        <div className="lbl" style={lbl}>
+          Group · Overflow
+        </div>
+        <div style={{ ...rowStyle, marginBottom: 0 }}>
+          <AvatarGroup max={4} size={34}>
+            {["JM", "AX", "LB", "OP", "RS", "ML"].map((value, index) => (
+              <Avatar key={value} initials={value} tone={tones[index % 4]} />
+            ))}
+          </AvatarGroup>
+        </div>
       </div>
     </div>
   )

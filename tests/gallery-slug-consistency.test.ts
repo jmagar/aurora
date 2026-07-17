@@ -21,28 +21,9 @@ import { SLUG_TO_REGISTRY, slugToRegistry } from "../lib/slug-map.ts"
 // item has no built public/r artifact.
 // ---------------------------------------------------------------------------
 
-// DEMOS keys are bound to next/dynamic() imports, so the demo-map module cannot
-// be imported under node:test. Parse its demo keys textually instead — the same
-// approach other tests in this suite use for source artifacts.
 function loadDemoKeys(): Set<string> {
-  const pageSrc = readFileSync(
-    new URL("../app/gallery/demo-map.tsx", import.meta.url),
-    "utf8",
-  )
-  const keys = new Set<string>()
-  // Every `<key>: dynamic(` or `"<key>": dynamic(` entry across all demo maps.
-  for (const m of pageSrc.matchAll(/(?:"([^"]+)"|([a-zA-Z0-9-]+))\s*:\s*dynamic\(/g)) {
-    keys.add(m[1] ?? m[2])
-  }
-  // AI_DEMOS keys also get a canonical `ai-<key>` route via AI_CANONICAL_DEMOS.
-  const aiStart = pageSrc.indexOf("AI_DEMOS: Record")
-  const aiEnd = pageSrc.indexOf("AI_CANONICAL_DEMOS")
-  assert.ok(aiStart >= 0 && aiEnd > aiStart, "could not locate AI_DEMOS block in demo-map.tsx")
-  const aiBlock = pageSrc.slice(aiStart, aiEnd)
-  for (const m of aiBlock.matchAll(/(?:"([^"]+)"|([a-zA-Z0-9-]+))\s*:\s*dynamic\(/g)) {
-    keys.add(`ai-${m[1] ?? m[2]}`)
-  }
-  return keys
+  const manifest = JSON.parse(readFileSync(new URL("../lib/gallery-manifest.json", import.meta.url), "utf8")) as Record<string, string>
+  return new Set(Object.keys(manifest))
 }
 
 const DEMO_KEYS = loadDemoKeys()

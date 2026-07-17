@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Copy, Check } from "lucide-react"
 import { panelStrong } from "@/components/site/style-tokens"
+import { useClipboard } from "@/lib/use-clipboard"
 
 /* ── token data — names map 1:1 to Aurora-owned custom properties ── */
 
@@ -81,17 +82,19 @@ function Section({ eyebrow, title, children }: { eyebrow: string; title: string;
 }
 
 function TokenName({ name }: { name: string }) {
-  const [done, setDone] = React.useState(false)
+  const { copied, error, copy } = useClipboard(1100)
   const full = tokenVar(name)
   return (
     <button
-      onClick={() => { navigator.clipboard?.writeText(full); setDone(true); setTimeout(() => setDone(false), 1100) }}
+      type="button"
+      onClick={() => void copy(full)}
+      aria-label={copied ? `Copied ${full}` : error ? `Unable to copy ${full}` : `Copy ${full}`}
       className="aurora-text-code inline-flex items-center gap-1.5"
       style={{ color: "var(--aurora-text-muted)", fontSize: 11.5 }}
       title="Copy token name"
     >
       {full}
-      {done ? <Check size={11} strokeWidth={2} style={{ color: "var(--aurora-success)" }} /> : <Copy size={11} strokeWidth={1.6} style={{ opacity: 0.6 }} />}
+      {copied ? <Check size={11} strokeWidth={2} style={{ color: "var(--aurora-success)" }} /> : <Copy size={11} strokeWidth={1.6} style={{ color: error ? "var(--aurora-error)" : undefined, opacity: 0.6 }} />}
     </button>
   )
 }

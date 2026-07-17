@@ -68,8 +68,7 @@ const TASK_STATUS_LABEL: Record<AgentTask["status"], string> = {
   failed: "Failed",
 }
 
-const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
-  ({ className, tasks, style, ...props }, ref) => {
+const TaskList = ({ ref, className, tasks, style, ...props }: TaskListProps & { ref?: React.Ref<HTMLDivElement> }) => {
     const done = tasks.filter((t) => t.status === "completed").length
 
     return (
@@ -179,7 +178,6 @@ const TaskList = React.forwardRef<HTMLDivElement, TaskListProps>(
       </div>
     )
   }
-)
 TaskList.displayName = "TaskList"
 
 export { TaskList, TaskList as Task }

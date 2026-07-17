@@ -4,10 +4,9 @@ import * as React from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Monitor, Search, SearchX, Smartphone, X } from "lucide-react"
-import { NAV } from "@/app/gallery/nav-data"
+import catalog from "@/lib/client-catalog.json"
 import { DEMOS } from "@/app/gallery/demo-map"
 import { PortalContainerContext } from "@/registry/aurora/lib/portal-container"
-import { getRegistryMeta } from "@/lib/registry-meta"
 import { fuzzy } from "@/lib/fuzzy"
 import { CopyLine } from "@/components/site/site-ui"
 import { tint } from "@/components/site/style-tokens"
@@ -30,22 +29,11 @@ interface CatalogItem {
   desc: string
   /** registry item name (e.g. "aurora-button") — join key for the Kotlin map */
   registry: string | null
+  installUrl: string | null
 }
 
-// Flatten the gallery NAV into a searchable catalog once, at module load.
-const ITEMS: CatalogItem[] = NAV.flatMap((g) =>
-  g.items.map((it) => {
-    const meta = getRegistryMeta(it.slug)
-    return {
-      slug: it.slug,
-      label: it.label,
-      group: g.group,
-      desc: meta?.description ?? "",
-      registry: meta?.name ?? null,
-    }
-  }),
-)
-const GROUPS = NAV.map((g) => g.group)
+const ITEMS: CatalogItem[] = catalog.items.map((item) => ({ ...item, desc: item.description }))
+const GROUPS = catalog.groups
 
 const GRADLE_LINE = 'implementation("tv.tootie.aurora:aurora")'
 
@@ -99,6 +87,7 @@ const LazyPreview = React.memo(function LazyPreview({ slug }: { slug: string }) 
       {visible && Demo ? (
         <div
           ref={attachHost}
+          aria-label={`${slug} preview`}
           style={{
             position: "relative",
             width: PREVIEW_W,
@@ -283,7 +272,15 @@ function LiveDrawer({
   onClose: () => void
 }) {
   const Demo = DEMOS[item.slug]
-  const meta = getRegistryMeta(item.slug)
+  // Overlay demos (Select, DropdownMenu, Popover, …) portal their content, and
+  // the registry styles it z-50 — below this drawer's z-index, so a body-level
+  // portal renders *behind* the drawer. Host them on the panel instead: it is
+  // inside the drawer's stacking context, and its onClick stops propagation, so
+  // clicking a menu item can't bubble to the backdrop and close the drawer.
+  const [drawerHost, setDrawerHost] = React.useState<HTMLElement | null>(null)
+  const attachDrawerHost = React.useCallback((node: HTMLElement | null) => {
+    if (node) setDrawerHost((prev) => (prev === node ? prev : node))
+  }, [])
 
   const idx = list.findIndex((c) => c.slug === item.slug)
   const has = idx >= 0 && list.length > 1
@@ -324,6 +321,7 @@ function LiveDrawer({
     >
       <DrawerArrow dir="left" target={prev} onPick={onPick} />
       <aside
+        ref={attachDrawerHost}
         role="dialog"
         aria-modal="true"
         aria-label={item.label}
@@ -401,7 +399,11 @@ function LiveDrawer({
               border: "1px solid var(--aurora-border-default)",
             }}
           >
-            {Demo ? <Demo /> : null}
+            {Demo ? (
+              <PortalContainerContext.Provider value={drawerHost}>
+                <Demo />
+              </PortalContainerContext.Provider>
+            ) : null}
           </div>
 
           {kotlin ? (
@@ -416,12 +418,12 @@ function LiveDrawer({
                 </div>
               </div>
             </>
-          ) : meta ? (
+          ) : item.installUrl ? (
             <>
               <div className="aurora-text-eyebrow mb-2.5" style={{ fontSize: 10 }}>
                 Install
               </div>
-              <CopyLine cmd={`npx shadcn@latest add ${meta.installUrl}`} />
+              <CopyLine cmd={`npx shadcn@latest add ${item.installUrl}`} />
             </>
           ) : null}
         </div>
@@ -737,7 +739,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
             title={q ? `No matches for “${q}”` : "Nothing in this category"}
             description={
               q
-                ? "No components match your search. Try a shorter query, or clear the filters to see all 162."
+                ? `No components match your search. Try a shorter query, or clear the filters to see all ${catalog.counts.catalogItems}.`
                 : "This category is empty in the current flavor. Clear the filters to browse everything."
             }
             action={

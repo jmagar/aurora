@@ -645,8 +645,8 @@ function ErrorVariant({ url }: { url: string }) {
 // Main WebPreview component
 // ---------------------------------------------------------------------------
 
-export const WebPreview = React.forwardRef<HTMLDivElement, WebPreviewProps>(
-  function WebPreview(props, ref) {
+export const WebPreview = function WebPreview(props: WebPreviewProps & { ref?: React.Ref<HTMLDivElement> }) {
+    const { ref } = props
     const { variant = "browser", isLoading } = props
 
     const content =
@@ -668,6 +668,5 @@ export const WebPreview = React.forwardRef<HTMLDivElement, WebPreviewProps>(
       </div>
     )
   }
-)
 
 export default WebPreview

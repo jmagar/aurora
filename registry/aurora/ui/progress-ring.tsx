@@ -28,9 +28,8 @@ export interface ProgressRingProps
   children?: React.ReactNode;
 }
 
-export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
-  function ProgressRing(
-    {
+export const ProgressRing = function ProgressRing(
+    { ref,
       value,
       size = 80,
       thickness = 6,
@@ -40,9 +39,10 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
       children,
       className,
       style,
+      "aria-label": ariaLabel,
+      "aria-valuetext": ariaValueText,
       ...props
-    },
-    ref,
+    }: ProgressRingProps & { ref?: React.Ref<HTMLDivElement> },
   ) {
     // Guard non-finite input (NaN/Infinity): Math.max/min would propagate NaN
     // into aria-valuenow and the dash math, so floor it to 0.
@@ -59,6 +59,8 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
         aria-valuenow={Math.round(clamped)}
         aria-valuemin={0}
         aria-valuemax={100}
+        aria-label={ariaLabel ?? "Progress"}
+        aria-valuetext={ariaValueText ?? `${Math.round(clamped)}%`}
         className={cn("relative inline-flex items-center justify-center", className)}
         style={{ width: size, height: size, ...style }}
         {...props}
@@ -97,11 +99,11 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
           <div
             className="absolute inset-0 flex items-center justify-center"
             style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 700,
+              fontFamily: "var(--aurora-font-sans)",
+              fontWeight: "var(--aurora-weight-label)",
               fontSize: Math.max(11, Math.round(size * 0.26)),
               color: "var(--aurora-text-primary)",
-              letterSpacing: "-0.01em",
+              letterSpacing: 0,
             }}
           >
             {children ?? `${Math.round(clamped)}%`}
@@ -109,8 +111,7 @@ export const ProgressRing = React.forwardRef<HTMLDivElement, ProgressRingProps>(
         )}
       </div>
     );
-  },
-);
+  };
 
 ProgressRing.displayName = "ProgressRing";
 

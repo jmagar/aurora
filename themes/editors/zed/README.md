@@ -52,11 +52,6 @@ If you install the extension, remove this drop-in copy to avoid a duplicate
 Open a PR adding this extension to
 [`zed-industries/extensions`](https://github.com/zed-industries/extensions).
 
-## Publish
-
-Open a PR adding this extension to
-[`zed-industries/extensions`](https://github.com/zed-industries/extensions).
-
 ## Source of truth
 
 `themes/editors/zed/themes/aurora.json` is canonical. `public/zed/aurora.json` is a

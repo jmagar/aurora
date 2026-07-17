@@ -199,8 +199,7 @@ function Input({
     const effectiveEndAdornment = showClearButton ? (
       <button
         type="button"
-        aria-label="Clear"
-        tabIndex={-1}
+        aria-label="Clear value"
         className={cn(
           "pointer-events-auto",
           "flex h-4 w-4 items-center justify-center rounded-full",
@@ -257,7 +256,7 @@ function Input({
           }
         }}
       >
-        <X size={10} strokeWidth={1.8} aria-hidden="true" />
+        <X className="h-2.5 w-2.5" strokeWidth={1.8} aria-hidden="true" />
       </button>
     ) : endAdornment
 

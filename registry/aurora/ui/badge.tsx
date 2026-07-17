@@ -131,34 +131,13 @@ function resolveTone(value: BadgeTone | "default" | "violet" | undefined): Badge
   return value
 }
 
-/**
- * Resolve an icon slot to a node. A React node is returned as-is; a raw SVG
- * path string is wrapped (deprecated — string icons are a `dangerouslySetInnerHTML`
- * foot-gun and non-idiomatic; pass a lucide-react icon instead).
- */
+/** Resolve a trusted React icon slot. */
 function resolveIcon(
-  icon: string | React.ReactNode | undefined,
-  isSm: boolean,
-  slot: "icon" | "iconTrailing"
+  icon: React.ReactNode | undefined,
+  _isSm: boolean,
+  _slot: "icon" | "iconTrailing"
 ): React.ReactNode {
-  if (icon == null) return null
-  if (typeof icon === "string") {
-    devWarn(
-      `[Aurora Badge] Passing \`${slot}\` as an SVG path string is deprecated and will be removed. Pass a React node (e.g. a lucide-react icon) instead.`
-    )
-    return (
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        width={isSm ? 11 : 12}
-        height={isSm ? 11 : 12}
-        fill="currentColor"
-        style={{ flexShrink: 0 }}
-        dangerouslySetInnerHTML={{ __html: icon }}
-      />
-    )
-  }
-  return icon
+  return icon ?? null
 }
 
 // ---------------------------------------------------------------------------
@@ -181,15 +160,14 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Render a status dot to the left of the label. */
   dot?: boolean
   /**
-   * Leading icon. Prefer a React node (a lucide-react icon). A raw SVG `<path>`
-   * body string is still accepted but deprecated.
+   * Leading icon. Pass a trusted React node such as a lucide-react icon.
    */
-  icon?: string | React.ReactNode
+  icon?: React.ReactNode
   /**
    * Trailing icon, rendered after the label (before any remove button). Same
    * string/node contract as `icon`.
    */
-  iconTrailing?: string | React.ReactNode
+  iconTrailing?: React.ReactNode
   /**
    * Make the badge dismissible: renders a trailing "×" button. The handler
    * receives the button click; propagation to the badge's own `onClick` is

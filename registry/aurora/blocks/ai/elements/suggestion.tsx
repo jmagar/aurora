@@ -35,8 +35,7 @@ export interface SuggestionProps
   onClick?: React.MouseEventHandler<HTMLButtonElement>
 }
 
-const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
-  ({ className, style, options, children, onClick, disabled, ...props }, ref) => (
+const Suggestion = ({ ref, className, style, options, children, onClick, disabled, ...props }: SuggestionProps & { ref?: React.Ref<HTMLDivElement> }) => (
     <div
       ref={ref}
       className={cn("grid gap-2", className)}
@@ -87,7 +86,6 @@ const Suggestion = React.forwardRef<HTMLDivElement, SuggestionProps>(
       ))}
     </div>
   )
-)
 Suggestion.displayName = "Suggestion"
 
 const MemoSuggestion = React.memo(Suggestion)

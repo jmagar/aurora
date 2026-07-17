@@ -27,9 +27,8 @@ export interface ActionProps
   size?: "default" | "sm"
 }
 
-const Action = React.forwardRef<HTMLButtonElement, ActionProps>(
-  (
-    {
+const Action = (
+    { ref,
       className,
       children,
       label,
@@ -38,8 +37,7 @@ const Action = React.forwardRef<HTMLButtonElement, ActionProps>(
       style,
       type = "button",
       ...props
-    },
-    ref
+    }: ActionProps & { ref?: React.Ref<HTMLButtonElement> }
   ) => {
     const hasLabel = label != null && label !== false
     const shape = hasLabel ? "text" : "icon"
@@ -68,7 +66,6 @@ const Action = React.forwardRef<HTMLButtonElement, ActionProps>(
       </button>
     )
   }
-)
 Action.displayName = "Action"
 
 const MemoAction = React.memo(Action)

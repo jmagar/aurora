@@ -21,9 +21,8 @@ export interface ModelSelectorProps extends React.HTMLAttributes<HTMLDivElement>
   placeholder?: string
 }
 
-const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
-  (
-    {
+const ModelSelector = (
+    { ref,
       models,
       value,
       defaultValue,
@@ -39,8 +38,7 @@ const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
       className,
       style,
       ...props
-    },
-    ref
+    }: ModelSelectorProps & { ref?: React.Ref<HTMLDivElement> }
   ) => {
     const reactId = React.useId()
     const descriptionId = description ? `${reactId}-description` : undefined
@@ -100,7 +98,6 @@ const ModelSelector = React.forwardRef<HTMLDivElement, ModelSelectorProps>(
     </div>
     )
   }
-)
 ModelSelector.displayName = "ModelSelector"
 
 export { ModelSelector }

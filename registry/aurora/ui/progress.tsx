@@ -85,6 +85,10 @@ function Progress(
     label,
     max = 100,
     style,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    "aria-describedby": ariaDescribedBy,
+    "aria-valuetext": ariaValueText,
     ...props
   }: ProgressProps & { ref?: React.Ref<HTMLDivElement> }
 ) {
@@ -116,9 +120,10 @@ function Progress(
             <span
               style={{
                 fontSize: "var(--aurora-type-caption)",
-                fontFamily: "var(--aurora-font-mono)",
+                fontFamily: "var(--aurora-font-sans)",
+                fontWeight: "var(--aurora-weight-ui)",
                 color: "var(--aurora-text-muted)",
-                letterSpacing: "0.05em",
+                letterSpacing: 0,
               }}
             >
               {displayLabel}
@@ -133,7 +138,10 @@ function Progress(
           aria-valuenow={isIndeterminate ? undefined : clampedValue}
           aria-valuemin={0}
           aria-valuemax={max}
-          aria-label={isIndeterminate ? "Loading…" : displayLabel}
+          aria-label={ariaLabel ?? (ariaLabelledBy ? undefined : isIndeterminate ? "Loading Progress" : "Progress")}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-valuetext={ariaValueText ?? (isIndeterminate ? "Loading" : displayLabel)}
           style={{
             height,
             borderRadius: height,

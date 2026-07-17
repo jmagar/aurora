@@ -139,8 +139,8 @@ function renderJson(value: unknown): React.ReactNode {
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
-const ToolImpl = React.forwardRef<HTMLDivElement, ToolProps>(function Tool(
-  {
+const ToolImpl = function Tool(
+  { ref,
     name,
     status = "done",
     defaultOpen = false,
@@ -150,8 +150,7 @@ const ToolImpl = React.forwardRef<HTMLDivElement, ToolProps>(function Tool(
     children,
     style,
     ...rest
-  },
-  ref,
+  }: ToolProps & { ref?: React.Ref<HTMLDivElement> },
 ) {
   const reactId = React.useId()
   const bodyId = `aurora-tool-${reactId}`
@@ -290,12 +289,12 @@ const ToolImpl = React.forwardRef<HTMLDivElement, ToolProps>(function Tool(
       )}
     </div>
   )
-})
+}
 
 ToolImpl.displayName = "Tool"
 
 export const Tool = React.memo(ToolImpl)
 // React.memo wrapper loses displayName; restore it for devtools/registry.
-;(Tool as React.NamedExoticComponent).displayName = "Tool"
+Tool.displayName = "Tool"
 
 export default Tool

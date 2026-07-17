@@ -15,48 +15,11 @@
  */
 
 import * as React from "react"
+import { Check, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
-
-// ─── Icons ─────────────────────────────────────────────────────────────────────
-
-function CopyIcon({ size = 16 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-    </svg>
-  )
-}
-
-function CheckIcon({ size = 16 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  )
-}
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
@@ -89,38 +52,18 @@ function CopyButton(
     ...props
   }: CopyButtonProps & { ref?: React.Ref<HTMLButtonElement> }
 ) {
-    const [copied, setCopied] = React.useState(false)
-    const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
-
-    React.useEffect(
-      () => () => {
-        if (timer.current) clearTimeout(timer.current)
-      },
-      []
-    )
+    const { state, copied, copy } = useClipboard(timeout)
 
     const handleClick = React.useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event)
         if (event.defaultPrevented) return
 
-        const finish = () => {
-          setCopied(true)
-          onCopy?.(value)
-          if (timer.current) clearTimeout(timer.current)
-          timer.current = setTimeout(() => setCopied(false), timeout)
-        }
-
-        if (
-          typeof navigator !== "undefined" &&
-          navigator.clipboard?.writeText
-        ) {
-          navigator.clipboard.writeText(value).then(finish, () => {})
-        } else {
-          finish()
-        }
+        void copy(value).then((didCopy) => {
+          if (didCopy) onCopy?.(value)
+        })
       },
-      [onClick, onCopy, value, timeout]
+      [onClick, onCopy, value, copy]
     )
 
     const isIconOnly = label === undefined || label === null || label === ""
@@ -135,6 +78,7 @@ function CopyButton(
           "aurora-copy-btn",
           isIconOnly && "aurora-copy-btn--icon",
           copied && "aurora-copy-btn--copied",
+          state === "error" && "aurora-copy-btn--error",
           className
         )}
         onClick={handleClick}
@@ -143,7 +87,7 @@ function CopyButton(
         {...props}
       >
         <span className="aurora-copy-btn__icon">
-          {copied ? <CheckIcon /> : <CopyIcon />}
+          {copied ? <Check size={16} strokeWidth={1.75} aria-hidden /> : <Copy size={16} strokeWidth={1.75} aria-hidden />}
         </span>
         {!isIconOnly ? <span>{copied ? copiedLabel : label}</span> : null}
         <span
@@ -160,7 +104,7 @@ function CopyButton(
             border: 0,
           }}
         >
-          {copied ? "Copied to clipboard" : ""}
+          {copied ? "Copied to clipboard" : state === "error" ? "Unable to copy to clipboard" : ""}
         </span>
       </button>
     )

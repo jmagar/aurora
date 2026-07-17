@@ -117,14 +117,16 @@ export function Toast({ ref, item, onDismiss }: ToastProps & { ref?: React.Ref<H
           <ToastDescription>{item.description}</ToastDescription>
         )}
         {item.action && (
-          <button
+          <Button
+            variant="plain"
+            size="unstyled"
             type="button"
             onClick={item.action.onClick}
+            className="rounded-[4px] pt-0.5 text-[var(--aurora-accent-primary)] transition-colors hover:text-[var(--aurora-accent-strong)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--aurora-focus-ring)]"
             style={{
               fontSize: "var(--aurora-type-body-sm)",
               fontFamily: "var(--aurora-font-sans)",
               fontWeight: 650,
-              color: "var(--aurora-accent-primary)",
               background: "none",
               border: "none",
               padding: "2px 0",
@@ -133,7 +135,7 @@ export function Toast({ ref, item, onDismiss }: ToastProps & { ref?: React.Ref<H
             }}
           >
             {item.action.label}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -228,7 +230,16 @@ export function ToastProvider({ children, position = "top-right" }: ToastProvide
   const [exiting, setExiting] = React.useState<Set<string>>(new Set());
   const timersRef = React.useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
+  const clearTimer = React.useCallback((id: string) => {
+    const timer = timersRef.current.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      timersRef.current.delete(id);
+    }
+  }, []);
+
   const removeItem = React.useCallback((id: string) => {
+    clearTimer(id);
     setExiting((prev) => new Set(prev).add(id));
     setTimeout(() => {
       setItems((prev) => prev.filter((t) => t.id !== id));
@@ -238,7 +249,7 @@ export function ToastProvider({ children, position = "top-right" }: ToastProvide
         return next;
       });
     }, 240);
-  }, []);
+  }, [clearTimer]);
 
   const toast = React.useCallback(
     (opts: Omit<ToastItem, "id">) => {
@@ -269,8 +280,8 @@ export function ToastProvider({ children, position = "top-right" }: ToastProvide
       ? createPortal(
           <div
             aria-label="Notifications"
-            className={cn("pointer-events-none z-[9999] flex flex-col gap-2.5", POSITION_CLASS[position])}
-            style={{ maxWidth: 400 }}
+            className={cn("pointer-events-none flex flex-col gap-2.5", POSITION_CLASS[position])}
+            style={{ maxWidth: 400, zIndex: "var(--z-toast)" }}
           >
             {items.map((item) => (
               <div

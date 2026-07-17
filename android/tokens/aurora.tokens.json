@@ -434,5 +434,331 @@
         "$type": "number"
       }
     }
+  },
+  "light": {
+    "page": {
+      "bg": {
+        "$value": "#f0f6f8",
+        "$type": "color"
+      }
+    },
+    "bg": {
+      "$value": "#f0f6f8",
+      "$type": "color"
+    },
+    "nav": {
+      "bg": {
+        "$value": "#e4f0f5",
+        "$type": "color"
+      }
+    },
+    "panel": {
+      "medium": {
+        "base": {
+          "$value": "#ffffff",
+          "$type": "color"
+        },
+        "top": {
+          "$value": "#ffffff80",
+          "$type": "color"
+        }
+      },
+      "strong": {
+        "base": {
+          "$value": "#f8fbfc",
+          "$type": "color"
+        },
+        "top": {
+          "$value": "#ffffff",
+          "$type": "color"
+        }
+      }
+    },
+    "control": {
+      "surface": {
+        "base": {
+          "$value": "#edf5f8",
+          "$type": "color"
+        },
+        "top": {
+          "$value": "#d7e8eff5",
+          "$type": "color"
+        }
+      }
+    },
+    "axon": {
+      "orange": {
+        "base": {
+          "$value": "#e0731a",
+          "$type": "color"
+        },
+        "strong": {
+          "$value": "#c25f10",
+          "$type": "color"
+        },
+        "deep": {
+          "$value": "#a8540e",
+          "$type": "color"
+        },
+        "button": {
+          "$value": "#cc640f",
+          "$type": "color"
+        },
+        "surface": {
+          "$value": "#fcf1e8",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#e0731a47",
+          "$type": "color"
+        }
+      }
+    },
+    "hover": {
+      "bg": {
+        "$value": "#dceef4",
+        "$type": "color"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "#b8d0da",
+        "$type": "color"
+      },
+      "strong": {
+        "$value": "#8fb4c4",
+        "$type": "color"
+      }
+    },
+    "text": {
+      "primary": {
+        "$value": "#07131c",
+        "$type": "color"
+      },
+      "muted": {
+        "$value": "#3d6070",
+        "$type": "color"
+      }
+    },
+    "accent": {
+      "primary": {
+        "base": {
+          "$value": "#0288d1",
+          "$type": "color"
+        },
+        "surface": {
+          "$value": "#e6f3fa",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#0288d14d",
+          "$type": "color"
+        },
+        "foreground": {
+          "$value": "#05486d",
+          "$type": "color"
+        }
+      },
+      "strong": {
+        "$value": "#0277bd",
+        "$type": "color"
+      },
+      "deep": {
+        "$value": "#01579b",
+        "$type": "color"
+      },
+      "lift": {
+        "$value": "#1aa6e8",
+        "$type": "color"
+      },
+      "button": {
+        "$value": "#0277bd",
+        "$type": "color"
+      },
+      "foreground": {
+        "$value": "#ffffff",
+        "$type": "color"
+      },
+      "pink": {
+        "base": {
+          "$value": "#d63a6f",
+          "$type": "color"
+        },
+        "strong": {
+          "$value": "#e0527f",
+          "$type": "color"
+        },
+        "deep": {
+          "$value": "#a0284f",
+          "$type": "color"
+        },
+        "button": {
+          "$value": "#b82f60",
+          "$type": "color"
+        },
+        "foreground": {
+          "$value": "#6f1636",
+          "$type": "color"
+        },
+        "surface": {
+          "$value": "#fbebf1",
+          "$type": "color"
+        },
+        "border": {
+          "$value": "#d63a6f42",
+          "$type": "color"
+        }
+      }
+    },
+    "success": {
+      "base": {
+        "$value": "#2d7d6e",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#e6efee",
+        "$type": "color"
+      },
+      "border": {
+        "$value": "#2d7d6e3d",
+        "$type": "color"
+      },
+      "foreground": {
+        "$value": "#184b43",
+        "$type": "color"
+      }
+    },
+    "warn": {
+      "base": {
+        "$value": "#8a6914",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#f1ede3",
+        "$type": "color"
+      },
+      "border": {
+        "$value": "#8a69143d",
+        "$type": "color"
+      },
+      "foreground": {
+        "$value": "#5c450c",
+        "$type": "color"
+      }
+    },
+    "error": {
+      "base": {
+        "$value": "#9c3545",
+        "$type": "color"
+      },
+      "lift": {
+        "$value": "#b84a5b",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#f5ebec",
+        "$type": "color"
+      },
+      "border": {
+        "$value": "#9c35453d",
+        "$type": "color"
+      },
+      "foreground": {
+        "$value": "#6f2330",
+        "$type": "color"
+      }
+    },
+    "info": {
+      "base": {
+        "$value": "#0f7db8",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#e7f2f8",
+        "$type": "color"
+      },
+      "border": {
+        "$value": "#0f7db842",
+        "$type": "color"
+      },
+      "foreground": {
+        "$value": "#0a4f74",
+        "$type": "color"
+      }
+    },
+    "neutral": {
+      "base": {
+        "$value": "#6f8793",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#eef1f2",
+        "$type": "color"
+      },
+      "border": {
+        "$value": "#6f87933d",
+        "$type": "color"
+      },
+      "foreground": {
+        "$value": "#334e5d",
+        "$type": "color"
+      }
+    },
+    "overlay": {
+      "$value": "#07131c2e",
+      "$type": "color"
+    },
+    "disabled": {
+      "text": {
+        "$value": "#597d8d",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#f1f7fa",
+        "$type": "color"
+      }
+    },
+    "subtle": {
+      "bg": {
+        "$value": "#dceef4a8",
+        "$type": "color"
+      }
+    },
+    "selected": {
+      "bg": {
+        "$value": "#e6f3fa",
+        "$type": "color"
+      }
+    },
+    "pressed": {
+      "bg": {
+        "$value": "#d7ecf8",
+        "$type": "color"
+      }
+    },
+    "focus": {
+      "ring": {
+        "strong": {
+          "$value": "#0288d166",
+          "$type": "color"
+        }
+      }
+    },
+    "status": {
+      "offline": {
+        "$value": "#6f8793",
+        "$type": "color"
+      }
+    },
+    "code": {
+      "type": {
+        "$value": "#24536c",
+        "$type": "color"
+      },
+      "function": {
+        "$value": "#01579b",
+        "$type": "color"
+      }
+    }
   }
 }
