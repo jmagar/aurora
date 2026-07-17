@@ -1,8 +1,11 @@
 "use client"
 
 import { Combobox } from "@/registry/aurora/ui/combobox"
+import { usePreviewPoster } from "@/lib/preview-poster"
 
 export default function ComboboxDemo() {
+  // Open, Combobox autofocuses its input; in a catalog tile that yanks scroll.
+  const poster = usePreviewPoster()
   return (
     <section
       className="grid gap-4 rounded-[var(--aurora-radius-2)] border p-5"
@@ -13,7 +16,7 @@ export default function ComboboxDemo() {
       }}
     >
       <Combobox
-        defaultOpen
+        defaultOpen={!poster}
         defaultValue="labby"
         placeholder="Pick a server…"
         options={[

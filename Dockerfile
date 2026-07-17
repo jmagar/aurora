@@ -12,7 +12,17 @@ WORKDIR /app
 
 FROM base AS deps
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Install AS node so every one of the ~93k node_modules files is *created* owned
+# by node. Chowning them afterwards is what made the dev image take 30+ minutes:
+# on overlayfs a chown cannot just touch metadata, it forces a copy-up of each
+# file into the upper layer — 1.8G duplicated, on a Docker root backed by ZFS.
+# Measured: `RUN chown -R node:node /pnpm /app` = ~19min and still going, versus
+# ~4min for every other step in the build combined.
+# Chowning the two directories is non-recursive and therefore cheap.
+RUN mkdir -p /pnpm /app && chown node:node /pnpm /app
+USER node
+
+COPY --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS dev
@@ -24,12 +34,11 @@ ENV PORT=3000
 ENV WATCHPACK_POLLING=true
 ENV CHOKIDAR_USEPOLLING=true
 
-COPY . .
+# --chown applies ownership as the files are written. A `RUN chown -R` here
+# instead would copy up the whole inherited node_modules tree (see deps).
+COPY --chown=node:node . .
 
-RUN mkdir -p /pnpm/store /app/.next \
-  && chown -R node:node /pnpm /app
-
-USER node
+RUN mkdir -p /pnpm/store /app/.next
 
 EXPOSE 3000
 
