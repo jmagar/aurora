@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Monitor, Search, Searc
 import catalog from "@/lib/client-catalog.json"
 import { DEMOS } from "@/app/gallery/demo-map"
 import { PortalContainerContext } from "@/registry/aurora/lib/portal-container"
+import { PreviewPosterContext } from "@/lib/preview-poster"
 import { fuzzy } from "@/lib/fuzzy"
 import { CopyLine } from "@/components/site/site-ui"
 import { tint } from "@/components/site/style-tokens"
@@ -99,9 +100,11 @@ const LazyPreview = React.memo(function LazyPreview({ slug }: { slug: string }) 
           }}
         >
           {portalHost ? (
-            <PortalContainerContext.Provider value={portalHost}>
-              <Demo />
-            </PortalContainerContext.Provider>
+            <PreviewPosterContext.Provider value={true}>
+              <PortalContainerContext.Provider value={portalHost}>
+                <Demo />
+              </PortalContainerContext.Provider>
+            </PreviewPosterContext.Provider>
           ) : null}
         </div>
       ) : (

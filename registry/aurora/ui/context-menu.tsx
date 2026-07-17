@@ -37,7 +37,12 @@ const menuTextStyle: React.CSSProperties = {
 
 // ─── Root primitives ──────────────────────────────────────────────────────────
 
-const ContextMenu = ContextMenuPrimitive.Root
+// Inside a scoped preview container, force non-modal so an auto-open menu
+// preview never scroll-locks / focus-traps the surrounding page (mirrors Drawer).
+function ContextMenu({ ...rootProps }: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
+  const portalContainer = usePortalContainer()
+  return <ContextMenuPrimitive.Root {...rootProps} modal={portalContainer ? false : rootProps.modal} />
+}
 const ContextMenuTrigger = ContextMenuPrimitive.Trigger
 const ContextMenuGroup = ContextMenuPrimitive.Group
 const ContextMenuPortal = ContextMenuPrimitive.Portal
