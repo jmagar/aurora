@@ -7,17 +7,31 @@ registry_item="${AURORA_SYNTHETIC_ITEM:-aurora-tokens.json}"
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
-curl --fail --silent --show-error --location \
+# aurora.tootie.tv is proxied through Cloudflare, whose bot protection issues a
+# Managed Challenge ("Just a moment…", HTTP 403 with cf-mitigated: challenge) to
+# requests from hosting-provider ASNs — which is what GitHub's Azure-hosted
+# runners are. curl cannot solve a JS challenge, so every HTTP check below 403s
+# from CI while passing from a residential IP. When AURORA_SYNTHETIC_TOKEN is
+# set, send it as a header that a narrow Cloudflare Skip rule matches to bypass
+# the bot challenge for this monitor only (see ops/synthetics-cloudflare.md).
+# Unset (e.g. local runs, or an un-proxied host like dinglebear.ai) it
+# adds nothing and behaviour is unchanged.
+curl_auth=()
+if [[ -n "${AURORA_SYNTHETIC_TOKEN:-}" ]]; then
+  curl_auth=(-H "x-aurora-synthetic: ${AURORA_SYNTHETIC_TOKEN}")
+fi
+
+curl --fail --silent --show-error --location "${curl_auth[@]}" \
   --dump-header "$tmp_dir/landing.headers" \
   --output "$tmp_dir/landing.html" "$base_url/"
 grep -Eqi '^content-type:.*text/html' "$tmp_dir/landing.headers"
 
-curl --fail --silent --show-error --location \
+curl --fail --silent --show-error --location "${curl_auth[@]}" \
   -H 'Accept: application/vnd.shadcn.v1+json' \
   --output "$tmp_dir/registry.json" "$base_url/"
 jq -e '.items | type == "array" and length > 0' "$tmp_dir/registry.json" >/dev/null
 
-curl --fail --silent --show-error --location \
+curl --fail --silent --show-error --location "${curl_auth[@]}" \
   --dump-header "$tmp_dir/item.headers" \
   --output "$tmp_dir/item.json" "$base_url/r/$registry_item"
 jq -e '.name and .type and (.files | type == "array")' "$tmp_dir/item.json" >/dev/null
