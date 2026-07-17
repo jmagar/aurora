@@ -26,7 +26,7 @@ jobs:
       - name: Validate workflow syntax
         uses: docker://rhysd/actionlint@sha256:ef8299f97635c4c30e2298f48f30763ab782a4ad2c95b744649439a039421e36 # 1.7.10
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
+        uses: gradle/actions/wrapper-validation@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
       - name: Validate deployment topology
         run: ops/check-production-topology.sh
       - name: Validate deployment shell
