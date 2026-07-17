@@ -49,6 +49,13 @@ breaking changes and will be listed here.
   v0.3.1 should rebuild vendored components, review changed component props,
   regenerate Android tokens, and verify both color modes before release.
 
+## [0.4.2](https://github.com/jmagar/aurora/compare/v0.4.1...v0.4.2) (2026-07-17)
+
+
+### Dependencies
+
+* **deps:** bump the minor group across 1 directory with 59 updates ([#69](https://github.com/jmagar/aurora/issues/69)) ([4078a0d](https://github.com/jmagar/aurora/commit/4078a0d344292903892bff1a7c0a12c88afc5efd))
+
 ## [0.4.1](https://github.com/jmagar/aurora/compare/v0.4.0...v0.4.1) (2026-07-17)
 
 
