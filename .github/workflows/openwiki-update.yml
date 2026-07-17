@@ -39,6 +39,17 @@ jobs:
           ping: 100.120.242.29
       - name: Install the lockfile-pinned OpenWiki graph without lifecycle scripts
         run: pnpm install --frozen-lockfile --ignore-scripts
+      # OpenWiki's SQLite checkpoint store (@langchain/langgraph-checkpoint-sqlite)
+      # pulls better-sqlite3, a native module whose compiled binding is produced
+      # by its install script. The bulk install above runs --ignore-scripts so
+      # OpenWiki's large transitive tree cannot execute arbitrary scripts in CI,
+      # which also skips better-sqlite3 and leaves "Could not locate the bindings
+      # file" at runtime. Rebuild only that one package — it is on the
+      # onlyBuiltDependencies allowlist in pnpm-workspace.yaml, so this runs
+      # exclusively its script (prebuild-install fetches a prebuilt binary),
+      # keeping the guard for everything else.
+      - name: Compile the native SQLite binding OpenWiki needs
+        run: pnpm rebuild better-sqlite3
       - name: Preflight OpenWiki API
         env:
           OPENAI_COMPATIBLE_API_KEY: ${{ secrets.OPENAI_COMPATIBLE_API_KEY }}
