@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
+import { usePreviewPoster } from "@/lib/preview-poster"
 import { Command } from "@/registry/aurora/ui/command"
 
 function ic(paths: React.ReactNode) {
@@ -79,6 +80,10 @@ const items = [
 ]
 
 export default function CommandDemo() {
+  // Open, Command scrollIntoView()s its active item on mount. Inside a catalog
+  // tile that scrolls the whole catalog — and `inert` cannot stop it, since it
+  // is a scroll call, not focus. A poster is never used, so render it closed.
+  const poster = usePreviewPoster()
   return (
     <div className="grid gap-6">
       <GalleryPageIntro
@@ -86,7 +91,7 @@ export default function CommandDemo() {
         heading="Command"
         description="A ⌘K command palette with a search header, group filter chips, an icon-and-description result list with keyboard navigation, and a live preview footer."
       />
-      <Command defaultOpen placeholder="Type a command or search…" items={items} />
+      <Command defaultOpen={!poster} placeholder="Type a command or search…" items={items} />
     </div>
   )
 }
