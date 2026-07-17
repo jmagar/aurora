@@ -9,7 +9,18 @@ const DEV_ORIGIN = process.env.AURORA_DEV_ORIGIN ?? "10.1.0.6";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
-  allowedDevOrigins: ["aurora.tootie.tv", DEV_ORIGIN, "dinglebear.ai", "www.dinglebear.ai"],
+  // SWAG's aurora conf matches `server_name aurora.*`, so every domain it
+  // serves answers on an `aurora.` subdomain — aurora.dinglebear.ai as much as
+  // aurora.tootie.tv. An origin missing here is not a visible error: Next
+  // refuses to serve /_next/ chunks, the page renders server-side and never
+  // hydrates, and components read as blank rather than broken.
+  allowedDevOrigins: [
+    "aurora.tootie.tv",
+    "aurora.dinglebear.ai",
+    DEV_ORIGIN,
+    "dinglebear.ai",
+    "www.dinglebear.ai",
+  ],
   output: "standalone",
   turbopack: {
     root: process.cwd(),

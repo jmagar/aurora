@@ -3,6 +3,7 @@
 import * as React from "react"
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card"
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/registry/aurora/lib/portal-container"
 
 const HoverCardRoot = HoverCardPrimitive.Root
 const HoverCardTrigger = HoverCardPrimitive.Trigger
@@ -17,8 +18,9 @@ function HoverCardContent({
 }: React.ComponentProps<typeof HoverCardPrimitive.Content> & {
   ref?: React.Ref<React.ComponentRef<typeof HoverCardPrimitive.Content>>
 }) {
+  const portalContainer = usePortalContainer()
   return (
-    <HoverCardPrimitive.Portal>
+    <HoverCardPrimitive.Portal container={portalContainer ?? undefined}>
       <HoverCardPrimitive.Content
         ref={ref}
         data-slot="hover-card-content"

@@ -272,6 +272,15 @@ function LiveDrawer({
   onClose: () => void
 }) {
   const Demo = DEMOS[item.slug]
+  // Overlay demos (Select, DropdownMenu, Popover, …) portal their content, and
+  // the registry styles it z-50 — below this drawer's z-index, so a body-level
+  // portal renders *behind* the drawer. Host them on the panel instead: it is
+  // inside the drawer's stacking context, and its onClick stops propagation, so
+  // clicking a menu item can't bubble to the backdrop and close the drawer.
+  const [drawerHost, setDrawerHost] = React.useState<HTMLElement | null>(null)
+  const attachDrawerHost = React.useCallback((node: HTMLElement | null) => {
+    if (node) setDrawerHost((prev) => (prev === node ? prev : node))
+  }, [])
 
   const idx = list.findIndex((c) => c.slug === item.slug)
   const has = idx >= 0 && list.length > 1
@@ -312,6 +321,7 @@ function LiveDrawer({
     >
       <DrawerArrow dir="left" target={prev} onPick={onPick} />
       <aside
+        ref={attachDrawerHost}
         role="dialog"
         aria-modal="true"
         aria-label={item.label}
@@ -389,7 +399,11 @@ function LiveDrawer({
               border: "1px solid var(--aurora-border-default)",
             }}
           >
-            {Demo ? <Demo /> : null}
+            {Demo ? (
+              <PortalContainerContext.Provider value={drawerHost}>
+                <Demo />
+              </PortalContainerContext.Provider>
+            ) : null}
           </div>
 
           {kotlin ? (

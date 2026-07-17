@@ -9,6 +9,7 @@ import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/registry/aurora/lib/portal-container"
 
 // ─── Shared menu content styles ───────────────────────────────────────────────
 
@@ -46,8 +47,9 @@ const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
 // ─── Content ──────────────────────────────────────────────────────────────────
 
 function DropdownMenuContent({ ref, className, sideOffset = 6, style, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+  const portalContainer = usePortalContainer()
   return (
-    <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Portal container={portalContainer ?? undefined}>
       <DropdownMenuPrimitive.Content
         ref={ref}
         sideOffset={sideOffset}

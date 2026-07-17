@@ -9,6 +9,7 @@ import * as React from "react"
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/registry/aurora/lib/portal-container"
 
 // ─── Shared menu styles (mirror dropdown-menu) ────────────────────────────────
 
@@ -46,8 +47,9 @@ const ContextMenuRadioGroup = ContextMenuPrimitive.RadioGroup
 // ─── Content ──────────────────────────────────────────────────────────────────
 
 function ContextMenuContent({ ref, className, style, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Content>) {
+  const portalContainer = usePortalContainer()
   return (
-    <ContextMenuPrimitive.Portal>
+    <ContextMenuPrimitive.Portal container={portalContainer ?? undefined}>
       <ContextMenuPrimitive.Content
         ref={ref}
         className={cn(
