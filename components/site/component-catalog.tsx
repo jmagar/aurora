@@ -77,6 +77,13 @@ const LazyPreview = React.memo(function LazyPreview({ slug }: { slug: string }) 
     <div
       ref={ref}
       aria-hidden
+      // inert completes what aria-hidden + pointer-events already imply: this is
+      // a poster, not a control. Without it, demos that auto-open focus their
+      // content on mount (Combobox and Command focus an input), and focusing
+      // anything inside the scale(0.31) wrapper makes the browser scroll it into
+      // view — so scrolling the catalog yanked the page back toward the top.
+      // inert makes focus() a no-op for every demo, not just today's offenders.
+      inert
       style={{
         width: PREVIEW_W * PREVIEW_SCALE,
         height: PREVIEW_H * PREVIEW_SCALE,
@@ -100,11 +107,20 @@ const LazyPreview = React.memo(function LazyPreview({ slug }: { slug: string }) 
           }}
         >
           {portalHost ? (
-            <PreviewPosterContext.Provider value={true}>
-              <PortalContainerContext.Provider value={portalHost}>
-                <Demo />
-              </PortalContainerContext.Provider>
-            </PreviewPosterContext.Provider>
+            // Per-tile Suspense boundary. Every demo is next/dynamic (React.lazy),
+            // so mounting one suspends until its chunk arrives. Without a boundary
+            // here that suspension bubbles to the catalog-wide one below (added for
+            // useSearchParams), whose fallback={null} hides the ENTIRE grid: the
+            // page collapses to viewport height, the browser clamps scroll to 0,
+            // and the reader is thrown back to the top mid-scroll. Containing it
+            // per tile means a loading demo costs only its own thumbnail.
+            <React.Suspense fallback={null}>
+              <PreviewPosterContext.Provider value={true}>
+                <PortalContainerContext.Provider value={portalHost}>
+                  <Demo />
+                </PortalContainerContext.Provider>
+              </PreviewPosterContext.Provider>
+            </React.Suspense>
           ) : null}
         </div>
       ) : (
@@ -403,9 +419,13 @@ function LiveDrawer({
             }}
           >
             {Demo ? (
-              <PortalContainerContext.Provider value={drawerHost}>
-                <Demo />
-              </PortalContainerContext.Provider>
+              // Same reason as the tile preview: contain this demo's suspension so
+              // opening the drawer cannot blank the catalog behind it.
+              <React.Suspense fallback={null}>
+                <PortalContainerContext.Provider value={drawerHost}>
+                  <Demo />
+                </PortalContainerContext.Provider>
+              </React.Suspense>
             ) : null}
           </div>
 
