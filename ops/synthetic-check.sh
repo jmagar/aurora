@@ -16,22 +16,31 @@ trap 'rm -rf "$tmp_dir"' EXIT
 # the bot challenge for this monitor only (see ops/synthetics-cloudflare.md).
 # Unset (e.g. local runs, or an un-proxied host like dinglebear.ai) it
 # adds nothing and behaviour is unchanged.
-curl_auth=()
+# Shared curl flags. When the bypass token is set we deliberately do NOT follow
+# redirects: curl re-sends -H headers (this secret included) to the redirect
+# target, even off-host, so a stray 3xx would disclose the token. The monitored
+# endpoints answer 200 directly; a redirect while the token is attached is
+# itself a failure — the content assertions below reject the redirect body.
+# Without the token, keep --location (unchanged behaviour for local / un-proxied
+# runs such as dinglebear.ai).
+curl_common=(--fail --silent --show-error)
 if [[ -n "${AURORA_SYNTHETIC_TOKEN:-}" ]]; then
-  curl_auth=(-H "x-aurora-synthetic: ${AURORA_SYNTHETIC_TOKEN}")
+  curl_common+=(-H "x-aurora-synthetic: ${AURORA_SYNTHETIC_TOKEN}")
+else
+  curl_common+=(--location)
 fi
 
-curl --fail --silent --show-error --location "${curl_auth[@]}" \
+curl "${curl_common[@]}" \
   --dump-header "$tmp_dir/landing.headers" \
   --output "$tmp_dir/landing.html" "$base_url/"
 grep -Eqi '^content-type:.*text/html' "$tmp_dir/landing.headers"
 
-curl --fail --silent --show-error --location "${curl_auth[@]}" \
+curl "${curl_common[@]}" \
   -H 'Accept: application/vnd.shadcn.v1+json' \
   --output "$tmp_dir/registry.json" "$base_url/"
 jq -e '.items | type == "array" and length > 0' "$tmp_dir/registry.json" >/dev/null
 
-curl --fail --silent --show-error --location "${curl_auth[@]}" \
+curl "${curl_common[@]}" \
   --dump-header "$tmp_dir/item.headers" \
   --output "$tmp_dir/item.json" "$base_url/r/$registry_item"
 jq -e '.name and .type and (.files | type == "array")' "$tmp_dir/item.json" >/dev/null
