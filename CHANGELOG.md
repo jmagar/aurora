@@ -49,6 +49,39 @@ breaking changes and will be listed here.
   v0.3.1 should rebuild vendored components, review changed component props,
   regenerate Android tokens, and verify both color modes before release.
 
+## [0.4.0](https://github.com/jmagar/aurora/compare/v0.3.1...v0.4.0) (2026-07-17)
+
+
+### Added
+
+* **dinglebear:** open the full app on the dinglebear.ai host ([db0c034](https://github.com/jmagar/aurora/commit/db0c0349a1e75aed167fea9c57676b060bad8343))
+* **dinglebear:** replace static tenant with Aurora-native fleet page ([6fa3f4a](https://github.com/jmagar/aurora/commit/6fa3f4ac920379b564c968534a6a4cb505a50841))
+* **plugins:** dendrite marketplace viewer at /plugins ([32cfdf4](https://github.com/jmagar/aurora/commit/32cfdf475df64be40cbd00053141679e5de3a760))
+
+
+### Fixed
+
+* align AI automation accent to Axon orange ([fa53183](https://github.com/jmagar/aurora/commit/fa53183f7e9a790391198424b8b90afb4b5fa50c))
+* audit and polish Aurora UI primitives ([#53](https://github.com/jmagar/aurora/issues/53)) ([2ae003c](https://github.com/jmagar/aurora/commit/2ae003cd23d47ff9599c9bd8cc85dd28e66f18fc))
+* bridge Aurora font tokens to next/font variables ([1110e1c](https://github.com/jmagar/aurora/commit/1110e1c751d4990ccfa8207139b8b1932c187b22))
+* **catalog:** restore live component demos; drop unused web budget script ([#56](https://github.com/jmagar/aurora/issues/56)) ([10e2e18](https://github.com/jmagar/aurora/commit/10e2e18ce1d1e5c2136d5180f18c4b5845372fa2))
+* harden image publication scan ([#47](https://github.com/jmagar/aurora/issues/47)) ([e99edc0](https://github.com/jmagar/aurora/commit/e99edc0b01f65a3187c5137d453f68b7b86e5359))
+* make popover focus deterministic ([#49](https://github.com/jmagar/aurora/issues/49)) ([ae5c076](https://github.com/jmagar/aurora/commit/ae5c076f9f9470523ab7a8a02680477fae38899c))
+* make production migration rollback-safe ([#50](https://github.com/jmagar/aurora/issues/50)) ([178e13d](https://github.com/jmagar/aurora/commit/178e13df5c953a70da3ea46ca054968f652699f1))
+* remediate comprehensive Aurora review ([#46](https://github.com/jmagar/aurora/issues/46)) ([eb4d389](https://github.com/jmagar/aurora/commit/eb4d38930aceb6cfa6a8d42a39ead060334162f5))
+
+
+### Dependencies
+
+* **deps-dev:** bump @types/node from 20.19.9 to 26.1.1 ([#41](https://github.com/jmagar/aurora/issues/41)) ([ad8ad05](https://github.com/jmagar/aurora/commit/ad8ad05a46fd3b68d2e71c000540342a6f7c9e86))
+* **deps-dev:** bump style-dictionary from 4.0.0 to 5.5.0 ([#40](https://github.com/jmagar/aurora/issues/40)) ([9f3c81c](https://github.com/jmagar/aurora/commit/9f3c81c8236bcd9df962b2dc8f6781a7fc74a065))
+* **deps-dev:** bump typescript from 5.9.2 to 5.9.3 ([#42](https://github.com/jmagar/aurora/issues/42)) ([a602586](https://github.com/jmagar/aurora/commit/a602586989d60337360ff1711f381ffa428f8a66))
+* **deps:** bump actions/setup-node from 4.4.0 to 7.0.0 ([#37](https://github.com/jmagar/aurora/issues/37)) ([bba796a](https://github.com/jmagar/aurora/commit/bba796a5efb679430d5cb23276f577f50b1ea5d9))
+* **deps:** bump docker/build-push-action from 6.19.2 to 7.3.0 ([#34](https://github.com/jmagar/aurora/issues/34)) ([be3b426](https://github.com/jmagar/aurora/commit/be3b426cee245f7cd6c0c02567dfe6a1bb157999))
+* **deps:** bump docker/login-action from 3.7.0 to 4.4.0 ([#38](https://github.com/jmagar/aurora/issues/38)) ([456a5bc](https://github.com/jmagar/aurora/commit/456a5bcecac42207676a5dd32dfd1aa10e386149))
+* **deps:** bump googleapis/release-please-action ([#36](https://github.com/jmagar/aurora/issues/36)) ([c3f1e55](https://github.com/jmagar/aurora/commit/c3f1e55f97295bc4029c9f80c4d7ac64c8a83bff))
+* **deps:** bump pnpm/action-setup ([#35](https://github.com/jmagar/aurora/issues/35)) ([3f7a8d0](https://github.com/jmagar/aurora/commit/3f7a8d080c35dbe69b23c33086fe57cff2c0f873))
+
 ## [0.3.1](https://github.com/jmagar/aurora/compare/v0.3.0...v0.3.1) (2026-07-11)
 
 
