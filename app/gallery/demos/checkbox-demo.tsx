@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Checkbox } from "@/registry/aurora/ui/checkbox";
-import { GalleryPageIntro } from "@/components/gallery-page-intro";
+import * as React from "react"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
+import { Checkbox } from "@/registry/aurora/ui/checkbox"
 
 export default function CheckboxDemo() {
   const [colorCode, setColorCode] = React.useState(true);
@@ -57,5 +57,5 @@ export default function CheckboxDemo() {
         </Checkbox>
       </div>
     </div>
-  );
+  )
 }

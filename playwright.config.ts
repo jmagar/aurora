@@ -29,13 +29,13 @@ export default defineConfig({
     {
       command: "pnpm exec next start -H 127.0.0.1 -p 3010",
       url: "http://127.0.0.1:3010",
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: process.env.PLAYWRIGHT_REUSE_SERVER === "1",
       timeout: 120_000,
     },
     {
       command: "pnpm exec storybook dev -p 6006 --host 127.0.0.1 --ci --no-open",
       url: "http://localhost:6006",
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: process.env.PLAYWRIGHT_REUSE_SERVER === "1",
       timeout: 120_000,
     },
   ],

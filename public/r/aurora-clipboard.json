@@ -21,7 +21,7 @@
     "requiresTokens": false,
     "sourcePath": "registry/aurora/lib/use-clipboard.ts"
   },
-  "docs": "Use useClipboard for verified copy feedback, explicit errors, fallback support, and timer cleanup.",
+  "docs": "Use useClipboard for verified copy feedback, explicit errors, fallback support, and timer cleanup.\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "lib"

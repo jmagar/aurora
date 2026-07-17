@@ -296,8 +296,8 @@ The system spans web, Android, CLI, editors, terminal, browser, and shell themes
 
 Current registry footprint from `registry.json`:
 
-- 174 registry items total.
-- 3 style entries, 1 base entry, 2 theme entries, 4 file entries, 2 registry item entries, 9 page entries, 79 UI entries, 73 block entries, and 1 lib entry.
+- 175 registry items total.
+- 3 style entries, 1 base entry, 2 theme entries, 4 file entries, 2 registry item entries, 9 page entries, 79 UI entries, 73 block entries, and 2 lib entries.
 - UI primitives live in `registry/aurora/ui/`.
 - Product blocks live in `registry/aurora/blocks/`.
 

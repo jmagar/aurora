@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { CircleCheck, CircleX, Info, TriangleAlert, X } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
@@ -47,55 +48,24 @@ const STATUS_LABEL: Record<BannerStatus, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Status icons — CD parity (24px line icons, currentColor)
+// Status icons — Lucide, 20px, currentColor
 // ---------------------------------------------------------------------------
 
 function StatusIcon({ status }: { status: BannerStatus }) {
-  const common = {
-    width: 20,
-    height: 20,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 2,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true,
-  };
-  switch (status) {
-    case "success":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="m8.5 12 2.5 2.5 4.5-5" />
-        </svg>
-      );
-    case "warn":
-      return (
-        <svg {...common}>
-          <path d="M10.29 3.86 1.82 18a1.5 1.5 0 0 0 1.29 2.25h17.78A1.5 1.5 0 0 0 22.18 18L13.71 3.86a1.5 1.5 0 0 0-2.42 0Z" />
-          <line x1="12" y1="9" x2="12" y2="13" />
-          <line x1="12" y1="17" x2="12.01" y2="17" />
-        </svg>
-      );
-    case "error":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <line x1="15" y1="9" x2="9" y2="15" />
-          <line x1="9" y1="9" x2="15" y2="15" />
-        </svg>
-      );
-    case "info":
-    default:
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
-      );
+  const iconProps = { size: 20, strokeWidth: 1.75, "aria-hidden": true } as const;
+
+  if (status === "success") return <CircleCheck {...iconProps} />;
+  if (status === "warn") return <TriangleAlert {...iconProps} />;
+  if (status === "error") return <CircleX {...iconProps} />;
+  return <Info {...iconProps} />;
+}
+
+function getLiveProps(status: BannerStatus) {
+  if (status === "warn" || status === "error") {
+    return { role: "alert" as const, "aria-live": "assertive" as const };
   }
+
+  return { role: "status" as const, "aria-live": "polite" as const };
 }
 
 // ---------------------------------------------------------------------------
@@ -118,6 +88,7 @@ function BannerElevated({
   ...rest
 }: Omit<BannerProps, "kind" | "tone" | "onClose">) {
   const color = STATUS_COLOR[variant];
+  const liveProps = getLiveProps(variant);
 
   const [visible, setVisible] = React.useState(true);
 
@@ -130,7 +101,6 @@ function BannerElevated({
 
   return (
     <div
-      role="status"
       className={cn("flex items-center gap-3.5 px-4 py-3.5", className)}
       style={{
         background: `color-mix(in srgb, ${color} 10%, var(--aurora-panel-strong))`,
@@ -138,6 +108,7 @@ function BannerElevated({
         borderRadius: "var(--aurora-radius-2, 18px)",
         boxShadow: "var(--aurora-shadow-medium)",
       }}
+      {...liveProps}
       {...rest}
     >
       {/* Icon chip — 44px rounded square, tone tint */}
@@ -197,33 +168,21 @@ function BannerElevated({
 
       {/* Dismiss × button */}
       {onDismiss && (
-        <Button variant="plain" size="unstyled"
+        <Button
+          variant="plain"
+          size="unstyled"
           type="button"
           aria-label="Dismiss"
           onClick={handleDismiss}
-          className="banner-elev-dismiss focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:rounded-[4px]"
+          className="banner-elev-dismiss ml-auto self-start rounded-[4px] p-0.5 text-[var(--aurora-text-muted)] transition-colors hover:text-[var(--aurora-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)]"
           style={{
-            alignSelf: "flex-start",
-            marginLeft: "auto",
             flexShrink: 0,
             background: "none",
             border: "none",
             cursor: "pointer",
-            fontFamily: "var(--aurora-font-sans)",
-            fontSize: "var(--aurora-type-body)",
-            lineHeight: 1,
-            padding: "0 2px",
-            color: "var(--aurora-text-muted)",
-            transition: "color 0.15s",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "var(--aurora-text-primary)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "var(--aurora-text-muted)";
           }}
         >
-          ×
+          <X size={15} strokeWidth={1.75} aria-hidden />
         </Button>
       )}
     </div>
@@ -248,17 +207,18 @@ function BannerTag({
 }: Omit<BannerProps, "kind" | "onDismiss" | "tone" | "onClose">) {
   const color = STATUS_COLOR[variant];
   const label = STATUS_LABEL[variant];
+  const liveProps = getLiveProps(variant);
 
   return (
     <div
-      role="status"
-      className={cn("flex items-center gap-3", className)}
+      className={cn("flex items-start gap-3", className)}
       style={{
         background: "var(--aurora-control-surface)",
         border: "1px solid var(--aurora-border-default)",
         borderRadius: "8px",
         padding: "10px 14px",
       }}
+      {...liveProps}
       {...rest}
     >
       {/* Tag chip */}
@@ -283,9 +243,9 @@ function BannerTag({
       </span>
 
       {/* Message */}
-      <p
+      <div
+        className="min-w-0 flex-1"
         style={{
-          margin: 0,
           fontFamily: "var(--aurora-font-sans)",
           fontSize: "var(--aurora-type-control)",
           fontWeight: "var(--aurora-weight-body)",
@@ -293,10 +253,14 @@ function BannerTag({
           lineHeight: "var(--aurora-line-ui)",
         }}
       >
-        {title}
-        {description ? (description) : null}
-        {children}
-      </p>
+        {title ? (
+          <span style={{ color: "var(--aurora-text-primary)", fontWeight: "var(--aurora-weight-ui)" }}>
+            {title}
+          </span>
+        ) : null}
+        {description ? <span>{title ? " " : null}{description}</span> : null}
+        {children ? <span>{title || description ? " " : null}{children}</span> : null}
+      </div>
     </div>
   );
 }

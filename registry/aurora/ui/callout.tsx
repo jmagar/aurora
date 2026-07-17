@@ -72,10 +72,16 @@ export interface CalloutProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
 
 function Callout({ className, variant = "info", title, icon, children, style, ref, ...props }: CalloutProps & { ref?: React.Ref<HTMLDivElement> }) {
     const safeVariant: CalloutVariant = Object.hasOwn(toneMap, variant) ? variant : "info"
+    const titleId = React.useId()
+    const bodyId = React.useId()
     if (safeVariant !== variant) {
       devWarn(`[Aurora Callout] Unknown variant "${variant}". Falling back to "info".`)
     }
     const { accent, bg, border, text, accentShadow, accentInset } = toneMap[safeVariant]
+    const liveProps =
+      safeVariant === "warn" || safeVariant === "error"
+        ? { role: "alert" as const, "aria-live": "assertive" as const }
+        : { role: "status" as const, "aria-live": "polite" as const }
 
     return (
       <div
@@ -87,10 +93,14 @@ function Callout({ className, variant = "info", title, icon, children, style, re
           boxShadow: accentInset,
           ...style,
         }}
+        aria-labelledby={title ? titleId : undefined}
+        aria-describedby={children ? bodyId : undefined}
+        {...liveProps}
         {...props}
       >
         {icon ? (
           <span
+            aria-hidden="true"
             className="mt-0.5 flex size-4 shrink-0 items-center justify-center"
             style={{ color: accent }}
           >
@@ -105,12 +115,12 @@ function Callout({ className, variant = "info", title, icon, children, style, re
         )}
         <div className="min-w-0">
           {title && (
-            <div style={{ color: "var(--aurora-text-primary)", fontSize: "var(--aurora-type-control)", fontWeight: "var(--aurora-weight-label)", letterSpacing: "var(--aurora-letter-ui)", lineHeight: "var(--aurora-line-ui)" }}>
+            <div id={titleId} style={{ color: "var(--aurora-text-primary)", fontSize: "var(--aurora-type-control)", fontWeight: "var(--aurora-weight-label)", letterSpacing: "var(--aurora-letter-ui)", lineHeight: "var(--aurora-line-ui)" }}>
               {title}
             </div>
           )}
           {children && (
-            <div style={{ color: text, fontSize: "var(--aurora-type-control)", fontWeight: "var(--aurora-weight-body)", lineHeight: 1.5, marginTop: title ? 4 : 0 }}>
+            <div id={bodyId} style={{ color: text, fontSize: "var(--aurora-type-control)", fontWeight: "var(--aurora-weight-body)", lineHeight: 1.5, marginTop: title ? 4 : 0 }}>
               {children}
             </div>
           )}

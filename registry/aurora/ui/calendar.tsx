@@ -8,6 +8,7 @@ export interface CalendarProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   month?: Date
   selected?: Date
   onSelect?: (date: Date) => void
+  onMonthChange?: (month: Date) => void
 }
 
 function sameDay(a?: Date, b?: Date) {
@@ -32,11 +33,22 @@ function buildCells(month: Date): (Date | null)[] {
   return cells
 }
 
-export function Calendar({ month, selected, onSelect, className, style, ...props }: CalendarProps) {
-  const [visibleMonth, setVisibleMonth] = React.useState(month ?? new Date())
+export function Calendar({ month, selected, onSelect, onMonthChange, className, style, ...props }: CalendarProps) {
+  const [internalVisibleMonth, setInternalVisibleMonth] = React.useState(month ?? new Date())
+  const visibleMonth = month ?? internalVisibleMonth
   const cells = buildCells(visibleMonth)
   const formatter = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" })
   const today = new Date()
+
+  const handleMonthChange = React.useCallback(
+    (nextMonth: Date) => {
+      if (month === undefined) {
+        setInternalVisibleMonth(nextMonth)
+      }
+      onMonthChange?.(nextMonth)
+    },
+    [month, onMonthChange]
+  )
 
   return (
     <div
@@ -58,7 +70,7 @@ export function Calendar({ month, selected, onSelect, className, style, ...props
           variant="neutral"
           size="icon"
           aria-label="Previous month"
-          onClick={() => setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))}
+          onClick={() => handleMonthChange(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))}
         >
           <ChevronLeft className="size-4" aria-hidden />
         </Button>
@@ -78,7 +90,7 @@ export function Calendar({ month, selected, onSelect, className, style, ...props
           variant="neutral"
           size="icon"
           aria-label="Next month"
-          onClick={() => setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1))}
+          onClick={() => handleMonthChange(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1))}
         >
           <ChevronRight className="size-4" aria-hidden />
         </Button>

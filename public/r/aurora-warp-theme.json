@@ -18,7 +18,7 @@
     "tool": "warp",
     "targetScope": "project-root"
   },
-  "docs": "Installs a text-only Aurora Warp theme YAML into the current project at `.config/aurora/themes/warp/`. Shadcn `~` means project root, not the user's real home directory. The full served Warp package at `https://aurora.tootie.tv/warp/` keeps the optional background image asset.",
+  "docs": "Installs a text-only Aurora Warp theme YAML into the current project at `.config/aurora/themes/warp/`. Shadcn `~` means project root, not the user's real home directory. The full served Warp package at `https://aurora.tootie.tv/warp/` keeps the optional background image asset.\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "theme",

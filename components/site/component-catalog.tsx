@@ -5,6 +5,8 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { ArrowLeft, ArrowRight, ArrowUpRight, LayoutGrid, Monitor, Search, SearchX, Smartphone, X } from "lucide-react"
 import catalog from "@/lib/client-catalog.json"
+import { DEMOS } from "@/app/gallery/demo-map"
+import { PortalContainerContext } from "@/registry/aurora/lib/portal-container"
 import { fuzzy } from "@/lib/fuzzy"
 import { CopyLine } from "@/components/site/site-ui"
 import { tint } from "@/components/site/style-tokens"
@@ -39,9 +41,23 @@ const GRADLE_LINE = 'implementation("tv.tootie.aurora:aurora")'
  * The demo renders at full width inside a scaled, non-interactive wrapper.
  * The scale transform also acts as a containing block, so demos that use
  * position:fixed (dialogs, drawers, palettes) stay inside their tile. */
+const PREVIEW_W = 760
+const PREVIEW_SCALE = 0.31
+const PREVIEW_H = 470
+
 const LazyPreview = React.memo(function LazyPreview({ slug }: { slug: string }) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [visible, setVisible] = React.useState(false)
+  // Scoped portal target so overlay demos (Sheet/Drawer, which portal to body
+  // and can auto-open) stay contained in the tile instead of covering the page.
+  const [portalHost, setPortalHost] = React.useState<HTMLElement | null>(null)
+  // Guarded callback ref: a bare `setState` ref loops here, because React
+  // detaches (null) then reattaches (node) during search show/hide, and each
+  // call re-renders. Ignore detach, and bail when the node is unchanged.
+  const attachHost = React.useCallback((node: HTMLDivElement | null) => {
+    if (node) setPortalHost((prev) => (prev === node ? prev : node))
+  }, [])
+  const Demo = DEMOS[slug]
 
   React.useEffect(() => {
     const node = ref.current
@@ -61,27 +77,32 @@ const LazyPreview = React.memo(function LazyPreview({ slug }: { slug: string }) 
       ref={ref}
       aria-hidden
       style={{
-        width: "100%",
-        height: 146,
+        width: PREVIEW_W * PREVIEW_SCALE,
+        height: PREVIEW_H * PREVIEW_SCALE,
         overflow: "hidden",
         pointerEvents: "none",
         flexShrink: 0,
       }}
     >
-      {visible ? (
+      {visible && Demo ? (
         <div
+          ref={attachHost}
           aria-label={`${slug} preview`}
           style={{
             position: "relative",
-            width: "100%",
-            height: "100%",
+            width: PREVIEW_W,
+            height: PREVIEW_H,
             overflow: "hidden",
-            display: "grid",
-            placeItems: "center",
-            background: "radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--aurora-accent-primary) 13%, transparent), transparent 62%)",
+            transform: `scale(${PREVIEW_SCALE})`,
+            transformOrigin: "top left",
+            padding: 16,
           }}
         >
-          <span className="aurora-text-eyebrow" style={{ color: "var(--aurora-accent-strong)" }}>{slug}</span>
+          {portalHost ? (
+            <PortalContainerContext.Provider value={portalHost}>
+              <Demo />
+            </PortalContainerContext.Provider>
+          ) : null}
         </div>
       ) : (
         <div
@@ -250,6 +271,16 @@ function LiveDrawer({
   onPick: (item: CatalogItem) => void
   onClose: () => void
 }) {
+  const Demo = DEMOS[item.slug]
+  // Overlay demos (Select, DropdownMenu, Popover, …) portal their content, and
+  // the registry styles it z-50 — below this drawer's z-index, so a body-level
+  // portal renders *behind* the drawer. Host them on the panel instead: it is
+  // inside the drawer's stacking context, and its onClick stops propagation, so
+  // clicking a menu item can't bubble to the backdrop and close the drawer.
+  const [drawerHost, setDrawerHost] = React.useState<HTMLElement | null>(null)
+  const attachDrawerHost = React.useCallback((node: HTMLElement | null) => {
+    if (node) setDrawerHost((prev) => (prev === node ? prev : node))
+  }, [])
 
   const idx = list.findIndex((c) => c.slug === item.slug)
   const has = idx >= 0 && list.length > 1
@@ -290,6 +321,7 @@ function LiveDrawer({
     >
       <DrawerArrow dir="left" target={prev} onPick={onPick} />
       <aside
+        ref={attachDrawerHost}
         role="dialog"
         aria-modal="true"
         aria-label={item.label}
@@ -367,15 +399,11 @@ function LiveDrawer({
               border: "1px solid var(--aurora-border-default)",
             }}
           >
-            <div className="grid min-h-36 place-items-center text-center">
-              <div>
-                <div className="aurora-text-section">{item.label}</div>
-                <p className="aurora-text-body-sm mt-2 max-w-md" style={{ color: "var(--aurora-text-muted)" }}>{item.desc}</p>
-                <Link href={`/gallery/${item.slug}`} className="aurora-text-control mt-4 inline-flex items-center gap-1" style={{ color: "var(--aurora-accent-strong)" }}>
-                  Load Interactive Demo <ArrowUpRight size={13} aria-hidden />
-                </Link>
-              </div>
-            </div>
+            {Demo ? (
+              <PortalContainerContext.Provider value={drawerHost}>
+                <Demo />
+              </PortalContainerContext.Provider>
+            ) : null}
           </div>
 
           {kotlin ? (

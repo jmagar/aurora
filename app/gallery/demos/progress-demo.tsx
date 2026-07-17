@@ -32,15 +32,15 @@ export default function ProgressDemo() {
     <div style={stage}>
       <div style={row}>
         <p style={label}>Determinate</p>
-        <Progress value={64} />
+        <Progress value={64} showLabel aria-label="Registry Build Progress" />
       </div>
       <div style={row}>
         <p style={label}>Indeterminate</p>
-        <Progress indeterminate />
+        <Progress indeterminate label="Waiting for Upstream Checks" showLabel />
       </div>
       <div style={{ ...row, marginBottom: 0 }}>
-        <p style={label}>Success tone</p>
-        <Progress value={88} tone="var(--aurora-success)" />
+        <p style={label}>Success Tone</p>
+        <Progress value={88} tone="var(--aurora-success)" label="88% Verified" showLabel />
       </div>
     </div>
   )

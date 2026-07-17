@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 
 export type KbdVariant = "raised" | "solid" | "outline" | "ghost" | "accent"
 
-export interface KbdProps extends React.HTMLAttributes<HTMLElement> {
+export interface KbdProps extends React.ComponentProps<"kbd"> {
   /**
    * Visual treatment of the keycap chip.
    * - `raised`  — recessed control surface with a top highlight + bottom inset (default).

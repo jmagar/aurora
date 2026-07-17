@@ -1,83 +1,163 @@
 "use client"
 
-/**
- * Aurora Design System — Alert Dialog
- *
- * Confirmation surface for destructive / high-friction decisions, built on the
- * Aurora modal (`dialog`) + `button` primitives. Visual layer is ported from the
- * Claude Design source (reads only `--aurora-*` tokens) so it renders identically
- * in dark + `.light`.
- *
- * Two usage modes, both first-class:
- *   1. Prop-driven (CD parity):
- *        <AlertDialog destructive title="Delete environment?" description="…"
- *                     confirmLabel="Delete" cancelLabel="Cancel" />
- *   2. Compound (Radix-style escape hatch):
- *        <AlertDialog>
- *          <AlertDialogTrigger asChild><Button>Open</Button></AlertDialogTrigger>
- *          <AlertDialogContent>
- *            <AlertDialogHeader>
- *              <AlertDialogTitle>…</AlertDialogTitle>
- *              <AlertDialogDescription>…</AlertDialogDescription>
- *            </AlertDialogHeader>
- *            <AlertDialogFooter>
- *              <AlertDialogCancel asChild><Button variant="neutral">Cancel</Button></AlertDialogCancel>
- *              <AlertDialogAction asChild><Button variant="rose">Confirm</Button></AlertDialogAction>
- *            </AlertDialogFooter>
- *          </AlertDialogContent>
- *        </AlertDialog>
- *
- * peer deps: @radix-ui/react-dialog (via ./dialog)
- */
-
 import * as React from "react"
-import { TriangleAlert, Info } from "lucide-react"
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
+import { Info, TriangleAlert } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/registry/aurora/ui/button"
-import {
-  Dialog,
-  DialogBody,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/registry/aurora/ui/dialog"
 
-// ─── Compound parts (Radix passthrough — a11y + escape-hatch API preserved) ─────
+const AlertDialogTrigger = AlertDialogPrimitive.Trigger
+const AlertDialogPortal = AlertDialogPrimitive.Portal
+const AlertDialogAction = AlertDialogPrimitive.Action
+const AlertDialogCancel = AlertDialogPrimitive.Cancel
 
-const AlertDialogTrigger = DialogTrigger
-const AlertDialogContent = DialogContent
-const AlertDialogHeader = DialogHeader
-const AlertDialogTitle = DialogTitle
-const AlertDialogDescription = DialogDescription
-const AlertDialogBody = DialogBody
-const AlertDialogFooter = DialogFooter
-const AlertDialogCancel = DialogClose
-const AlertDialogAction = DialogClose
+function AlertDialogOverlay({
+  ref,
+  className,
+  style,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Overlay> & {
+  ref?: React.Ref<React.ComponentRef<typeof AlertDialogPrimitive.Overlay>>
+}) {
+  return (
+    <AlertDialogPrimitive.Overlay
+      ref={ref}
+      data-slot="alert-dialog-overlay"
+      className={cn(
+        "fixed inset-0 z-50 backdrop-blur-[2px]",
+        "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        className
+      )}
+      style={{ backgroundColor: "var(--aurora-overlay)", ...style }}
+      {...props}
+    />
+  )
+}
 
-// ─── Visual layer (ported from Claude Design — reads only --aurora-* tokens) ────
-// Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
+function AlertDialogContent({
+  ref,
+  className,
+  children,
+  size = "default",
+  style,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Content> & {
+  size?: "default" | "sm"
+  ref?: React.Ref<React.ComponentRef<typeof AlertDialogPrimitive.Content>>
+}) {
+  return (
+    <AlertDialogPortal>
+      <AlertDialogOverlay />
+      <AlertDialogPrimitive.Content
+        ref={ref}
+        data-slot="alert-dialog-content"
+        data-size={size}
+        className={cn(
+          "fixed left-1/2 top-1/2 z-50 grid w-full max-w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-[var(--aurora-radius-3)] border p-6 outline-none",
+          "data-[size=sm]:max-w-sm data-[size=default]:sm:max-w-lg",
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          className
+        )}
+        style={{
+          background:
+            "linear-gradient(180deg, var(--aurora-panel-strong-top), var(--aurora-panel-strong))",
+          borderColor:
+            "color-mix(in srgb, var(--aurora-border-default) 55%, var(--aurora-page-bg))",
+          boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
+          color: "var(--aurora-text-primary)",
+          ...style,
+        }}
+        {...props}
+      >
+        {children}
+      </AlertDialogPrimitive.Content>
+    </AlertDialogPortal>
+  )
+}
 
-// ─── Prop-driven CD-parity card ────────────────────────────────────────────────
+function AlertDialogHeader({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="alert-dialog-header"
+      className={cn("flex flex-col gap-1.5 text-center sm:text-left", className)}
+      {...props}
+    />
+  )
+}
+
+function AlertDialogFooter({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="alert-dialog-footer"
+      className={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
+      {...props}
+    />
+  )
+}
+
+function AlertDialogBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="alert-dialog-body"
+      className={cn("grid gap-2", className)}
+      {...props}
+    />
+  )
+}
+
+function AlertDialogTitle({
+  ref,
+  className,
+  style,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Title> & {
+  ref?: React.Ref<React.ComponentRef<typeof AlertDialogPrimitive.Title>>
+}) {
+  return (
+    <AlertDialogPrimitive.Title
+      ref={ref}
+      data-slot="alert-dialog-title"
+      className={cn("aurora-text-section", className)}
+      style={{ color: "var(--aurora-text-primary)", ...style }}
+      {...props}
+    />
+  )
+}
+
+function AlertDialogDescription({
+  ref,
+  className,
+  style,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Description> & {
+  ref?: React.Ref<React.ComponentRef<typeof AlertDialogPrimitive.Description>>
+}) {
+  return (
+    <AlertDialogPrimitive.Description
+      ref={ref}
+      data-slot="alert-dialog-description"
+      className={cn("aurora-text-body-sm", className)}
+      style={{ color: "var(--aurora-text-muted)", ...style }}
+      {...props}
+    />
+  )
+}
 
 export interface AlertDialogCardProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  /** Heading text. */
   title?: React.ReactNode
-  /** Supporting copy below the heading. */
   description?: React.ReactNode
-  /** Destructive (rose) treatment — warning-triangle icon + rose confirm. Default true for alert dialogs. */
   destructive?: boolean
-  /** Confirm button label. */
   confirmLabel?: React.ReactNode
-  /** Cancel button label. */
   cancelLabel?: React.ReactNode
-  /** Confirm handler. */
   onConfirm?: () => void
-  /** Cancel handler. */
   onCancel?: () => void
 }
 
@@ -94,12 +174,15 @@ function AlertDialogCard({
   ...props
 }: AlertDialogCardProps & { ref?: React.Ref<HTMLDivElement> }) {
   const Icon = destructive ? TriangleAlert : Info
+  const titleId = React.useId()
+  const descriptionId = React.useId()
 
   return (
     <div
       ref={ref}
-      role="alertdialog"
-      aria-modal="false"
+      role="group"
+      aria-labelledby={title ? titleId : undefined}
+      aria-describedby={description ? descriptionId : undefined}
       className={cn("aurora-alert", !destructive && "aurora-alert--info", className)}
       {...props}
     >
@@ -107,8 +190,16 @@ function AlertDialogCard({
         <Icon className="size-5" />
       </span>
       <div className="aurora-alert__main">
-        {title ? <h2 className="aurora-alert__title">{title}</h2> : null}
-        {description ? <p className="aurora-alert__desc">{description}</p> : null}
+        {title ? (
+          <h2 id={titleId} className="aurora-alert__title">
+            {title}
+          </h2>
+        ) : null}
+        {description ? (
+          <p id={descriptionId} className="aurora-alert__desc">
+            {description}
+          </p>
+        ) : null}
         <div className="aurora-alert__footer">
           <Button variant="neutral" onClick={onCancel}>
             {cancelLabel}
@@ -122,28 +213,21 @@ function AlertDialogCard({
   )
 }
 
-// ─── Polymorphic root ──────────────────────────────────────────────────────────
-// When `title` (or `description`) is supplied, render the CD-parity inline card.
-// Otherwise behave as the Radix `Dialog` root so the compound parts above keep
-// working as a modal escape hatch.
+type InlineAlertDialogProps = AlertDialogCardProps & { children?: never }
+type PrimitiveAlertDialogProps = React.ComponentPropsWithoutRef<
+  typeof AlertDialogPrimitive.Root
+>
 
-export type AlertDialogProps =
-  | (AlertDialogCardProps & { children?: never })
-  | (React.ComponentPropsWithoutRef<typeof Dialog> & {
-      title?: undefined
-      description?: undefined
-    })
+export type AlertDialogProps = InlineAlertDialogProps | PrimitiveAlertDialogProps
 
 function AlertDialog(props: AlertDialogProps) {
-  if ("title" in props && props.title !== undefined) {
-    const { title, ...rest } = props as AlertDialogCardProps
-    return <AlertDialogCard title={title} {...rest} />
+  if (!("children" in props) && ("title" in props || "description" in props)) {
+    return <AlertDialogCard {...(props as InlineAlertDialogProps)} />
   }
-  if ("description" in props && props.description !== undefined) {
-    return <AlertDialogCard {...(props as AlertDialogCardProps)} />
-  }
-  return <Dialog {...(props as React.ComponentPropsWithoutRef<typeof Dialog>)} />
+
+  return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...(props as PrimitiveAlertDialogProps)} />
 }
+
 AlertDialog.displayName = "AlertDialog"
 
 export {
@@ -156,6 +240,8 @@ export {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogPortal,
   AlertDialogTitle,
   AlertDialogTrigger,
 }

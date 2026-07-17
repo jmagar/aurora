@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { Button } from "./button"
 
 export interface RatingProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
@@ -93,6 +94,7 @@ const Rating = (
     const [internal, setInternal] = React.useState(defaultValue)
     const current = isControlled ? (value as number) : internal
     const [hover, setHover] = React.useState<number | null>(null)
+    const itemRefs = React.useRef<Array<HTMLButtonElement | null>>([])
 
     const interactive = !readOnly && !disabled
     const display = hover ?? current
@@ -106,42 +108,28 @@ const Rating = (
       [interactive, isControlled, onChange]
     )
 
-    const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!interactive) return
-      if (event.key === "ArrowRight" || event.key === "ArrowUp") {
-        event.preventDefault()
-        commit(Math.min(max, current + 1))
-      } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
-        event.preventDefault()
-        commit(Math.max(0, current - 1))
-      } else if (event.key === "Home") {
-        event.preventDefault()
-        commit(0)
-      } else if (event.key === "End") {
-        event.preventDefault()
-        commit(max)
-      }
-    }
-
     const label = ariaLabel ?? `Rating: ${current} out of ${max}`
+    const focusValue = current > 0 ? Math.min(max, Math.max(1, Math.round(current))) : 1
+
+    const moveFocus = React.useCallback(
+      (next: number) => {
+        const clamped = Math.max(1, Math.min(max, next))
+        commit(clamped)
+        requestAnimationFrame(() => itemRefs.current[clamped - 1]?.focus())
+      },
+      [commit, max]
+    )
 
     return (
       <div
         ref={ref}
-        role={interactive ? "slider" : "img"}
+        role={interactive ? "radiogroup" : "img"}
         aria-label={label}
-        aria-valuenow={interactive ? current : undefined}
-        aria-valuemin={interactive ? 0 : undefined}
-        aria-valuemax={interactive ? max : undefined}
         aria-readonly={readOnly || undefined}
         aria-disabled={disabled || undefined}
-        tabIndex={interactive ? 0 : undefined}
-        onKeyDown={interactive ? onKeyDown : undefined}
         onMouseLeave={interactive ? () => setHover(null) : undefined}
         className={cn(
-          "inline-flex items-center focus-visible:outline-none",
-          interactive &&
-            "rounded-[var(--radius-sm,8px)] focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring,var(--aurora-accent-primary))] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--aurora-page-bg)]",
+          "inline-flex items-center",
           className
         )}
         style={
@@ -172,15 +160,38 @@ const Rating = (
             return <StarIcon key={index} size={size} fill={fill} />
           }
           return (
-            <button
+            <Button
               key={index}
               type="button"
-              tabIndex={-1}
-              aria-hidden="true"
+              variant="plain"
+              size="unstyled"
+              role="radio"
+              aria-checked={current === index}
+              aria-label={`${index} Star${index === 1 ? "" : "s"}`}
+              tabIndex={index === focusValue ? 0 : -1}
+              ref={(node) => {
+                itemRefs.current[i] = node
+              }}
               onMouseEnter={() => setHover(index)}
               onFocus={() => setHover(index)}
+              onBlur={() => setHover(null)}
               onClick={() => commit(index)}
-              className="inline-flex border-0 bg-transparent p-0 transition-transform duration-150 hover:scale-110"
+              onKeyDown={(event) => {
+                if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+                  event.preventDefault()
+                  moveFocus(index + 1)
+                } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+                  event.preventDefault()
+                  moveFocus(index - 1)
+                } else if (event.key === "Home") {
+                  event.preventDefault()
+                  moveFocus(1)
+                } else if (event.key === "End") {
+                  event.preventDefault()
+                  moveFocus(max)
+                }
+              }}
+              className="inline-flex rounded-[6px] border-0 bg-transparent p-0 transition-transform duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring,var(--aurora-accent-primary))] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--aurora-page-bg)]"
               style={{
                 lineHeight: 0,
                 cursor: "pointer",
@@ -189,7 +200,7 @@ const Rating = (
               }}
             >
               <StarIcon size={size} fill={fill} />
-            </button>
+            </Button>
           )
         })}
       </div>

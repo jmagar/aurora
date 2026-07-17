@@ -21,10 +21,20 @@ function TableHeader({ ref, ...props }: React.HTMLAttributes<HTMLTableSectionEle
 
 function TableBody({ ref, className, ...props }: React.HTMLAttributes<HTMLTableSectionElement> & { ref?: React.Ref<HTMLTableSectionElement> }) {
   return (
-    // Zebra striping via documented token (opaque-over-opaque → no gradient seam).
     <tbody
       ref={ref}
       className={["[&>tr:nth-child(even)]:bg-[var(--aurora-subtle-bg)]", className].filter(Boolean).join(" ")}
+      {...props}
+    />
+  )
+}
+
+function TableFooter({ ref, className, style, ...props }: React.HTMLAttributes<HTMLTableSectionElement> & { ref?: React.Ref<HTMLTableSectionElement> }) {
+  return (
+    <tfoot
+      ref={ref}
+      className={["border-t", className].filter(Boolean).join(" ")}
+      style={{ borderColor: "var(--aurora-border-default)", background: "var(--aurora-subtle-bg)", ...style }}
       {...props}
     />
   )
@@ -64,5 +74,16 @@ function TableCell({ ref, className, style, ...props }: React.TdHTMLAttributes<H
   )
 }
 
-export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow }
+function TableCaption({ ref, className, style, ...props }: React.HTMLAttributes<HTMLTableCaptionElement> & { ref?: React.Ref<HTMLTableCaptionElement> }) {
+  return (
+    <caption
+      ref={ref}
+      className={["mt-3 text-left aurora-text-body-sm", className].filter(Boolean).join(" ")}
+      style={{ color: "var(--aurora-text-muted)", ...style }}
+      {...props}
+    />
+  )
+}
+
+export { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow }
 export default Table

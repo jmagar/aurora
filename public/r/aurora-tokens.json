@@ -196,7 +196,7 @@
     "requiresTokens": false,
     "sourcePath": "registry/aurora/styles/aurora.css"
   },
-  "docs": "Install this first.\n\nIt provides the Aurora token layer, shadcn token bridge, and base theme helpers used by the rest of the registry.\n\nImport the generated stylesheet once at your app root before installing Aurora UI or block items.",
+  "docs": "Install this first.\n\nIt provides the Aurora token layer, shadcn token bridge, and base theme helpers used by the rest of the registry.\n\nImport the generated stylesheet once at your app root before installing Aurora UI or block items.\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "style",
