@@ -37,7 +37,13 @@ const menuTextStyle: React.CSSProperties = {
 
 // ─── Root primitives ──────────────────────────────────────────────────────────
 
-const DropdownMenu = DropdownMenuPrimitive.Root
+// Inside a scoped preview container, force non-modal so an auto-open menu
+// preview never scroll-locks / focus-traps the surrounding page (mirrors Drawer).
+function DropdownMenu({ ...rootProps }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  const portalContainer = usePortalContainer()
+  return <DropdownMenuPrimitive.Root {...rootProps} modal={portalContainer ? false : rootProps.modal} />
+}
+
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
 const DropdownMenuGroup = DropdownMenuPrimitive.Group
 const DropdownMenuPortal = DropdownMenuPrimitive.Portal

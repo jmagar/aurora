@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
+import { usePreviewPoster } from "@/lib/preview-poster"
 import {
   Select,
   SelectContent,
@@ -19,6 +20,10 @@ const models = [
 ]
 
 export default function SelectDemo() {
+  // Radix Select has no `modal` prop, so an open Select always locks document
+  // scroll. Harmless on this page and in the drawer; fatal in a catalog tile,
+  // where scrolling one into view would freeze the whole catalog.
+  const poster = usePreviewPoster()
   return (
     <div className="grid gap-6">
       <GalleryPageIntro
@@ -36,7 +41,7 @@ export default function SelectDemo() {
           color: "var(--aurora-text-primary)",
         }}
       >
-        <Select defaultOpen defaultValue="sonnet">
+        <Select defaultOpen={!poster} defaultValue="sonnet">
           <SelectTrigger style={{ maxWidth: 280 }}>
             <SelectValue placeholder="Select a model" />
           </SelectTrigger>
