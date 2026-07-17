@@ -42,7 +42,7 @@ function buildCells(month: Date): (Date | null)[] {
   return cells
 }
 
-const triggerFormatter = new Intl.DateTimeFormat(undefined, {
+  const triggerFormatter = new Intl.DateTimeFormat(undefined, {
   month: "short",
   day: "numeric",
   year: "numeric",
@@ -77,6 +77,7 @@ export function DatePicker(
     const [visibleMonth, setVisibleMonth] = React.useState<Date>(
       selected ?? defaultValue ?? new Date()
     )
+    const titleId = React.useId()
 
     const rootRef = React.useRef<HTMLDivElement | null>(null)
     const setRefs = React.useCallback(
@@ -137,7 +138,12 @@ export function DatePicker(
           aria-haspopup="dialog"
           aria-expanded={open}
           className="w-full"
-          onClick={() => setOpen((prev) => !prev)}
+          onClick={() => {
+            if (!open && selected) {
+              setVisibleMonth(new Date(selected.getFullYear(), selected.getMonth(), 1))
+            }
+            setOpen((prev) => !prev)
+          }}
           style={{
             height: 44,
             padding: "0 16px",
@@ -169,7 +175,7 @@ export function DatePicker(
         {open ? (
           <div
             role="dialog"
-            aria-label="Choose date"
+            aria-labelledby={titleId}
             className="absolute left-0 top-full z-50 mt-2 grid gap-4 border p-4"
             style={{
               width: "320px",
@@ -195,6 +201,7 @@ export function DatePicker(
                 <ChevronLeft className="size-4" aria-hidden />
               </Button>
               <div
+                id={titleId}
                 style={{
                   fontFamily: "var(--aurora-font-display, var(--font-sans))",
                   fontSize: "17px",

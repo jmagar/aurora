@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { Label } from "./label"
 
 export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   label?: React.ReactNode
@@ -11,6 +12,69 @@ export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   disabled?: boolean
   htmlFor?: string
   orientation?: "vertical" | "horizontal"
+}
+
+function FieldGroup({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("flex flex-col gap-4", className)} {...props} />
+}
+
+function FieldSet({ className, ...props }: React.FieldsetHTMLAttributes<HTMLFieldSetElement>) {
+  return <fieldset className={cn("grid gap-3", className)} {...props} />
+}
+
+function FieldLegend({ className, ...props }: React.HTMLAttributes<HTMLLegendElement>) {
+  return (
+    <legend
+      data-slot="field-legend"
+      className={cn("aurora-text-label mb-1 text-[var(--aurora-text-primary)]", className)}
+      {...props}
+    />
+  )
+}
+
+function FieldContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div data-slot="field-content" className={cn("grid gap-1.5", className)} {...props} />
+}
+
+function FieldTitle({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
+  return (
+    <span
+      data-slot="field-title"
+      className={cn("aurora-text-control text-[var(--aurora-text-primary)]", className)}
+      {...props}
+    />
+  )
+}
+
+function FieldDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      data-slot="field-description"
+      className={cn("aurora-text-body-sm text-[var(--aurora-text-muted)]", className)}
+      {...props}
+    />
+  )
+}
+
+function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
+  return (
+    <Label
+      data-slot="field-label"
+      className={cn("w-full justify-between text-[var(--aurora-text-primary)]", className)}
+      {...props}
+    />
+  )
+}
+
+function FieldError({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      role="alert"
+      data-slot="field-error"
+      className={cn("aurora-text-body-sm font-[var(--aurora-weight-ui)] text-[var(--aurora-error)]", className)}
+      {...props}
+    />
+  )
 }
 
 function Field({
@@ -26,81 +90,65 @@ function Field({
   orientation = "vertical",
   ...props
 }: FieldProps & { ref?: React.Ref<HTMLDivElement> }) {
-    const invalid = Boolean(error)
+  const rawProps = props as React.HTMLAttributes<HTMLDivElement> & {
+    "data-disabled"?: string
+    "data-invalid"?: string
+  }
+  const invalid = rawProps["data-invalid"] !== undefined || Boolean(error)
+  const disabledState = rawProps["data-disabled"] !== undefined || Boolean(disabled)
+  const hasMeta = Boolean(label || description)
 
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "grid gap-2",
-          orientation === "horizontal" && "items-start gap-4 sm:grid-cols-[180px_minmax(0,1fr)]",
-          disabled && "opacity-55",
-          className
-        )}
-        data-disabled={disabled ? "" : undefined}
-        data-invalid={invalid ? "" : undefined}
-        {...props}
-      >
-        {(label || description) && (
-          <div className="min-w-0">
-            {label && (
-              <label
-                htmlFor={htmlFor}
-                className="block"
-                style={{
-                  color: "var(--aurora-text-primary)",
-                  fontFamily: "var(--aurora-font-display)",
-                  fontSize: "15px",
-                  fontWeight: "var(--aurora-weight-heading)",
-                  letterSpacing: "var(--aurora-letter-label)",
-                  lineHeight: 1.3,
-                }}
-              >
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "grid gap-2",
+        orientation === "horizontal" &&
+          (hasMeta
+            ? "items-start gap-4 sm:grid-cols-[180px_minmax(0,1fr)]"
+            : "grid-cols-[auto_minmax(0,1fr)] items-start gap-3"),
+        disabledState && "opacity-55",
+        "[&[data-disabled]_[data-slot=field-description]]:text-[var(--aurora-text-muted)]",
+        "[&[data-disabled]_[data-slot=field-label]]:text-[var(--aurora-text-muted)]",
+        "[&[data-invalid]_[data-slot=field-description]]:text-[var(--aurora-error)]",
+        "[&[data-invalid]_[data-slot=field-label]]:text-[var(--aurora-error)]",
+        className
+      )}
+      data-disabled={disabledState ? "" : undefined}
+      data-invalid={invalid ? "" : undefined}
+      {...props}
+    >
+      {hasMeta ? (
+        <>
+          <FieldContent className="min-w-0">
+            {label ? (
+              <FieldLabel htmlFor={htmlFor} required={required} disabled={disabledState}>
                 {label}
-                {required && (
-                  <span aria-hidden="true" style={{ color: "var(--aurora-accent-pink)", marginLeft: 5 }}>
-                    *
-                  </span>
-                )}
-              </label>
-            )}
-            {description && (
-              <p
-                style={{
-                  color: "var(--aurora-text-muted)",
-                  fontFamily: "var(--aurora-font-sans)",
-                  fontSize: "var(--aurora-type-body)",
-                  lineHeight: 1.45,
-                  marginTop: label ? 5 : 0,
-                }}
-              >
-                {description}
-              </p>
-            )}
-          </div>
-        )}
-
-        <div className="min-w-0">
-          {children}
-          {error && (
-            <p
-              role="alert"
-              style={{
-                color: "var(--aurora-error)",
-                fontFamily: "var(--aurora-font-sans)",
-                fontSize: "var(--aurora-type-body-sm)",
-                fontWeight: "var(--aurora-weight-ui)",
-                lineHeight: 1.45,
-                marginTop: 8,
-              }}
-            >
-              {error}
-            </p>
-          )}
-        </div>
-      </div>
-    )
+              </FieldLabel>
+            ) : null}
+            {description ? <FieldDescription>{description}</FieldDescription> : null}
+          </FieldContent>
+          <FieldContent className="min-w-0">
+            {children}
+            {error ? <FieldError>{error}</FieldError> : null}
+          </FieldContent>
+        </>
+      ) : (
+        children
+      )}
+    </div>
+  )
 }
 
-export { Field }
+export {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+  FieldTitle,
+}
 export default Field

@@ -37,7 +37,7 @@ export default function RatingDemo() {
       <GalleryPageIntro
         eyebrow="Components"
         heading="Rating"
-        description="Stars · interactive + read-only."
+        description="Stars for scored feedback. Interactive keyboard-selectable input, read-only aggregate display, and a disabled state for locked reviews."
       />
 
       <div
@@ -77,6 +77,11 @@ export default function RatingDemo() {
             />
             <Rating value={5} readOnly size={18} />
           </div>
+        </div>
+
+        <div style={{ marginTop: 22 }}>
+          <div style={lbl}>Disabled</div>
+          <Rating value={3} disabled size={22} aria-label="Locked Rating" />
         </div>
       </div>
     </div>

@@ -63,10 +63,10 @@ export default function ToolbarDemo() {
       <div>
         <div style={lbl}>Editor toolbar · spacer</div>
         <div style={stack}>
-          <Toolbar>
+          <Toolbar aria-label="Editor actions">
             <ToolbarGroup>
-              <Button variant="neutral" size="sm"><Play size={14} aria-hidden />Run</Button>
-              <Button variant="neutral" size="sm"><GitBranch size={14} aria-hidden />Branch</Button>
+              <Button variant="neutral" size="sm" iconLeft={<Play size={14} aria-hidden />}>Run</Button>
+              <Button variant="neutral" size="sm" iconLeft={<GitBranch size={14} aria-hidden />}>Branch</Button>
             </ToolbarGroup>
             <ToolbarSeparator />
             <ToolbarGroup>
@@ -75,14 +75,14 @@ export default function ToolbarDemo() {
             </ToolbarGroup>
             <ToolbarSpacer />
             <ToolbarGroup>
-              <Button variant="ghost" size="sm"><Search size={14} aria-hidden />Search <Kbd>⌘K</Kbd></Button>
+              <Button variant="ghost" size="sm" iconLeft={<Search size={14} aria-hidden />}>Search <Kbd>⌘K</Kbd></Button>
             </ToolbarGroup>
           </Toolbar>
         </div>
 
         <div style={lbl}>Formatting</div>
         <div style={stack}>
-          <Toolbar>
+          <Toolbar aria-label="Formatting controls">
             <ToolbarGroup>
               <Toggle iconOnly aria-label="Bold" pressed={!!marks.bold} onPressedChange={() => mark("bold")}><Bold size={15} aria-hidden /></Toggle>
               <Toggle iconOnly aria-label="Italic" pressed={!!marks.italic} onPressedChange={() => mark("italic")}><Italic size={15} aria-hidden /></Toggle>
@@ -98,17 +98,17 @@ export default function ToolbarDemo() {
             </ToolbarGroup>
             <ToolbarSeparator />
             <ToolbarGroup>
-              <Button variant="ghost" size="sm"><Eye size={14} aria-hidden />Preview</Button>
+              <Button variant="ghost" size="sm" iconLeft={<Eye size={14} aria-hidden />}>Preview</Button>
             </ToolbarGroup>
           </Toolbar>
         </div>
 
         <div style={lbl}>Left / right split</div>
         <div style={stack}>
-          <Toolbar>
+          <Toolbar aria-label="Document actions">
             <ToolbarGroup>
-              <Button variant="neutral" size="sm"><Plus size={14} aria-hidden />New</Button>
-              <Button variant="neutral" size="sm"><Save size={14} aria-hidden />Save</Button>
+              <Button variant="neutral" size="sm" iconLeft={<Plus size={14} aria-hidden />}>New</Button>
+              <Button variant="neutral" size="sm" iconLeft={<Save size={14} aria-hidden />}>Save</Button>
             </ToolbarGroup>
             <ToolbarSpacer />
             <ToolbarGroup>
@@ -120,7 +120,7 @@ export default function ToolbarDemo() {
 
         <div style={{ ...lbl, marginTop: 4 }}>Vertical rail</div>
         <div style={{ ...stack, marginBottom: 0 }}>
-          <Toolbar orientation="vertical">
+          <Toolbar orientation="vertical" aria-label="Vertical tool rail">
             <ToolbarGroup>
               <Button variant="ghost" size="icon" aria-label="Run"><Play size={15} aria-hidden /></Button>
               <Button variant="ghost" size="icon" aria-label="Branch"><GitBranch size={15} aria-hidden /></Button>

@@ -21,7 +21,7 @@
     "requiresTokens": false,
     "sourcePath": "registry/aurora/lib/portal-container.tsx"
   },
-  "docs": "Wrap a scaled/clipped preview in <PortalContainerContext.Provider value={el}> so Sheet/Drawer portal into it. Null value = default document.body (normal apps unaffected).",
+  "docs": "Wrap a scaled/clipped preview in <PortalContainerContext.Provider value={el}> so Sheet/Drawer portal into it. Null value = default document.body (normal apps unaffected).\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "lib"

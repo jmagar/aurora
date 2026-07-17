@@ -12,7 +12,7 @@ export default function HoverCardDemo() {
         boxShadow: "var(--aurora-shadow-strong), var(--aurora-highlight-strong)",
       }}
     >
-      <div style={{ color: "var(--aurora-text-primary)", font: "13px var(--font-sans)" }}>
+      <div style={{ color: "var(--aurora-text-primary)", font: "13px var(--aurora-font-sans)" }}>
         Hover{" "}
         <HoverCard
           trigger={
@@ -29,10 +29,10 @@ export default function HoverCardDemo() {
             </span>
           }
         >
-          <div style={{ fontWeight: 650, fontSize: 13, marginBottom: 4 }}>edge-1</div>
+              <div style={{ fontWeight: 650, fontSize: 13, marginBottom: 4 }}>edge-1</div>
           <div
             style={{
-              fontFamily: "var(--font-mono)",
+              fontFamily: "var(--aurora-font-sans)",
               fontSize: 12,
               color: "var(--aurora-text-muted)",
             }}

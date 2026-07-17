@@ -53,7 +53,7 @@
     "family": "agent",
     "targetScope": "project-root"
   },
-  "docs": "Installs the Aurora design-system skill source and reference docs into the current project for Claude, Codex, and Gemini adaptation. Shadcn cannot install directly into real home-directory skill folders.",
+  "docs": "Installs the Aurora design-system skill source and reference docs into the current project for Claude, Codex, and Gemini adaptation. Shadcn cannot install directly into real home-directory skill folders.\n\nRegistry dependencies: none.",
   "categories": [
     "aurora",
     "agent",

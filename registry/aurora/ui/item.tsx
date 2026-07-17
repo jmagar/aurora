@@ -22,16 +22,22 @@ export function Item({ title, description, action, icon, className, style, ref, 
       }}
       {...props}
     >
-      {icon ? <span style={{ color: "var(--aurora-text-muted)", display: "inline-flex" }}>{icon}</span> : <span />}
+      {icon ? (
+        <span aria-hidden="true" style={{ color: "var(--aurora-text-muted)", display: "inline-flex", alignItems: "center", justifyContent: "center", width: 16, height: 16 }}>
+          {icon}
+        </span>
+      ) : (
+        <span aria-hidden="true" style={{ display: "inline-flex", width: 16, height: 16 }} />
+      )}
       <span className="min-w-0">
         <span
           className="block truncate"
           style={{
-            fontFamily: "var(--aurora-font-display)",
-            fontSize: "15px",
-            fontWeight: 700,
-            lineHeight: 1.2,
-            letterSpacing: "-0.01em",
+            fontFamily: "var(--aurora-font-sans)",
+            fontSize: "var(--aurora-type-body)",
+            fontWeight: "var(--aurora-weight-label)",
+            lineHeight: "var(--aurora-line-ui)",
+            letterSpacing: "var(--aurora-letter-ui)",
             color: "var(--aurora-text-primary)",
           }}
         >
@@ -42,9 +48,9 @@ export function Item({ title, description, action, icon, className, style, ref, 
             className="block truncate"
             style={{
               fontFamily: "var(--aurora-font-sans)",
-              fontSize: "13px",
-              fontWeight: 500,
-              lineHeight: 1.35,
+              fontSize: "var(--aurora-type-body-sm)",
+              fontWeight: "var(--aurora-weight-body)",
+              lineHeight: "var(--aurora-line-body)",
               color: "var(--aurora-text-muted)",
             }}
           >
@@ -52,7 +58,7 @@ export function Item({ title, description, action, icon, className, style, ref, 
           </span>
         ) : null}
       </span>
-      {action ? <span>{action}</span> : null}
+      {action ? <span className="shrink-0">{action}</span> : null}
     </div>
   )
 }

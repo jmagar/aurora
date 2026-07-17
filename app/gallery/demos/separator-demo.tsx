@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { Separator } from "@/registry/aurora/ui/separator"
 
 const card: React.CSSProperties = {
@@ -28,17 +29,25 @@ const inlineRow: React.CSSProperties = {
 
 export default function SeparatorDemo() {
   return (
-    <div style={card}>
-      <div style={muted}>Gateways</div>
-      <Separator style={{ margin: "12px 0" }} />
-      <div style={muted}>Sessions</div>
-      <Separator style={{ margin: "12px 0" }} />
-      <div style={inlineRow}>
-        Run
-        <Separator orientation="vertical" />
-        Ask
-        <Separator orientation="vertical" />
-        Settings
+    <div className="grid gap-6">
+      <GalleryPageIntro
+        eyebrow="Utility"
+        heading="Separator"
+        description="Low-noise dividers for section breaks, metadata rails, and grouped controls. Horizontal and vertical examples use the same Aurora border token."
+      />
+
+      <div style={card}>
+        <div style={muted}>Gateways</div>
+        <Separator style={{ margin: "12px 0" }} />
+        <div style={muted}>Sessions</div>
+        <Separator style={{ margin: "12px 0" }} />
+        <div style={inlineRow}>
+          Run
+          <Separator orientation="vertical" />
+          Ask
+          <Separator orientation="vertical" />
+          Settings
+        </div>
       </div>
     </div>
   )

@@ -16,6 +16,8 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   state?: TextareaState
   /** Convenience alias for state="error". When both are set, `state` wins. */
   error?: boolean
+  /** Render a bare textarea with no Aurora chrome. */
+  unstyled?: boolean
 }
 
 const STATE_TOKENS = {
@@ -52,6 +54,7 @@ function Textarea(
     autoResize = false,
     autoGrow = false,
     showCount = false,
+    unstyled = false,
     style,
     state: stateProp,
     error,
@@ -103,6 +106,21 @@ function Textarea(
       },
       [grows, resize, isControlled, onChange]
     )
+
+    if (unstyled) {
+      return (
+        <textarea
+          ref={setRef}
+          className={className}
+          style={style}
+          defaultValue={defaultValue}
+          value={value}
+          maxLength={maxLength}
+          onChange={onChange}
+          {...props}
+        />
+      )
+    }
 
     const textarea = (
       <textarea

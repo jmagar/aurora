@@ -60,7 +60,13 @@ const ENTRIES: Entry[] = [
     tags: ["extension"],
     preview: (
       <div style={{ display: "flex", gap: 8 }}>
-        {["#29b6f6", "#f9a8c4", "#ff9645", "#7dd3c7", "#c78490"].map((c, i) => (
+        {[
+          "var(--aurora-accent-primary)",
+          "var(--aurora-accent-pink)",
+          "var(--axon-orange)",
+          "var(--aurora-success)",
+          "var(--aurora-error)",
+        ].map((c, i) => (
           <span
             key={c}
             style={{
@@ -94,10 +100,10 @@ const NAMES = ENTRIES.map((e) => e.name);
 
 const sectionLabel: React.CSSProperties = {
   display: "block",
-  fontFamily: "var(--font-mono)",
-  fontSize: 10,
-  fontWeight: 700,
-  letterSpacing: "0.13em",
+  fontFamily: "var(--aurora-font-sans)",
+  fontSize: "var(--aurora-type-caption)",
+  fontWeight: "var(--aurora-weight-label)" as React.CSSProperties["fontWeight"],
+  letterSpacing: "var(--aurora-letter-eyebrow)",
   textTransform: "uppercase",
   color: "var(--aurora-text-muted)",
   marginBottom: 9,

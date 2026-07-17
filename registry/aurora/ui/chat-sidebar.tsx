@@ -1,90 +1,11 @@
 "use client"
 
 import * as React from "react"
+import { Ellipsis, MessageSquareText, Plus, Search } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
-
-/* -------------------------------------------------------------------------- */
-/*  Icons                                                                     */
-/* -------------------------------------------------------------------------- */
-
-function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <line x1="12" y1="5" x2="12" y2="19" />
-      <line x1="5" y1="12" x2="19" y2="12" />
-    </svg>
-  )
-}
-
-function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <circle cx="11" cy="11" r="7" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  )
-}
-
-function ThreadIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-    </svg>
-  )
-}
-
-function KebabIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      {...props}
-    >
-      <circle cx="12" cy="5" r="1.6" />
-      <circle cx="12" cy="12" r="1.6" />
-      <circle cx="12" cy="19" r="1.6" />
-    </svg>
-  )
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -97,6 +18,8 @@ export interface ChatSidebarThread {
   title: React.ReactNode
   /** Bucket label this thread belongs to (e.g. "Today"). Threads are grouped by bucket in source order. */
   bucket: string
+  /** Optional plain-text value used for search filtering when `title` is rich markup. */
+  searchText?: string
 }
 
 export interface ChatSidebarUser {
@@ -124,8 +47,18 @@ export interface ChatSidebarProps
   onNewChat?: () => void
   /** Placeholder for the search input. */
   searchPlaceholder?: string
+  /** Controlled search query shown in the search input. */
+  searchValue?: string
+  /** Initial search query for uncontrolled usage. */
+  defaultSearchValue?: string
+  /** Fired whenever the search query changes. */
+  onSearchValueChange?: (value: string) => void
+  /** Optional message rendered when no conversations match the current search. */
+  emptyMessage?: React.ReactNode
   /** Footer user descriptor. */
   user?: ChatSidebarUser
+  /** Fired when the account menu button is pressed. */
+  onOpenAccountMenu?: () => void
 }
 
 /* -------------------------------------------------------------------------- */
@@ -141,125 +74,203 @@ function ChatSidebar(
     onSelectThread,
     onNewChat,
     searchPlaceholder = "Search conversations...",
+    searchValue: controlledSearchValue,
+    defaultSearchValue = "",
+    onSearchValueChange,
+    emptyMessage,
     user,
+    onOpenAccountMenu,
     className,
     ref,
     ...props
   }: ChatSidebarProps & { ref?: React.Ref<HTMLElement> },
 ) {
-    const isControlled = controlledActiveId != null
-    const [uncontrolledActiveId, setUncontrolledActiveId] = React.useState(
-      defaultActiveId,
-    )
-    const activeId = isControlled ? controlledActiveId : uncontrolledActiveId
+  const isControlled = controlledActiveId != null
+  const [uncontrolledActiveId, setUncontrolledActiveId] = React.useState(
+    defaultActiveId,
+  )
+  const isSearchControlled = controlledSearchValue != null
+  const [uncontrolledSearchValue, setUncontrolledSearchValue] = React.useState(
+    defaultSearchValue,
+  )
 
-    const handleSelect = React.useCallback(
-      (id: string) => {
-        if (!isControlled) setUncontrolledActiveId(id)
-        onSelectThread?.(id)
-      },
-      [isControlled, onSelectThread],
-    )
+  const activeId = isControlled ? controlledActiveId : uncontrolledActiveId
+  const searchValue = isSearchControlled
+    ? controlledSearchValue
+    : uncontrolledSearchValue
+  const normalizedQuery = searchValue.trim().toLowerCase()
 
-    // Group threads by bucket, preserving first-seen order.
-    const groups = React.useMemo(() => {
-      const order: string[] = []
-      const byBucket = new Map<string, ChatSidebarThread[]>()
-      for (const thread of threads) {
-        if (!byBucket.has(thread.bucket)) {
-          byBucket.set(thread.bucket, [])
-          order.push(thread.bucket)
-        }
-        byBucket.get(thread.bucket)!.push(thread)
+  const handleSelect = React.useCallback(
+    (id: string) => {
+      if (!isControlled) setUncontrolledActiveId(id)
+      onSelectThread?.(id)
+    },
+    [isControlled, onSelectThread],
+  )
+
+  const handleSearchChange = React.useCallback(
+    (value: string) => {
+      if (!isSearchControlled) {
+        setUncontrolledSearchValue(value)
       }
-      return order.map((bucket) => ({
-        bucket,
-        items: byBucket.get(bucket)!,
-      }))
-    }, [threads])
+      onSearchValueChange?.(value)
+    },
+    [isSearchControlled, onSearchValueChange],
+  )
 
-    return (
-      <nav
-        ref={ref}
-        className={cn("aurora-chat-sidebar", className)}
-        aria-label="Conversations"
-        {...props}
-      >
-        {brand != null ? (
-          <div className="aurora-chat-sidebar__brand">{brand}</div>
-        ) : null}
+  const filteredThreads = React.useMemo(() => {
+    if (!normalizedQuery) return threads
 
-        <div className="aurora-chat-sidebar__head">
-          <button
-            type="button"
-            className="aurora-chat-sidebar__new"
-            onClick={onNewChat}
+    return threads.filter((thread) => {
+      const candidate =
+        thread.searchText ??
+        (typeof thread.title === "string" ? thread.title : "") ??
+        ""
+      return candidate.toLowerCase().includes(normalizedQuery)
+    })
+  }, [normalizedQuery, threads])
+
+  const groups = React.useMemo(() => {
+    const order: string[] = []
+    const byBucket = new Map<string, ChatSidebarThread[]>()
+    for (const thread of filteredThreads) {
+      if (!byBucket.has(thread.bucket)) {
+        byBucket.set(thread.bucket, [])
+        order.push(thread.bucket)
+      }
+      byBucket.get(thread.bucket)!.push(thread)
+    }
+    return order.map((bucket) => ({
+      bucket,
+      items: byBucket.get(bucket)!,
+    }))
+  }, [filteredThreads])
+
+  const resolvedEmptyMessage =
+    emptyMessage ??
+    (normalizedQuery
+      ? `No conversations match "${searchValue.trim()}".`
+      : "No conversations found.")
+
+  return (
+    <nav
+      ref={ref}
+      className={cn("aurora-chat-sidebar", className)}
+      aria-label="Conversations"
+      {...props}
+    >
+      {brand != null ? (
+        <div className="aurora-chat-sidebar__brand">{brand}</div>
+      ) : null}
+
+      <div className="aurora-chat-sidebar__head">
+        <button
+          type="button"
+          className="aurora-chat-sidebar__new"
+          onClick={onNewChat}
+          disabled={onNewChat == null}
+        >
+          <Plus className="aurora-chat-sidebar__new-icon" size={18} strokeWidth={1.9} aria-hidden="true" />
+          New Chat
+        </button>
+
+        <div className="aurora-chat-sidebar__search">
+          <Search
+            className="aurora-chat-sidebar__search-icon"
+            size={18}
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <input
+            type="search"
+            className="aurora-chat-sidebar__search-input"
+            placeholder={searchPlaceholder}
+            aria-label="Search conversations"
+            autoComplete="off"
+            value={searchValue}
+            onChange={(event) => handleSearchChange(event.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="aurora-chat-sidebar__threads">
+        {groups.length > 0 ? (
+          groups.map((group, groupIndex) => {
+            const headingId = `chat-sidebar-${groupIndex}-${group.bucket
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/(^-|-$)/g, "")}`
+
+            return (
+              <section key={group.bucket} aria-labelledby={headingId}>
+                <div id={headingId} className="aurora-chat-sidebar__bucket">
+                  {group.bucket}
+                </div>
+                {group.items.map((thread) => {
+                  const isActive = thread.id === activeId
+                  return (
+                    <button
+                      key={thread.id}
+                      type="button"
+                      className="aurora-chat-sidebar__thread"
+                      data-active={isActive}
+                      aria-current={isActive ? "page" : undefined}
+                      onClick={() => handleSelect(thread.id)}
+                    >
+                      <MessageSquareText
+                        className="aurora-chat-sidebar__thread-icon"
+                        size={18}
+                        strokeWidth={1.75}
+                        aria-hidden="true"
+                      />
+                      <span className="aurora-chat-sidebar__thread-title">
+                        {thread.title}
+                      </span>
+                    </button>
+                  )
+                })}
+              </section>
+            )
+          })
+        ) : (
+          <p
+            className="aurora-text-body-sm"
+            style={{
+              margin: 0,
+              padding: "18px 12px",
+              color: "var(--aurora-text-muted)",
+            }}
           >
-            <PlusIcon className="aurora-chat-sidebar__new-icon" />
-            New Chat
-          </button>
+            {resolvedEmptyMessage}
+          </p>
+        )}
+      </div>
 
-          <div className="aurora-chat-sidebar__search">
-            <SearchIcon className="aurora-chat-sidebar__search-icon" />
-            <input
-              type="search"
-              className="aurora-chat-sidebar__search-input"
-              placeholder={searchPlaceholder}
-              aria-label="Search conversations"
-            />
-          </div>
-        </div>
-
-        <div className="aurora-chat-sidebar__threads">
-          {groups.map((group) => (
-            <React.Fragment key={group.bucket}>
-              <div className="aurora-chat-sidebar__bucket">{group.bucket}</div>
-              {group.items.map((thread) => {
-                const isActive = thread.id === activeId
-                return (
-                  <button
-                    key={thread.id}
-                    type="button"
-                    className="aurora-chat-sidebar__thread"
-                    data-active={isActive}
-                    aria-current={isActive ? "true" : undefined}
-                    onClick={() => handleSelect(thread.id)}
-                  >
-                    <ThreadIcon className="aurora-chat-sidebar__thread-icon" />
-                    <span className="aurora-chat-sidebar__thread-title">
-                      {thread.title}
-                    </span>
-                  </button>
-                )
-              })}
-            </React.Fragment>
-          ))}
-        </div>
-
-        {user != null ? (
-          <div className="aurora-chat-sidebar__footer">
-            <span className="aurora-chat-sidebar__avatar" aria-hidden="true">
-              {user.initials}
-            </span>
-            <span className="aurora-chat-sidebar__user">
-              <span className="aurora-chat-sidebar__user-name">{user.name}</span>
-              {user.plan != null ? (
-                <span className="aurora-chat-sidebar__user-plan">
-                  {user.plan}
-                </span>
-              ) : null}
-            </span>
+      {user != null ? (
+        <div className="aurora-chat-sidebar__footer">
+          <span className="aurora-chat-sidebar__avatar" aria-hidden="true">
+            {user.initials}
+          </span>
+          <span className="aurora-chat-sidebar__user">
+            <span className="aurora-chat-sidebar__user-name">{user.name}</span>
+            {user.plan != null ? (
+              <span className="aurora-chat-sidebar__user-plan">{user.plan}</span>
+            ) : null}
+          </span>
+          {onOpenAccountMenu ? (
             <button
               type="button"
               className="aurora-chat-sidebar__menu"
-              aria-label="Account menu"
+              aria-label="Account Menu"
+              onClick={onOpenAccountMenu}
             >
-              <KebabIcon />
+              <Ellipsis size={18} strokeWidth={1.75} aria-hidden="true" />
             </button>
-          </div>
-        ) : null}
-      </nav>
-    )
+          ) : null}
+        </div>
+      ) : null}
+    </nav>
+  )
 }
 
 export { ChatSidebar }

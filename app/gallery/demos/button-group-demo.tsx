@@ -62,7 +62,7 @@ export default function ButtonGroupDemo() {
       <div>
         <div style={lbl}>Segmented control · text</div>
         <div style={row}>
-          <ButtonGroup>
+          <ButtonGroup aria-label="View mode">
             {VIEWS.map(({ k, label }) => (
               <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
                 {label}
@@ -73,7 +73,7 @@ export default function ButtonGroupDemo() {
 
         <div style={lbl}>Icon + label</div>
         <div style={row}>
-          <ButtonGroup>
+          <ButtonGroup aria-label="View mode with icons">
             {VIEWS.map(({ k, label, Icon }) => (
               <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
                 <Icon size={15} aria-hidden />
@@ -85,7 +85,7 @@ export default function ButtonGroupDemo() {
 
         <div style={lbl}>Icon-only · alignment</div>
         <div style={row}>
-          <ButtonGroup>
+          <ButtonGroup aria-label="Text alignment">
             {ALIGN.map(({ k, Icon }) => (
               <ButtonGroupItem
                 key={k}
@@ -100,7 +100,7 @@ export default function ButtonGroupDemo() {
           </ButtonGroup>
 
           {/* Multi-select formatting cluster (not mutually exclusive). */}
-          <ButtonGroup>
+          <ButtonGroup aria-label="Text formatting">
             <ButtonGroupItem selected={marks.bold} onClick={() => toggleMark("bold")} aria-label="Bold" style={{ padding: "0 10px" }}>
               <Bold size={15} aria-hidden />
             </ButtonGroupItem>
@@ -115,7 +115,7 @@ export default function ButtonGroupDemo() {
 
         <div style={lbl}>Joined toolbar · real buttons</div>
         <div style={row}>
-          <ButtonGroup>
+          <ButtonGroup aria-label="Clipboard actions">
             <Button variant="neutral" size="sm">Cut</Button>
             <Button variant="neutral" size="sm">Copy</Button>
             <Button variant="neutral" size="sm">Paste</Button>
@@ -124,7 +124,7 @@ export default function ButtonGroupDemo() {
 
         <div style={lbl}>Vertical · disabled state</div>
         <div style={{ ...row, alignItems: "flex-start", marginBottom: 0 }}>
-          <ButtonGroup orientation="vertical">
+          <ButtonGroup orientation="vertical" aria-label="Vertical views">
             {VIEWS.map(({ k, label, Icon }) => (
               <ButtonGroupItem key={k} selected={view === k} onClick={() => setView(k)}>
                 <Icon size={15} aria-hidden />
@@ -133,7 +133,7 @@ export default function ButtonGroupDemo() {
             ))}
           </ButtonGroup>
 
-          <ButtonGroup>
+          <ButtonGroup aria-label="Enabled and disabled states">
             <ButtonGroupItem selected>Enabled</ButtonGroupItem>
             <ButtonGroupItem disabled>Disabled</ButtonGroupItem>
           </ButtonGroup>

@@ -40,6 +40,24 @@ for (const [label, path] of [
 
     assert.deepEqual(findings, [])
   })
+
+  test(`${label} docs list the exact registry dependencies`, () => {
+    const registry = readRegistry(path)
+    for (const item of registry.items) {
+      const match = item.docs?.match(/Registry dependencies: ([^\n]+)\.$/)
+      assert.ok(match, `${item.name}: missing dependency summary`)
+
+      const documented =
+        match[1] === "none"
+          ? []
+          : match[1].split(", ").map((dependency) => dependency.replaceAll("`", ""))
+      const declared = (item.registryDependencies ?? []).map((dependency) =>
+        dependency.replace(/^@aurora\//, ""),
+      )
+
+      assert.deepEqual(documented, declared, item.name)
+    }
+  })
 }
 
 test("source registry capability items explain install constraints", () => {

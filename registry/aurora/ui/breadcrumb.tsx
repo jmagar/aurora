@@ -46,15 +46,9 @@ function BreadcrumbList({ ref, className, ...props }: React.ComponentProps<"ol">
       ref={ref}
       className={cn(
         "flex min-w-0 flex-wrap items-center gap-1.5 break-words",
-        variant === "mono" && "font-mono",
         variant === "pill-trail" && "gap-1.5",
         className
       )}
-      style={
-        variant === "mono"
-          ? { fontFamily: "var(--aurora-font-mono)" }
-          : undefined
-      }
       {...props}
     />
   )
@@ -87,7 +81,7 @@ function BreadcrumbLink({ ref, asChild, className, style, ...props }: Breadcrumb
     "inline-flex min-w-0 items-center gap-1 rounded-[8px] px-2 py-1 transition-colors duration-150",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
     variant === "default" && "aurora-text-control",
-    variant === "mono" && "aurora-text-code",
+    variant === "mono" && "aurora-text-control",
     variant === "pill-trail" &&
       "aurora-text-control inline-flex items-center rounded-full border px-3 py-0.5 transition-all",
     className
@@ -133,7 +127,7 @@ function BreadcrumbPage({ ref, className, badge, children, style, ...props }: Br
   const baseClass = cn(
     variant === "default" &&
       "inline-flex items-center gap-1.5 rounded-[8px] border px-2.5 py-1 text-[13px] font-semibold",
-    variant === "mono" && "aurora-text-code",
+    variant === "mono" && "aurora-text-control",
     variant === "pill-trail" &&
       "aurora-text-control inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5",
     className
@@ -159,9 +153,7 @@ function BreadcrumbPage({ ref, className, badge, children, style, ...props }: Br
   return (
     <span
       ref={ref}
-      role="link"
       aria-current="page"
-      aria-disabled="true"
       className={cn("inline-flex items-center gap-1.5", baseClass)}
       style={{
         ...baseStyle,
@@ -181,14 +173,13 @@ function BreadcrumbEllipsis({ ref, className, ...props }: React.ComponentProps<"
   return (
     <span
       ref={ref}
-      role="presentation"
-      aria-hidden="true"
+      role="img"
+      aria-label="More breadcrumbs"
       className={cn("inline-flex size-5 items-center justify-center", className)}
       style={{ color: "var(--aurora-text-muted)" }}
       {...props}
     >
       <Ellipsis className="size-4" aria-hidden />
-      <span className="sr-only">More</span>
     </span>
   )
 }

@@ -44,8 +44,9 @@ function Row({ label, names }: { label: string; names: OperationName[] }) {
             <OperationIcon name={n} size={24} />
             <span
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 9.5,
+                fontFamily: "var(--aurora-font-sans)",
+                fontSize: 10.5,
+                fontWeight: 560,
                 color: "var(--aurora-text-muted)",
               }}
             >

@@ -4,9 +4,7 @@
   "title": "Aurora OperationIcon",
   "author": "jmagar <https://github.com/jmagar>",
   "description": "Aurora OperationIcon — Claude Design parity.",
-  "dependencies": [
-    "lucide-react@^0.487.0"
-  ],
+  "dependencies": [],
   "registryDependencies": [
     "@aurora/aurora-tokens",
     "@aurora/aurora-components"

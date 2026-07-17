@@ -5,6 +5,7 @@ import { ChevronDown, Pencil, Copy, Trash2 } from "lucide-react"
 import { GalleryPageIntro } from "@/components/gallery-page-intro"
 import { Button } from "@/registry/aurora/ui/button"
 import {
+  DropdownMenuGroup,
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -26,30 +27,29 @@ export default function DropdownMenuDemo() {
       <div style={{ display: "flex", minHeight: 220, alignItems: "flex-start" }}>
         <DropdownMenu defaultOpen>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="neutral"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
-            >
+            <Button variant="neutral">
               Session
-              <ChevronDown className="size-[15px]" aria-hidden />
+              <ChevronDown data-icon="inline-end" aria-hidden />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuLabel>Session</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Pencil className="size-[15px] opacity-70" aria-hidden />
-              Rename
-              <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Copy className="size-[15px] opacity-70" aria-hidden />
-              Duplicate
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem danger>
-              <Trash2 className="size-[15px]" aria-hidden />
-              Delete Session
-            </DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <Pencil aria-hidden />
+                Rename
+                <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Copy aria-hidden />
+                Duplicate
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem danger>
+                <Trash2 aria-hidden />
+                Delete Session
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

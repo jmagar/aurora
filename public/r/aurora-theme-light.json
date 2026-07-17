@@ -28,7 +28,7 @@
     "family": "theme",
     "mode": "light"
   },
-  "docs": "Aurora light web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then toggle the root element to `.light` when the app should use the light mode.",
+  "docs": "Aurora light web theme for shadcn projects. Install after `aurora-base` or `aurora-tokens`, then toggle the root element to `.light` when the app should use the light mode.\n\nRegistry dependencies: `aurora-tokens`.",
   "categories": [
     "aurora",
     "theme",

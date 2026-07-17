@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { Bot, CircleAlert, Info, ShieldCheck, TriangleAlert, WifiOff } from "lucide-react";
 import { Callout } from "@/registry/aurora/ui/callout";
 import { GalleryPageIntro } from "@/components/gallery-page-intro";
 
@@ -21,14 +21,23 @@ export default function CalloutDemo() {
           maxWidth: 520,
         }}
       >
-        <Callout variant="info" title="Heads up">
+        <Callout variant="info" title="Heads up" icon={<Info size={16} strokeWidth={1.75} />}>
           Crawl depth is capped at 4 for this workspace.
         </Callout>
-        <Callout variant="success" title="Indexed">
+        <Callout variant="success" title="Indexed" icon={<ShieldCheck size={16} strokeWidth={1.75} />}>
           642 pages · 4 198 chunks now searchable.
         </Callout>
-        <Callout variant="warn" title="Rate limited">
+        <Callout variant="warn" title="Rate limited" icon={<TriangleAlert size={16} strokeWidth={1.75} />}>
           Backing off docs.rs for 2s.
+        </Callout>
+        <Callout variant="error" title="Connection failed" icon={<WifiOff size={16} strokeWidth={1.75} />}>
+          The upstream API is unreachable. Check credentials before retrying.
+        </Callout>
+        <Callout variant="neutral" title="Queued" icon={<CircleAlert size={16} strokeWidth={1.75} />}>
+          Waiting for the next available runner slot.
+        </Callout>
+        <Callout variant="rose" title="Agent handoff" icon={<Bot size={16} strokeWidth={1.75} />}>
+          This workspace will ask for human confirmation before publishing.
         </Callout>
       </div>
     </div>

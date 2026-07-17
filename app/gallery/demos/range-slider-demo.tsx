@@ -21,7 +21,7 @@ export default function RangeSliderDemo() {
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <GalleryPageIntro
         eyebrow="Aurora Extensions"
-        heading="RangeSlider"
+        heading="Range Slider"
         description="Aurora extension · two-thumb range. A filled segment between two glowing thumbs; pass a tone to recolor the fill and thumbs."
       />
       <div style={row}>

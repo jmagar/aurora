@@ -25,22 +25,46 @@ export default function PopoverDemo() {
           color: "var(--aurora-text-primary)",
         }}
       >
-        <Popover defaultOpen>
-          <PopoverAnchor>
-            <PopoverTrigger asChild>
-              <Button variant="neutral">Configure Rate Limit</Button>
-            </PopoverTrigger>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "flex-start" }}>
+          <Popover>
+            <PopoverAnchor asChild>
+              <div>
+                <PopoverTrigger asChild>
+                  <Button variant="neutral">Configure Rate Limit</Button>
+                </PopoverTrigger>
+              </div>
+            </PopoverAnchor>
             <PopoverContent>
               <div style={{ display: "flex", flexDirection: "column", gap: 9, width: 220 }}>
-                <Label>Requests / Minute</Label>
-                <Input defaultValue="600" />
+                <Label htmlFor="rate-limit-popover">Requests / Minute</Label>
+                <Input id="rate-limit-popover" defaultValue="600" />
                 <Button variant="aurora" size="sm" style={{ alignSelf: "flex-start" }}>
                   Apply
                 </Button>
               </div>
             </PopoverContent>
-          </PopoverAnchor>
-        </Popover>
+          </Popover>
+
+          <Popover defaultOpen>
+            <PopoverAnchor asChild>
+              <div>
+                <PopoverTrigger asChild>
+                  <Button variant="plain">Preview Open State</Button>
+                </PopoverTrigger>
+              </div>
+            </PopoverAnchor>
+            <PopoverContent align="end">
+              <div style={{ display: "grid", gap: 6, width: 220 }}>
+                <div className="aurora-text-control" style={{ color: "var(--aurora-text-primary)" }}>
+                  Burst policy
+                </div>
+                <p className="aurora-text-body-sm" style={{ margin: 0, color: "var(--aurora-text-muted)" }}>
+                  10-second burst window with a 600 request ceiling.
+                </p>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </section>
     </div>
   )

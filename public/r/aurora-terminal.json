@@ -23,7 +23,7 @@
     "family": "page",
     "starter": "terminal"
   },
-  "docs": "Starter page for an Aurora terminal workspace. Installs to `app/aurora/terminal/page.tsx` and depends on `aurora-base`.",
+  "docs": "Starter page for an Aurora terminal workspace. Installs to `app/aurora/terminal/page.tsx` and depends on `aurora-base`.\n\nRegistry dependencies: `aurora-base`, `aurora-terminal-block`.",
   "categories": [
     "aurora",
     "page",

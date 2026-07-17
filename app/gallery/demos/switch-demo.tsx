@@ -24,9 +24,18 @@ export default function SwitchDemo() {
         description="The only pill control besides scrollbars — the track tints to cyan when on; the thumb gains a self-glow. Controlled or uncontrolled."
       />
       <div>
-        <div style={row}><Switch defaultChecked />Color-Code by Operation</div>
-        <div style={row}><Switch />Compact Density</div>
-        <div style={row}><Switch defaultChecked disabled />Stream Tokens (locked)</div>
+        <label style={row}>
+          <Switch defaultChecked aria-label="Color-Code by Operation" />
+          <span>Color-Code by Operation</span>
+        </label>
+        <label style={row}>
+          <Switch size="sm" aria-label="Compact Density" />
+          <span>Compact Density</span>
+        </label>
+        <label style={row}>
+          <Switch size="lg" defaultChecked disabled aria-label="Stream Tokens Locked" />
+          <span>Stream Tokens (Locked)</span>
+        </label>
       </div>
     </div>
   )

@@ -12,9 +12,9 @@ const box: React.CSSProperties = {
   border: "1px solid var(--aurora-border-strong)",
   borderRadius: 14,
   color: "var(--aurora-text-muted)",
-  fontFamily: "var(--font-mono)",
+  fontFamily: "var(--aurora-font-sans)",
   fontSize: 15,
-  letterSpacing: "0.08em",
+  fontWeight: 650,
 };
 
 export default function AspectRatioDemo() {

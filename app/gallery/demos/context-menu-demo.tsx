@@ -1,24 +1,16 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { ChevronRight, Pencil, Trash2 } from "lucide-react";
+import * as React from "react"
+import { ArrowRight, Pencil, Trash2 } from "lucide-react"
 import {
   ContextMenu,
   ContextMenuTrigger,
   ContextMenuContent,
+  ContextMenuGroup,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuShortcut,
-} from "@/registry/aurora/ui/context-menu";
-
-/**
- * Gallery demo — Context Menu
- * Rebuilt 1:1 from the Claude Design `ContextMenu.dsCard` composition:
- * a cursor-anchored menu opened by right-clicking a dashed area, with
- * icon + shortcut items and a danger Delete row.
- */
-
-const iconProps = { size: 15, strokeWidth: 1.6, "aria-hidden": true } as const;
+} from "@/registry/aurora/ui/context-menu"
 
 export default function ContextMenuDemo() {
   return (
@@ -44,24 +36,26 @@ export default function ContextMenuDemo() {
       </ContextMenuTrigger>
 
       <ContextMenuContent>
-        <ContextMenuItem>
-          <ChevronRight {...iconProps} />
-          Open Session
-          <ContextMenuShortcut>↵</ContextMenuShortcut>
-        </ContextMenuItem>
+        <ContextMenuGroup>
+          <ContextMenuItem>
+            <ArrowRight aria-hidden />
+            Open Session
+            <ContextMenuShortcut>↵</ContextMenuShortcut>
+          </ContextMenuItem>
 
-        <ContextMenuItem>
-          <Pencil {...iconProps} />
-          Rename
-        </ContextMenuItem>
+          <ContextMenuItem>
+            <Pencil aria-hidden />
+            Rename
+          </ContextMenuItem>
 
-        <ContextMenuSeparator />
+          <ContextMenuSeparator />
 
-        <ContextMenuItem danger>
-          <Trash2 {...iconProps} />
-          Delete
-        </ContextMenuItem>
+          <ContextMenuItem danger>
+            <Trash2 aria-hidden />
+            Delete
+          </ContextMenuItem>
+        </ContextMenuGroup>
       </ContextMenuContent>
     </ContextMenu>
-  );
+  )
 }
