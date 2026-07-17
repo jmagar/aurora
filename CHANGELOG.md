@@ -49,6 +49,29 @@ breaking changes and will be listed here.
   v0.3.1 should rebuild vendored components, review changed component props,
   regenerate Android tokens, and verify both color modes before release.
 
+## [0.4.1](https://github.com/jmagar/aurora/compare/v0.4.0...v0.4.1) (2026-07-17)
+
+
+### Fixed
+
+* **catalog:** contain demo suspension so scrolling stops jumping to top ([#61](https://github.com/jmagar/aurora/issues/61)) ([15b5f90](https://github.com/jmagar/aurora/commit/15b5f90ee764895f2f2ec273d06e5a8d6a314540))
+* **catalog:** stop auto-open overlay demos scroll-locking the page ([#58](https://github.com/jmagar/aurora/issues/58)) ([845057f](https://github.com/jmagar/aurora/commit/845057f146a1453c6b2a4e6a47ff3b5cde0a133b))
+
+
+### Changed
+
+* **docker:** stop the dev image chowning 93k files (30min -&gt; ~14min) ([#60](https://github.com/jmagar/aurora/issues/60)) ([624df8b](https://github.com/jmagar/aurora/commit/624df8b1197b11f428f91c7661fe838b78508f11))
+
+
+### Dependencies
+
+* **deps:** bump actions/cache from 4.3.0 to 6.1.0 ([#65](https://github.com/jmagar/aurora/issues/65)) ([740ca9d](https://github.com/jmagar/aurora/commit/740ca9d2d27862d3fe50763b9ada46d639da9722))
+* **deps:** bump actions/download-artifact from 4.3.0 to 8.0.1 ([#68](https://github.com/jmagar/aurora/issues/68)) ([4a25919](https://github.com/jmagar/aurora/commit/4a25919c4d09b0be336fbbb5c9ef9c0a69b53440))
+* **deps:** bump actions/upload-artifact from 4.6.2 to 7.0.1 ([#64](https://github.com/jmagar/aurora/issues/64)) ([4bdeb97](https://github.com/jmagar/aurora/commit/4bdeb9771525699855659e3a3963e8912dacc628))
+* **deps:** bump google/osv-scanner-action/osv-scanner-action ([#66](https://github.com/jmagar/aurora/issues/66)) ([163bd4e](https://github.com/jmagar/aurora/commit/163bd4e1d78474a01c5ba36f1e7329f4326b4926))
+* **deps:** bump gradle/actions/wrapper-validation ([#67](https://github.com/jmagar/aurora/issues/67)) ([fd0fa68](https://github.com/jmagar/aurora/commit/fd0fa68ffd872206a08008c831cec7b52ffb042f))
+* take the minor group rebased, minus openwiki; ungroup openwiki ([#62](https://github.com/jmagar/aurora/issues/62)) ([7c8d11d](https://github.com/jmagar/aurora/commit/7c8d11dd0e2ca6793f5c15fa5496350ac0e42980))
+
 ## [0.4.0](https://github.com/jmagar/aurora/compare/v0.3.1...v0.4.0) (2026-07-17)
 
 
