@@ -14,11 +14,13 @@ This repository now has a minimal OpenWiki reference for maintaining `aurora` do
 
 ## Current maintenance state
 
-- No prior `.last-update.json` was present before this run.
-- This run added/updated:
+- `.last-update.json` is present and currently records the last successful OpenWiki update at `2026-07-16T08:51:06.974Z` (`4d8fbe390f847e43141a9e2dac928dca7dd6bf06`).
+- This maintenance refresh tracks these source changes:
+  - `.github/workflows/openwiki-update.yml` (single-job OpenRouter-based automation)
+  - `CLAUDE.md` (new repository OpenWiki handoff note)
+- Corresponding wiki pages refreshed:
   - `/openwiki/quickstart.md`
   - `/openwiki/operations/openwiki-update.md`
-  - `/openwiki/.last-update.json`
 
 ## How to add to this wiki cleanly
 
