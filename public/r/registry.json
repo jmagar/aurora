@@ -6267,7 +6267,8 @@
         "@aurora/aurora-tokens",
         "@aurora/aurora-components",
         "@aurora/aurora-button",
-        "@aurora/aurora-clipboard"
+        "@aurora/aurora-clipboard",
+        "@aurora/aurora-safe-url"
       ],
       "files": [
         {
@@ -6290,7 +6291,7 @@
         "sourcePath": "registry/aurora/blocks/ai/elements/response.tsx",
         "installTarget": "@components/aurora/ai/response.tsx"
       },
-      "docs": "Aurora block that installs Aurora AI Response.\n\nInstall `aurora-tokens`, `aurora-components`, `aurora-button`, and `aurora-clipboard` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/response.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`, `aurora-button`, `aurora-clipboard`."
+      "docs": "Aurora block that installs Aurora AI Response.\n\nInstall `aurora-tokens`, `aurora-components`, `aurora-button`, `aurora-clipboard`, and `aurora-safe-url` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/response.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-components`, `aurora-button`, `aurora-clipboard`, `aurora-safe-url`."
     },
     {
       "name": "aurora-ai-source",

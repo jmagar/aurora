@@ -16,6 +16,8 @@ test("all published URL-bearing surfaces use the shared policy", async () => {
   for (const path of [
     "registry/aurora/ui/chat-message.tsx",
     "registry/aurora/blocks/ai/elements/inline-citation.tsx",
+    "registry/aurora/blocks/ai/elements/core.tsx",
+    "registry/aurora/blocks/ai/elements/response.tsx",
     "registry/aurora/blocks/ai/elements/source.tsx",
     "registry/aurora/blocks/ai/elements/sandbox.tsx",
     "registry/aurora/blocks/workspace/web-preview/web-preview.tsx",

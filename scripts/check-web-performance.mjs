@@ -3,7 +3,17 @@ import { readdirSync, statSync } from "node:fs"
 import { join } from "node:path"
 
 const chunkDir = join(process.cwd(), ".next/static/chunks")
-const files = readdirSync(chunkDir).filter((name) => name.endsWith(".js"))
+// PATTERN: App Router emits route chunks below nested app/ directories.
+function listJavaScriptFiles(directory, prefix = "") {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const relativePath = join(prefix, entry.name)
+    const absolutePath = join(directory, entry.name)
+    if (entry.isDirectory()) return listJavaScriptFiles(absolutePath, relativePath)
+    return entry.isFile() && entry.name.endsWith(".js") ? [relativePath] : []
+  })
+}
+
+const files = listJavaScriptFiles(chunkDir)
 const sizes = files.map((name) => ({ name, bytes: statSync(join(chunkDir, name)).size }))
 const largest = sizes.sort((a, b) => b.bytes - a.bytes)[0]
 const total = sizes.reduce((sum, item) => sum + item.bytes, 0)

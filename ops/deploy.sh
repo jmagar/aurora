@@ -20,6 +20,13 @@ set +a
 : "${AURORA_EXPECTED_SHA:?AURORA_EXPECTED_SHA is required}"
 : "${AURORA_BIND_ADDRESS:?AURORA_BIND_ADDRESS is required}"
 : "${AURORA_TENANT_URL:?AURORA_TENANT_URL is required}"
+# LEARNED: Compose accepts wildcard binds that bypass the intended SWAG-only path.
+case "$AURORA_BIND_ADDRESS" in
+  0.0.0.0|::|"[::]")
+    echo "AURORA_BIND_ADDRESS must be a specific host address, not a wildcard" >&2
+    exit 1
+    ;;
+esac
 [[ "$AURORA_IMAGE_REF" =~ @sha256:[0-9a-f]{64}$ ]] || {
   echo "AURORA_IMAGE_REF must be an immutable sha256 digest" >&2
   exit 1

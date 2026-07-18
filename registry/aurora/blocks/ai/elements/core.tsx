@@ -34,6 +34,7 @@ import { Avatar as AuroraAvatar } from "@/registry/aurora/ui/avatar"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
 import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
+import { safeHttpUrl } from "@/registry/aurora/lib/safe-url"
 import { Separator } from "@/registry/aurora/ui/separator"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/registry/aurora/ui/select"
 import { Spinner } from "@/registry/aurora/ui/spinner"
@@ -573,7 +574,8 @@ const MessageContent = ({ ref, className, style, tone = "assistant", ...props }:
   )
 MessageContent.displayName = "MessageContent"
 
-const InlineCitation = ({ ref, className, index, style, children, ...props }: InlineCitationProps & { ref?: React.Ref<HTMLAnchorElement> }) => (
+// LEARNED: umbrella registry exports need the same URL boundary as standalone blocks.
+const InlineCitation = ({ ref, className, index, style, children, href, ...props }: InlineCitationProps & { ref?: React.Ref<HTMLAnchorElement> }) => (
     <a
       ref={ref}
       className={cn(
@@ -593,6 +595,7 @@ const InlineCitation = ({ ref, className, index, style, children, ...props }: In
         ...style,
       }}
       {...props}
+      href={safeHttpUrl(href)}
     >
       {children ?? index}
     </a>
