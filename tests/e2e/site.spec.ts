@@ -75,7 +75,10 @@ test("tenant host routing and CSP contracts are enforced", async ({ request }) =
   const csp = tenant.headers()["content-security-policy"]
   expect(csp).toContain("script-src 'self'")
   expect(csp).toContain("form-action 'self'")
-  expect(csp).toContain("upgrade-insecure-requests")
+  // Loopback verification remains HTTP; WebKit otherwise upgrades every local
+  // Next asset to HTTPS. The production-policy unit contract covers the public
+  // host requirement for upgrade-insecure-requests.
+  expect(csp).not.toContain("upgrade-insecure-requests")
 })
 
 test("missing gallery routes fail without a runtime crash", async ({ page }) => {

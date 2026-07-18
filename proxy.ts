@@ -20,7 +20,15 @@ export function buildContentSecurityPolicy(nonce: string, development = false) {
 
 function securityContext(request: NextRequest) {
   const nonce = crypto.randomUUID().replaceAll("-", "")
-  const csp = buildContentSecurityPolicy(nonce, process.env.NODE_ENV === "development")
+  const hostname = request.nextUrl.hostname
+  const isLoopback = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]"
+  // WebKit applies upgrade-insecure-requests to loopback origins, which turns
+  // local HTTP assets into invalid HTTPS requests. Public production hosts keep
+  // the directive; local development and browser verification do not need it.
+  const csp = buildContentSecurityPolicy(
+    nonce,
+    process.env.NODE_ENV === "development" || isLoopback
+  )
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set("x-nonce", nonce)
   // Next.js reads the request CSP to apply the nonce to framework and page scripts.
