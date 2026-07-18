@@ -616,7 +616,7 @@ Sources.displayName = "Sources"
 const Source = ({ ref, className, source, style, ...props }: SourceProps & { ref?: React.Ref<HTMLAnchorElement> }) => (
   <a
     ref={ref}
-    href={source.href ?? "#"}
+    href={safeHttpUrl(source.href)}
     className={cn(
       "grid gap-1 rounded-[7px] border px-3 py-2 no-underline transition-colors hover:bg-[var(--aurora-hover-bg)]",
       "outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--aurora-focus-ring)] focus-visible:ring-offset-0",
