@@ -4,10 +4,20 @@ set -euo pipefail
 container="${AURORA_CONTAINER:-aurora}"
 alert_url="${AURORA_ALERT_WEBHOOK_URL:-}"
 
+send_alert() {
+  local message="$1"
+  echo "$message" >&2
+  if [[ -n "$alert_url" ]]; then
+    jq -n --arg message "$message" '{message: $message, service: "aurora"}' \
+      | curl --fail --silent --show-error -H 'Content-Type: application/json' --data-binary @- "$alert_url"
+  fi
+}
+
 state="$(docker inspect --format '{{.State.Status}} {{.State.Health.Status}} {{.State.OOMKilled}} {{.RestartCount}}' "$container" 2>/dev/null || true)"
 docker_root="$(docker info --format '{{.DockerRootDir}}' 2>/dev/null || true)"
 if [[ -z "$docker_root" || ! -d "$docker_root" ]]; then
-  echo "Aurora monitor failure: Docker root directory is unavailable: ${docker_root:-unknown}" >&2
+  # LEARNED: monitor failures need the same out-of-band alert path as service failures.
+  send_alert "Aurora monitor failure: Docker root directory is unavailable: ${docker_root:-unknown}"
   exit 1
 fi
 disk_percent="$(df --output=pcent -- "$docker_root" 2>/dev/null | tail -1 | tr -dc '0-9' || true)"
@@ -25,11 +35,7 @@ else
 fi
 
 if [[ -n "$message" ]]; then
-  echo "$message" >&2
-  if [[ -n "$alert_url" ]]; then
-    jq -n --arg message "$message" '{message: $message, service: "aurora"}' \
-      | curl --fail --silent --show-error -H 'Content-Type: application/json' --data-binary @- "$alert_url"
-  fi
+  send_alert "$message"
   exit 1
 fi
 
