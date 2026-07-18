@@ -54,7 +54,10 @@ if grep -Eqi '^content-security-policy:.*script-src[^;]*unsafe-inline' "$headers
   exit 1
 fi
 grep -Eqi "^content-security-policy:.*form-action[[:space:]]+'self'" "$headers"
-grep -Eqi '^content-security-policy:.*upgrade-insecure-requests' "$headers"
+if grep -Eqi '^content-security-policy:.*upgrade-insecure-requests' "$headers"; then
+  echo "loopback smoke CSP must not upgrade HTTP assets to HTTPS" >&2
+  exit 1
+fi
 grep -Eqi '^x-powered-by:' "$headers" && { echo "X-Powered-By must be disabled" >&2; exit 1; }
 grep -Eqi "^x-aurora-revision:[[:space:]]*$expected_sha" "$headers"
 
