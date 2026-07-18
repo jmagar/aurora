@@ -49,6 +49,14 @@ breaking changes and will be listed here.
   v0.3.1 should rebuild vendored components, review changed component props,
   regenerate Android tokens, and verify both color modes before release.
 
+## [0.4.3](https://github.com/jmagar/aurora/compare/v0.4.2...v0.4.3) (2026-07-18)
+
+
+### Fixed
+
+* **ci:** build the native SQLite binding OpenWiki needs ([#72](https://github.com/jmagar/aurora/issues/72)) ([7dd260d](https://github.com/jmagar/aurora/commit/7dd260dc887bf43165ee00a9f6a7a373759cc745))
+* **synthetics:** pass Cloudflare bot challenge on aurora.tootie.tv ([#75](https://github.com/jmagar/aurora/issues/75)) ([ac39604](https://github.com/jmagar/aurora/commit/ac396049ebcc91386e462cfa4ed8db686cedfcd6))
+
 ## [0.4.2](https://github.com/jmagar/aurora/compare/v0.4.1...v0.4.2) (2026-07-17)
 
 
