@@ -85,18 +85,33 @@ test("missing gallery routes fail without a runtime crash", async ({ page }) => 
 })
 
 test("components initial load stays within transfer and responsiveness budgets", async ({ page }) => {
-  const responses: Array<{ url: string; bytes: number }> = []
-  page.on("response", async (response) => {
-    if (!response.url().includes("/_next/static/")) return
-    const length = Number(response.headers()["content-length"] ?? 0)
-    responses.push({ url: response.url(), bytes: length })
-  })
   await page.goto("/components", { waitUntil: "networkidle" })
-  const staticRequests = responses.length
-  const transferred = responses.reduce((sum, response) => sum + response.bytes, 0)
+  const resources = await page.evaluate(() => performance.getEntriesByType("resource")
+    .filter((entry) => entry.name.includes("/_next/static/"))
+    .map((entry) => ({ name: entry.name, transferSize: (entry as PerformanceResourceTiming).transferSize })))
+  const staticRequests = resources.length
+  const transferred = resources.reduce((sum, resource) => sum + resource.transferSize, 0)
+  expect(transferred).toBeGreaterThan(0)
   expect(staticRequests).toBeLessThanOrEqual(80)
   expect(transferred).toBeLessThanOrEqual(2_500_000)
-  const started = Date.now()
-  await page.getByRole("button", { name: /All/i }).first().click()
-  expect(Date.now() - started).toBeLessThan(1_000)
+  const responseMs = await page.evaluate(() => new Promise<number>((resolve, reject) => {
+    const count = document.querySelector("[data-catalog-result-count]")
+    const button = [...document.querySelectorAll<HTMLButtonElement>("button")]
+      .find((candidate) => candidate.textContent?.includes("Navigation"))
+    if (!count || !button) return reject(new Error("Catalog response controls are missing"))
+    const initial = count.textContent
+    const started = performance.now()
+    const observer = new MutationObserver(() => {
+      if (count.textContent === initial) return
+      observer.disconnect()
+      resolve(performance.now() - started)
+    })
+    observer.observe(count, { childList: true, subtree: true, characterData: true })
+    button.click()
+    window.setTimeout(() => {
+      observer.disconnect()
+      reject(new Error("Catalog did not commit its filtered result state"))
+    }, 1_000)
+  }))
+  expect(responseMs).toBeLessThan(1_000)
 })

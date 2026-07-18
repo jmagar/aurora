@@ -48,15 +48,18 @@ roborazzi {
 // Regeneration is an explicit repository workflow; this verification task catches drift.
 val checkAuroraTokenDrift by tasks.registering(Exec::class) {
     val sourceDir = projectDir.resolve("src/main/kotlin/tv/tootie/aurora/tokens")
+    val jsonDir = rootDir.resolve("tokens")
     workingDir = rootDir.parentFile
     commandLine(
         "bash", "-c",
-        "out=\$(mktemp -d); trap 'rm -rf \"\$out\"' EXIT; " +
-            "AURORA_TOKENS_OUT=\"\$out\" pnpm run tokens:generate >/dev/null; " +
-            "diff -u '${sourceDir.resolve("AuroraColors.kt")}' \"\$out/AuroraColors.kt\"; " +
-            "diff -u '${sourceDir.resolve("AuroraLightColors.kt")}' \"\$out/AuroraLightColors.kt\"",
+        "out=\$(mktemp -d); trap 'rm -rf \"\$out\"' EXIT; mkdir -p \"\$out/json\" \"\$out/kotlin\"; " +
+            "AURORA_TOKENS_JSON_OUT=\"\$out/json\" AURORA_TOKENS_OUT=\"\$out/kotlin\" pnpm run tokens:generate >/dev/null; " +
+            "diff -u '${jsonDir.resolve("aurora.tokens.json")}' \"\$out/json/aurora.tokens.json\"; " +
+            "diff -u '${jsonDir.resolve("EXCLUSIONS.json")}' \"\$out/json/EXCLUSIONS.json\"; " +
+            "diff -u '${sourceDir.resolve("AuroraColors.kt")}' \"\$out/kotlin/AuroraColors.kt\"; " +
+            "diff -u '${sourceDir.resolve("AuroraLightColors.kt")}' \"\$out/kotlin/AuroraLightColors.kt\"",
     )
-    description = "Verify checked-in Android Kotlin tokens match canonical CSS"
+    description = "Verify checked-in Android JSON and Kotlin tokens match canonical CSS"
 }
 
 dependencies {

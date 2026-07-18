@@ -38,12 +38,12 @@ import tv.tootie.aurora.app.codex.PendingAttachment
 import tv.tootie.aurora.app.codex.SelectedItem
 import tv.tootie.aurora.components.AuroraAttachment
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Assistant
-import androidx.compose.material.icons.filled.AttachFile
-import androidx.compose.material.icons.filled.AutoAwesome
+import tv.tootie.aurora.icons.filled.Assistant
+import tv.tootie.aurora.icons.filled.AttachFile
+import tv.tootie.aurora.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Security
+import tv.tootie.aurora.icons.filled.Security
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.background
 import androidx.compose.material3.AssistChip
@@ -88,7 +88,7 @@ import tv.tootie.aurora.components.AuroraMessageData
 import tv.tootie.aurora.components.AuroraMessageRole
 import tv.tootie.aurora.components.AuroraPromptInput
 import tv.tootie.aurora.components.AuroraThinking
-import androidx.compose.material.icons.filled.FolderOpen
+import tv.tootie.aurora.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField

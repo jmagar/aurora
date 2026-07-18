@@ -31,4 +31,3 @@ if PATH="$tmp/bin:$PATH" MOCK_DOCKER_ROOT="$tmp/docker-root" MOCK_DISK=90 "$root
   exit 1
 fi
 echo "Aurora monitor health and resource thresholds passed."
-

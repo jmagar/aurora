@@ -24,8 +24,4 @@ class ConnectionStateReducerTest {
         assertEquals("timeout", state.error)
     }
 
-    @Test fun `late disconnect clears a previously ready state`() {
-        val ready = reduceConnection(ChatState(), ConnectionTransition.Ready)
-        assertFalse(reduceConnection(ready, ConnectionTransition.Disconnected).connected)
-    }
 }

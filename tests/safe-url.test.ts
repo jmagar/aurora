@@ -23,3 +23,12 @@ test("all published URL-bearing surfaces use the shared policy", async () => {
     assert.match(await readFile(path, "utf8"), /safeHttpUrl/)
   }
 })
+
+test("Source cannot apply an unsanitized href after its shared URL policy", async () => {
+  const { readFile } = await import("node:fs/promises")
+  const source = await readFile("registry/aurora/blocks/ai/elements/source.tsx", "utf8")
+  assert.match(source, /style, href, target/)
+  assert.match(source, /safeHttpUrl\(href \?\? source\.href\)/)
+  assert.match(source, /\.\.\.props[\s\S]*href=\{safeHref\}/)
+  assert.doesNotMatch(source, /href=\{safeHref\}[\s\S]*\.\.\.props/)
+})

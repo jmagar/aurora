@@ -45,14 +45,15 @@ function hostname(href?: string): string | null {
 // external-link arrow). Hover lifts the surface and border.
 // ---------------------------------------------------------------------------
 
-const Source = ({ ref, className, source, index, style, target, rel, tabIndex, ...props }: SourceProps & { ref?: React.Ref<HTMLAnchorElement> }) => {
-    const safeHref = safeHttpUrl(source.href)
+const Source = ({ ref, className, source, index, style, href, target, rel, tabIndex, ...props }: SourceProps & { ref?: React.Ref<HTMLAnchorElement> }) => {
+    const safeHref = safeHttpUrl(href ?? source.href)
     const host = hostname(safeHref)
     const isLinked = Boolean(safeHref)
 
     return (
       <a
         ref={ref}
+        {...props}
         href={safeHref}
         target={target ?? (isLinked ? "_blank" : undefined)}
         rel={rel ?? (isLinked ? "noreferrer noopener" : undefined)}
@@ -75,7 +76,6 @@ const Source = ({ ref, className, source, index, style, target, rel, tabIndex, .
           boxShadow: "var(--aurora-highlight-medium)",
           ...style,
         }}
-        {...props}
       >
         {index != null ? (
           <span

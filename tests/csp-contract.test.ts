@@ -4,13 +4,16 @@ import test from "node:test"
 
 const proxy = readFileSync(new URL("../proxy.ts", import.meta.url), "utf8")
 
-test("production CSP restricts forms and upgrades insecure requests", () => {
+test("production CSP uses a per-request strict-dynamic nonce", () => {
   assert.match(proxy, /form-action 'self'/)
   assert.match(proxy, /upgrade-insecure-requests/)
-  assert.match(proxy, /script-src 'self'/)
+  assert.match(proxy, /script-src 'self' 'nonce-\$\{nonce\}' 'strict-dynamic'/)
+  assert.match(proxy, /crypto\.randomUUID\(\)/)
+  assert.match(proxy, /requestHeaders\.set\("x-nonce", nonce\)/)
+  assert.doesNotMatch(proxy, /script-src[^`\n]*'unsafe-inline'/)
 })
 
-test("root layout remains statically renderable", () => {
+test("root layout remains request-rendered for nonce propagation", () => {
   const layout = readFileSync(new URL("../app/layout.tsx", import.meta.url), "utf8")
-  assert.doesNotMatch(layout, /force-dynamic/)
+  assert.match(layout, /force-dynamic/)
 })

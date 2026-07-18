@@ -30,7 +30,7 @@ const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
 
 const CSS_SOURCE    = resolve(ROOT, 'registry/aurora/styles/aurora.css');
-const OUTPUT_DIR    = resolve(ROOT, 'android/tokens');
+const OUTPUT_DIR    = process.env.AURORA_TOKENS_JSON_OUT ?? resolve(ROOT, 'android/tokens');
 const TOKENS_PATH   = resolve(OUTPUT_DIR, 'aurora.tokens.json');
 const EXCLUSIONS_PATH = resolve(OUTPUT_DIR, 'EXCLUSIONS.json');
 

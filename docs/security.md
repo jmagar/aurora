@@ -8,8 +8,8 @@ values are recorded here.
 ## Web app / registry site
 
 The Aurora site is a **public shadcn-compatible registry and gallery**. Its
-content is generated from repository sources and public pages are statically
-renderable. It serves component JSON payloads and documentation. There
+content is generated from repository sources, but HTML is request-rendered to
+support CSP nonces. It serves component JSON payloads and documentation. There
 is **no server-side authentication and no user data** — it stores no credentials,
 sessions, or personally identifiable information. The same applies to the
 co-hosted registry/marketplace pages.
@@ -25,7 +25,7 @@ routes** (`source: "/(.*)"`):
 | `X-Frame-Options` | `SAMEORIGIN` |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` |
 | `Strict-Transport-Security` | `max-age=63072000; includeSubDomains` |
-| `Content-Security-Policy` | same-origin script policy; see below |
+| `Content-Security-Policy` | per-request nonce policy; see below |
 | `X-Aurora-Revision` | full CI-tested source SHA in published images |
 
 The Content-Security-Policy is:
@@ -35,7 +35,7 @@ default-src 'self';
 img-src 'self' data: https:;
 style-src 'self' 'unsafe-inline';
 font-src 'self' data:;
-script-src 'self' 'unsafe-inline';
+script-src 'self' 'nonce-<per-request-value>' 'strict-dynamic';
 connect-src 'self';
 form-action 'self';
 frame-ancestors 'self';
@@ -44,12 +44,12 @@ object-src 'none';
 upgrade-insecure-requests
 ```
 
-`proxy.ts` sets the policy on request and response. External scripts must be
-served by the same origin. Next.js static App Router output currently emits
-inline bootstrap/RSC scripts, so `unsafe-inline` is an explicit compatibility
-relaxation; development additionally uses `unsafe-eval`. This tradeoff lets
-public HTML remain statically renderable instead of requiring request-wide
-nonce rendering.
+`proxy.ts` generates a cryptographically random nonce for every request, passes
+the CSP and `x-nonce` to Next.js so framework hydration scripts receive it, and
+sets the same policy on the response. Production rejects script
+`unsafe-inline`; development alone adds `unsafe-eval` for the Next debug
+runtime. `app/layout.tsx` forces request rendering because a statically rendered
+page cannot receive a per-request nonce.
 
 ### URL-bearing component trust contract
 
@@ -63,8 +63,6 @@ still treat labels and descriptions as untrusted display text.
 
 - `style-src 'unsafe-inline'` is required because Aurora uses inline
   `style={}` attributes extensively across components.
-- `script-src 'unsafe-inline'` is required by Next.js static bootstrap scripts;
-  no third-party script origins are allowed.
 The existing root-route `Vary: Accept, User-Agent` header (used by the shadcn
 content-negotiation rewrite) is preserved alongside these headers.
 

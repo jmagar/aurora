@@ -14,9 +14,9 @@ import { dirname, resolve } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, '..');
 
-const raw = JSON.parse(
-  readFileSync(resolve(projectRoot, 'android/tokens/aurora.tokens.json'), 'utf8'),
-);
+const tokenJsonDir =
+  process.env.AURORA_TOKENS_JSON_OUT ?? resolve(projectRoot, 'android/tokens');
+const raw = JSON.parse(readFileSync(resolve(tokenJsonDir, 'aurora.tokens.json'), 'utf8'));
 
 // When invoked from Gradle, AURORA_TOKENS_OUT is set to the absolute path of the
 // package directory inside the build directory so generated files land under

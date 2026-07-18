@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Speed
+import tv.tootie.aurora.icons.filled.AutoAwesome
+import tv.tootie.aurora.icons.filled.ExpandMore
+import tv.tootie.aurora.icons.filled.Speed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

@@ -81,6 +81,8 @@ jobs:
         env:
           AURORA_BUILD_SHA: ${{ github.sha }}
         run: pnpm run build
+      - name: Enforce production client JavaScript budgets
+        run: pnpm run performance:check
       - name: Install Playwright Chromium, Firefox, and WebKit
         run: pnpm exec playwright install --with-deps chromium firefox webkit
       - name: Cross-browser, mobile, and strict Storybook accessibility contracts
@@ -130,6 +132,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Gate all app/library variants, release lint/package, wrapper, and Roborazzi goldens
         run: ./gradlew androidCheck --no-daemon
+        working-directory: android
+      - name: Run Android managed-device instrumentation smoke
+        run: |
+          if [[ -e /dev/kvm ]]; then sudo chmod 666 /dev/kvm; fi
+          ./gradlew androidManagedDeviceCheck --no-daemon
         working-directory: android
       - name: Smoke external composite-build consumption
         run: ops/smoke-android-composite.sh

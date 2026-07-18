@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Manrope, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
+// A request nonce cannot be applied to build-time HTML. Keep every route on the
+// request path so Next.js can copy proxy.ts's nonce onto framework/hydration
+// scripts. Removing this requires replacing the CSP with tested build-time hashes.
+export const dynamic = "force-dynamic";
+
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],

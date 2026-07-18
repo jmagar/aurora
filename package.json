@@ -15,7 +15,7 @@
     "audit:composition": "node scripts/audit-composition.mjs",
     "audit:standalone": "node scripts/audit-standalone.mjs",
     "test:unit": "node --test tests/*.test.ts",
-    "test:coverage": "c8 --all --include='lib/**/*.{ts,tsx}' --include='scripts/*.mjs' --exclude='lib/*.json' --exclude='lib/preview-poster.tsx' --reporter=text --reporter=json-summary --check-coverage --lines=34 --functions=42 --branches=70 --statements=34 node --test tests/*.test.ts",
+    "test:coverage": "c8 --all --include='app/**/*.{ts,tsx}' --include='components/**/*.{ts,tsx}' --include='lib/**/*.{ts,tsx}' --include='registry/aurora/**/*.{ts,tsx}' --include='scripts/*.mjs' --include='proxy.ts' --exclude='**/*.stories.tsx' --exclude='app/gallery/demos/**' --exclude='app/gallery/entries/**' --exclude='lib/*.json' --exclude='lib/preview-poster.tsx' --exclude='registry/aurora/examples/**' --reporter=text --reporter=json-summary --check-coverage --lines=3 --functions=5 --branches=12 --statements=3 node --test tests/*.test.ts",
     "test:e2e": "playwright test",
     "performance:check": "node scripts/check-web-performance.mjs",
     "test:storybook": "playwright test --project=storybook-chromium",

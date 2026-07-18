@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import ts from "typescript"
@@ -56,9 +56,13 @@ const manifest = Object.fromEntries([...entries].sort(([a], [b]) => a.localeComp
 const manifestText = `${JSON.stringify(manifest, null, 2)}\n`
 if (process.argv.includes("--check")) {
   const currentManifest = readFileSync(resolve(root, "lib/gallery-manifest.json"), "utf8")
-  const currentFiles = existsSync(outputDir) ? new Set(Object.keys(manifest).filter((slug) => existsSync(resolve(outputDir, `${slug}.tsx`)))) : new Set()
+  const expectedFiles = readdirSync(tempDir).sort()
+  const currentFiles = existsSync(outputDir) ? readdirSync(outputDir).sort() : []
+  const filesMatch = expectedFiles.length === currentFiles.length && expectedFiles.every((file, index) => (
+    file === currentFiles[index] && readFileSync(resolve(tempDir, file), "utf8") === readFileSync(resolve(outputDir, file), "utf8")
+  ))
   rmSync(tempDir, { recursive: true, force: true })
-  if (currentManifest !== manifestText || currentFiles.size !== entries.size) throw new Error("Gallery generated artifacts are stale; run pnpm gallery:generate")
+  if (currentManifest !== manifestText || !filesMatch) throw new Error("Gallery generated artifacts are stale; run pnpm gallery:generate")
 } else {
   rmSync(outputDir, { recursive: true, force: true })
   renameSync(tempDir, outputDir)
