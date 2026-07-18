@@ -26,5 +26,11 @@ const output = {
   groups,
   items,
 }
-writeFileSync(new URL("../lib/client-catalog.json", import.meta.url), `${JSON.stringify(output, null, 2)}\n`)
+const outputUrl = new URL("../lib/client-catalog.json", import.meta.url)
+const outputText = `${JSON.stringify(output, null, 2)}\n`
+if (process.argv.includes("--check")) {
+  if (readFileSync(outputUrl, "utf8") !== outputText) throw new Error("Client catalog is stale; run pnpm catalog:generate")
+} else {
+  writeFileSync(outputUrl, outputText)
+}
 console.log(`Generated compact client catalog: ${items.length} entries (${Buffer.byteLength(JSON.stringify(output))} bytes).`)

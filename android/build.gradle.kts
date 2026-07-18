@@ -25,10 +25,12 @@ tasks.register("androidCheck") {
         ":app:lintDebug",
         ":app:lintRelease",
         ":app:assembleRelease",
+        ":app:pixel2Api35DebugAndroidTest",
         ":aurora:testDebugUnitTest",
         ":aurora:testReleaseUnitTest",
         ":aurora:lintDebug",
         ":aurora:lintRelease",
         ":aurora:verifyRoborazziDebug",
+        ":aurora:checkAuroraTokenDrift",
     )
 }

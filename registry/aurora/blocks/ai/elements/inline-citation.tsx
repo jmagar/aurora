@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { safeHttpUrl } from "@/registry/aurora/lib/safe-url"
 
 export interface InlineCitationProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -40,7 +41,7 @@ const InlineCitation = (
     }: InlineCitationProps & { ref?: React.Ref<HTMLAnchorElement> }
   ) => {
     const [open, setOpen] = React.useState(false)
-    const resolvedHref = href ?? url
+    const resolvedHref = safeHttpUrl(href ?? url)
     const hasPreview = Boolean(title || description || url)
     const previewId = React.useId()
     const resolvedTarget = target ?? (resolvedHref ? "_blank" : undefined)

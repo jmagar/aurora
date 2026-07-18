@@ -10,7 +10,8 @@ if [[ ! -f "$env_file" ]]; then
 fi
 
 set -a
-# shellcheck disable=SC1090 -- operator-selected non-secret deployment topology.
+# Operator-selected non-secret deployment topology.
+# shellcheck disable=SC1090
 source "$env_file"
 set +a
 
@@ -20,6 +21,8 @@ set +a
 mkdir -p "$output_dir"
 for template in ops/swag/*.conf.template; do
   destination="$output_dir/$(basename "${template%.template}")"
+  # envsubst receives the literal allowlist; the shell must not expand it.
+  # shellcheck disable=SC2016
   envsubst '${AURORA_UPSTREAM_HOST} ${AURORA_PUBLIC_PORT}' < "$template" > "$destination"
 done
 

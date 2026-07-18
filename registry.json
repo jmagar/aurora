@@ -208,6 +208,32 @@
       }
     },
     {
+      "name": "aurora-safe-url",
+      "type": "registry:lib",
+      "title": "Aurora Safe URL",
+      "description": "Shared HTTP(S)-only URL policy for link-bearing Aurora components.",
+      "files": [
+        {
+          "path": "registry/aurora/lib/safe-url.ts",
+          "type": "registry:lib",
+          "target": "@lib/aurora/safe-url.ts"
+        }
+      ],
+      "author": "jmagar <https://github.com/jmagar>",
+      "dependencies": [],
+      "registryDependencies": [],
+      "categories": ["aurora", "lib", "security"],
+      "meta": {
+        "namespace": "@aurora",
+        "style": "aurora",
+        "family": "lib",
+        "requiresTokens": false,
+        "sourcePath": "registry/aurora/lib/safe-url.ts",
+        "installTarget": "@lib/aurora/safe-url.ts"
+      },
+      "docs": "Shared URL sanitizer. Accepts absolute HTTP and HTTPS URLs and rejects all other schemes and malformed values.\n\nRegistry dependencies: none."
+    },
+    {
       "name": "aurora-components",
       "type": "registry:style",
       "title": "Aurora Component Styles",
@@ -2203,7 +2229,8 @@
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-safe-url"
       ],
       "files": [
         {
@@ -2227,7 +2254,7 @@
         "installTarget": "@components/aurora/web-preview.tsx",
         "taxonomy": "workspace"
       },
-      "docs": "Aurora block that installs Aurora Web Preview.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/web-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
+      "docs": "Aurora block that installs Aurora Web Preview.\n\nInstall its declared dependencies through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/web-preview.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`, `aurora-safe-url`."
     },
     {
       "name": "aurora-login-block",
@@ -3181,7 +3208,8 @@
         "@aurora/aurora-separator",
         "@aurora/aurora-spinner",
         "@aurora/aurora-textarea",
-        "@aurora/aurora-clipboard"
+        "@aurora/aurora-clipboard",
+        "@aurora/aurora-safe-url"
       ],
       "files": [
         {
@@ -3235,7 +3263,7 @@
         "installTarget": "@components/aurora/ai/ai-elements.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora AI Elements installs with its declared Aurora registry dependencies.\n\nInstall `aurora-tokens`, `aurora-avatar`, `aurora-badge`, `aurora-button`, `aurora-select`, `aurora-separator`, `aurora-spinner`, `aurora-textarea`, and `aurora-clipboard` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/ai-elements.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-badge`, `aurora-button`, `aurora-select`, `aurora-separator`, `aurora-spinner`, `aurora-textarea`, `aurora-clipboard`."
+      "docs": "Aurora AI Elements installs with its declared Aurora registry dependencies.\n\nDefault install target: `@components/aurora/ai/ai-elements.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-avatar`, `aurora-badge`, `aurora-button`, `aurora-select`, `aurora-separator`, `aurora-spinner`, `aurora-textarea`, `aurora-clipboard`, `aurora-safe-url`."
     },
     {
       "name": "aurora-marketplace-block",
@@ -4189,7 +4217,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-ai-elements"
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-safe-url"
       ],
       "files": [
         {
@@ -4213,7 +4242,7 @@
         "installTarget": "@components/aurora/ai/inline-citation.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/inline-citation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that expects its declared dependencies to be installed first.\n\nDefault install target: `@components/aurora/ai/inline-citation.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-safe-url`."
     },
     {
       "name": "aurora-ai-message",
@@ -4450,7 +4479,8 @@
         "@aurora/aurora-tokens",
         "@aurora/aurora-ai-elements",
         "@aurora/aurora-badge",
-        "@aurora/aurora-button"
+        "@aurora/aurora-button",
+        "@aurora/aurora-ai-source"
       ],
       "files": [
         {
@@ -4474,7 +4504,7 @@
         "installTarget": "@components/aurora/ai/sources.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens`, `aurora-ai-elements`, `aurora-badge`, and `aurora-button` to be installed first.\n\nDefault install target: `@components/aurora/ai/sources.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-badge`, `aurora-button`."
+      "docs": "Aurora block that expects its declared dependencies to be installed first.\n\nDefault install target: `@components/aurora/ai/sources.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-badge`, `aurora-button`, `aurora-ai-source`."
     },
     {
       "name": "aurora-ai-suggestion",
@@ -4777,7 +4807,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-ai-elements"
+        "@aurora/aurora-ai-elements",
+        "@aurora/aurora-safe-url"
       ],
       "files": [
         {
@@ -4801,7 +4832,7 @@
         "installTarget": "@components/aurora/ai/sandbox.tsx",
         "taxonomy": "ai"
       },
-      "docs": "Aurora block that expects `aurora-tokens` to be installed first.\n\nDefault install target: `@components/aurora/ai/sandbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`."
+      "docs": "Aurora block that expects its declared dependencies to be installed first.\n\nDefault install target: `@components/aurora/ai/sandbox.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-ai-elements`, `aurora-safe-url`."
     },
     {
       "name": "aurora-ai-schema-display",
@@ -5472,7 +5503,8 @@
       "registryDependencies": [
         "@aurora/aurora-tokens",
         "@aurora/aurora-button",
-        "@aurora/aurora-components"
+        "@aurora/aurora-components",
+        "@aurora/aurora-safe-url"
       ],
       "files": [
         {
@@ -5495,7 +5527,7 @@
         "sourcePath": "registry/aurora/ui/chat-message.tsx",
         "installTarget": "@ui/aurora/chat-message.tsx"
       },
-      "docs": "Aurora ChatMessage is an Aurora UI component for Claude Design parity surfaces.\n\nInstall `aurora-tokens`, `aurora-button`, and `aurora-components` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@ui/aurora/chat-message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`."
+      "docs": "Aurora ChatMessage is an Aurora UI component for Claude Design parity surfaces.\n\nDefault install target: `@ui/aurora/chat-message.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-button`, `aurora-components`, `aurora-safe-url`."
     },
     {
       "name": "aurora-chat-sidebar",
@@ -6270,7 +6302,8 @@
       ],
       "registryDependencies": [
         "@aurora/aurora-tokens",
-        "@aurora/aurora-badge"
+        "@aurora/aurora-badge",
+        "@aurora/aurora-safe-url"
       ],
       "files": [
         {
@@ -6293,7 +6326,7 @@
         "sourcePath": "registry/aurora/blocks/ai/elements/source.tsx",
         "installTarget": "@components/aurora/ai/source.tsx"
       },
-      "docs": "Aurora block that installs Aurora AI Source.\n\nInstall `aurora-tokens` and `aurora-badge` first; the shadcn CLI resolves these automatically through the @aurora registry namespace.\n\nDefault install target: `@components/aurora/ai/source.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`."
+      "docs": "Aurora block that installs Aurora AI Source.\n\nDefault install target: `@components/aurora/ai/source.tsx`.\n\nRegistry dependencies: `aurora-tokens`, `aurora-badge`, `aurora-safe-url`."
     },
     {
       "name": "aurora-clipboard",

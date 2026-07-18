@@ -7,9 +7,6 @@ plugins {
     alias(libs.plugins.roborazzi)
 }
 
-// Token generation task — tracks the source files that produce tokens JSON before compileKotlin
-val generatedTokensDir = layout.buildDirectory.dir("generated/aurora-tokens/kotlin")
-
 android {
     namespace = "tv.tootie.aurora"
     compileSdk = 36
@@ -47,36 +44,20 @@ roborazzi {
     outputDir.set(file("src/test/snapshots/images"))
 }
 
-val generateAuroraTokens by tasks.registering(Exec::class) {
-    workingDir = rootDir.parentFile  // project root (where package.json lives)
-    commandLine("pnpm", "run", "tokens:generate")
-
-    // Resolve the Provider at execution time (not configuration time) so Gradle
-    // doesn't stringify the Provider object as the env-var value.
-    doFirst {
-        environment(
-            "AURORA_TOKENS_OUT",
-            generatedTokensDir.get().asFile.resolve("tv/tootie/aurora/tokens").absolutePath,
-        )
-    }
-
-    inputs.file(rootDir.parentFile.resolve("registry/aurora/styles/aurora.css"))
-    inputs.file(rootDir.parentFile.resolve("scripts/export-aurora-tokens.mjs"))
-    inputs.file(rootDir.parentFile.resolve("android/sd.config.mjs"))
-    inputs.file(rootDir.parentFile.resolve("package.json"))
-    inputs.file(rootDir.parentFile.resolve("pnpm-lock.yaml"))
-    outputs.file(rootDir.parentFile.resolve("android/tokens/aurora.tokens.json"))
-    outputs.file(rootDir.parentFile.resolve("android/tokens/EXCLUSIONS.json"))
-    outputs.dir(generatedTokensDir)
-
-    description = "Generate Android token JSON and Kotlin token files from Aurora CSS"
+// Compilation consumes checked-in Kotlin tokens and never requires Node/pnpm.
+// Regeneration is an explicit repository workflow; this verification task catches drift.
+val checkAuroraTokenDrift by tasks.registering(Exec::class) {
+    val sourceDir = projectDir.resolve("src/main/kotlin/tv/tootie/aurora/tokens")
+    workingDir = rootDir.parentFile
+    commandLine(
+        "bash", "-c",
+        "out=\$(mktemp -d); trap 'rm -rf \"\$out\"' EXIT; " +
+            "AURORA_TOKENS_OUT=\"\$out\" pnpm run tokens:generate >/dev/null; " +
+            "diff -u '${sourceDir.resolve("AuroraColors.kt")}' \"\$out/AuroraColors.kt\"; " +
+            "diff -u '${sourceDir.resolve("AuroraLightColors.kt")}' \"\$out/AuroraLightColors.kt\"",
+    )
+    description = "Verify checked-in Android Kotlin tokens match canonical CSS"
 }
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    dependsOn(generateAuroraTokens)
-}
-
-android.sourceSets["main"].kotlin.srcDir(generatedTokensDir)
 
 dependencies {
     val bom = platform(libs.compose.bom)
@@ -92,7 +73,9 @@ dependencies {
     api(libs.kotlinx.collections.immutable)
     implementation(libs.coil.compose)
     implementation(libs.androidx.webkit)
-    implementation(libs.compose.material.icons.extended)
+    // Aurora owns the icon surface for both the library and bundled app. Export one
+    // resolved artifact instead of declaring duplicate copies in both modules.
+    api(libs.compose.material.icons.core)
     testImplementation(libs.junit)
     // Compose UI testing on JVM via Robolectric (no emulator needed).
     // Keep the test activity manifest on every unit-test variant. Restricting this

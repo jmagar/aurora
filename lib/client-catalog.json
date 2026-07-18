@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "counts": {
-    "registryItems": 175,
+    "registryItems": 176,
     "catalogItems": 162,
     "groups": 15
   },
@@ -107,7 +107,7 @@
       "slug": "toggle-group",
       "label": "Toggle Group",
       "group": "Controls",
-      "description": "Grouped toggle container for segmented command choices.",
+      "description": "Single- or multi-select toggle cluster for segmented command choices.",
       "registry": "aurora-toggle-group",
       "installUrl": "https://aurora.tootie.tv/r/aurora-toggle-group.json"
     },
@@ -195,7 +195,7 @@
       "slug": "input-group",
       "label": "Input Group",
       "group": "Form Elements",
-      "description": "Grouped input shell with addons for protocol, units, and compact command prefixes.",
+      "description": "Grouped input shell with shared focus treatment, addons, and companion grouped input helpers.",
       "registry": "aurora-input-group",
       "installUrl": "https://aurora.tootie.tv/r/aurora-input-group.json"
     },
@@ -235,7 +235,7 @@
       "slug": "checkboxes",
       "label": "Checkbox & Radio",
       "group": "Form Elements",
-      "description": "Aurora-styled checkbox and radio group built on button[role=checkbox/radio] patterns. 16px control with accent-primary fill, animated check/dot, focus ring glow, and full keyboard support. Includes RadioGroup + RadioGroupItem exports.",
+      "description": "Aurora-styled native checkbox with mixed-state support, focus glow, and label-friendly semantics.",
       "registry": "aurora-checkbox",
       "installUrl": "https://aurora.tootie.tv/r/aurora-checkbox.json"
     },
@@ -243,7 +243,7 @@
       "slug": "radio-group",
       "label": "Radio Group",
       "group": "Form Elements",
-      "description": "Single-choice radio group extracted as an independently installable Aurora primitive.",
+      "description": "Single-choice native radio group with Aurora focus glow and label-friendly semantics.",
       "registry": "aurora-radio-group",
       "installUrl": "https://aurora.tootie.tv/r/aurora-radio-group.json"
     },
@@ -283,7 +283,7 @@
       "slug": "date-picker",
       "label": "Date Picker",
       "group": "Form Elements",
-      "description": "Native date input with Aurora label and calendar affordance.",
+      "description": "Aurora date trigger with an inline month picker popover and selected-day glow.",
       "registry": "aurora-date-picker",
       "installUrl": "https://aurora.tootie.tv/r/aurora-date-picker.json"
     },
@@ -451,7 +451,7 @@
       "slug": "filters",
       "label": "Filter Bars",
       "group": "Data",
-      "description": "Horizontal filter toolbar with search input, select dropdowns, and Aurora button actions.",
+      "description": "Horizontal filter toolbar with inline search, removable tags, and a clear-all action.",
       "registry": "aurora-filter-bar",
       "installUrl": "https://aurora.tootie.tv/r/aurora-filter-bar.json"
     },

@@ -6,7 +6,7 @@ services:
     pull_policy: always
     container_name: aurora
     ports:
-      - "${AURORA_PUBLIC_PORT:-50000}:3000"
+      - "${AURORA_BIND_ADDRESS:?AURORA_BIND_ADDRESS is required}:${AURORA_PUBLIC_PORT:-50000}:3000"
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: "1"

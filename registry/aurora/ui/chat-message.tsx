@@ -5,6 +5,7 @@ import { Copy, Link2, RotateCcw, Shield } from "lucide-react"
 
 import { Button } from "./button"
 import { cn } from "@/lib/utils"
+import { safeHttpUrl } from "@/registry/aurora/lib/safe-url"
 
 // Styles: registry/aurora/styles/aurora-components.css (@layer aurora-components).
 
@@ -93,11 +94,11 @@ function ChatMessage(
 
       {citations && citations.length > 0 ? (
         <nav className="aurora-chat-message__citations" aria-label="Citations">
-          {citations.map((citation, index) => (
+          {citations.map((citation, index) => safeHttpUrl(citation.href) ? (
             <a
               key={`${citation.href}-${index}`}
               className="aurora-chat-message__citation"
-              href={citation.href}
+              href={safeHttpUrl(citation.href)}
               style={{
                 fontFamily: "var(--aurora-font-sans)",
                 fontSize: "var(--aurora-type-label)",
@@ -113,6 +114,8 @@ function ChatMessage(
               />
               {citation.label}
             </a>
+          ) : (
+            <span key={`${citation.href}-${index}`} className="aurora-chat-message__citation" aria-disabled="true">{citation.label}</span>
           ))}
         </nav>
       ) : null}

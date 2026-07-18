@@ -26,7 +26,10 @@ breaking changes and will be listed here.
 
 ### Security and delivery
 
-- Added per-request nonce CSP propagation and removed `script-src 'unsafe-inline'`.
+- Switched the CSP to same-origin scripts plus the documented Next.js static
+  bootstrap relaxation so public pages remain prerenderable; forms are
+  restricted to self and production upgrades insecure requests.
+- Published URL-bearing components now reject non-HTTP(S) and malformed schemes.
 - Added short caching for mutable `/r/*.json` discovery URLs and documented
   commit-SHA registry URLs for reproducible installs.
 - Added exact-SHA image builds, SBOM/provenance attestations, vulnerability
@@ -39,6 +42,11 @@ breaking changes and will be listed here.
   Compose/SWAG topology.
 
 ### Registry and tokens
+
+- Consolidated the singular `Source` implementation and added deterministic
+  gallery/catalog generation plus registry dependency-graph validation.
+- Removed the deprecated clipboard `execCommand` fallback; unsupported Clipboard
+  API environments now expose the component's explicit error state.
 
 - Mutable registry URLs remain supported for interactive discovery and receive
   short revalidation caching. Production consumers should pin the immutable

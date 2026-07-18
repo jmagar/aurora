@@ -33,9 +33,14 @@ the image reference, source SHA, and SPDX SBOM together as run artifacts.
 
 ## Upgrade procedure
 
-1. Read the `Unreleased` and versioned migration notes in `CHANGELOG.md`.
+1. Read both root `CHANGELOG.md` (site, delivery, and repository changes) and
+   `registry/aurora/CHANGELOG.md` (consumer-visible component and token changes).
 2. Select and review a full Aurora commit.
 3. Install from the immutable raw GitHub URL.
 4. Review the vendored diff; do not overwrite downstream changes blindly.
 5. Run the consumer's type, build, accessibility, dark/light, and visual gates.
 6. Commit the Aurora SHA with the generated component changes.
+
+The registry changelog is authoritative for vendored API, dependency, token,
+and behavior changes. The root changelog is authoritative for hosting, build,
+CI, Android app, and operational changes; a release may require reading both.

@@ -1,27 +1,26 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-export function buildContentSecurityPolicy(nonce: string, development = false) {
+export function buildContentSecurityPolicy(development = false) {
   const developmentEval = development ? " 'unsafe-eval'" : ""
   return [
     "default-src 'self'",
     "img-src 'self' data: https:",
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' data:",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${developmentEval}`,
+    `script-src 'self' 'unsafe-inline'${developmentEval}`,
     "connect-src 'self'",
+    "form-action 'self'",
     "frame-ancestors 'self'",
     "base-uri 'self'",
     "object-src 'none'",
+    ...(development ? [] : ["upgrade-insecure-requests"]),
   ].join("; ")
 }
 
 function securityContext(request: NextRequest) {
-  const nonce = crypto.randomUUID().replaceAll("-", "")
-  const csp = buildContentSecurityPolicy(nonce, process.env.NODE_ENV === "development")
+  const csp = buildContentSecurityPolicy(process.env.NODE_ENV === "development")
   const requestHeaders = new Headers(request.headers)
-  requestHeaders.set("x-nonce", nonce)
-  // Next.js reads the request CSP to apply the nonce to framework and page scripts.
   requestHeaders.set("Content-Security-Policy", csp)
   return { csp, requestHeaders }
 }

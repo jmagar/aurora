@@ -5,22 +5,8 @@ import * as React from "react"
 export type ClipboardState = "idle" | "copied" | "error"
 
 async function writeClipboard(value: string) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(value)
-    return
-  }
-
-  const element = document.createElement("textarea")
-  element.value = value
-  element.setAttribute("readonly", "")
-  element.style.cssText = "position:fixed;opacity:0;pointer-events:none"
-  document.body.appendChild(element)
-  element.select()
-  try {
-    if (!document.execCommand("copy")) throw new Error("Copy command was rejected")
-  } finally {
-    element.remove()
-  }
+  if (!navigator.clipboard?.writeText) throw new Error("Clipboard API is unavailable")
+  await navigator.clipboard.writeText(value)
 }
 
 /** Clipboard state with explicit failure UI and unmount-safe timers. */

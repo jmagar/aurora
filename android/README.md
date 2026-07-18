@@ -32,8 +32,10 @@ Design tokens are defined in CSS (`registry/aurora/styles/aurora.css`) and expor
 pnpm run tokens:generate   # Generates dark and light Kotlin token objects
 ```
 
-Generated files: `AuroraColors.kt` (dark) and `AuroraLightColors.kt` (light) under
-`android/aurora/build/generated/aurora-tokens/kotlin/tv/tootie/aurora/tokens/`.
+Generated files are checked in as `AuroraColors.kt` and `AuroraLightColors.kt` under
+`android/aurora/src/main/kotlin/tv/tootie/aurora/tokens/`. Android compilation consumes
+these files directly and therefore does not require Node or pnpm. `androidCheck` runs
+`checkAuroraTokenDrift` to prove they still match the canonical CSS.
 
 ## Verification
 
@@ -123,7 +125,6 @@ The Android library exposes reusable surfaces for the Axon primitive-convergence
 - Android SDK 24+ (minSdk)
 - Kotlin 2.1.x
 - Jetpack Compose BOM 2026.04.01 (managed by library)
-- KSP (for annotation processing if extending)
 
 ## Notes
 

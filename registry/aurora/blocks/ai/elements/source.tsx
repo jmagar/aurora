@@ -5,6 +5,7 @@ import { ExternalLink, Globe } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
+import { safeHttpUrl } from "@/registry/aurora/lib/safe-url"
 
 // ---------------------------------------------------------------------------
 // Types (architecture source of truth — preserve the existing registry API)
@@ -45,13 +46,14 @@ function hostname(href?: string): string | null {
 // ---------------------------------------------------------------------------
 
 const Source = ({ ref, className, source, index, style, target, rel, tabIndex, ...props }: SourceProps & { ref?: React.Ref<HTMLAnchorElement> }) => {
-    const host = hostname(source.href)
-    const isLinked = Boolean(source.href)
+    const safeHref = safeHttpUrl(source.href)
+    const host = hostname(safeHref)
+    const isLinked = Boolean(safeHref)
 
     return (
       <a
         ref={ref}
-        href={source.href}
+        href={safeHref}
         target={target ?? (isLinked ? "_blank" : undefined)}
         rel={rel ?? (isLinked ? "noreferrer noopener" : undefined)}
         tabIndex={tabIndex ?? (isLinked ? undefined : -1)}

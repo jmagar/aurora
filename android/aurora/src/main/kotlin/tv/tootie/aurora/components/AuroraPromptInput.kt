@@ -31,6 +31,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import tv.tootie.aurora.theme.LocalAuroraColors
 
+/** Resolve once for compatibility with Compose runtimes that predate Reject. */
+internal val rejectHapticFeedback: HapticFeedbackType by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    try {
+        HapticFeedbackType::class.java.getField("Reject").get(null) as HapticFeedbackType
+    } catch (_: ReflectiveOperationException) {
+        HapticFeedbackType.LongPress
+    } catch (_: ClassCastException) {
+        HapticFeedbackType.LongPress
+    }
+}
+
 /**
  * Main agent prompt input with send button. Maps to web AI `prompt-input`.
  * Dark operator-console aesthetic: deep surface, Axon-orange active indicator.
@@ -90,23 +101,13 @@ public fun AuroraPromptInput(
     val inputPadding = if (compact) 8.dp else 12.dp
     val sendButtonSize = if (compact) AuroraIconButtonSize.Compact else AuroraIconButtonSize.Default
 
-    // Bead 01xq: HapticFeedbackType.Reject was added in androidx.compose.ui 1.7 /
-    // platform API 34. Resolve via reflection so we degrade gracefully on
-    // older Compose runtimes without a compile-time dependency on the constant.
-    fun rejectOrLongPress(): HapticFeedbackType = try {
-        val f = HapticFeedbackType::class.java.getField("Reject")
-        f.get(null) as HapticFeedbackType
-    } catch (_: Throwable) {
-        HapticFeedbackType.LongPress
-    }
-
     fun triggerSend() {
         if (primaryActionEnabled) {
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             onSend()
         } else if (loading) {
             // Send-while-thinking: rejection feedback.
-            haptics.performHapticFeedback(rejectOrLongPress())
+            haptics.performHapticFeedback(rejectHapticFeedback)
         }
     }
 

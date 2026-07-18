@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -24,6 +27,15 @@ import java.util.UUID
 
 /** Status of the current exec session. */
 enum class ExecStatus { Idle, Running, Done, Error }
+
+internal const val MAX_TERMINAL_OUTPUT_CHARS = 64 * 1024
+internal const val TERMINAL_FLUSH_MS = 50L
+
+internal fun appendBoundedTerminalOutput(current: String, delta: String): String {
+    if (delta.length >= MAX_TERMINAL_OUTPUT_CHARS) return delta.takeLast(MAX_TERMINAL_OUTPUT_CHARS)
+    val overflow = current.length + delta.length - MAX_TERMINAL_OUTPUT_CHARS
+    return if (overflow > 0) current.drop(overflow) + delta else current + delta
+}
 
 /**
  * State for a standalone command/exec PTY terminal session.
@@ -48,6 +60,9 @@ data class TerminalState(
 class TerminalViewModel(app: Application) : AndroidViewModel(app) {
 
     private val repo = (app as CodexApp).repository
+    private val outputLock = Any()
+    private val pendingOutput = StringBuilder()
+    private var outputFlushJob: Job? = null
 
     private val _state = MutableStateFlow(TerminalState())
     val state: StateFlow<TerminalState> = _state.asStateFlow()
@@ -76,6 +91,8 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
         if (trimmed.isBlank()) return
         val argv = trimmed.split(Regex("\\s+"))
         val processId = UUID.randomUUID().toString()
+        synchronized(outputLock) { pendingOutput.clear() }
+        outputFlushJob?.cancel()
         _state.update { s ->
             s.copy(
                 command = trimmed,
@@ -114,6 +131,8 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Clear the terminal output and reset to idle. */
     fun clear() {
+        synchronized(outputLock) { pendingOutput.clear() }
+        outputFlushJob?.cancel()
         _state.update { it.copy(output = "", status = ExecStatus.Idle, exitCode = null, error = null) }
     }
 
@@ -135,7 +154,8 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
                 if (stdout.isNotEmpty()) append(stdout)
                 if (stderr.isNotEmpty()) { if (isNotEmpty()) append("\n"); append(stderr) }
             }
-            _state.update { it.copy(output = it.output + combined, exitCode = exitCode, status = ExecStatus.Done) }
+            flushOutput()
+            _state.update { it.copy(output = appendBoundedTerminalOutput(it.output, combined), exitCode = exitCode, status = ExecStatus.Done) }
         }
         // PTY mode: the initial response just confirms start — output arrives via outputDelta
     }
@@ -149,13 +169,20 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
                 val pid = params["processId"]?.jsonPrimitive?.contentOrNull ?: return
                 if (pid != currentPid) return
                 val data = params["data"]?.jsonPrimitive?.contentOrNull ?: return
-                _state.update { it.copy(output = it.output + data) }
+                synchronized(outputLock) { pendingOutput.append(data) }
+                if (outputFlushJob?.isActive != true) {
+                    outputFlushJob = viewModelScope.launch {
+                        delay(TERMINAL_FLUSH_MS)
+                        flushOutput()
+                    }
+                }
             }
             "command/exec/completed" -> {
                 val params = msg.params?.jsonObject ?: return
                 val pid = params["processId"]?.jsonPrimitive?.contentOrNull ?: return
                 if (pid != currentPid) return
                 val exitCode = params["exitCode"]?.jsonPrimitive?.contentOrNull?.toIntOrNull()
+                flushOutput()
                 _state.update { it.copy(status = ExecStatus.Done, exitCode = exitCode) }
             }
             "command/exec/error" -> {
@@ -163,8 +190,17 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
                 val pid = params["processId"]?.jsonPrimitive?.contentOrNull ?: return
                 if (pid != currentPid) return
                 val errMsg = params["message"]?.jsonPrimitive?.contentOrNull ?: "Unknown error"
+                flushOutput()
                 _state.update { it.copy(status = ExecStatus.Error, error = errMsg) }
             }
         }
+    }
+
+    private fun flushOutput() {
+        val delta = synchronized(outputLock) {
+            if (pendingOutput.isEmpty()) return
+            pendingOutput.toString().also { pendingOutput.clear() }
+        }
+        _state.update { it.copy(output = appendBoundedTerminalOutput(it.output, delta)) }
     }
 }

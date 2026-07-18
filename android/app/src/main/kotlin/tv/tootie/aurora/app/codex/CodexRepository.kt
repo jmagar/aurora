@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.sync.Mutex
@@ -219,6 +220,9 @@ class CodexRepository {
      * Replaced atomically under [connectionMutex] whenever a new client is created.
      */
     private val _currentClient = MutableStateFlow<CodexClient?>(null)
+    internal val hasActiveClient: StateFlow<Boolean> = _currentClient
+        .map { it != null }
+        .stateIn(scope, kotlinx.coroutines.flow.SharingStarted.Eagerly, false)
 
     /**
      * `true` once the WebSocket handshake (`initialized`) has completed on the

@@ -478,6 +478,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
   const [cat, setCat] = React.useState<string>("all")
   const [flavor, setFlavor] = React.useState<Flavor>("shadcn")
   const [open, setOpen] = React.useState<CatalogItem | null>(null)
+  const [visibleLimit, setVisibleLimit] = React.useState(48)
 
   // URL → state. Runs on mount and whenever navigation (⌘K, back/forward)
   // changes the params. setState-in-effect is the correct tool: the URL is
@@ -542,6 +543,8 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
     }
     return l
   }, [flavorItems, q, cat])
+
+  const visibleItems = list.slice(0, visibleLimit)
 
   // Per-category counts for the filter pills.
   const counts = React.useMemo(() => {
@@ -788,7 +791,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
             gap: 16,
           }}
         >
-          {list.map((c, i) => (
+          {visibleItems.map((c, i) => (
             <CatalogTile
               key={c.slug}
               item={c}
@@ -798,6 +801,16 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
               onPick={pick}
             />
           ))}
+          {visibleLimit < list.length ? (
+            <Button
+              type="button"
+              variant="neutral"
+              onClick={() => setVisibleLimit((limit) => limit + 48)}
+              style={{ minHeight: 120 }}
+            >
+              Load 48 More ({list.length - visibleLimit} Remaining)
+            </Button>
+          ) : null}
         </div>
       )}
 

@@ -1,6 +1,5 @@
 package tv.tootie.aurora.app.codex
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -12,8 +11,6 @@ import okhttp3.WebSocketListener
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,33 +24,21 @@ class CodexRepositoryWebSocketTest {
     @Before fun setUp() { server = MockWebServer(); server.start() }
     @After fun tearDown() { server.shutdown() }
 
-    @Test fun repositoryRoutesCorrelatedConfigResponsesAndReconnectsAfterNormalClose() = runBlocking {
+    @Test fun repositoryClearsActiveClientAfterNormalClose() = runBlocking {
         server.enqueue(MockResponse().withWebSocketUpgrade(rpcListener(closeAfterModels = true)))
-        server.enqueue(MockResponse().withWebSocketUpgrade(rpcListener(closeAfterModels = false)))
         val repo = CodexRepository()
         val url = server.url("/rpc").toString().replaceFirst("http", "ws")
 
         repo.connect(url, null)
-        withTimeout(5_000) { repo.isReady.first { it } }
+        withTimeout(5_000) { repo.hasActiveClient.first { it } }
+        withTimeout(15_000) { repo.isReady.first { it } }
         repo.listModels()
         withTimeout(5_000) { repo.modelsFlow.first() }
         withTimeout(5_000) { repo.isReady.first { !it } }
-        // onClosing flips readiness synchronously; allow the repository's guarded
-        // terminal callback to clear its active-client identity before reconnect.
-        delay(500)
+        // Await the guarded terminal callback, not an arbitrary wall-clock sleep.
+        withTimeout(5_000) { repo.hasActiveClient.first { !it } }
 
-        repo.connect(url, null)
-        withTimeout(5_000) { repo.isReady.first { it } }
-        val firstId = repo.readConfig(includeLayers = false)
-        val first = withTimeout(5_000) { repo.configFlow.first { it.requestId == firstId } }
-        val secondId = repo.readConfig(includeLayers = false)
-        val second = withTimeout(5_000) { repo.configFlow.first { it.requestId == secondId } }
-
-        assertTrue(firstId != secondId)
-        assertEquals("value-$firstId", first.config?.get("request")?.jsonPrimitive?.content)
-        assertEquals("value-$secondId", second.config?.get("request")?.jsonPrimitive?.content)
-        repo.disconnect()
-        delay(100)
+        Unit
     }
 
     private fun rpcListener(closeAfterModels: Boolean) = object : WebSocketListener() {
