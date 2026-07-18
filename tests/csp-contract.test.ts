@@ -10,7 +10,9 @@ test("production CSP uses a per-request strict-dynamic nonce", () => {
   assert.match(proxy, /script-src 'self' 'nonce-\$\{nonce\}' 'strict-dynamic'/)
   assert.match(proxy, /crypto\.randomUUID\(\)/)
   assert.match(proxy, /requestHeaders\.set\("x-nonce", nonce\)/)
+  assert.match(proxy, /buildContentSecurityPolicy\(nonce, development, !development && !isLoopback\)/)
   assert.doesNotMatch(proxy, /script-src[^`\n]*'unsafe-inline'/)
+  assert.doesNotMatch(proxy, /NODE_ENV === "development" \|\| isLoopback/)
 })
 
 test("root layout remains request-rendered for nonce propagation", () => {

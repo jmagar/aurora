@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-export function buildContentSecurityPolicy(nonce: string, development = false) {
+export function buildContentSecurityPolicy(
+  nonce: string,
+  development = false,
+  upgradeInsecureRequests = !development
+) {
   const developmentEval = development ? " 'unsafe-eval'" : ""
   return [
     "default-src 'self'",
@@ -14,7 +18,7 @@ export function buildContentSecurityPolicy(nonce: string, development = false) {
     "frame-ancestors 'self'",
     "base-uri 'self'",
     "object-src 'none'",
-    ...(development ? [] : ["upgrade-insecure-requests"]),
+    ...(upgradeInsecureRequests ? ["upgrade-insecure-requests"] : []),
   ].join("; ")
 }
 
@@ -25,10 +29,9 @@ function securityContext(request: NextRequest) {
   // WebKit applies upgrade-insecure-requests to loopback origins, which turns
   // local HTTP assets into invalid HTTPS requests. Public production hosts keep
   // the directive; local development and browser verification do not need it.
-  const csp = buildContentSecurityPolicy(
-    nonce,
-    process.env.NODE_ENV === "development" || isLoopback
-  )
+  const development = process.env.NODE_ENV === "development"
+  // LEARNED: loopback transport exceptions must not inherit development script permissions.
+  const csp = buildContentSecurityPolicy(nonce, development, !development && !isLoopback)
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set("x-nonce", nonce)
   // Next.js reads the request CSP to apply the nonce to framework and page scripts.
