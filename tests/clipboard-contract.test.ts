@@ -15,4 +15,5 @@ test("clipboard hook exposes error state and clears its timer during cleanup", (
   assert.match(source, /"idle" \| "copied" \| "error"/)
   assert.match(source, /if \(timer\.current\) clearTimeout\(timer\.current\)/)
   assert.match(source, /setState\("error"\)/)
+  assert.doesNotMatch(source, /execCommand/)
 })

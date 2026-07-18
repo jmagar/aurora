@@ -1,5 +1,14 @@
 # Aurora Registry Changelog
 
+## Unreleased
+
+- URL-bearing components now accept only absolute HTTP(S) links and render
+  unsafe or malformed values as non-actionable content.
+- `Sources` now composes the canonical `Source` component instead of publishing
+  a second implementation.
+- Clipboard actions require the Async Clipboard API and report unsupported
+  environments through the existing error state.
+
 The `@aurora` shadcn registry is **copy-on-install**: components are copied into each
 consumer at install time, so updates here do not propagate automatically. This file is a
 lightweight, dated list of **behavioral changes to registry primitives** that consumers

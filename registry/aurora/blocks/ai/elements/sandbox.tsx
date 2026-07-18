@@ -5,6 +5,7 @@ import { ExternalLink, FileText, Globe, Monitor, SquareTerminal } from "lucide-r
 import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/aurora/ui/badge"
 import { Button } from "@/registry/aurora/ui/button"
+import { safeHttpUrl } from "@/registry/aurora/lib/safe-url"
 
 export interface SandboxProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
@@ -105,7 +106,7 @@ const Sandbox = (
       </div>
 
       {/* Preview URL bar */}
-      {url ? (
+      {safeHttpUrl(url) ? (
         <div
           className="flex items-center gap-2.5 rounded-[10px] px-3.5 py-3"
           style={{
@@ -115,7 +116,7 @@ const Sandbox = (
         >
           <Globe className="size-4 shrink-0" aria-hidden style={{ color: "var(--aurora-text-muted)" }} />
           <a
-            href={url}
+            href={safeHttpUrl(url)}
             target="_blank"
             rel="noreferrer"
             className="aurora-text-ui min-w-0 flex-1 truncate"

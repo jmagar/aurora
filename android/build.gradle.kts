@@ -30,5 +30,13 @@ tasks.register("androidCheck") {
         ":aurora:lintDebug",
         ":aurora:lintRelease",
         ":aurora:verifyRoborazziDebug",
+        ":aurora:checkAuroraTokenDrift",
     )
+}
+
+/** Explicit KVM/x86_64 gate for CI hosts that support Gradle managed devices. */
+tasks.register("androidManagedDeviceCheck") {
+    group = "verification"
+    description = "Run Android instrumentation tests on the API 35 managed device"
+    dependsOn(":app:pixel2Api35DebugAndroidTest")
 }

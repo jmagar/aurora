@@ -403,9 +403,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             // Clear steerText on connection drop so it doesn't reference a lost turn
             val lostSteer = steerText.getAndSet(null)
             _state.update { s ->
-                s.copy(
-                    error = e.message,
-                    thinking = false,
+                reduceConnection(s, ConnectionTransition.Failed(e.message)).copy(
                     showSteerSheet = false,
                     msgs = if (lostSteer != null)
                         (s.msgs + ChatMsg(System.currentTimeMillis().toString(), MsgRole.User, "[steer not sent — connection lost]")).toImmutableList()
@@ -443,7 +441,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             currentServerUrl = url
             val tok = settings.authToken.first()
             repo.connect(url, tok)
-            _state.update { it.copy(connected = true, threadId = if (threadId != "new") threadId else null) }
+            _state.update { reduceConnection(it, ConnectionTransition.Connecting).copy(threadId = if (threadId != "new") threadId else null) }
             // Load global approval defaults from settings
             val policyWire = settings.approvalPolicy.first()
             val reviewerWire = settings.approvalsReviewer.first()
@@ -456,6 +454,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             // hanging forever (e.g. if disconnect() runs concurrently from logout).
             try {
                 withTimeout(10_000) { repo.isReady.filter { it }.first() }
+                _state.update { reduceConnection(it, ConnectionTransition.Ready) }
                 repo.listModels()
                 repo.listSkills()
                 repo.readConfigRequirements()
@@ -471,7 +470,8 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
                     // saved == null -> new thread created lazily on first send()
                 }
             } catch (_: TimeoutCancellationException) {
-                _state.update { it.copy(error = "Server handshake did not complete") }
+                repo.disconnect()
+                _state.update { reduceConnection(it, ConnectionTransition.Failed("Server handshake did not complete")) }
             }
         }
     }

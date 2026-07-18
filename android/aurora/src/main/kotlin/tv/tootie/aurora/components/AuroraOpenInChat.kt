@@ -1,7 +1,7 @@
 package tv.tootie.aurora.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.OpenInFull
+import tv.tootie.aurora.icons.filled.OpenInFull
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable

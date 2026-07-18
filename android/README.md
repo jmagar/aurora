@@ -29,25 +29,33 @@ implementation("tv.tootie.aurora:aurora")
 Design tokens are defined in CSS (`registry/aurora/styles/aurora.css`) and exported to Kotlin via Style Dictionary:
 
 ```bash
-pnpm run tokens:generate   # Generates dark and light Kotlin token objects
+bash android/scripts/regenerate-tokens.sh
 ```
 
-Generated files: `AuroraColors.kt` (dark) and `AuroraLightColors.kt` (light) under
-`android/aurora/build/generated/aurora-tokens/kotlin/tv/tootie/aurora/tokens/`.
+Generated files are checked in as `AuroraColors.kt` and `AuroraLightColors.kt` under
+`android/aurora/src/main/kotlin/tv/tootie/aurora/tokens/`. Android compilation consumes
+these files directly and therefore does not require Node or pnpm. `androidCheck` runs
+`checkAuroraTokenDrift` to prove they still match the canonical CSS. The
+regeneration script writes all four authoritative checked-in artifacts (token
+JSON, exclusions JSON, and both Kotlin objects). The drift task generates that
+same set in a temporary directory and never mutates the worktree.
 
 ## Verification
 
 Run these from the repo root unless noted:
 
 ```bash
-pnpm run tokens:generate
+bash android/scripts/regenerate-tokens.sh
 pnpm run registry:build
 
 cd android
 ./gradlew androidCheck --no-daemon
 bash scripts/verify-gradle-wrapper.sh
 
-# With an emulator/device attached:
+# On an x86_64 host with KVM (the explicit managed-device CI gate):
+./gradlew androidManagedDeviceCheck --no-daemon
+
+# With an emulator/device already attached:
 ./gradlew :app:connectedDebugAndroidTest --no-daemon
 bash scripts/smoke-release-apk.sh
 ```
@@ -123,7 +131,6 @@ The Android library exposes reusable surfaces for the Axon primitive-convergence
 - Android SDK 24+ (minSdk)
 - Kotlin 2.1.x
 - Jetpack Compose BOM 2026.04.01 (managed by library)
-- KSP (for annotation processing if extending)
 
 ## Notes
 

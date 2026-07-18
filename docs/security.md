@@ -37,19 +37,27 @@ style-src 'self' 'unsafe-inline';
 font-src 'self' data:;
 script-src 'self' 'nonce-<per-request-value>' 'strict-dynamic';
 connect-src 'self';
+form-action 'self';
 frame-ancestors 'self';
 base-uri 'self';
-object-src 'none'
+object-src 'none';
+upgrade-insecure-requests
 ```
 
 `proxy.ts` generates a cryptographically random nonce for every request, passes
 the CSP and `x-nonce` to Next.js so framework hydration scripts receive it, and
-sets the same policy on the response. Production tests reject
-`script-src 'unsafe-inline'`; development alone adds `unsafe-eval` for the Next
-debug runtime. `app/layout.tsx` forces request rendering because a build-time
-static page cannot receive a request nonce. The production smoke checks every
-script tag against the response nonce and opens the page in headless Chrome to
-reject CSP execution or hydration failures.
+sets the same policy on the response. Production rejects script
+`unsafe-inline`; development alone adds `unsafe-eval` for the Next debug
+runtime. `app/layout.tsx` forces request rendering because a statically rendered
+page cannot receive a per-request nonce.
+
+### URL-bearing component trust contract
+
+Registry components that turn data into links accept only absolute `http:` and
+`https:` URLs. Malformed, relative, `javascript:`, `data:`, and other schemes are
+rendered without an actionable link. This applies to citations, sources,
+sandbox previews, chat-message citations, and web previews. Applications should
+still treat labels and descriptions as untrusted display text.
 
 **Known relaxation:**
 

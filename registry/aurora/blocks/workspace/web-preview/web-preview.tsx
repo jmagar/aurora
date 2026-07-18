@@ -12,6 +12,7 @@ import {
   Tablet,
 } from "lucide-react"
 import { Button } from "@/registry/aurora/ui/button"
+import { safeHttpUrl } from "@/registry/aurora/lib/safe-url"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -408,12 +409,15 @@ function BrowserChrome({
 }
 
 function UnfurlCard({ url, title, description, favicon }: WebPreviewProps) {
-  const domain = getDomain(url)
+  const safeUrl = safeHttpUrl(url)
+  const domain = getDomain(safeUrl ?? "")
   const [hovered, setHovered] = React.useState(false)
 
   return (
     <a
-      href={url}
+      href={safeUrl}
+      aria-disabled={safeUrl ? undefined : true}
+      tabIndex={safeUrl ? undefined : -1}
       target="_blank"
       rel="noopener noreferrer"
       onMouseEnter={() => setHovered(true)}

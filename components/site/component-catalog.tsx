@@ -478,6 +478,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
   const [cat, setCat] = React.useState<string>("all")
   const [flavor, setFlavor] = React.useState<Flavor>("shadcn")
   const [open, setOpen] = React.useState<CatalogItem | null>(null)
+  const [visibleLimit, setVisibleLimit] = React.useState(48)
 
   // URL → state. Runs on mount and whenever navigation (⌘K, back/forward)
   // changes the params. setState-in-effect is the correct tool: the URL is
@@ -490,6 +491,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
     const uc = searchParams.get("c")
     setQ((cur) => (cur === uq ? cur : uq))
     setFlavor((cur) => (cur === uf ? cur : uf))
+    setVisibleLimit(48)
     setOpen((cur) => {
       const target = uc ? (ITEMS.find((i) => i.slug === uc) ?? null) : null
       return (cur?.slug ?? null) === (target?.slug ?? null) ? cur : target
@@ -542,6 +544,8 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
     }
     return l
   }, [flavorItems, q, cat])
+
+  const visibleItems = list.slice(0, visibleLimit)
 
   // Per-category counts for the filter pills.
   const counts = React.useMemo(() => {
@@ -600,6 +604,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
                   type="button"
                   onClick={() => {
                     setFlavor(id)
+                    setVisibleLimit(48)
                     updateUrl({ flavor: id === "android" ? "android" : null })
                   }}
                   aria-pressed={on}
@@ -660,6 +665,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
             value={q}
             onChange={(e) => {
               setQ(e.target.value)
+              setVisibleLimit(48)
               updateUrl({ q: e.target.value })
             }}
             placeholder="Fuzzy-search components…"
@@ -678,6 +684,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
               type="button"
               onClick={() => {
                 setQ("")
+                setVisibleLimit(48)
                 updateUrl({ q: null })
               }}
               aria-label="Clear search"
@@ -695,7 +702,10 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
               <button
                 key={g}
                 type="button"
-                onClick={() => setCat(g)}
+                onClick={() => {
+                  setCat(g)
+                  setVisibleLimit(48)
+                }}
                 data-on={on ? "true" : "false"}
                 aria-pressed={on}
                 className="aurora-text-control aurora-cat-pill"
@@ -744,7 +754,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
           fontFamily: "var(--aurora-font-sans)",
         }}
       >
-        <span style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
+        <span data-catalog-result-count style={{ fontSize: 11.5, color: "var(--aurora-text-muted)" }}>
           {filtering
             ? `${list.length} ${list.length === 1 ? "result" : "results"}`
             : ""}
@@ -772,6 +782,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
                 onClick={() => {
                   setQ("")
                   setCat("all")
+                  setVisibleLimit(48)
                   updateUrl({ q: null })
                 }}
               >
@@ -788,7 +799,7 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
             gap: 16,
           }}
         >
-          {list.map((c, i) => (
+          {visibleItems.map((c, i) => (
             <CatalogTile
               key={c.slug}
               item={c}
@@ -798,6 +809,16 @@ function CatalogInner({ heading = "The Catalog", kotlinMap, syncUrl }: CatalogPr
               onPick={pick}
             />
           ))}
+          {visibleLimit < list.length ? (
+            <Button
+              type="button"
+              variant="neutral"
+              onClick={() => setVisibleLimit((limit) => limit + 48)}
+              style={{ minHeight: 120 }}
+            >
+              Load 48 More ({list.length - visibleLimit} Remaining)
+            </Button>
+          ) : null}
         </div>
       )}
 

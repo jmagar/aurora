@@ -109,6 +109,11 @@ Import path inside the source repo: `@/registry/aurora/ui/<name>`. In a consumin
 
 Blocks compose primitives + domain logic. Import path: `@/registry/aurora/blocks/<domain>/<name>/<name>`.
 
+URL-bearing props use Aurora's shared HTTP(S)-only policy. Absolute `http:` and
+`https:` values become links; malformed, relative, `javascript:`, `data:`, and
+other schemes render as non-actionable text. Sanitize and authorize URLs at the
+application boundary as well when they originate from agents or remote data.
+
 ### AI
 
 | Block | Path | What it is |

@@ -186,6 +186,8 @@ pnpm exec tsc --noEmit
 pnpm build
 pnpm audit:standalone
 pnpm registry:build
+pnpm registry:graph
+pnpm generated:check
 pnpm tokens:generate
 
 # Unit tests (Node test runner — no framework required)
@@ -196,9 +198,13 @@ cd android
 ./gradlew androidCheck --no-daemon
 ```
 
-> **Build side-effect:** `pnpm build` runs `pnpm readmes:generate` as a
-> prebuild step. This script regenerates `public/readmes/*.md` from the
-> registry source and must complete before the Next.js build starts.
+> **Generated artifacts:** `pnpm build` first verifies gallery routes and the
+> compact client catalog against their sources, then runs `pnpm readmes:generate`.
+> Gallery entries and `lib/gallery-manifest.json` come from
+> `app/gallery/demo-map.tsx` via `pnpm gallery:generate`;
+> `lib/client-catalog.json` comes from navigation, slug, and registry metadata
+> via `pnpm catalog:generate`. Theme README assets under `public/readmes/` come
+> from `lib/themes.ts` plus `themes/**/README.md`.
 > If the prebuild step mutates files you have staged, commit or stash those
 > changes first — otherwise the working tree will be dirty after the build.
 
@@ -206,9 +212,10 @@ cd android
 
 1. Components live in `registry/aurora/ui/` for primitives or `registry/aurora/blocks/<domain>/<name>/` for product blocks
 2. Add a demo at `app/gallery/demos/<name>-demo.tsx`
-3. Register in `app/gallery/[section]/page.tsx`
-4. Update `registry.json` with the new entry
-5. Use inline styles with Aurora CSS vars — never hardcode hex values
+3. Register the demo in `app/gallery/demo-map.tsx` and its navigation/slug metadata
+4. Run `pnpm gallery:generate` (never edit `app/gallery/entries/` or the manifest directly)
+5. Update `registry.json`, run `pnpm registry:build`, then `pnpm generated:check`
+6. Use inline styles with Aurora CSS vars — never hardcode hex values
 
 ## Deployment
 

@@ -20,6 +20,21 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"], baseURL: "http://127.0.0.1:3010" },
     },
     {
+      name: "site-mobile-chromium",
+      testMatch: /site\.spec\.ts/,
+      use: { ...devices["Pixel 7"], baseURL: "http://127.0.0.1:3010" },
+    },
+    {
+      name: "site-firefox",
+      testMatch: /site\.spec\.ts/,
+      use: { ...devices["Desktop Firefox"], baseURL: "http://127.0.0.1:3010" },
+    },
+    {
+      name: "site-webkit",
+      testMatch: /site\.spec\.ts/,
+      use: { ...devices["Desktop Safari"], baseURL: "http://127.0.0.1:3010" },
+    },
+    {
       name: "storybook-chromium",
       testMatch: /storybook\.spec\.ts/,
       use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:6006" },

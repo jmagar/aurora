@@ -18,6 +18,8 @@ policy with tested build-time script hashes.
 The tracked production contract is `ops/compose/production.yaml`; tracked SWAG
 templates are under `ops/swag/`. `ops/check-production-topology.sh` validates
 that both sides agree on port, network, tenant names, digest use, and isolation.
+The host port binds only to `AURORA_BIND_ADDRESS` (dookie's Tailscale address),
+not a wildcard interface, so routable clients cannot bypass the SWAG ingress.
 
 ## Publish and promotion
 
@@ -59,6 +61,8 @@ Create a private environment file from the tracked example:
 cp ops/compose/production.env.example ~/.config/aurora/production.env
 chmod 600 ~/.config/aurora/production.env
 # Replace AURORA_IMAGE_REF and AURORA_EXPECTED_SHA with the workflow outputs.
+# Confirm AURORA_BIND_ADDRESS is dookie's current Tailscale address and set both
+# AURORA_PUBLIC_URL and AURORA_TENANT_URL to their production HTTPS origins.
 ```
 
 Validate without changing runtime state:
@@ -75,7 +79,8 @@ cosign verify \
 ```
 
 Deploy and verify landing HTML, shadcn content negotiation, registry schema and
-checksum, CSP nonce, revision header, and TLS lifetime:
+the deployed revision's checksum, CSP nonce, revision header, and TLS lifetime
+on both Aurora and the co-hosted dinglebear tenant:
 
 ```bash
 ops/deploy.sh ~/.config/aurora/production.env
@@ -86,18 +91,35 @@ The dev profile remains on port 3000 and is never attached to `jakenet`.
 
 ## Rollback
 
-Keep the last known-good `AURORA_IMAGE_REF` and `AURORA_EXPECTED_SHA`. Replace
-the two values in the private env file with that pair and rerun `ops/deploy.sh`.
-The script verifies the old signature before pull, recreates the service, and
-proves the public revision after restart. If registry clients observed a mutable
+`ops/deploy.sh` records the running production container's immutable image and
+source revision before replacement. If local readiness or either public-host
+synthetic fails, it recreates that last-known-good image automatically. For a
+manual rollback, replace `AURORA_IMAGE_REF` and `AURORA_EXPECTED_SHA` in the
+private env file with the prior pair and rerun the script. It verifies the old
+signature before pull, recreates the service, and proves both public contracts.
+If registry clients observed a mutable
 asset during the incident, purge only the `/r/*` proxy cache; hashed Next assets
 and immutable raw-Git URLs must not be purged.
 
 ## Monitoring
 
-GitHub synthetics run twice per hour. On the host, schedule
-`ops/monitor-container.sh` with `AURORA_ALERT_WEBHOOK_URL` in the scheduler's
-secret environment. It fails on unhealthy/stopped/OOM-killed containers or high
-Docker-disk use and reports restart count and memory. Docker retains at most
+GitHub synthetics run twice per hour. They validate the live registry payload
+against the full source revision reported by the deployed image, so an
+intentional delay between merging and manual promotion is not reported as an
+outage.
+
+On dookie, install the tracked five-minute systemd monitor from the checkout:
+
+```bash
+sudo ops/install-monitor.sh
+systemctl status aurora-monitor.timer
+journalctl -u aurora-monitor.service --since today
+```
+
+Put `AURORA_ALERT_WEBHOOK_URL` and optional
+`AURORA_DISK_ALERT_PERCENT`/`AURORA_MEMORY_ALERT_PERCENT` overrides in
+`/etc/aurora/monitor.env` (mode 0600). The monitor discovers Docker's active
+data root, fails if metrics cannot be collected, and alerts on unhealthy,
+stopped, OOM-killed, disk-pressure, or memory-pressure states. Docker retains at most
 five 10 MiB production log files; the container is limited to 1 GiB, 2 CPUs,
 and 128 PIDs with all capabilities dropped and a read-only root filesystem.

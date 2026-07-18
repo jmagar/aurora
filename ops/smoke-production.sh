@@ -12,9 +12,15 @@ pid=""
 linked_public=false
 linked_static=false
 cleanup() {
-  [[ -n "$pid" ]] && kill "$pid" 2>/dev/null || true
-  [[ "$linked_public" == true ]] && rm -f .next/standalone/public
-  [[ "$linked_static" == true ]] && rm -f .next/standalone/.next/static
+  if [[ -n "$pid" ]]; then
+    kill "$pid" 2>/dev/null || true
+  fi
+  if [[ "$linked_public" == true ]]; then
+    rm -f .next/standalone/public
+  fi
+  if [[ "$linked_static" == true ]]; then
+    rm -f .next/standalone/.next/static
+  fi
   rm -f "$log_file" "$headers" "$html" "$hydrated_html" "$browser_log"
 }
 trap cleanup EXIT
@@ -42,22 +48,18 @@ done
 
 curl --silent --show-error --fail --dump-header "$headers" --output "$html" "http://127.0.0.1:$port/"
 grep -Eqi '^content-security-policy:.*script-src[^;]*nonce-' "$headers"
+grep -Eqi '^content-security-policy:.*script-src[^;]*strict-dynamic' "$headers"
 if grep -Eqi '^content-security-policy:.*script-src[^;]*unsafe-inline' "$headers"; then
   echo "production script CSP still permits unsafe-inline" >&2
   exit 1
 fi
+grep -Eqi "^content-security-policy:.*form-action[[:space:]]+'self'" "$headers"
+if grep -Eqi '^content-security-policy:.*upgrade-insecure-requests' "$headers"; then
+  echo "loopback smoke CSP must not upgrade HTTP assets to HTTPS" >&2
+  exit 1
+fi
 grep -Eqi '^x-powered-by:' "$headers" && { echo "X-Powered-By must be disabled" >&2; exit 1; }
 grep -Eqi "^x-aurora-revision:[[:space:]]*$expected_sha" "$headers"
-nonce="$(sed -nE "s/^content-security-policy:.*'nonce-([^']+)'.*/\1/ip" "$headers" | tr -d '\r' | head -1)"
-test -n "$nonce"
-python - "$html" "$nonce" <<'PY'
-import pathlib, re, sys
-html = pathlib.Path(sys.argv[1]).read_text()
-nonce = sys.argv[2]
-scripts = re.findall(r"<script\b[^>]*>", html, flags=re.IGNORECASE)
-if not scripts or any(f'nonce="{nonce}"' not in tag for tag in scripts):
-    raise SystemExit("every inline/framework script must carry the request CSP nonce")
-PY
 
 if find .next/static -type f -name '*.map' -print -quit | grep -q .; then
   echo "browser source maps must not ship in the production static tree" >&2

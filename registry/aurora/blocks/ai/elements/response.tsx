@@ -5,6 +5,7 @@ import { Check, CodeXml, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/registry/aurora/ui/button"
 import { useClipboard } from "@/registry/aurora/lib/use-clipboard"
+import { safeHttpUrl } from "@/registry/aurora/lib/safe-url"
 
 export interface ResponseSource {
   /** Source title shown in the citation hover/focus preview. */
@@ -199,9 +200,10 @@ function CitationChip({
   onActivate?: (index: number, source?: ResponseSource) => void
 }) {
   const [open, setOpen] = React.useState(false)
+  const safeHref = safeHttpUrl(source?.href)
   const hasPreview = Boolean(source?.title || source?.description || source?.href)
   const previewId = React.useId()
-  const isLinked = Boolean(source?.href)
+  const isLinked = Boolean(safeHref)
 
   const handleActivate = React.useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -223,9 +225,9 @@ function CitationChip({
 
   const chip = (
     <a
-      href={source?.href ?? undefined}
-      target={source?.href ? "_blank" : undefined}
-      rel={source?.href ? "noreferrer noopener" : undefined}
+      href={safeHref}
+      target={safeHref ? "_blank" : undefined}
+      rel={safeHref ? "noreferrer noopener" : undefined}
       className={cn(
         "inline-flex items-center justify-center rounded-[5px] border align-baseline no-underline",
         "border-[color:var(--aurora-citation-border)] bg-[var(--aurora-citation-bg)] transition-colors",

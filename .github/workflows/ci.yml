@@ -29,8 +29,10 @@ jobs:
         uses: gradle/actions/wrapper-validation@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
       - name: Validate deployment topology
         run: ops/check-production-topology.sh
-      - name: Validate deployment shell
-        run: shellcheck ops/deploy.sh
+      - name: Validate operations shell
+        run: shellcheck ops/*.sh ops/tests/*.sh
+      - name: Test container monitoring thresholds
+        run: ops/tests/monitor-container-test.sh
       - name: Validate documentation commands
         run: ops/check-doc-snippets.sh
       - name: Validate generated skill documentation
@@ -79,9 +81,11 @@ jobs:
         env:
           AURORA_BUILD_SHA: ${{ github.sha }}
         run: pnpm run build
-      - name: Install Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
-      - name: Browser and strict Storybook accessibility contracts
+      - name: Enforce production client JavaScript budgets
+        run: pnpm run performance:check
+      - name: Install Playwright Chromium, Firefox, and WebKit
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Cross-browser, mobile, and strict Storybook accessibility contracts
         run: pnpm run test:e2e
       - run: pnpm run refs:check
       - run: pnpm run audit:standalone
@@ -91,7 +95,10 @@ jobs:
         run: ops/smoke-production.sh
       - run: pnpm run registry:check
       - run: pnpm run registry:validate
+      - run: pnpm run registry:graph
       - run: pnpm run registry:smoke
+      - run: pnpm run gallery:check
+      - run: pnpm run catalog:check
       - run: pnpm run tokens:generate
       - name: Generated artifacts are committed
         run: git diff --exit-code
@@ -125,6 +132,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Gate all app/library variants, release lint/package, wrapper, and Roborazzi goldens
         run: ./gradlew androidCheck --no-daemon
+        working-directory: android
+      - name: Run Android managed-device instrumentation smoke
+        run: |
+          if [[ -e /dev/kvm ]]; then sudo chmod 666 /dev/kvm; fi
+          ./gradlew androidManagedDeviceCheck --no-daemon
         working-directory: android
       - name: Smoke external composite-build consumption
         run: ops/smoke-android-composite.sh

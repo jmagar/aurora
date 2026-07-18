@@ -12,6 +12,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import java.security.KeyStore
+import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -39,9 +40,14 @@ object Keys {
     val THREAD_ID = stringPreferencesKey("thread_id")
     val THREAD_UPDATED_AT = longPreferencesKey("thread_updated_at")
 
-    /** Per-server thread key. Uses a stable hash of the URL so key names stay ASCII-safe. */
-    fun threadIdForUrl(url: String) = stringPreferencesKey("thread_id_${url.hashCode()}")
-    fun threadUpdatedAtForUrl(url: String) = longPreferencesKey("thread_updated_at_${url.hashCode()}")
+    /** Collision-resistant per-server key. Legacy hash keys are read once for migration. */
+    internal fun serverKey(url: String): String = MessageDigest.getInstance("SHA-256")
+        .digest(url.trim().toByteArray(Charsets.UTF_8))
+        .joinToString("") { "%02x".format(it) }
+    fun threadIdForUrl(url: String) = stringPreferencesKey("thread_id_${serverKey(url)}")
+    fun threadUpdatedAtForUrl(url: String) = longPreferencesKey("thread_updated_at_${serverKey(url)}")
+    internal fun legacyThreadIdForUrl(url: String) = stringPreferencesKey("thread_id_${url.hashCode()}")
+    internal fun legacyThreadUpdatedAtForUrl(url: String) = longPreferencesKey("thread_updated_at_${url.hashCode()}")
 }
 
 /**
@@ -217,12 +223,15 @@ class AppSettings(private val ctx: Context) {
      */
     fun savedThreadId(serverUrl: String): Flow<String?> = ctx.store.data.map { prefs ->
         prefs[Keys.threadIdForUrl(serverUrl)]?.takeIf { it.isNotBlank() }
+            ?: prefs[Keys.legacyThreadIdForUrl(serverUrl)]?.takeIf { it.isNotBlank() }
             ?: prefs[Keys.THREAD_ID]?.takeIf { it.isNotBlank() } // legacy fallback
     }
 
     suspend fun saveThread(serverUrl: String, id: String) = ctx.store.edit { prefs ->
         prefs[Keys.threadIdForUrl(serverUrl)] = id
         prefs[Keys.threadUpdatedAtForUrl(serverUrl)] = System.currentTimeMillis() / 1000L
+        prefs.remove(Keys.legacyThreadIdForUrl(serverUrl))
+        prefs.remove(Keys.legacyThreadUpdatedAtForUrl(serverUrl))
         // Clear the legacy unkeyed entry so it is only consulted once per install
         prefs.remove(Keys.THREAD_ID)
         prefs.remove(Keys.THREAD_UPDATED_AT)
@@ -231,6 +240,8 @@ class AppSettings(private val ctx: Context) {
     suspend fun clearThreadId(serverUrl: String) = ctx.store.edit { prefs ->
         prefs.remove(Keys.threadIdForUrl(serverUrl))
         prefs.remove(Keys.threadUpdatedAtForUrl(serverUrl))
+        prefs.remove(Keys.legacyThreadIdForUrl(serverUrl))
+        prefs.remove(Keys.legacyThreadUpdatedAtForUrl(serverUrl))
         // Also clear legacy key in case it hasn't been migrated yet
         prefs.remove(Keys.THREAD_ID)
         prefs.remove(Keys.THREAD_UPDATED_AT)

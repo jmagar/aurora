@@ -45,20 +45,32 @@ curl "${curl_common[@]}" \
   --output "$tmp_dir/item.json" "$base_url/r/$registry_item"
 jq -e '.name and .type and (.files | type == "array")' "$tmp_dir/item.json" >/dev/null
 
-if [[ -f "public/r/$registry_item" ]]; then
-  expected_registry_hash="$(sha256sum "public/r/$registry_item" | cut -d' ' -f1)"
-  served_registry_hash="$(sha256sum "$tmp_dir/item.json" | cut -d' ' -f1)"
-  [[ "$served_registry_hash" == "$expected_registry_hash" ]] || {
-    echo "registry checksum mismatch: expected $expected_registry_hash, served $served_registry_hash" >&2
+grep -Eqi '^content-security-policy:.*nonce-' "$tmp_dir/landing.headers"
+grep -Eqi '^x-aurora-revision:' "$tmp_dir/landing.headers"
+served_sha="$(sed -nE 's/^x-aurora-revision:[[:space:]]*([0-9a-f]{40})[[:space:]]*$/\1/ip' "$tmp_dir/landing.headers" | tr -d '\r' | head -1)"
+[[ "$served_sha" =~ ^[0-9a-f]{40}$ ]] || {
+  echo "public path did not expose a full deployed source revision" >&2
+  exit 1
+}
+if [[ -n "$expected_sha" ]]; then
+  [[ "$served_sha" == "$expected_sha" ]] || {
+    echo "revision mismatch: expected $expected_sha, served $served_sha" >&2
     exit 1
   }
 fi
 
-grep -Eqi '^content-security-policy:.*nonce-' "$tmp_dir/landing.headers"
-grep -Eqi '^x-aurora-revision:' "$tmp_dir/landing.headers"
-if [[ -n "$expected_sha" ]]; then
-  grep -Eqi "^x-aurora-revision:[[:space:]]*$expected_sha" "$tmp_dir/landing.headers"
-fi
+# Compare the mutable live item to the source artifact belonging to the revision
+# that is actually deployed. Comparing to the workflow checkout's current main
+# creates false outages during the intentional merge-to-deploy interval.
+artifact_sha="${expected_sha:-$served_sha}"
+artifact_url="https://raw.githubusercontent.com/jmagar/aurora/${artifact_sha}/public/r/${registry_item}"
+curl --fail --silent --show-error --location --output "$tmp_dir/expected-item.json" "$artifact_url"
+expected_registry_hash="$(sha256sum "$tmp_dir/expected-item.json" | cut -d' ' -f1)"
+served_registry_hash="$(sha256sum "$tmp_dir/item.json" | cut -d' ' -f1)"
+[[ "$served_registry_hash" == "$expected_registry_hash" ]] || {
+  echo "registry checksum mismatch for deployed revision $artifact_sha" >&2
+  exit 1
+}
 
 host="${base_url#*://}"
 host="${host%%/*}"
