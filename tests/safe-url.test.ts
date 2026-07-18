@@ -38,7 +38,9 @@ test("Source cannot apply an unsanitized href after its shared URL policy", asyn
 test("umbrella AI Sources sanitize each href-bearing export", async () => {
   const { readFile } = await import("node:fs/promises")
   const core = await readFile("registry/aurora/blocks/ai/elements/core.tsx", "utf8")
+  const sourceExport = core.slice(core.indexOf("const Source ="), core.indexOf('Source.displayName = "Source"'))
   assert.match(core, /href=\{safeHttpUrl\(href\)\}/)
-  assert.match(core, /href=\{safeHttpUrl\(source\.href\)\}/)
-  assert.doesNotMatch(core, /href=\{source\.href/)
+  assert.match(sourceExport, /\.\.\.props[\s\S]*href=\{safeHttpUrl\(source\.href\)\}/)
+  assert.doesNotMatch(sourceExport, /href=\{safeHttpUrl\(source\.href\)\}[\s\S]*\.\.\.props/)
+  assert.doesNotMatch(sourceExport, /href=\{source\.href/)
 })
