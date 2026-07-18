@@ -52,7 +52,8 @@ val checkAuroraTokenDrift by tasks.registering(Exec::class) {
     workingDir = rootDir.parentFile
     commandLine(
         "bash", "-c",
-        "out=\$(mktemp -d); trap 'rm -rf \"\$out\"' EXIT; mkdir -p \"\$out/json\" \"\$out/kotlin\"; " +
+        // LEARNED: every generated artifact comparison must propagate failure independently.
+        "set -euo pipefail; out=\$(mktemp -d); trap 'rm -rf \"\$out\"' EXIT; mkdir -p \"\$out/json\" \"\$out/kotlin\"; " +
             "AURORA_TOKENS_JSON_OUT=\"\$out/json\" AURORA_TOKENS_OUT=\"\$out/kotlin\" pnpm run tokens:generate >/dev/null; " +
             "diff -u '${jsonDir.resolve("aurora.tokens.json")}' \"\$out/json/aurora.tokens.json\"; " +
             "diff -u '${jsonDir.resolve("EXCLUSIONS.json")}' \"\$out/json/EXCLUSIONS.json\"; " +
