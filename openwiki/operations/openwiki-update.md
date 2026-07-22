@@ -7,7 +7,7 @@ The scheduled OpenWiki update workflow in `.github/workflows/openwiki-update.yml
 - Node.js 22 via `actions/setup-node@v4`
 - `npm install --global openwiki`
 - `openwiki code --update --print`
-- OpenRouter model execution (`OPENWIKI_PROVIDER=openrouter`, `OPENWIKI_MODEL_ID=z-ai/glm-5.2`) with LangSmith tracing env vars
+- OpenRouter model execution (`OPENWIKI_PROVIDER=openrouter`, `OPENWIKI_MODEL_ID=z-ai/glm-5.2`) with LangSmith tracing env vars (`LANGSMITH_API_KEY`, `LANGCHAIN_PROJECT`, `LANGCHAIN_TRACING_V2`)
 - Pull request generation via `peter-evans/create-pull-request` pinned to commit `22a9089034f40e5a961c8808d113e2c98fb63676`
 
 ## Files written by workflow
