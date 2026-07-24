@@ -37,6 +37,11 @@ export interface MentionItem {
   kind: "file" | "agent" | "folder"
 }
 
+export interface PromptInputModel {
+  id: string
+  label: string
+}
+
 export interface PromptInputProps {
   value: string
   onChange: (value: string) => void
@@ -46,14 +51,17 @@ export interface PromptInputProps {
   attachments?: Attachment[]
   onRemoveAttachment?: (id: string) => void
   model?: string
+  models?: PromptInputModel[]
   onModelChange?: (model: string) => void
+  /** Product-specific controls rendered at the start of the bottom toolbar. */
+  toolbarStart?: React.ReactNode
   isStreaming?: boolean
   placeholder?: string
   slashCommands?: SlashCommand[]
   mentionItems?: MentionItem[]
 }
 
-const DEFAULT_MODELS = [
+const DEFAULT_MODELS: PromptInputModel[] = [
   { id: "claude-opus-4-5", label: "Claude Opus 4.5" },
   { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" },
   { id: "claude-haiku-4-5", label: "Claude Haiku 4.5" },
@@ -436,7 +444,9 @@ export function PromptInput({
   onAddAttachment,
   onRemoveAttachment,
   model = "claude-sonnet-4-6",
+  models = DEFAULT_MODELS,
   onModelChange,
+  toolbarStart,
   isStreaming = false,
   placeholder = "Ask anything…",
   slashCommands = DEFAULT_SLASH_COMMANDS,
@@ -507,7 +517,7 @@ export function PromptInput({
     mentionOpen && filteredMentions[mentionActiveIndex] ? `${reactId}-mention-${filteredMentions[mentionActiveIndex].id}` : undefined
   const activePopupId = slashOpen ? slashListboxId : mentionOpen ? mentionListboxId : undefined
   const activeDescendantId = activeSlashId ?? activeMentionId
-  const modelLabel = DEFAULT_MODELS.find((m) => m.id === model)?.label ?? model
+  const modelLabel = models.find((m) => m.id === model)?.label ?? model
 
   // Memoized container styles — only change when isFocused toggles
   const containerStyle = React.useMemo<React.CSSProperties>(
@@ -728,7 +738,7 @@ export function PromptInput({
       {/* Model selector dropdown */}
       {showModelMenu && (
         <div id={modelListboxId} role="listbox" aria-labelledby={modelButtonId} style={S.modelPopup}>
-          {DEFAULT_MODELS.map((m) => (
+          {models.map((m) => (
             <Button
               variant="plain"
               size="unstyled"
@@ -833,6 +843,7 @@ export function PromptInput({
 
         {/* Bottom toolbar */}
         <div style={S.toolbar}>
+          {toolbarStart}
           <input
             ref={fileInputRef}
             type="file"

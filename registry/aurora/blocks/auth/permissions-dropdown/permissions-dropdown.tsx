@@ -423,6 +423,8 @@ export function PermissionsDropdown({
 export interface PermissionChipProps {
   tools: ToolPermission[]
   onClick?: () => void
+  /** Render only the shield for dense composer toolbars. */
+  iconOnly?: boolean
   style?: React.CSSProperties
   className?: string
 }
@@ -430,6 +432,7 @@ export interface PermissionChipProps {
 export function PermissionChip({
   tools,
   onClick,
+  iconOnly = false,
   style,
   className,
 }: PermissionChipProps) {
@@ -454,7 +457,9 @@ export function PermissionChip({
         alignItems: "center",
         gap: 6,
         height: 26,
-        padding: "0 10px",
+        padding: iconOnly ? 0 : "0 10px",
+        width: iconOnly ? 26 : undefined,
+        justifyContent: "center",
         borderRadius: 9,
         border: hasRestrictions
           ? "1px solid color-mix(in srgb, var(--aurora-warn) 30%, var(--aurora-border-default))"
@@ -478,7 +483,7 @@ export function PermissionChip({
       />
 
       {/* Label */}
-      <span
+      {!iconOnly && <span
         style={{
           fontSize: 12,
           fontWeight: 500,
@@ -488,10 +493,10 @@ export function PermissionChip({
         }}
       >
         {totalCount} tool{totalCount !== 1 ? "s" : ""}
-      </span>
+      </span>}
 
       {/* Restriction count */}
-      {hasRestrictions && (
+      {hasRestrictions && !iconOnly && (
         <>
           <span
             style={{ color: "var(--aurora-border-default)", fontSize: 11 }}
@@ -513,7 +518,7 @@ export function PermissionChip({
       )}
 
       {/* Chevron (when clickable) */}
-      {onClick && (
+      {onClick && !iconOnly && (
         <ChevronDown
           size={10}
           strokeWidth={ICON_STROKE}

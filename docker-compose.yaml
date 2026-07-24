@@ -73,7 +73,7 @@ services:
     restart: unless-stopped
     init: true
     pids_limit: 128
-    mem_limit: 1g
+    mem_limit: 4g
     cpus: 2.0
     logging:
       driver: json-file
