@@ -29,6 +29,8 @@ export interface PermissionPromptProps {
   onAllow?: () => void
   onDeny?: () => void
   onAllowAlways?: () => void
+  allowLabel?: string
+  denyLabel?: string
   /** Control visibility externally */
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -91,6 +93,8 @@ interface ActionButtonsProps {
   onAllow?: () => void
   onDeny?: () => void
   onAllowAlways?: () => void
+  allowLabel?: string
+  denyLabel?: string
   compact?: boolean
 }
 
@@ -99,6 +103,8 @@ function ActionButtons({
   onAllow,
   onDeny,
   onAllowAlways,
+  allowLabel,
+  denyLabel,
   compact,
 }: ActionButtonsProps) {
   const gap = compact ? 6 : 8
@@ -112,10 +118,10 @@ function ActionButtons({
         size={size}
         onClick={onAllow}
       >
-        {isDangerous ? "Run anyway" : "Allow"}
+        {allowLabel ?? (isDangerous ? "Run anyway" : "Allow")}
       </Button>
 
-      {!isDangerous && (
+      {!isDangerous && onAllowAlways && (
         <Button
           type="button"
           variant="neutral"
@@ -132,7 +138,7 @@ function ActionButtons({
         size={size}
         onClick={onDeny}
       >
-        Deny
+        {denyLabel ?? "Deny"}
       </Button>
     </div>
   )
@@ -225,6 +231,8 @@ function PromptContent({
   onAllow,
   onDeny,
   onAllowAlways,
+  allowLabel,
+  denyLabel,
   compact,
 }: {
   tool: string
@@ -234,6 +242,8 @@ function PromptContent({
   onAllow?: () => void
   onDeny?: () => void
   onAllowAlways?: () => void
+  allowLabel?: string
+  denyLabel?: string
   compact?: boolean
 }) {
   return (
@@ -282,6 +292,8 @@ function PromptContent({
         onAllow={onAllow}
         onDeny={onDeny}
         onAllowAlways={onAllowAlways}
+        allowLabel={allowLabel}
+        denyLabel={denyLabel}
         compact={compact}
       />
     </div>
@@ -300,6 +312,8 @@ function ModalPrompt({
   onAllow,
   onDeny,
   onAllowAlways,
+  allowLabel,
+  denyLabel,
   open = true,
   onOpenChange,
 }: PermissionPromptProps) {
@@ -406,6 +420,8 @@ function ModalPrompt({
               onDeny?.()
             }}
             onAllowAlways={onAllowAlways}
+            allowLabel={allowLabel}
+            denyLabel={denyLabel}
           />
         </div>
       </div>
@@ -425,6 +441,8 @@ function BannerPrompt({
   onAllow,
   onDeny,
   onAllowAlways,
+  allowLabel,
+  denyLabel,
   open = true,
   onOpenChange,
   style,
@@ -501,6 +519,8 @@ function BannerPrompt({
           onDeny?.()
         }}
         onAllowAlways={onAllowAlways}
+        allowLabel={allowLabel}
+        denyLabel={denyLabel}
         compact
       />
 
@@ -535,6 +555,8 @@ function InlinePrompt({
   onAllow,
   onDeny,
   onAllowAlways,
+  allowLabel,
+  denyLabel,
   style,
 }: PermissionPromptProps) {
   return (
@@ -563,6 +585,8 @@ function InlinePrompt({
         onAllow={onAllow}
         onDeny={onDeny}
         onAllowAlways={onAllowAlways}
+        allowLabel={allowLabel}
+        denyLabel={denyLabel}
         compact
       />
     </div>
