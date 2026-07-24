@@ -57,6 +57,18 @@ breaking changes and will be listed here.
   v0.3.1 should rebuild vendored components, review changed component props,
   regenerate Android tokens, and verify both color modes before release.
 
+## [0.5.0](https://github.com/dinglebear-ai/aurora/compare/v0.4.3...v0.5.0) (2026-07-24)
+
+
+### Added
+
+* prompt input composition updates ([#91](https://github.com/dinglebear-ai/aurora/issues/91)) ([3ead1cc](https://github.com/dinglebear-ai/aurora/commit/3ead1ccf2cc3ebf52c3dd0375eebdb774588e78a))
+
+
+### Fixed
+
+* remediate comprehensive repository review ([#78](https://github.com/dinglebear-ai/aurora/issues/78)) ([d702943](https://github.com/dinglebear-ai/aurora/commit/d702943d7bff8603691a2d32804cd7a4a610f284))
+
 ## [0.4.3](https://github.com/jmagar/aurora/compare/v0.4.2...v0.4.3) (2026-07-18)
 
 
